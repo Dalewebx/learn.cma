@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Catholic Music Academy — Online Learning Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --blue:#1A2E6C;--blue-mid:#2B47A8;--blue-light:#EEF2FF;--blue-pale:#F0F4FF;
+  --amber:#F59E0B;--amber-light:#FEF3C7;--amber-dark:#D97706;
+  --text:#0F172A;--muted:#64748B;--dim:#94A3B8;--border:#E2E8F0;
+  --surface:#F8FAFC;--white:#FFFFFF;--ok:#16A34A;--ok-light:#DCFCE7;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-icon{width:36px;height:36px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--white);flex-shrink:0;}
+.nav-name{font-family:'DM Serif Display',serif;font-size:17px;color:var(--blue);line-height:1;}
+.nav-sub{font-size:10px;color:var(--muted);letter-spacing:0.4px;margin-top:1px;}
+.nav-actions{display:flex;align-items:center;gap:10px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:all 0.18s;text-decoration:none;white-space:nowrap;}
+.btn-outline{background:none;border:1.5px solid var(--border);color:var(--text);padding:9px 20px;font-size:13px;}
+.btn-outline:hover{border-color:var(--blue);color:var(--blue);}
+.btn-primary{background:var(--blue);color:var(--white);padding:10px 22px;font-size:13px;}
+.btn-primary:hover{background:var(--blue-mid);}
+.btn-primary-lg{background:var(--blue);color:var(--white);padding:15px 34px;font-size:15px;border-radius:12px;}
+.btn-primary-lg:hover{background:var(--blue-mid);}
+.btn-ghost-lg{background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.3);color:var(--white);padding:15px 34px;font-size:15px;border-radius:12px;}
+.btn-ghost-lg:hover{background:rgba(255,255,255,0.2);}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(150deg, var(--blue) 0%, #1e3a8a 40%, #1e40af 70%, #2563eb 100%);padding:96px 32px 88px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.85);letter-spacing:0.5px;margin-bottom:24px;}
+.hero-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--amber);flex-shrink:0;}
+.hero-title{font-family:'DM Serif Display',serif;font-size:clamp(36px,6vw,64px);color:var(--white);line-height:1.08;margin-bottom:20px;max-width:780px;margin-left:auto;margin-right:auto;}
+.hero-title em{font-style:italic;color:rgba(255,255,255,0.75);}
+.hero-sub{font-size:clamp(15px,2vw,18px);color:rgba(255,255,255,0.72);line-height:1.7;max-width:540px;margin:0 auto 40px;font-weight:300;}
+.hero-buttons{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+.hero-scroll{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;color:rgba(255,255,255,0.4);font-size:11px;animation:bounce 2s ease infinite;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(5px)}}
+.hero-scroll-arrow{font-size:16px;}
+
+/* ── FEATURES STRIP ── */
+.features-strip{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:28px 32px;}
+.features-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;}
+.feature-item{display:flex;align-items:center;gap:9px;padding:10px 28px;font-size:13px;font-weight:600;color:var(--muted);}
+.feature-item:not(:last-child){border-right:1px solid var(--border);}
+.feature-check{width:20px;height:20px;background:var(--ok-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ok);flex-shrink:0;font-weight:700;}
+
+/* ── SECTIONS ── */
+.section{padding:80px 32px;}
+.section-inner{max-width:1040px;margin:0 auto;}
+.section-eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:12px;}
+.section-title{font-family:'DM Serif Display',serif;font-size:clamp(28px,4vw,42px);color:var(--text);line-height:1.15;margin-bottom:16px;}
+.section-sub{font-size:15px;color:var(--muted);line-height:1.7;max-width:560px;}
+
+/* ── HOW IT WORKS ── */
+.how-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:24px;margin-top:48px;}
+.how-card{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:28px 24px;position:relative;transition:all 0.2s;}
+.how-card:hover{border-color:var(--blue);box-shadow:0 4px 20px rgba(26,46,108,0.1);transform:translateY(-2px);}
+.how-num{font-family:'DM Serif Display',serif;font-size:48px;color:var(--blue-light);line-height:1;margin-bottom:16px;display:block;}
+.how-icon{font-size:28px;margin-bottom:14px;}
+.how-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);margin-bottom:8px;}
+.how-desc{font-size:13px;color:var(--muted);line-height:1.65;}
+.how-connector{display:none;}
+
+/* ── COURSES ── */
+.courses-section{background:var(--blue);padding:80px 32px;}
+.courses-inner{max-width:1040px;margin:0 auto;}
+.courses-title{font-family:'DM Serif Display',serif;font-size:clamp(28px,4vw,42px);color:var(--white);margin-bottom:8px;}
+.courses-sub{font-size:15px;color:rgba(255,255,255,0.65);margin-bottom:48px;}
+.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.course-pill{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:14px;padding:20px 22px;transition:all 0.2s;}
+.course-pill:hover{background:rgba(255,255,255,0.14);border-color:rgba(255,255,255,0.3);}
+.course-pill-num{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber);margin-bottom:8px;}
+.course-pill-title{font-family:'DM Serif Display',serif;font-size:19px;color:var(--white);margin-bottom:6px;line-height:1.25;}
+.course-pill-desc{font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;margin-bottom:14px;}
+.course-pill-meta{display:flex;gap:10px;flex-wrap:wrap;}
+.course-pill-tag{display:inline-flex;align-items:center;background:rgba(255,255,255,0.1);border-radius:6px;padding:3px 9px;font-size:11px;color:rgba(255,255,255,0.7);}
+.course-pill-lock{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:rgba(255,255,255,0.4);margin-top:10px;}
+
+/* ── CONTACT ── */
+.contact-section{background:var(--surface);border-top:1px solid var(--border);padding:72px 32px;}
+.contact-inner{max-width:640px;margin:0 auto;text-align:center;}
+.contact-icon{font-size:44px;margin-bottom:20px;}
+.contact-title{font-family:'DM Serif Display',serif;font-size:36px;color:var(--text);margin-bottom:10px;}
+.contact-sub{font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:32px;}
+.contact-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px;}
+.contact-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:20px;text-align:center;transition:all 0.2s;}
+.contact-card:hover{border-color:var(--blue);}
+.contact-card-icon{font-size:24px;margin-bottom:8px;}
+.contact-card-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.contact-card-val{font-size:14px;font-weight:600;color:var(--blue);}
+.contact-note{font-size:12px;color:var(--dim);line-height:1.6;}
+
+/* ── FOOTER ── */
+footer{background:var(--blue);padding:32px;text-align:center;}
+.footer-brand{font-family:'DM Serif Display',serif;font-size:18px;color:var(--white);margin-bottom:6px;}
+.footer-sub{font-size:12px;color:rgba(255,255,255,0.45);}
+.footer-links{display:flex;gap:20px;justify-content:center;margin-top:16px;flex-wrap:wrap;}
+.footer-link{font-size:12px;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.15s;}
+.footer-link:hover{color:rgba(255,255,255,0.85);}
+
+/* ── MOBILE ── */
+@media(max-width:600px){
+  nav{padding:0 18px;}
+  .nav-name{font-size:14px;}
+  .nav-sub{display:none;}
+  .hero{padding:72px 20px 64px;}
+  .features-strip{padding:0;}
+  .feature-item{padding:14px 18px;border-right:none !important;border-bottom:1px solid var(--border);}
+  .features-inner{flex-direction:column;align-items:flex-start;}
+  .section{padding:56px 20px;}
+  .courses-section{padding:56px 20px;}
+  .contact-section{padding:56px 20px;}
+  .contact-cards{grid-template-columns:1fr;}
+  footer{padding:24px 20px;}
+}
+@media(max-width:400px){
+  .nav-actions .btn-outline{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="index.html">
+    <div class="nav-icon">♪</div>
+    <div>
+      <div class="nav-name">Catholic Music Academy</div>
+      <div class="nav-sub">Online Learning Portal</div>
+    </div>
+  </a>
+  <div class="nav-actions">
+    <a class="btn btn-outline" href="apply.html">Apply</a>
+    <a class="btn btn-primary" href="login.html">Student Login</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow"><span class="hero-eyebrow-dot"></span>Diocese of Warri · Ozoro, Delta State</div>
+  <h1 class="hero-title">Sacred Music.<br><em>Professional Learning.</em></h1>
+  <p class="hero-sub">Access your courses, track your progress, complete assessments, and continue your studies — from anywhere.</p>
+  <div class="hero-buttons">
+    <a class="btn btn-primary-lg" href="login.html">Student Login →</a>
+    <a class="btn btn-ghost-lg" href="apply.html">Apply for a Programme</a>
+  </div>
+  <div class="hero-scroll"><span class="hero-scroll-arrow">↓</span>Learn more</div>
+</section>
+
+<!-- FEATURES STRIP -->
+<div class="features-strip">
+  <div class="features-inner">
+    <div class="feature-item"><span class="feature-check">✓</span>Structured Courses</div>
+    <div class="feature-item"><span class="feature-check">✓</span>Video Lessons</div>
+    <div class="feature-item"><span class="feature-check">✓</span>Audio Resources</div>
+    <div class="feature-item"><span class="feature-check">✓</span>Assessments</div>
+    <div class="feature-item"><span class="feature-check">✓</span>Progress Tracking</div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:0;">
+      <div class="section-eyebrow" style="text-align:center;">Your Learning Journey</div>
+      <div class="section-title" style="text-align:center;margin-left:auto;margin-right:auto;">How the Academy works</div>
+      <div class="section-sub" style="margin:0 auto;text-align:center;">A structured path from application to certification, designed around your life as a Catholic musician.</div>
+    </div>
+    <div class="how-grid">
+      <div class="how-card">
+        <span class="how-icon">📋</span>
+        <div class="how-title">Apply</div>
+        <div class="how-desc">Submit your application with your musical background and programme of interest. The Academy reviews and approves enrolments on a cohort basis.</div>
+      </div>
+      <div class="how-card">
+        <span class="how-icon">🔑</span>
+        <div class="how-title">Get Access</div>
+        <div class="how-desc">Once approved, you receive your login credentials and are enrolled in your first course. Your cohort deadline is set and your learning begins.</div>
+      </div>
+      <div class="how-card">
+        <span class="how-icon">📖</span>
+        <div class="how-title">Learn</div>
+        <div class="how-desc">Work through modules in order. Each module contains video lessons, audio examples, reading notes, and downloadable sheet music and PDFs.</div>
+      </div>
+      <div class="how-card">
+        <span class="how-icon">✍</span>
+        <div class="how-title">Assess</div>
+        <div class="how-desc">Complete a module assessment after each lesson. Questions are drawn randomly from a question bank — you must score 100% to advance.</div>
+      </div>
+      <div class="how-card">
+        <span class="how-icon">🎓</span>
+        <div class="how-title">Earn Certification</div>
+        <div class="how-desc">After completing all online modules, sit your final in-person examination. Pass it and receive your Catholic Music Academy certificate.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section class="courses-section">
+  <div class="courses-inner">
+    <div class="section-eyebrow" style="color:var(--amber);">Programmes Offered</div>
+    <div class="courses-title">Six courses. One calling.</div>
+    <div class="courses-sub">Complete courses sequentially. Each builds on the last, forming a complete education in Catholic sacred music.</div>
+    <div class="courses-grid">
+      <div class="course-pill">
+        <div class="course-pill-num">Course 01</div>
+        <div class="course-pill-title">Theory of Ancient Music</div>
+        <div class="course-pill-desc">Trace the origins of music from ancient civilisations through medieval sacred traditions to the emergence of modern harmony.</div>
+        <div class="course-pill-meta"><span class="course-pill-tag">3 Modules</span><span class="course-pill-tag">~4 hrs</span></div>
+      </div>
+      <div class="course-pill">
+        <div class="course-pill-num">Course 02</div>
+        <div class="course-pill-title">Liturgical Music Theology</div>
+        <div class="course-pill-desc">The theological foundations of sacred music in Catholic worship, from the Council of Trent to Vatican II.</div>
+        <div class="course-pill-meta"><span class="course-pill-tag">4 Modules</span><span class="course-pill-tag">~5 hrs</span></div>
+        <div class="course-pill-lock">🔒 Complete Course 01 to unlock</div>
+      </div>
+      <div class="course-pill">
+        <div class="course-pill-num">Course 03</div>
+        <div class="course-pill-title">Choral Leadership</div>
+        <div class="course-pill-desc">Skills to lead, coordinate, and inspire a choir from rehearsal through to Sunday Mass performance.</div>
+        <div class="course-pill-meta"><span class="course-pill-tag">5 Modules</span><span class="course-pill-tag">~6 hrs</span></div>
+        <div class="course-pill-lock">🔒 Sequential enrolment</div>
+      </div>
+      <div class="course-pill">
+        <div class="course-pill-num">Course 04</div>
+        <div class="course-pill-title">The Choirmaster's Craft</div>
+        <div class="course-pill-desc">A practical guide to the role: voice training, score reading, liturgical planning, and administration.</div>
+        <div class="course-pill-meta"><span class="course-pill-tag">4 Modules</span><span class="course-pill-tag">~5 hrs</span></div>
+        <div class="course-pill-lock">🔒 Sequential enrolment</div>
+      </div>
+      <div class="course-pill">
+        <div class="course-pill-num">Course 05</div>
+        <div class="course-pill-title">Sacred Music Composition</div>
+        <div class="course-pill-desc">Compose original hymns and Mass settings covering melody, harmony, text setting, and liturgical appropriateness.</div>
+        <div class="course-pill-meta"><span class="course-pill-tag">6 Modules</span><span class="course-pill-tag">~8 hrs</span></div>
+        <div class="course-pill-lock">🔒 Sequential enrolment</div>
+      </div>
+      <div class="course-pill">
+        <div class="course-pill-num">Course 06</div>
+        <div class="course-pill-title">Voice &amp; Instrument Proficiency</div>
+        <div class="course-pill-desc">Technical foundations in vocal production and instrumental accompaniment for liturgical settings.</div>
+        <div class="course-pill-meta"><span class="course-pill-tag">4 Modules</span><span class="course-pill-tag">~5 hrs</span></div>
+        <div class="course-pill-lock">🔒 Sequential enrolment</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section">
+  <div class="contact-inner">
+    <div class="contact-icon">✉️</div>
+    <div class="contact-title">Need assistance?</div>
+    <div class="contact-sub">Contact the Academy if you need help with your application, login access, course queries, or any technical issues.</div>
+    <div class="contact-cards">
+      <div class="contact-card">
+        <div class="contact-card-icon">📧</div>
+        <div class="contact-card-label">Email</div>
+        <div class="contact-card-val">info@catholicmusicacademy.org</div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-card-icon">📞</div>
+        <div class="contact-card-label">Phone / WhatsApp</div>
+        <div class="contact-card-val">Contact the Academy</div>
+      </div>
+    </div>
+    <div class="contact-note">The Academy is based in the Diocese of Warri, Ozoro, Delta State, Nigeria.<br>Response times are typically within 1–2 working days.</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Catholic Music Academy</div>
+  <div class="footer-sub">Online Learning Portal · Diocese of Warri, Ozoro, Delta State</div>
+  <div class="footer-links">
+    <a class="footer-link" href="login.html">Student Login</a>
+    <a class="footer-link" href="apply.html">Apply</a>
+    <a class="footer-link" href="admin.html">Admin</a>
+  </div>
+</footer>
+
+</body>
+</html>

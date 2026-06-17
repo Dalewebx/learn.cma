@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Apply — Catholic Music Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --blue:#1A2E6C;--blue-mid:#2B47A8;--blue-light:#EEF2FF;--blue-pale:#F0F4FF;
+  --amber:#F59E0B;--amber-light:#FEF3C7;--amber-dark:#D97706;
+  --text:#0F172A;--muted:#64748B;--dim:#94A3B8;--border:#E2E8F0;
+  --surface:#F8FAFC;--white:#FFFFFF;--ok:#16A34A;--ok-light:#DCFCE7;
+  --danger:#DC2626;--danger-light:#FEE2E2;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+/* NAV */
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:100;}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-icon{width:36px;height:36px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--white);flex-shrink:0;}
+.nav-name{font-family:'DM Serif Display',serif;font-size:17px;color:var(--blue);}
+.nav-sub{font-size:10px;color:var(--muted);letter-spacing:0.4px;margin-top:1px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:all 0.18s;text-decoration:none;}
+.btn-outline{background:none;border:1.5px solid var(--border);color:var(--text);padding:9px 20px;font-size:13px;}
+.btn-outline:hover{border-color:var(--blue);color:var(--blue);}
+.btn-primary{background:var(--blue);color:var(--white);padding:14px 32px;font-size:15px;border-radius:11px;width:100%;}
+.btn-primary:hover{background:var(--blue-mid);}
+.btn-primary:disabled{opacity:0.45;cursor:not-allowed;}
+
+/* PAGE HEADER */
+.page-head{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-mid) 100%);padding:56px 32px 52px;text-align:center;}
+.page-head-eyebrow{font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:12px;}
+.page-head-title{font-family:'DM Serif Display',serif;font-size:clamp(30px,5vw,48px);color:var(--white);margin-bottom:10px;line-height:1.1;}
+.page-head-sub{font-size:15px;color:rgba(255,255,255,0.68);line-height:1.65;max-width:480px;margin:0 auto;}
+
+/* LAYOUT */
+.apply-body{max-width:760px;margin:0 auto;padding:40px 24px 64px;}
+
+/* STEPS INDICATOR */
+.steps{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:36px;}
+.step{display:flex;align-items:center;gap:8px;}
+.step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;transition:all 0.2s;}
+.step-num.active{background:var(--blue);color:var(--white);}
+.step-num.done{background:var(--ok);color:var(--white);}
+.step-num.pending{background:var(--border);color:var(--muted);}
+.step-label{font-size:12px;font-weight:600;color:var(--muted);}
+.step-label.active{color:var(--blue);}
+.step-label.done{color:var(--ok);}
+.step-connector{width:40px;height:2px;background:var(--border);margin:0 8px;flex-shrink:0;transition:background 0.3s;}
+.step-connector.done{background:var(--ok);}
+
+/* CARD */
+.card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:20px;}
+.card-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:6px;}
+.card-sub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.55;}
+
+/* FORM */
+.field{margin-bottom:20px;}
+.field:last-child{margin-bottom:0;}
+.field-label{font-size:12px;font-weight:700;color:var(--text);display:block;margin-bottom:6px;letter-spacing:0.2px;}
+.field-label .req{color:var(--danger);}
+.field-input,.field-select,.field-textarea{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 15px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;background:var(--white);}
+.field-input:focus,.field-select:focus,.field-textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,46,108,0.07);}
+.field-input::placeholder,.field-textarea::placeholder{color:var(--dim);}
+.field-textarea{min-height:90px;resize:vertical;}
+.field-hint{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.5;}
+.field-err{font-size:11px;color:var(--danger);margin-top:4px;display:none;}
+.field-input.invalid,.field-select.invalid,.field-textarea.invalid{border-color:var(--danger);}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.field-group{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:20px;}
+.field-group-title{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+
+/* PROGRAMME CARDS */
+.prog-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.prog-option{border:1.5px solid var(--border);border-radius:11px;padding:14px 16px;cursor:pointer;transition:all 0.15s;position:relative;}
+.prog-option:hover{border-color:var(--blue-mid);}
+.prog-option.selected{border-color:var(--blue);background:var(--blue-pale);}
+.prog-option input{position:absolute;opacity:0;pointer-events:none;}
+.prog-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:var(--white);flex-shrink:0;float:right;transition:all 0.15s;}
+.prog-option.selected .prog-check{background:var(--blue);border-color:var(--blue);}
+.prog-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;padding-right:24px;}
+.prog-meta{font-size:11px;color:var(--muted);}
+
+/* BACKGROUND RADIO */
+.bg-opts{display:flex;flex-direction:column;gap:8px;}
+.bg-opt{display:flex;align-items:center;gap:10px;padding:11px 15px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.15s;}
+.bg-opt:hover{border-color:var(--blue-mid);}
+.bg-opt.selected{border-color:var(--blue);background:var(--blue-pale);}
+.bg-radio{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.bg-opt.selected .bg-radio{border-color:var(--blue);background:var(--blue);}
+.bg-radio-dot{width:6px;height:6px;border-radius:50%;background:white;display:none;}
+.bg-opt.selected .bg-radio-dot{display:block;}
+.bg-opt-text{font-size:13px;color:var(--text);}
+
+/* RECEIPT UPLOAD */
+.upload-box{border:2px dashed var(--border);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--surface);}
+.upload-box:hover,.upload-box.over{border-color:var(--blue);background:var(--blue-pale);}
+.upload-box.has-file{border-color:var(--ok);background:var(--ok-light);border-style:solid;}
+.upload-icon{font-size:32px;margin-bottom:10px;}
+.upload-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.upload-sub{font-size:12px;color:var(--muted);}
+.upload-file-name{font-size:13px;font-weight:600;color:var(--ok);margin-top:8px;}
+#fileInput{display:none;}
+
+/* ALERT */
+.alert{border-radius:10px;padding:14px 18px;font-size:13px;margin-bottom:20px;display:flex;align-items:flex-start;gap:10px;line-height:1.55;}
+.alert-info{background:var(--blue-light);color:var(--blue);border:1px solid #C7D2FE;}
+.alert-warn{background:var(--amber-light);color:var(--amber-dark);border:1px solid #FDE68A;}
+.alert-ok{background:var(--ok-light);color:var(--ok);border:1px solid #86EFAC;}
+.alert-danger{background:var(--danger-light);color:var(--danger);border:1px solid #FECACA;}
+
+/* SUCCESS SCREEN */
+.success-wrap{text-align:center;padding:48px 24px;}
+.success-icon{font-size:64px;margin-bottom:20px;}
+.success-title{font-family:'DM Serif Display',serif;font-size:36px;color:var(--text);margin-bottom:10px;}
+.success-sub{font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:28px;max-width:460px;margin-left:auto;margin-right:auto;}
+.success-ref{display:inline-block;background:var(--blue-pale);border:1px solid var(--border);border-radius:10px;padding:10px 20px;font-size:13px;font-weight:700;color:var(--blue);margin-bottom:28px;letter-spacing:0.5px;}
+.next-steps{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:24px 28px;text-align:left;margin-bottom:28px;}
+.next-steps-title{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+.next-step-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--surface);}
+.next-step-item:last-child{border-bottom:none;}
+.ns-num{width:24px;height:24px;border-radius:50%;background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.ns-text{font-size:13px;color:var(--text);line-height:1.55;}
+
+/* MOBILE */
+@media(max-width:600px){
+  nav{padding:0 16px;}
+  .nav-sub{display:none;}
+  .page-head{padding:44px 20px 40px;}
+  .apply-body{padding:28px 16px 56px;}
+  .card{padding:22px;}
+  .field-row{grid-template-columns:1fr;}
+  .prog-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="index.html">
+    <div class="nav-icon">♪</div>
+    <div>
+      <div class="nav-name">Catholic Music Academy</div>
+      <div class="nav-sub">Online Learning Portal</div>
+    </div>
+  </a>
+  <div>
+    <a class="btn btn-outline" href="login.html">Student Login</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-head">
+  <div class="page-head-eyebrow">Admissions</div>
+  <div class="page-head-title">Apply for a Programme</div>
+  <div class="page-head-sub">Complete this form to apply. The Academy will review your application and contact you within 1–2 working days.</div>
+</div>
+
+<!-- BODY -->
+<div class="apply-body">
+
+  <!-- STEPS -->
+  <div class="steps" id="stepsEl">
+    <div class="step">
+      <div class="step-num active" id="sn1">1</div>
+      <div class="step-label active" id="sl1">Personal Info</div>
+    </div>
+    <div class="step-connector" id="sc1"></div>
+    <div class="step">
+      <div class="step-num pending" id="sn2">2</div>
+      <div class="step-label" id="sl2">Programme</div>
+    </div>
+    <div class="step-connector" id="sc2"></div>
+    <div class="step">
+      <div class="step-num pending" id="sn3">3</div>
+      <div class="step-label" id="sl3">Background</div>
+    </div>
+    <div class="step-connector" id="sc3"></div>
+    <div class="step">
+      <div class="step-num pending" id="sn4">4</div>
+      <div class="step-label" id="sl4">Review &amp; Submit</div>
+    </div>
+  </div>
+
+  <!-- STEP 1: PERSONAL -->
+  <div id="step1">
+    <div class="card">
+      <div class="card-title">Personal Information</div>
+      <div class="card-sub">Please provide accurate details. These will be used to set up your student account if your application is approved.</div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">First Name <span class="req">*</span></label>
+          <input class="field-input" id="firstName" type="text" placeholder="e.g. Chidinma"/>
+          <div class="field-err" id="err-firstName">Please enter your first name.</div>
+        </div>
+        <div class="field">
+          <label class="field-label">Last Name <span class="req">*</span></label>
+          <input class="field-input" id="lastName" type="text" placeholder="e.g. Okafor"/>
+          <div class="field-err" id="err-lastName">Please enter your last name.</div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Email Address <span class="req">*</span></label>
+        <input class="field-input" id="email" type="email" placeholder="yourname@example.com"/>
+        <div class="field-hint">Your login credentials will be sent to this address if approved.</div>
+        <div class="field-err" id="err-email">Please enter a valid email address.</div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Phone Number <span class="req">*</span></label>
+          <input class="field-input" id="phone" type="tel" placeholder="e.g. 08012345678"/>
+          <div class="field-err" id="err-phone">Please enter your phone number.</div>
+        </div>
+        <div class="field">
+          <label class="field-label">WhatsApp Number</label>
+          <input class="field-input" id="whatsapp" type="tel" placeholder="If different from phone"/>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Diocese / Parish <span class="req">*</span></label>
+          <input class="field-input" id="diocese" type="text" placeholder="e.g. Diocese of Warri"/>
+          <div class="field-err" id="err-diocese">Please enter your diocese or parish.</div>
+        </div>
+        <div class="field">
+          <label class="field-label">State <span class="req">*</span></label>
+          <select class="field-select" id="state">
+            <option value="">Select state...</option>
+            <option>Delta</option><option>Edo</option><option>Lagos</option>
+            <option>Abuja (FCT)</option><option>Anambra</option><option>Imo</option>
+            <option>Enugu</option><option>Rivers</option><option>Bayelsa</option>
+            <option>Cross River</option><option>Akwa Ibom</option><option>Abia</option>
+            <option>Ebonyi</option><option>Ondo</option><option>Oyo</option>
+            <option>Osun</option><option>Ogun</option><option>Kwara</option>
+            <option>Kogi</option><option>Benue</option><option>Plateau</option>
+            <option>Nassarawa</option><option>Niger</option><option>Taraba</option>
+            <option>Adamawa</option><option>Gombe</option><option>Bauchi</option>
+            <option>Kano</option><option>Kaduna</option><option>Sokoto</option>
+            <option>Kebbi</option><option>Zamfara</option><option>Katsina</option>
+            <option>Jigawa</option><option>Yobe</option><option>Borno</option>
+            <option>Outside Nigeria</option>
+          </select>
+          <div class="field-err" id="err-state">Please select your state.</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="goStep(2)">Continue →</button>
+  </div>
+
+  <!-- STEP 2: PROGRAMME -->
+  <div id="step2" style="display:none;">
+    <div class="card">
+      <div class="card-title">Programme of Interest</div>
+      <div class="card-sub">Select the course you'd like to enrol in. New students begin with Course 01. Subsequent courses are unlocked sequentially upon completion.</div>
+      <div class="alert alert-info">ℹ️ All students begin with <strong>Theory of Ancient Music (Course 01)</strong>. You may indicate a long-term interest below.</div>
+      <div class="field" style="margin-bottom:0;">
+        <label class="field-label">Select your starting course <span class="req">*</span></label>
+        <div class="prog-grid" id="progGrid">
+          <div class="prog-option selected" onclick="selectProg(this,'Course 01 — Theory of Ancient Music')">
+            <input type="radio" name="programme" checked/>
+            <div class="prog-check">✓</div>
+            <div class="prog-title">Course 01</div>
+            <div class="prog-meta">Theory of Ancient Music · Recommended for new students</div>
+          </div>
+          <div class="prog-option" onclick="selectProg(this,'Course 02 — Liturgical Music Theology')">
+            <input type="radio" name="programme"/>
+            <div class="prog-check">✓</div>
+            <div class="prog-title">Course 02</div>
+            <div class="prog-meta">Liturgical Music Theology</div>
+          </div>
+          <div class="prog-option" onclick="selectProg(this,'Course 03 — Choral Leadership')">
+            <input type="radio" name="programme"/>
+            <div class="prog-check">✓</div>
+            <div class="prog-title">Course 03</div>
+            <div class="prog-meta">Choral Leadership</div>
+          </div>
+          <div class="prog-option" onclick="selectProg(this,'Course 04 — The Choirmaster\'s Craft')">
+            <input type="radio" name="programme"/>
+            <div class="prog-check">✓</div>
+            <div class="prog-title">Course 04</div>
+            <div class="prog-meta">The Choirmaster's Craft</div>
+          </div>
+          <div class="prog-option" onclick="selectProg(this,'Course 05 — Sacred Music Composition')">
+            <input type="radio" name="programme"/>
+            <div class="prog-check">✓</div>
+            <div class="prog-title">Course 05</div>
+            <div class="prog-meta">Sacred Music Composition</div>
+          </div>
+          <div class="prog-option" onclick="selectProg(this,'Course 06 — Voice & Instrument Proficiency')">
+            <input type="radio" name="programme"/>
+            <div class="prog-check">✓</div>
+            <div class="prog-title">Course 06</div>
+            <div class="prog-meta">Voice & Instrument Proficiency</div>
+          </div>
+        </div>
+        <div class="field-err" id="err-prog" style="margin-top:8px;">Please select a programme.</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-outline" style="flex:1;" onclick="goStep(1)">← Back</button>
+      <button class="btn btn-primary" style="flex:2;" onclick="goStep(3)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: BACKGROUND -->
+  <div id="step3" style="display:none;">
+    <div class="card">
+      <div class="card-title">Musical Background</div>
+      <div class="card-sub">Help us understand your current level so we can support you appropriately.</div>
+
+      <div class="field">
+        <label class="field-label">How would you describe your musical experience? <span class="req">*</span></label>
+        <div class="bg-opts" id="bgOpts">
+          <div class="bg-opt selected" onclick="selectBg(this,'No formal training — I sing in church but have not studied music')">
+            <div class="bg-radio"><div class="bg-radio-dot"></div></div>
+            <div class="bg-opt-text">No formal training — I sing in church but have not studied music</div>
+          </div>
+          <div class="bg-opt" onclick="selectBg(this,'Basic training — I have attended some music workshops or classes')">
+            <div class="bg-radio"><div class="bg-radio-dot"></div></div>
+            <div class="bg-opt-text">Basic training — I have attended some music workshops or classes</div>
+          </div>
+          <div class="bg-opt" onclick="selectBg(this,'Intermediate — I read music notation and have led or sung in a formal choir')">
+            <div class="bg-radio"><div class="bg-radio-dot"></div></div>
+            <div class="bg-opt-text">Intermediate — I read music notation and have led or sung in a formal choir</div>
+          </div>
+          <div class="bg-opt" onclick="selectBg(this,'Advanced — I have formal qualifications in music or extensive professional experience')">
+            <div class="bg-radio"><div class="bg-radio-dot"></div></div>
+            <div class="bg-opt-text">Advanced — I have formal qualifications in music or extensive professional experience</div>
+          </div>
+        </div>
+        <div class="field-err" id="err-bg">Please select your musical background.</div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Current role in your parish or choir</label>
+        <input class="field-input" id="role" type="text" placeholder="e.g. Choir member, Choirmaster, Organist, Music Director"/>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Why are you applying to the Catholic Music Academy? <span class="req">*</span></label>
+        <textarea class="field-textarea" id="motivation" placeholder="Tell us what motivated you to apply and what you hope to gain from this programme..."></textarea>
+        <div class="field-err" id="err-motivation">Please tell us why you are applying.</div>
+      </div>
+
+      <div class="field" style="margin-bottom:0;">
+        <label class="field-label">Any additional information?</label>
+        <textarea class="field-textarea" id="extra" placeholder="Anything else you'd like the Academy to know..." style="min-height:70px;"></textarea>
+      </div>
+    </div>
+
+    <!-- PAYMENT RECEIPT -->
+    <div class="card">
+      <div class="card-title">Payment Receipt</div>
+      <div class="card-sub">If you have already made payment, please upload your receipt here. If not, the Academy will provide payment details upon review of your application.</div>
+      <div class="alert alert-info">ℹ️ Payment details will be communicated to you after your application is reviewed. Receipt upload is optional at this stage.</div>
+      <div class="upload-box" id="uploadBox" onclick="document.getElementById('fileInput').click()" ondragover="uploadDragOver(event)" ondrop="uploadDrop(event)" ondragleave="uploadDragLeave(event)">
+        <div class="upload-icon">📄</div>
+        <div class="upload-title">Upload receipt (optional)</div>
+        <div class="upload-sub">Click to browse or drag and drop · PDF, JPG, PNG · Max 5MB</div>
+        <div class="upload-file-name" id="uploadFileName"></div>
+      </div>
+      <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(this)"/>
+    </div>
+
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-outline" style="flex:1;" onclick="goStep(2)">← Back</button>
+      <button class="btn btn-primary" style="flex:2;" onclick="goStep(4)">Review Application →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: REVIEW -->
+  <div id="step4" style="display:none;">
+    <div class="card">
+      <div class="card-title">Review Your Application</div>
+      <div class="card-sub">Please confirm all details are correct before submitting.</div>
+      <div id="reviewContent"></div>
+    </div>
+    <div class="alert alert-warn">⚠️ By submitting this application you confirm that the information provided is accurate and that you are applying for admission to the Catholic Music Academy, Diocese of Warri.</div>
+    <div id="submitErr"></div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-outline" style="flex:1;" onclick="goStep(3)">← Edit</button>
+      <button class="btn btn-primary" id="submitBtn" style="flex:2;" onclick="submitApplication()">Submit Application →</button>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div id="stepSuccess" style="display:none;">
+    <div class="card">
+      <div class="success-wrap">
+        <div class="success-icon">✅</div>
+        <div class="success-title">Application Submitted</div>
+        <div class="success-sub">Thank you for applying to the Catholic Music Academy. Your application has been received and is awaiting review by the admissions team.</div>
+        <div class="success-ref" id="successRef">REF: CMA-000000</div>
+        <div class="next-steps">
+          <div class="next-steps-title">What happens next</div>
+          <div class="next-step-item"><div class="ns-num">1</div><div class="ns-text"><strong>Review (1–2 working days)</strong> — The Academy reviews your application and musical background.</div></div>
+          <div class="next-step-item"><div class="ns-num">2</div><div class="ns-text"><strong>Approval &amp; payment</strong> — If approved, you'll receive payment details and an acceptance notice by email or WhatsApp.</div></div>
+          <div class="next-step-item"><div class="ns-num">3</div><div class="ns-text"><strong>Account creation</strong> — Once payment is confirmed, your login credentials are created and sent to your email.</div></div>
+          <div class="next-step-item"><div class="ns-num">4</div><div class="ns-text"><strong>Begin learning</strong> — Log in and start your first module. Your cohort deadline will be communicated at this point.</div></div>
+        </div>
+        <a class="btn btn-outline" href="index.html" style="margin-right:10px;">← Back to Home</a>
+        <a class="btn btn-primary" href="login.html" style="display:inline-flex;width:auto;padding:14px 28px;">Student Login</a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /apply-body -->
+
+<script>
+var currentStep = 1;
+var selectedProg = 'Course 01 — Theory of Ancient Music';
+var selectedBg = 'No formal training — I sing in church but have not studied music';
+var selectedFile = null;
+
+function goStep(n) {
+  if (n > currentStep && !validateStep(currentStep)) return;
+  currentStep = n;
+  [1,2,3,4].forEach(function(i){
+    document.getElementById('step'+i).style.display = i===n ? 'block' : 'none';
+  });
+  document.getElementById('stepSuccess').style.display = 'none';
+  updateStepUI(n);
+  if (n===4) buildReview();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateStepUI(n) {
+  [1,2,3,4].forEach(function(i){
+    var num = document.getElementById('sn'+i);
+    var lbl = document.getElementById('sl'+i);
+    var con = document.getElementById('sc'+i);
+    if (!num) return;
+    num.className = 'step-num ' + (i < n ? 'done' : i===n ? 'active' : 'pending');
+    num.textContent = i < n ? '✓' : i;
+    lbl.className = 'step-label ' + (i < n ? 'done' : i===n ? 'active' : '');
+    if (con) con.className = 'step-connector' + (i < n ? ' done' : '');
+  });
+}
+
+function validateStep(n) {
+  var ok = true;
+  function check(id, errId, condition) {
+    var val = condition !== undefined ? condition : document.getElementById(id).value.trim();
+    var err = document.getElementById(errId);
+    var el = document.getElementById(id);
+    if (!val) {
+      if (err) err.style.display = 'block';
+      if (el) el.classList.add('invalid');
+      ok = false;
+    } else {
+      if (err) err.style.display = 'none';
+      if (el) el.classList.remove('invalid');
+    }
+  }
+  if (n===1) {
+    check('firstName','err-firstName');
+    check('lastName','err-lastName');
+    var em = document.getElementById('email').value.trim();
+    var emErr = document.getElementById('err-email');
+    if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) {
+      emErr.style.display='block'; document.getElementById('email').classList.add('invalid'); ok=false;
+    } else { emErr.style.display='none'; document.getElementById('email').classList.remove('invalid'); }
+    check('phone','err-phone');
+    check('diocese','err-diocese');
+    check('state','err-state');
+  }
+  if (n===2) {
+    if (!selectedProg) { document.getElementById('err-prog').style.display='block'; ok=false; }
+    else { document.getElementById('err-prog').style.display='none'; }
+  }
+  if (n===3) {
+    if (!selectedBg) { document.getElementById('err-bg').style.display='block'; ok=false; }
+    else { document.getElementById('err-bg').style.display='none'; }
+    check('motivation','err-motivation');
+  }
+  return ok;
+}
+
+function selectProg(el, val) {
+  document.querySelectorAll('.prog-option').forEach(function(p){ p.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedProg = val;
+  document.getElementById('err-prog').style.display='none';
+}
+
+function selectBg(el, val) {
+  document.querySelectorAll('.bg-opt').forEach(function(b){ b.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedBg = val;
+  document.getElementById('err-bg').style.display='none';
+}
+
+function handleFileSelect(input) {
+  if (input.files && input.files[0]) {
+    selectedFile = input.files[0];
+    showFileSelected(selectedFile.name);
+  }
+}
+function uploadDragOver(e) { e.preventDefault(); document.getElementById('uploadBox').classList.add('over'); }
+function uploadDragLeave(e) { document.getElementById('uploadBox').classList.remove('over'); }
+function uploadDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadBox').classList.remove('over');
+  if (e.dataTransfer.files[0]) { selectedFile = e.dataTransfer.files[0]; showFileSelected(selectedFile.name); }
+}
+function showFileSelected(name) {
+  var box = document.getElementById('uploadBox');
+  box.classList.add('has-file');
+  box.querySelector('.upload-icon').textContent = '📎';
+  box.querySelector('.upload-title').textContent = 'File attached';
+  document.getElementById('uploadFileName').textContent = name;
+}
+
+function buildReview() {
+  var f = v => document.getElementById(v) ? document.getElementById(v).value.trim() : '';
+  var html = reviewRow('Full Name', f('firstName') + ' ' + f('lastName'))
+    + reviewRow('Email', f('email'))
+    + reviewRow('Phone', f('phone'))
+    + reviewRow('WhatsApp', f('whatsapp') || '—')
+    + reviewRow('Diocese / Parish', f('diocese'))
+    + reviewRow('State', f('state'))
+    + reviewRow('Programme', selectedProg)
+    + reviewRow('Musical Background', selectedBg)
+    + reviewRow('Current Role', f('role') || '—')
+    + reviewRow('Motivation', f('motivation'))
+    + reviewRow('Payment Receipt', selectedFile ? selectedFile.name : 'Not uploaded');
+  document.getElementById('reviewContent').innerHTML = '<div style="display:flex;flex-direction:column;gap:0;">' + html + '</div>';
+}
+function reviewRow(label, val) {
+  return '<div style="display:flex;gap:16px;padding:10px 0;border-bottom:1px solid var(--surface);flex-wrap:wrap;">'
+    + '<div style="font-size:12px;font-weight:700;color:var(--muted);width:140px;flex-shrink:0;padding-top:1px;">' + label + '</div>'
+    + '<div style="font-size:13px;color:var(--text);flex:1;line-height:1.55;">' + val + '</div>'
+    + '</div>';
+}
+
+function submitApplication() {
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+  // Generate reference number
+  var ref = 'CMA-' + Date.now().toString().slice(-6);
+  // Save to localStorage for admin to see (Phase A; in Phase B this POSTs to Vercel function)
+  try {
+    var apps = JSON.parse(localStorage.getItem('cma_applications') || '[]');
+    apps.unshift({
+      ref: ref,
+      firstName: document.getElementById('firstName').value.trim(),
+      lastName: document.getElementById('lastName').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      phone: document.getElementById('phone').value.trim(),
+      whatsapp: document.getElementById('whatsapp').value.trim(),
+      diocese: document.getElementById('diocese').value.trim(),
+      state: document.getElementById('state').value,
+      programme: selectedProg,
+      background: selectedBg,
+      role: document.getElementById('role').value.trim(),
+      motivation: document.getElementById('motivation').value.trim(),
+      extra: document.getElementById('extra').value.trim(),
+      receipt: selectedFile ? selectedFile.name : null,
+      status: 'pending',
+      submittedAt: new Date().toISOString()
+    });
+    localStorage.setItem('cma_applications', JSON.stringify(apps));
+  } catch(e){}
+  // Simulate network delay then show success
+  setTimeout(function() {
+    [1,2,3,4].forEach(function(i){ document.getElementById('step'+i).style.display='none'; });
+    document.getElementById('stepSuccess').style.display = 'block';
+    document.getElementById('successRef').textContent = 'REF: ' + ref;
+    document.getElementById('stepsEl').style.display = 'none';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }, 1200);
+}
+</script>
+</body>
+</html>
