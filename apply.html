@@ -558,11 +558,35 @@ function buildReview() {
 
 async function submitApplication() {
   var btn = document.getElementById('submitBtn');
-  btn.disabled = true; btn.textContent = 'Submitting...';
+  btn.disabled = true; btn.textContent = 'Uploading receipt...';
   try {
     var ref = 'CMA-' + Date.now().toString().slice(-6);
     var pwHash = await hashPassword(document.getElementById('password').value);
     var wapp = v('whatsapp') || v('phone');
+
+    // Upload receipt to Supabase Storage
+    var receiptPath = null;
+    if (selectedFile) {
+      btn.textContent = 'Uploading receipt...';
+      var ext = selectedFile.name.split('.').pop();
+      receiptPath = ref + '_receipt.' + ext;
+      var uploadRes = await fetch(SUPA_URL + '/storage/v1/object/receipts/' + receiptPath, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPA_KEY,
+          'Authorization': 'Bearer ' + SUPA_KEY,
+          'Content-Type': selectedFile.type || 'application/octet-stream',
+          'x-upsert': 'true'
+        },
+        body: selectedFile
+      });
+      if (!uploadRes.ok) {
+        var errText = await uploadRes.text();
+        throw new Error('Receipt upload failed: ' + errText);
+      }
+    }
+
+    btn.textContent = 'Submitting application...';
     await sbPost('applications', {
       ref: ref,
       first_name: v('firstName'),
@@ -576,9 +600,11 @@ async function submitApplication() {
       role_in_parish: v('role'),
       motivation: v('motivation'),
       receipt_name: selectedFile ? selectedFile.name : null,
+      receipt_path: receiptPath,
       password_hash: pwHash,
       status: 'pending'
     });
+
     [1,2,3,4].forEach(i => document.getElementById('step'+i).style.display='none');
     document.getElementById('stepSuccess').style.display='block';
     document.getElementById('successRef').textContent = 'REF: ' + ref;
