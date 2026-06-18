@@ -3,15 +3,20 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
-<title>Catholic Music Academy · Student Login</title>
+<title>Catholic Music Academy · Student Portal</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDxwYXRoIGQ9Ik03IDQgTDI1IDQgTDI1IDIyIFExNiAyOCA3IDIyIFoiIGZpbGw9IiMxQTJFNkMiLz4KICA8cGF0aCBkPSJNNyA0IEwyNSA0IEwyNSAyMiBRMTYgMjggNyAyMiBaIiBmaWxsPSJub25lIiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxyZWN0IHg9IjE0LjUiIHk9IjciIHdpZHRoPSIzIiBoZWlnaHQ9IjEyIiByeD0iMSIgZmlsbD0iI0M5QTg0QyIvPgogIDxyZWN0IHg9IjkiIHk9IjExIiB3aWR0aD0iMTQiIGhlaWdodD0iMyIgcng9IjEiIGZpbGw9IiNDOUE4NEMiLz4KICA8bGluZSB4MT0iMTAiIHkxPSIyMCIgeDI9IjIyIiB5Mj0iMjAiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIwLjgiIG9wYWNpdHk9IjAuNyIvPgogIDxsaW5lIHgxPSIxMCIgeTE9IjIyLjUiIHgyPSIyMiIgeTI9IjIyLjUiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIwLjgiIG9wYWNpdHk9IjAuNyIvPgo8L3N2Zz4="/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDxwYXRoIGQ9Ik03IDQgTDI1IDQgTDI1IDIyIFExNiAyOCA3IDIyIFoiIGZpbGw9IiMxQTJFNkMiLz4KICA8cGF0aCBkPSJNNyA0IEwyNSA0IEwyNSAyMiBRMTYgMjggNyAyMiBaIiBmaWxsPSJub25lIiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxyZWN0IHg9IjE0LjUiIHk9IjciIHdpZHRoPSIzIiBoZWlnaHQ9IjEyIiByeD0iMSIgZmlsbD0iI0M5QTg0QyIvPgogIDxyZWN0IHg9IjkiIHk9IjExIiB3aWR0aD0iMTQiIGhlaWdodD0iMyIgcng9IjEiIGZpbGw9IiNDOUE4NEMiLz4KICA8bGluZSB4MT0iMTAiIHkxPSIyMCIgeDI9IjIyIiB5Mj0iMjAiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIwLjgiIG9wYWNpdHk9IjAuNyIvPgogIDxsaW5lIHgxPSIxMCIgeTE9IjIyLjUiIHgyPSIyMiIgeTI9IjIyLjUiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIwLjgiIG9wYWNpdHk9IjAuNyIvPgo8L3N2Zz4="/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --blue:#1A2E6C;--blue-mid:#2B47A8;--blue-light:#EEF2FF;--blue-pale:#F0F4FF;
-  --amber:#F59E0B;--amber-light:#FEF3C7;--amber-dark:#D97706;
+  --blue:#1A2E6C;--blue-mid:#2B47A8;--blue-light:#EEF2FF;--blue-pale:#F4F6FF;
+  --navy:#0D1B3E;--navy-mid:#1A2E6C;--navy-light:#EEF2FF;--navy-pale:#F4F6FF;
+  --gold:#C9A84C;--gold-light:#F5E6C0;--gold-dark:#9A7A2E;
+  --amber:#C9A84C;--amber-light:#F5E6C0;--amber-dark:#9A7A2E;
+  --cream:#FAFAF7;
   --text:#0F172A;--muted:#64748B;--dim:#94A3B8;--border:#E2E8F0;
-  --surface:#F8FAFC;--white:#FFFFFF;--ok:#16A34A;--ok-light:#DCFCE7;
+  --surface:#FAFAF7;--white:#FFFFFF;--ok:#16A34A;--ok-light:#DCFCE7;
   --danger:#DC2626;--danger-light:#FEE2E2;
 }
 html{scroll-behavior:smooth;}
@@ -31,32 +36,32 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
 .btn-logout{background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
 .btn-logout:hover{border-color:var(--danger);color:var(--danger);}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:all 0.18s;text-decoration:none;}
-.btn-primary{background:var(--blue);color:var(--white);padding:13px 28px;font-size:14px;}
-.btn-primary:hover{background:var(--blue-mid);}
+.btn-primary{background:var(--navy);color:var(--white);padding:13px 28px;font-size:14px;}
+.btn-primary:hover{background:var(--navy-mid);}
 .btn-primary:disabled{opacity:0.4;cursor:not-allowed;}
 .btn-secondary{background:var(--white);border:1.5px solid var(--border);color:var(--text);padding:11px 22px;font-size:13px;}
 .btn-secondary:hover{border-color:var(--blue);color:var(--blue);}
-.btn-amber{background:var(--amber);color:var(--white);padding:13px 28px;font-size:14px;}
-.btn-amber:hover{background:var(--amber-dark);}
+.btn-amber{background:var(--gold);color:var(--navy);padding:13px 28px;font-size:14px;font-weight:700;}
+.btn-amber:hover{background:var(--gold-dark);color:white;}
 .login-page{min-height:100vh;display:flex;}
-.login-left{flex:1;background:var(--blue);display:none;flex-direction:column;justify-content:center;padding:64px;}
+.login-left{flex:1;background:var(--navy);display:none;flex-direction:column;justify-content:center;padding:64px;}
 .login-right{flex:1;display:flex;align-items:center;justify-content:center;padding:32px;}
 .login-card{width:100%;max-width:420px;}
 .login-logo{display:flex;align-items:center;gap:10px;margin-bottom:36px;}
-.login-logo-icon{width:44px;height:44px;background:var(--blue);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--white);}
-.login-logo-name{font-family:'DM Serif Display',serif;font-size:20px;color:var(--blue);}
+.login-logo-icon{width:44px;height:44px;background:var(--navy);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--white);}
+.login-logo-name{font-family:'DM Serif Display',serif;font-size:20px;color:var(--navy);}
 .login-logo-sub{font-size:11px;color:var(--muted);}
 .login-title{font-family:'DM Serif Display',serif;font-size:32px;color:var(--text);margin-bottom:6px;line-height:1.15;}
 .login-sub{font-size:14px;color:var(--muted);margin-bottom:32px;line-height:1.6;}
 .field-label{font-size:12px;font-weight:600;color:var(--text);display:block;margin-bottom:6px;}
 .field-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:13px 16px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;background:var(--white);margin-bottom:16px;}
-.field-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,46,108,0.08);}
+.field-input:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(13,27,62,0.08);}
 .field-input::placeholder{color:var(--dim);}
 .login-err{font-size:12px;color:var(--danger);background:var(--danger-light);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:none;}
 .pass-wrap{position:relative;margin-bottom:16px;}
 .pass-wrap .field-input{margin-bottom:0;}
 .pass-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:4px;}
-.dash-header{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-mid) 100%);padding:52px 32px 48px;color:var(--white);}
+.dash-header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);padding:52px 32px 48px;color:var(--white);}
 .dash-eyebrow{font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;opacity:0.7;margin-bottom:10px;}
 .dash-name{font-family:'DM Serif Display',serif;font-size:40px;margin-bottom:6px;line-height:1.1;}
 .dash-sub{font-size:15px;opacity:0.75;font-weight:300;}
@@ -64,7 +69,7 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
 .dash-section-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:18px;}
 .course-card{background:var(--white);border:1.5px solid var(--border);border-radius:16px;overflow:hidden;max-width:580px;cursor:pointer;transition:all 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.04);}
 .course-card:hover{border-color:var(--blue);box-shadow:0 4px 20px rgba(26,46,108,0.12);transform:translateY(-2px);}
-.course-card-band{height:6px;background:linear-gradient(90deg,var(--blue),var(--amber));}
+.course-card-band{height:6px;background:linear-gradient(90deg,var(--navy-mid),var(--gold));}
 .course-card-body{padding:24px 28px;}
 .course-status-pill{display:inline-flex;align-items:center;gap:6px;background:var(--ok-light);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--ok);margin-bottom:14px;}
 .course-card-num{font-size:11px;font-weight:600;color:var(--blue);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
@@ -79,13 +84,13 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
 .breadcrumb a:hover{text-decoration:underline;}
 .breadcrumb-sep{color:var(--dim);}
 .course-header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;}
-.course-tag{display:inline-flex;align-items:center;gap:5px;background:var(--amber-light);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--amber-dark);letter-spacing:0.5px;margin-bottom:10px;}
+.course-tag{display:inline-flex;align-items:center;gap:5px;background:var(--gold-light);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--gold-dark);letter-spacing:0.5px;margin-bottom:10px;}
 .course-h1{font-family:'DM Serif Display',serif;font-size:36px;color:var(--text);line-height:1.15;margin-bottom:8px;}
 .course-desc{font-size:14px;color:var(--muted);line-height:1.65;max-width:560px;}
 .course-progress-card{background:var(--blue-pale);border-radius:14px;padding:20px 24px;min-width:200px;}
 .cpc-label{font-size:11px;font-weight:600;color:var(--blue);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
 .cpc-bar-bg{height:6px;background:var(--border);border-radius:6px;overflow:hidden;margin-bottom:8px;}
-.cpc-bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--amber));border-radius:6px;transition:width 0.5s ease;}
+.cpc-bar-fill{height:100%;background:linear-gradient(90deg,var(--navy-mid),var(--gold));border-radius:6px;transition:width 0.5s ease;}
 .cpc-text{font-size:12px;color:var(--muted);}
 .modules-wrap{padding:32px;}
 .modules-heading{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:20px;}
@@ -94,7 +99,7 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
 .module-card.mc-active:hover{border-color:var(--blue-mid);box-shadow:0 4px 16px rgba(26,46,108,0.14);transform:translateY(-1px);}
 .module-card.mc-done-card{border-color:rgba(22,163,74,0.3);background:var(--ok-light);}
 .module-card.mc-locked{opacity:0.4;cursor:not-allowed;background:var(--surface);border-color:var(--border);}
-.mc-num{width:56px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:20px;color:white;flex-shrink:0;}
+.mc-num{width:56px;background:var(--navy);display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:20px;color:white;flex-shrink:0;}
 .mc-num.mc-done{background:var(--ok);}
 .mc-locked .mc-num{background:var(--dim);}
 .mc-body{flex:1;padding:18px 20px;}
@@ -108,12 +113,12 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
 .mc-arrow{display:flex;align-items:center;padding:0 18px;color:var(--blue);font-size:20px;font-weight:700;}
 .module-page{max-width:780px;margin:0 auto;padding:40px 32px;}
 .module-h1{font-family:'DM Serif Display',serif;font-size:38px;color:var(--text);line-height:1.15;margin-bottom:16px;}
-.read-timer{background:var(--amber-light);border:1px solid #FDE68A;border-radius:10px;padding:14px 16px;margin-bottom:24px;}
+.read-timer{background:var(--gold-light);border:1px solid #E8D08A;border-radius:10px;padding:14px 16px;margin-bottom:24px;}
 .rt-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-.rt-msg{font-size:13px;color:var(--amber-dark);font-weight:700;}
-.rt-sub{font-size:12px;color:var(--amber-dark);opacity:0.8;margin-bottom:8px;line-height:1.4;}
+.rt-msg{font-size:13px;color:var(--gold-dark);font-weight:700;}
+.rt-sub{font-size:12px;color:var(--gold-dark);opacity:0.8;margin-bottom:8px;line-height:1.4;}
 .rt-bar-bg{height:5px;background:rgba(0,0,0,0.1);border-radius:4px;overflow:hidden;}
-.rt-bar{height:100%;background:var(--amber-dark);border-radius:4px;width:0%;transition:width 1s linear;}
+.rt-bar{height:100%;background:var(--gold-dark);border-radius:4px;width:0%;transition:width 1s linear;}
 .rt-unlocked{background:var(--ok-light);border-color:#86EFAC;}
 .rt-unlocked .rt-msg,.rt-unlocked .rt-sub{color:var(--ok);}
 .rt-unlocked .rt-bar{background:var(--ok);}
@@ -140,7 +145,7 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
 .content-area strong{color:var(--blue);font-weight:600;}
 .content-area em{font-style:italic;}
 .quiz-card{border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:24px;}
-.quiz-card-header{background:var(--blue);padding:20px 24px;color:var(--white);}
+.quiz-card-header{background:var(--navy);padding:20px 24px;color:var(--white);}
 .qch-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
 .qch-title{font-family:'DM Serif Display',serif;font-size:20px;}
 .qch-sub{font-size:12px;opacity:0.75;margin-top:3px;}
@@ -200,17 +205,30 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
 </head>
 <body>
 
-<div class="topbar" id="topbar" style="display:none;">
-  <div class="brand" onclick="goDash()">
-    <div class="brand-icon">♪</div>
-    <div class="brand-text">
-      <div class="brand-name">Catholic Music Academy</div>
-      <div class="brand-sub">Online Learning Platform</div>
+<div class="topbar" id="topbar" style="display:none;background:var(--white);border-bottom:1px solid var(--border);padding:0 28px;height:64px;display:none;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;gap:16px;">
+  <div style="display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;min-width:0;flex:1;" onclick="goDash()">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="42" height="42" aria-hidden="true" style="flex-shrink:0;">
+  <rect width="48" height="48" rx="10" fill="#0D1B3E"/>
+  <path d="M24 5 L41 5 L41 32 Q24 43 7 32 L7 5 Z" fill="#1A2E6C"/>
+  <path d="M24 7 L39 7 L39 31 Q24 41 9 31 L9 7 Z" fill="none" stroke="#C9A84C" stroke-width="1.2"/>
+  <rect x="22" y="10" width="4" height="16" rx="1.2" fill="#C9A84C"/>
+  <rect x="14" y="16" width="20" height="4" rx="1.2" fill="#C9A84C"/>
+  <line x1="16" y1="32" x2="32" y2="32" stroke="#C9A84C" stroke-width="0.9" opacity="0.7"/>
+  <line x1="16" y1="35" x2="32" y2="35" stroke="#C9A84C" stroke-width="0.9" opacity="0.7"/>
+  <ellipse cx="20" cy="32" rx="2.5" ry="1.8" fill="#C9A84C" opacity="0.85"/>
+  <ellipse cx="28" cy="32" rx="2.5" ry="1.8" fill="#C9A84C" opacity="0.85"/>
+</svg>
+    <div style="min-width:0;overflow:hidden;">
+      <div style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Catholic Music Academy</div>
+      <div style="font-size:10px;color:var(--muted);letter-spacing:0.5px;margin-top:1px;">Excellence in Sacred Arts</div>
     </div>
   </div>
-  <div class="topbar-right">
-    <div class="chip"><div class="chip-dot"></div><span id="topbarName">Student</span></div>
-    <button class="btn-logout" onclick="logout()">Sign out</button>
+  <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+    <div style="display:inline-flex;align-items:center;gap:6px;background:var(--navy-light);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--navy);font-weight:500;white-space:nowrap;">
+      <div style="width:7px;height:7px;border-radius:50%;background:var(--ok);flex-shrink:0;"></div>
+      <span id="topbarName">Student</span>
+    </div>
+    <button onclick="logout()" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--danger)';this.style.color='var(--danger)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">Sign out</button>
   </div>
 </div>
 
@@ -227,7 +245,17 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
     <div class="login-right">
       <div class="login-card">
         <div class="login-logo">
-          <div class="login-logo-icon">♪</div>
+          <div class="login-logo-icon" style="display:flex;align-items:center;justify-content:center;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="42" height="42" aria-hidden="true" style="flex-shrink:0;">
+  <rect width="48" height="48" rx="10" fill="#0D1B3E"/>
+  <path d="M24 5 L41 5 L41 32 Q24 43 7 32 L7 5 Z" fill="#1A2E6C"/>
+  <path d="M24 7 L39 7 L39 31 Q24 41 9 31 L9 7 Z" fill="none" stroke="#C9A84C" stroke-width="1.2"/>
+  <rect x="22" y="10" width="4" height="16" rx="1.2" fill="#C9A84C"/>
+  <rect x="14" y="16" width="20" height="4" rx="1.2" fill="#C9A84C"/>
+  <line x1="16" y1="32" x2="32" y2="32" stroke="#C9A84C" stroke-width="0.9" opacity="0.7"/>
+  <line x1="16" y1="35" x2="32" y2="35" stroke="#C9A84C" stroke-width="0.9" opacity="0.7"/>
+  <ellipse cx="20" cy="32" rx="2.5" ry="1.8" fill="#C9A84C" opacity="0.85"/>
+  <ellipse cx="28" cy="32" rx="2.5" ry="1.8" fill="#C9A84C" opacity="0.85"/>
+</svg></div>
           <div>
             <div class="login-logo-name">Catholic Music Academy</div>
             <div class="login-logo-sub">Online Learning Platform</div>
