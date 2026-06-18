@@ -695,32 +695,61 @@ function renderOtherCourses() {
   }).join('');
 }
 
-// ── LOAD MODULES FROM SUPABASE course_content ────────────────────────────────
-// Fetches the published modules for the student's enrolled course from the DB.
-// Falls back to ALL_COURSES static content if DB has nothing (e.g. Course 01).
-async function loadModulesFromDB(course) {
-  if (!course) return [];
+// ── LOAD COURSE + MODULES FROM SUPABASE ──────────────────────────────────────
+// Single source of truth. Matches student.programme against course_content.course_title.
+// Falls back to ALL_COURSES only for Course 01 hardcoded content when DB is empty.
+async function loadCourseAndModulesFromDB(programmeStr) {
+  var result = { course: null, modules: [] };
   try {
-    // Match course_id stored in course_content — we use the course title to find it
-    // course_content rows have course_title that matches e.g. "Course 01: Theory of Ancient Music"
-    // We fetch all published rows and match by course title containing the course code
-    var code = course.code || ''; // e.g. "Course 01"
     var res = await fetch(
-      SUPA_URL + '/rest/v1/course_content?published=eq.true&order=module_index.asc',
+      SUPA_URL + '/rest/v1/course_content?published=eq.true&order=course_order.asc,module_index.asc',
       { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
     );
-    if (!res.ok) throw new Error('DB error');
+    if (!res.ok) throw new Error('fetch failed');
     var rows = await res.json();
-    // Filter rows that belong to this course — match by course_title containing the code
-    var courseRows = rows.filter(function(r) {
-      return r.course_title && r.course_title.toLowerCase().indexOf(code.toLowerCase()) !== -1;
+    if (!rows.length) throw new Error('no published content');
+
+    var prog = (programmeStr || '').trim();
+
+    // Group rows by course_id
+    var courseMap = {};
+    rows.forEach(function(r) {
+      if (!courseMap[r.course_id]) {
+        courseMap[r.course_id] = { title: r.course_title, color: r.course_color, id: r.course_id, rows: [] };
+      }
+      courseMap[r.course_id].rows.push(r);
     });
-    if (!courseRows.length) {
-      // Fall back to static ALL_COURSES content
-      return course.modules || [];
+
+    // Find matching course — exact title match first, then partial
+    var matchedGroup = null;
+    var courseIds = Object.keys(courseMap);
+    for (var i = 0; i < courseIds.length; i++) {
+      var g = courseMap[courseIds[i]];
+      if (g.title && g.title.trim() === prog) { matchedGroup = g; break; }
     }
-    // Map DB rows → module objects matching the portal's expected shape
-    return courseRows.map(function(r) {
+    if (!matchedGroup) {
+      for (var j = 0; j < courseIds.length; j++) {
+        var g2 = courseMap[courseIds[j]];
+        if (g2.title && (prog.toLowerCase().indexOf(g2.title.toLowerCase()) !== -1 ||
+            g2.title.toLowerCase().indexOf(prog.toLowerCase()) !== -1)) {
+          matchedGroup = g2; break;
+        }
+      }
+    }
+    if (!matchedGroup) throw new Error('no matching course for: ' + prog);
+
+    result.course = {
+      id: matchedGroup.id,
+      code: matchedGroup.title,
+      title: matchedGroup.title,
+      tag: '\u266a Sacred Music',
+      desc: 'Delivered by the Catholic Music Academy, Diocese of Warri.',
+      moduleCount: matchedGroup.rows.length,
+      duration: '~' + (matchedGroup.rows.length * 60) + ' min',
+      modules: []
+    };
+
+    result.modules = matchedGroup.rows.map(function(r) {
       var questions = [];
       try { questions = JSON.parse(typeof r.questions === 'string' ? r.questions : '[]'); } catch(e){}
       var audio = [];
@@ -738,11 +767,17 @@ async function loadModulesFromDB(course) {
         pool: questions
       };
     });
+
+    return result;
   } catch(e) {
-    // Graceful fallback — use static content
-    return (course && course.modules) ? course.modules : [];
+    // Fallback to ALL_COURSES static data
+    var staticCourse = getCourseFromProgramme(programmeStr);
+    result.course = staticCourse;
+    result.modules = staticCourse ? (staticCourse.modules || []) : [];
+    return result;
   }
 }
+
 
 async function doLogin() {
   var emailEl = document.getElementById('loginEmail');
@@ -799,10 +834,11 @@ async function doLogin() {
       clearRememberMe();
     }
 
-    // 7. Set state — load course from Supabase course_content, fall back to ALL_COURSES
+    // 7. Set state — load course + modules from Supabase, fall back to ALL_COURSES
     currentStudent = student;
-    CURRENT_COURSE = getCourseFromProgramme(student.programme);
-    MODULES = await loadModulesFromDB(CURRENT_COURSE);
+    var dbResult = await loadCourseAndModulesFromDB(student.programme);
+    CURRENT_COURSE = dbResult.course || getCourseFromProgramme(student.programme);
+    MODULES = dbResult.modules;
 
     // 8. Load progress
     await loadProgress();
@@ -1203,13 +1239,14 @@ function clearRememberMe() {
     var cb = document.getElementById('rememberMe');
     if (cb) cb.checked = true;
   }
-  // Restore session if active — and reload modules from DB
+  // Restore session if active — reload course + modules fresh from DB
   var session = loadSession();
   if (session && session.student && session.student.status === 'active') {
     currentStudent = session.student;
-    CURRENT_COURSE = getCourseFromProgramme(session.student.programme);
-    // Re-load modules from DB so any newly published content is picked up
-    MODULES = await loadModulesFromDB(CURRENT_COURSE);
+    // Re-load from DB so any admin changes (new modules, edits) are always fresh
+    var dbResult = await loadCourseAndModulesFromDB(session.student.programme);
+    CURRENT_COURSE = dbResult.course || getCourseFromProgramme(session.student.programme);
+    MODULES = dbResult.modules;
     completedModules = session.completedModules || [];
     // Re-fetch progress from DB to stay current
     await loadProgress().catch(function(){});
