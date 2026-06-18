@@ -522,8 +522,21 @@ function validateStep(n) {
   }
   if (n===1) {
     req('firstName','err-firstName'); req('lastName','err-lastName');
-    req('phone','err-phone'); req('country','err-country'); req('state','err-state');
-    req('securityQuestion','err-securityQuestion'); req('securityAnswer','err-securityAnswer');
+    req('phone','err-phone');
+    req('securityQuestion','err-securityQuestion');
+    req('securityAnswer','err-securityAnswer');
+    var cEl = document.getElementById('country');
+    var cErr = document.getElementById('err-country');
+    if (!cEl || !cEl.value) {
+      if (cErr) cErr.style.display='block';
+      if (cEl) cEl.classList.add('invalid');
+      ok = false;
+    } else {
+      if (cErr) cErr.style.display='none';
+      if (cEl) cEl.classList.remove('invalid');
+    }
+    var sf = document.getElementById('stateField');
+    if (sf && sf.style.display !== 'none') { req('state','err-state'); }
     var em = document.getElementById('email').value.trim();
     var emErr = document.getElementById('err-email');
     if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) {
@@ -855,7 +868,17 @@ function onStateChange() {
   }
 }
 
-// Run on page load
+// Populate countries synchronously first so dropdown is ready immediately
+(function(){
+  var sel = document.getElementById("country");
+  if (sel && sel.options.length <= 1 && typeof COUNTRIES !== "undefined") {
+    COUNTRIES.forEach(function(c){
+      var opt = document.createElement("option");
+      opt.value = c.name; opt.textContent = c.name;
+      sel.appendChild(opt);
+    });
+  }
+})();
 detectLocation();
 
 async function submitApplication() {
@@ -899,6 +922,7 @@ async function submitApplication() {
       whatsapp: wapp,
       security_question: v('securityQuestion'),
       security_answer_hash: ansHash,
+      country: (document.getElementById('country')||{}).value || null,
       state: v('state'),
       lga: v('lga') || null,
       programme: selectedProg,
