@@ -373,16 +373,18 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
         </div>
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
           <input type="checkbox" id="rememberMe" style="width:16px;height:16px;accent-color:var(--navy);cursor:pointer;"/>
-          <label for="rememberMe" style="font-size:12px;color:var(--muted);cursor:pointer;user-select:none;">Remember my email</label>
+          <label for="rememberMe" style="font-size:12px;color:var(--muted);cursor:pointer;user-select:none;">Remember me</label>
         </div>
         <div class="login-err" id="loginErr"></div>
         <button class="btn btn-primary" id="loginBtn" style="width:100%;font-size:15px;padding:15px;" onclick="doLogin()">Sign in →</button>
-        <div style="text-align:center;margin-top:18px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap;">
-          <a href="index.html" style="font-size:12px;color:var(--muted);text-decoration:none;" onmouseover="this.style.color='var(--navy)'" onmouseout="this.style.color='var(--muted)'">← Home</a>
-          <span style="font-size:12px;color:var(--dim);">·</span>
+        <div style="text-align:center;margin-top:18px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;">
           <a href="forgot-password.html" style="font-size:12px;color:var(--muted);text-decoration:none;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--muted)'">Forgot password?</a>
           <span style="font-size:12px;color:var(--dim);">·</span>
-          <a href="index.html" style="font-size:12px;color:var(--muted);text-decoration:none;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--muted)'">← Back to home</a>
+          <a href="index.html" style="font-size:12px;color:var(--muted);text-decoration:none;" onmouseover="this.style.color='var(--navy)'" onmouseout="this.style.color='var(--muted)'">← Home</a>
+        </div>
+        <div style="margin-top:22px;padding-top:18px;border-top:1px solid var(--border);text-align:center;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">New to Catholic Music Academy?</div>
+          <a href="apply.html" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--gold-light);border:1.5px solid var(--gold);border-radius:9px;padding:10px 24px;font-size:13px;font-weight:700;color:var(--gold-dark);text-decoration:none;transition:all 0.15s;" onmouseover="this.style.background='var(--gold)';this.style.color='var(--navy)';" onmouseout="this.style.background='var(--gold-light)';this.style.color='var(--gold-dark)';">Apply for Admission →</a>
         </div>
       </div>
     </div>
@@ -693,6 +695,55 @@ function renderOtherCourses() {
   }).join('');
 }
 
+// ── LOAD MODULES FROM SUPABASE course_content ────────────────────────────────
+// Fetches the published modules for the student's enrolled course from the DB.
+// Falls back to ALL_COURSES static content if DB has nothing (e.g. Course 01).
+async function loadModulesFromDB(course) {
+  if (!course) return [];
+  try {
+    // Match course_id stored in course_content — we use the course title to find it
+    // course_content rows have course_title that matches e.g. "Course 01: Theory of Ancient Music"
+    // We fetch all published rows and match by course title containing the course code
+    var code = course.code || ''; // e.g. "Course 01"
+    var res = await fetch(
+      SUPA_URL + '/rest/v1/course_content?published=eq.true&order=module_index.asc',
+      { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
+    );
+    if (!res.ok) throw new Error('DB error');
+    var rows = await res.json();
+    // Filter rows that belong to this course — match by course_title containing the code
+    var courseRows = rows.filter(function(r) {
+      return r.course_title && r.course_title.toLowerCase().indexOf(code.toLowerCase()) !== -1;
+    });
+    if (!courseRows.length) {
+      // Fall back to static ALL_COURSES content
+      return course.modules || [];
+    }
+    // Map DB rows → module objects matching the portal's expected shape
+    return courseRows.map(function(r) {
+      var questions = [];
+      try { questions = JSON.parse(typeof r.questions === 'string' ? r.questions : '[]'); } catch(e){}
+      var audio = [];
+      try { audio = JSON.parse(typeof r.audio_tracks === 'string' ? r.audio_tracks : '[]'); } catch(e){}
+      var downloads = [];
+      try { downloads = JSON.parse(typeof r.downloads === 'string' ? r.downloads : '[]'); } catch(e){}
+      return {
+        num: 'Module ' + String(r.module_index + 1).padStart(2, '0'),
+        title: r.module_title || ('Module ' + (r.module_index + 1)),
+        duration: '~60 min',
+        videoUrl: r.video_url || '',
+        audioTracks: audio,
+        downloads: downloads,
+        content: r.reading_html || '<p>Content coming soon.</p>',
+        pool: questions
+      };
+    });
+  } catch(e) {
+    // Graceful fallback — use static content
+    return (course && course.modules) ? course.modules : [];
+  }
+}
+
 async function doLogin() {
   var emailEl = document.getElementById('loginEmail');
   var passEl  = document.getElementById('loginPass');
@@ -740,15 +791,26 @@ async function doLogin() {
       body: JSON.stringify({ last_login: new Date().toISOString() })
     }).catch(function(){});
 
-    // 6. Set state
+    // 6. Handle Remember Me
+    var rememberCb = document.getElementById('rememberMe');
+    if (rememberCb && rememberCb.checked) {
+      saveRememberMe(email, pass);
+    } else {
+      clearRememberMe();
+    }
+
+    // 7. Set state — load course from Supabase course_content, fall back to ALL_COURSES
     currentStudent = student;
     CURRENT_COURSE = getCourseFromProgramme(student.programme);
-    MODULES = CURRENT_COURSE ? (CURRENT_COURSE.modules || []) : [];
+    MODULES = await loadModulesFromDB(CURRENT_COURSE);
 
-    // 7. Load progress
+    // 8. Load progress
     await loadProgress();
 
-    // 8. Update UI
+    // 9. Save session (so refresh survives)
+    saveSession(student, CURRENT_COURSE, completedModules);
+
+    // 10. Update UI
     document.getElementById('topbar').style.display = 'flex';
     document.getElementById('topbarName').textContent = student.first_name;
     document.getElementById('dashName').textContent = 'Welcome back, ' + student.first_name + '.';
@@ -757,11 +819,11 @@ async function doLogin() {
       if (!el || !CURRENT_COURSE) return;
       if (isHtml) el.innerHTML = val; else el.textContent = val;
     };
-    safeSet('enrolledCourseNum', CURRENT_COURSE.code + ' of 6');
+    safeSet('enrolledCourseNum', CURRENT_COURSE.code + ' of ' + ALL_COURSES.length);
     safeSet('enrolledCourseTitle', CURRENT_COURSE.title);
     safeSet('enrolledCourseDesc', CURRENT_COURSE.desc);
     safeSet('enrolledCourseMeta',
-      '📖 ' + CURRENT_COURSE.moduleCount + ' Modules &nbsp;·&nbsp; ⏱ ' + CURRENT_COURSE.duration +
+      '📖 ' + (MODULES.length || CURRENT_COURSE.moduleCount) + ' Modules &nbsp;·&nbsp; ⏱ ' + CURRENT_COURSE.duration +
       ' &nbsp;·&nbsp; ✍ Assessment per module &nbsp;·&nbsp; 🎓 Final exam (in-person)', true);
 
     history.replaceState({ screen: 'dash' }, '', '#dash');
@@ -1107,41 +1169,52 @@ function loadSession() {
     var raw = localStorage.getItem('cma_session');
     if (!raw) return null;
     var s = JSON.parse(raw);
-    // Expire after 8 hours of inactivity
+    // Expire after 30 days
     if (Date.now() - s.savedAt > 30 * 24 * 60 * 60 * 1000) { clearSession(); return null; }
     return s;
   } catch(e){ return null; }
 }
 
-// Remember Me — save email to localStorage
-function saveRememberMe(email) {
-  try { localStorage.setItem('cma_remember_email', email); } catch(e){}
+// Remember Me — save email + password
+function saveRememberMe(email, password) {
+  try {
+    localStorage.setItem('cma_remember', JSON.stringify({email: email, password: password}));
+  } catch(e){}
 }
-function getRememberedEmail() {
-  try { return localStorage.getItem('cma_remember_email') || ''; } catch(e){ return ''; }
+function getRemembered() {
+  try { return JSON.parse(localStorage.getItem('cma_remember') || 'null'); } catch(e){ return null; }
 }
 function clearRememberMe() {
-  try { localStorage.removeItem('cma_remember_email'); } catch(e){}
+  try { localStorage.removeItem('cma_remember'); } catch(e){}
 }
 
-(function(){
+(async function(){
   // Reveal body (was hidden to prevent flash)
   document.body.classList.remove('loading');
-  // Pre-fill remembered email
-  var remembered = getRememberedEmail();
-  if (remembered) {
-    var el = document.getElementById('loginEmail');
-    if (el) el.value = remembered;
+  // Pre-fill remembered credentials
+  var remembered = getRemembered();
+  if (remembered && remembered.email) {
+    var emailEl = document.getElementById('loginEmail');
+    if (emailEl) emailEl.value = remembered.email;
+    if (remembered.password) {
+      var passEl = document.getElementById('loginPass');
+      if (passEl) passEl.value = remembered.password;
+    }
     var cb = document.getElementById('rememberMe');
     if (cb) cb.checked = true;
   }
-  // Restore session if active
+  // Restore session if active — and reload modules from DB
   var session = loadSession();
   if (session && session.student && session.student.status === 'active') {
     currentStudent = session.student;
     CURRENT_COURSE = getCourseFromProgramme(session.student.programme);
-    MODULES = CURRENT_COURSE ? (CURRENT_COURSE.modules || []) : [];
+    // Re-load modules from DB so any newly published content is picked up
+    MODULES = await loadModulesFromDB(CURRENT_COURSE);
     completedModules = session.completedModules || [];
+    // Re-fetch progress from DB to stay current
+    await loadProgress().catch(function(){});
+    // Refresh session timestamp
+    saveSession(currentStudent, CURRENT_COURSE, completedModules);
     document.getElementById('topbar').style.display = 'flex';
     document.getElementById('topbarName').textContent = session.student.first_name;
     document.getElementById('dashName').textContent = 'Welcome back, ' + session.student.first_name + '.';
@@ -1150,11 +1223,11 @@ function clearRememberMe() {
       if (!el || !CURRENT_COURSE) return;
       if (isHtml) el.innerHTML = val; else el.textContent = val;
     };
-    safeSet('enrolledCourseNum', CURRENT_COURSE.code + ' of 6');
+    safeSet('enrolledCourseNum', CURRENT_COURSE.code + ' of ' + ALL_COURSES.length);
     safeSet('enrolledCourseTitle', CURRENT_COURSE.title);
     safeSet('enrolledCourseDesc', CURRENT_COURSE.desc);
     safeSet('enrolledCourseMeta',
-      '📖 '+CURRENT_COURSE.moduleCount+' Modules &nbsp;·&nbsp; ⏱ '+CURRENT_COURSE.duration+
+      '📖 ' + (MODULES.length || CURRENT_COURSE.moduleCount) + ' Modules &nbsp;·&nbsp; ⏱ ' + CURRENT_COURSE.duration +
       ' &nbsp;·&nbsp; ✍ Assessment per module &nbsp;·&nbsp; 🎓 Final exam (in-person)', true);
     renderOtherCourses();
     history.replaceState({screen:'dash'},'','#dash');
