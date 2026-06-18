@@ -439,7 +439,7 @@ function renderApplications() {
       +'<div class="app-meta-item"><div class="app-meta-label">Phone</div><div class="app-meta-val">'+(a.phone||'—')+'</div></div>'
       +'<div class="app-meta-item"><div class="app-meta-label">WhatsApp</div><div class="app-meta-val">'+(a.whatsapp||a.phone||'—')+'</div></div>'
       +'<div class="app-meta-item"><div class="app-meta-label">Background</div><div class="app-meta-val">'+(a.background||'—')+'</div></div>'
-      +'<div class="app-meta-item"><div class="app-meta-label">Receipt</div><div class="app-meta-val">'+(a.receipt_name?'📎 '+a.receipt_name:'Not uploaded')+'</div></div>'
+      +'<div class="app-meta-item"><div class="app-meta-label">Receipt</div><div class="app-meta-val">'+(a.receipt_path?'<button class="btn-ghost" style="font-size:12px;padding:5px 10px;cursor:pointer;" onclick="viewReceipt(\''+a.receipt_path+'\')">📎 View Receipt</button>':(a.receipt_name?'📎 '+a.receipt_name+' (not uploaded)':'Not uploaded'))+'</div></div>'
       +'<div class="app-meta-item"><div class="app-meta-label">Applied</div><div class="app-meta-val">'+fmtDate(a.submitted_at)+'</div></div>'
       +'<div class="app-meta-item"><div class="app-meta-label">Ref</div><div class="app-meta-val">'+a.ref+'</div></div>'
       +'</div>'
@@ -625,6 +625,29 @@ function showToast(msg, type='ok') {
 }
 
 (function(){document.getElementById('adminUser').focus();})();
+
+// ── RECEIPT VIEWER ────────────────────────────────────────────────────────────
+async function viewReceipt(path) {
+  if (!path) { showToast('No receipt file stored.', 'warn'); return; }
+  try {
+    // Generate a signed URL (valid for 60 minutes)
+    var res = await fetch(SUPA_URL + '/storage/v1/object/sign/receipts/' + path, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + SUPA_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ expiresIn: 3600 })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    var data = await res.json();
+    var signedUrl = SUPA_URL + '/storage/v1' + data.signedURL;
+    window.open(signedUrl, '_blank');
+  } catch(e) {
+    showToast('Could not open receipt: ' + e.message, 'err');
+  }
+}
 </script>
 </body>
 </html>
