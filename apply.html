@@ -205,27 +205,25 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px
           <div class="field-err" id="err-passwordConfirm">Passwords do not match.</div>
         </div>
       </div>
-      <div class="field-row">
-        <div class="field">
-          <label class="field-label">State <span class="req">*</span></label>
-          <select class="field-select" id="state">
-            <option value="">Select state...</option>
-            <option>Delta</option><option>Edo</option><option>Lagos</option>
-            <option>Abuja (FCT)</option><option>Anambra</option><option>Imo</option>
-            <option>Enugu</option><option>Rivers</option><option>Bayelsa</option>
-            <option>Cross River</option><option>Akwa Ibom</option><option>Abia</option>
-            <option>Ebonyi</option><option>Ondo</option><option>Oyo</option>
-            <option>Osun</option><option>Ogun</option><option>Kwara</option>
-            <option>Kogi</option><option>Benue</option><option>Plateau</option>
-            <option>Nassarawa</option><option>Niger</option><option>Taraba</option>
-            <option>Adamawa</option><option>Gombe</option><option>Bauchi</option>
-            <option>Kano</option><option>Kaduna</option><option>Sokoto</option>
-            <option>Kebbi</option><option>Zamfara</option><option>Katsina</option>
-            <option>Jigawa</option><option>Yobe</option><option>Borno</option>
-            <option>Outside Nigeria</option>
-          </select>
-          <div class="field-err" id="err-state">Required.</div>
-        </div>
+      <div class="field">
+        <label class="field-label">Country <span class="req">*</span></label>
+        <select class="field-select" id="country" onchange="onCountryChange()">
+          <option value="">Select country...</option>
+        </select>
+        <div class="field-err" id="err-country">Please select your country.</div>
+      </div>
+      <div class="field" id="stateField">
+        <label class="field-label" id="stateLabel">State / Region <span class="req">*</span></label>
+        <select class="field-select" id="state" onchange="onStateChange()">
+          <option value="">Select state / region...</option>
+        </select>
+        <div class="field-err" id="err-state">Please select your state or region.</div>
+      </div>
+      <div class="field" id="lgaField" style="display:none;">
+        <label class="field-label">Local Government Area (optional)</label>
+        <select class="field-select" id="lga">
+          <option value="">Select LGA...</option>
+        </select>
       </div>
     </div>
     <button class="btn btn-primary" onclick="goStep(2)">Continue →</button>
@@ -459,7 +457,7 @@ function validateStep(n) {
   }
   if (n===1) {
     req('firstName','err-firstName'); req('lastName','err-lastName');
-    req('phone','err-phone'); req('state','err-state');
+    req('phone','err-phone'); req('country','err-country'); req('state','err-state');
     var em = document.getElementById('email').value.trim();
     var emErr = document.getElementById('err-email');
     if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) {
@@ -539,7 +537,9 @@ function buildReview() {
     ['Email', v('email')],
     ['Phone', v('phone')],
     ['WhatsApp', v('whatsapp')||'—'],
-    ['State', v('state')],
+    ['Country', v('country')],
+    ['State / Region', v('state')],
+    ['LGA', v('lga') || '—'],
     ['Programme', selectedProg],
     ['Musical Background', selectedBg],
     ['Current Role', v('role')||'—'],
@@ -550,6 +550,170 @@ function buildReview() {
     '<div class="review-row"><div class="review-label">'+l+'</div><div class="review-val">'+val+'</div></div>'
   ).join('');
 }
+
+// ── LOCATION DATA & LOGIC ────────────────────────────────────────────────────
+
+var NIGERIA_STATES = [
+  'Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Benue','Borno',
+  'Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','Gombe','Imo','Jigawa',
+  'Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger',
+  'Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe',
+  'Zamfara','Abuja (FCT)'
+];
+
+var NIGERIA_LGAS = {
+  'Delta':['Aniocha North','Aniocha South','Bomadi','Burutu','Ethiope East','Ethiope West','Ika North East','Ika South','Isoko North','Isoko South','Ndokwa East','Ndokwa West','Okpe','Oshimili North','Oshimili South','Patani','Sapele','Udu','Ughelli North','Ughelli South','Ukwuani','Uvwie','Warri North','Warri South','Warri South West'],
+  'Edo':['Akoko-Edo','Egor','Esan Central','Esan North East','Esan South East','Esan West','Etsako Central','Etsako East','Etsako West','Igueben','Ikpoba-Okha','Orhionmwon','Oredo','Ovia North East','Ovia South West','Owan East','Owan West','Uhunmwonde'],
+  'Anambra':['Aguata','Anambra East','Anambra West','Anaocha','Awka North','Awka South','Ayamelum','Dunukofia','Ekwusigo','Idemili North','Idemili South','Ihiala','Njikoka','Nnewi North','Nnewi South','Ogbaru','Onitsha North','Onitsha South','Orumba North','Orumba South','Oyi'],
+  'Rivers':['Abua/Odual','Ahoada East','Ahoada West','Akuku-Toru','Andoni','Asari-Toru','Bonny','Degema','Eleme','Emohua','Etche','Gokana','Ikwerre','Khana','Obio/Akpor','Ogba/Egbema/Ndoni','Ogu/Bolo','Okrika','Omuma','Opobo/Nkoro','Oyigbo','Port Harcourt','Tai'],
+  'Lagos':['Agege','Ajeromi-Ifelodun','Alimosho','Amuwo-Odofin','Apapa','Badagry','Epe','Eti-Osa','Ibeju-Lekki','Ifako-Ijaiye','Ikeja','Ikorodu','Kosofe','Lagos Island','Lagos Mainland','Mushin','Ojo','Oshodi-Isolo','Shomolu','Surulere']
+};
+
+// Common countries sorted alphabetically, Nigeria always first
+var COUNTRIES = [
+  {code:'NG', name:'Nigeria'},
+  {code:'AF', name:'Afghanistan'},{code:'AL', name:'Albania'},{code:'DZ', name:'Algeria'},
+  {code:'AD', name:'Andorra'},{code:'AO', name:'Angola'},{code:'AG', name:'Antigua and Barbuda'},
+  {code:'AR', name:'Argentina'},{code:'AM', name:'Armenia'},{code:'AU', name:'Australia'},
+  {code:'AT', name:'Austria'},{code:'AZ', name:'Azerbaijan'},{code:'BS', name:'Bahamas'},
+  {code:'BH', name:'Bahrain'},{code:'BD', name:'Bangladesh'},{code:'BB', name:'Barbados'},
+  {code:'BY', name:'Belarus'},{code:'BE', name:'Belgium'},{code:'BZ', name:'Belize'},
+  {code:'BJ', name:'Benin'},{code:'BT', name:'Bhutan'},{code:'BO', name:'Bolivia'},
+  {code:'BA', name:'Bosnia and Herzegovina'},{code:'BW', name:'Botswana'},{code:'BR', name:'Brazil'},
+  {code:'BN', name:'Brunei'},{code:'BG', name:'Bulgaria'},{code:'BF', name:'Burkina Faso'},
+  {code:'BI', name:'Burundi'},{code:'CV', name:'Cabo Verde'},{code:'KH', name:'Cambodia'},
+  {code:'CM', name:'Cameroon'},{code:'CA', name:'Canada'},{code:'CF', name:'Central African Republic'},
+  {code:'TD', name:'Chad'},{code:'CL', name:'Chile'},{code:'CN', name:'China'},
+  {code:'CO', name:'Colombia'},{code:'KM', name:'Comoros'},{code:'CD', name:'Congo (DRC)'},
+  {code:'CG', name:'Congo (Republic)'},{code:'CR', name:'Costa Rica'},{code:'CI', name:'Côte d Ivoire'},
+  {code:'HR', name:'Croatia'},{code:'CU', name:'Cuba'},{code:'CY', name:'Cyprus'},
+  {code:'CZ', name:'Czech Republic'},{code:'DK', name:'Denmark'},{code:'DJ', name:'Djibouti'},
+  {code:'DO', name:'Dominican Republic'},{code:'EC', name:'Ecuador'},{code:'EG', name:'Egypt'},
+  {code:'SV', name:'El Salvador'},{code:'GQ', name:'Equatorial Guinea'},{code:'ER', name:'Eritrea'},
+  {code:'EE', name:'Estonia'},{code:'SZ', name:'Eswatini'},{code:'ET', name:'Ethiopia'},
+  {code:'FJ', name:'Fiji'},{code:'FI', name:'Finland'},{code:'FR', name:'France'},
+  {code:'GA', name:'Gabon'},{code:'GM', name:'Gambia'},{code:'GE', name:'Georgia'},
+  {code:'DE', name:'Germany'},{code:'GH', name:'Ghana'},{code:'GR', name:'Greece'},
+  {code:'GT', name:'Guatemala'},{code:'GN', name:'Guinea'},{code:'GW', name:'Guinea-Bissau'},
+  {code:'GY', name:'Guyana'},{code:'HT', name:'Haiti'},{code:'HN', name:'Honduras'},
+  {code:'HU', name:'Hungary'},{code:'IS', name:'Iceland'},{code:'IN', name:'India'},
+  {code:'ID', name:'Indonesia'},{code:'IR', name:'Iran'},{code:'IQ', name:'Iraq'},
+  {code:'IE', name:'Ireland'},{code:'IL', name:'Israel'},{code:'IT', name:'Italy'},
+  {code:'JM', name:'Jamaica'},{code:'JP', name:'Japan'},{code:'JO', name:'Jordan'},
+  {code:'KZ', name:'Kazakhstan'},{code:'KE', name:'Kenya'},{code:'KW', name:'Kuwait'},
+  {code:'KG', name:'Kyrgyzstan'},{code:'LA', name:'Laos'},{code:'LV', name:'Latvia'},
+  {code:'LB', name:'Lebanon'},{code:'LS', name:'Lesotho'},{code:'LR', name:'Liberia'},
+  {code:'LY', name:'Libya'},{code:'LI', name:'Liechtenstein'},{code:'LT', name:'Lithuania'},
+  {code:'LU', name:'Luxembourg'},{code:'MG', name:'Madagascar'},{code:'MW', name:'Malawi'},
+  {code:'MY', name:'Malaysia'},{code:'MV', name:'Maldives'},{code:'ML', name:'Mali'},
+  {code:'MT', name:'Malta'},{code:'MR', name:'Mauritania'},{code:'MU', name:'Mauritius'},
+  {code:'MX', name:'Mexico'},{code:'MD', name:'Moldova'},{code:'MC', name:'Monaco'},
+  {code:'MN', name:'Mongolia'},{code:'ME', name:'Montenegro'},{code:'MA', name:'Morocco'},
+  {code:'MZ', name:'Mozambique'},{code:'MM', name:'Myanmar'},{code:'NA', name:'Namibia'},
+  {code:'NP', name:'Nepal'},{code:'NL', name:'Netherlands'},{code:'NZ', name:'New Zealand'},
+  {code:'NI', name:'Nicaragua'},{code:'NE', name:'Niger'},{code:'NO', name:'Norway'},
+  {code:'OM', name:'Oman'},{code:'PK', name:'Pakistan'},{code:'PA', name:'Panama'},
+  {code:'PG', name:'Papua New Guinea'},{code:'PY', name:'Paraguay'},{code:'PE', name:'Peru'},
+  {code:'PH', name:'Philippines'},{code:'PL', name:'Poland'},{code:'PT', name:'Portugal'},
+  {code:'QA', name:'Qatar'},{code:'RO', name:'Romania'},{code:'RU', name:'Russia'},
+  {code:'RW', name:'Rwanda'},{code:'SA', name:'Saudi Arabia'},{code:'SN', name:'Senegal'},
+  {code:'RS', name:'Serbia'},{code:'SL', name:'Sierra Leone'},{code:'SG', name:'Singapore'},
+  {code:'SK', name:'Slovakia'},{code:'SI', name:'Slovenia'},{code:'SO', name:'Somalia'},
+  {code:'ZA', name:'South Africa'},{code:'SS', name:'South Sudan'},{code:'ES', name:'Spain'},
+  {code:'LK', name:'Sri Lanka'},{code:'SD', name:'Sudan'},{code:'SR', name:'Suriname'},
+  {code:'SE', name:'Sweden'},{code:'CH', name:'Switzerland'},{code:'SY', name:'Syria'},
+  {code:'TW', name:'Taiwan'},{code:'TJ', name:'Tajikistan'},{code:'TZ', name:'Tanzania'},
+  {code:'TH', name:'Thailand'},{code:'TL', name:'Timor-Leste'},{code:'TG', name:'Togo'},
+  {code:'TT', name:'Trinidad and Tobago'},{code:'TN', name:'Tunisia'},{code:'TR', name:'Turkey'},
+  {code:'TM', name:'Turkmenistan'},{code:'UG', name:'Uganda'},{code:'UA', name:'Ukraine'},
+  {code:'AE', name:'United Arab Emirates'},{code:'GB', name:'United Kingdom'},
+  {code:'US', name:'United States'},{code:'UY', name:'Uruguay'},{code:'UZ', name:'Uzbekistan'},
+  {code:'VE', name:'Venezuela'},{code:'VN', name:'Vietnam'},{code:'YE', name:'Yemen'},
+  {code:'ZM', name:'Zambia'},{code:'ZW', name:'Zimbabwe'}
+];
+
+var detectedCountry = null;
+
+// Auto-detect country via IP on page load
+async function detectLocation() {
+  try {
+    var res = await fetch('https://ipapi.co/json/');
+    var data = await res.json();
+    detectedCountry = data.country_code;
+    var detectedState = data.region;
+    populateCountries(detectedCountry);
+    if (detectedCountry === 'NG') {
+      onCountryChange(detectedState);
+    } else {
+      onCountryChange();
+    }
+  } catch(e) {
+    populateCountries(null);
+  }
+}
+
+function populateCountries(detectedCode) {
+  var sel = document.getElementById('country');
+  sel.innerHTML = '<option value="">Select country...</option>';
+  // Nigeria always first since that's the primary audience
+  COUNTRIES.forEach(function(c) {
+    var opt = document.createElement('option');
+    opt.value = c.name;
+    opt.textContent = c.name + (c.code === detectedCode ? ' 📍' : '');
+    if (c.code === detectedCode) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+function onCountryChange(autoState) {
+  var country = document.getElementById('country').value;
+  var stateField = document.getElementById('stateField');
+  var lgaField = document.getElementById('lgaField');
+  var stateSel = document.getElementById('state');
+  var lgaSel = document.getElementById('lga');
+  var stateLabel = document.getElementById('stateLabel');
+  stateSel.innerHTML = '<option value="">Select state / region...</option>';
+  lgaSel.innerHTML = '<option value="">Select LGA...</option>';
+  lgaField.style.display = 'none';
+  if (!country) { stateField.style.display = 'none'; return; }
+  stateField.style.display = 'block';
+  if (country === 'Nigeria') {
+    stateLabel.innerHTML = 'State <span class="req">*</span>';
+    NIGERIA_STATES.forEach(function(s) {
+      var opt = document.createElement('option');
+      opt.value = s;
+      opt.textContent = s + (s === autoState ? ' 📍' : '');
+      if (s === autoState) opt.selected = true;
+      stateSel.appendChild(opt);
+    });
+    if (autoState) onStateChange();
+  } else {
+    stateLabel.innerHTML = 'State / Region <span class="req">*</span>';
+    var opt = document.createElement('option');
+    opt.value = 'Not applicable'; opt.textContent = 'Not applicable / prefer not to say';
+    stateSel.appendChild(opt);
+  }
+}
+
+function onStateChange() {
+  var state = document.getElementById('state').value;
+  var lgaField = document.getElementById('lgaField');
+  var lgaSel = document.getElementById('lga');
+  lgaSel.innerHTML = '<option value="">Select LGA...</option>';
+  if (NIGERIA_LGAS[state]) {
+    lgaField.style.display = 'block';
+    NIGERIA_LGAS[state].forEach(function(lga) {
+      var opt = document.createElement('option');
+      opt.value = lga; opt.textContent = lga;
+      lgaSel.appendChild(opt);
+    });
+  } else {
+    lgaField.style.display = 'none';
+  }
+}
+
+// Run on page load
+detectLocation();
 
 async function submitApplication() {
   var btn = document.getElementById('submitBtn');
@@ -589,7 +753,9 @@ async function submitApplication() {
       email: v('email'),
       phone: v('phone'),
       whatsapp: wapp,
+      country: v('country'),
       state: v('state'),
+      lga: v('lga') || null,
       programme: selectedProg,
       background: selectedBg,
       role_in_parish: v('role'),
