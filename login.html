@@ -20,6 +20,7 @@
   --danger:#DC2626;--danger-light:#FEE2E2;
 }
 html{scroll-behavior:smooth;}
+body.loading{visibility:hidden;}
 body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
 .screen{display:none;animation:fadeUp 0.28s ease both;}
 .screen.active{display:block;}
@@ -203,9 +204,9 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
 @media(max-width:380px){.brand-sub{display:none;}.chip span{display:none;}.btn-logout{display:none;}}
 </style>
 </head>
-<body>
+<body class="loading">
 
-<div class="topbar" id="topbar" style="display:none;background:var(--white);border-bottom:1px solid var(--border);padding:0 28px;height:64px;display:none;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;gap:16px;">
+<div class="topbar" id="topbar" style="background:var(--white);border-bottom:1px solid var(--border);padding:0 28px;height:64px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;gap:16px;display:none;">
   <div style="display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;min-width:0;flex:1;" onclick="goDash()">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="42" height="42" style="flex-shrink:0;" aria-label="Catholic Music Academy">
   <!-- Outer circle ring -->
@@ -836,6 +837,9 @@ async function saveAttempt(modIndex, score, total, passed) {
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  // Show/hide topbar based on screen
+  var tb = document.getElementById('topbar');
+  if (tb) tb.style.display = (id === 'screen-login') ? 'none' : 'flex';
   window.scrollTo(0,0);
 }
 function goDash() { history.pushState({screen:'dash'},'','#dash'); showScreen('screen-dash'); }
@@ -1085,7 +1089,7 @@ function showComplete() {
 // ── SESSION PERSISTENCE ─────────────────────────────────────────────────────
 function saveSession(student, course, completed) {
   try {
-    sessionStorage.setItem('cma_session', JSON.stringify({
+    localStorage.setItem('cma_session', JSON.stringify({
       student: student,
       courseId: course ? course.id : null,
       completedModules: completed,
@@ -1095,16 +1099,16 @@ function saveSession(student, course, completed) {
 }
 
 function clearSession() {
-  try { sessionStorage.removeItem('cma_session'); } catch(e){}
+  try { localStorage.removeItem('cma_session'); } catch(e){}
 }
 
 function loadSession() {
   try {
-    var raw = sessionStorage.getItem('cma_session');
+    var raw = localStorage.getItem('cma_session');
     if (!raw) return null;
     var s = JSON.parse(raw);
     // Expire after 8 hours of inactivity
-    if (Date.now() - s.savedAt > 8 * 60 * 60 * 1000) { clearSession(); return null; }
+    if (Date.now() - s.savedAt > 30 * 24 * 60 * 60 * 1000) { clearSession(); return null; }
     return s;
   } catch(e){ return null; }
 }
@@ -1121,6 +1125,8 @@ function clearRememberMe() {
 }
 
 (function(){
+  // Reveal body (was hidden to prevent flash)
+  document.body.classList.remove('loading');
   // Pre-fill remembered email
   var remembered = getRememberedEmail();
   if (remembered) {
