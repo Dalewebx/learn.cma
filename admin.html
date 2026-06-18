@@ -885,7 +885,7 @@ async function approveApp(id) {
       await sb('students','PATCH',{status:'active',programme:a.programme,password_hash:a.password_hash,application_id:id,phone:a.phone,whatsapp:a.whatsapp||a.phone,state:a.state,security_question:a.security_question||null,security_answer_hash:a.security_answer_hash||null},'id=eq.'+existing[0].id);
       showToast('✓ Reactivated: '+a.first_name);
     } else {
-      await sb('students','POST',{application_id:id,first_name:a.first_name,last_name:a.last_name,email:a.email,password_hash:a.password_hash,phone:a.phone,whatsapp:a.whatsapp||a.phone,programme:a.programme,state:a.state,country:a.country||null,security_question:a.security_question||null,security_answer_hash:a.security_answer_hash||null,status:'active'});
+      await sb('students','POST',{application_id:id,first_name:a.first_name,last_name:a.last_name,email:a.email,password_hash:a.password_hash,phone:a.phone,whatsapp:a.whatsapp||a.phone,programme:a.programme,state:a.state,security_question:a.security_question||null,security_answer_hash:a.security_answer_hash||null,status:'active'});
       showToast('✓ Approved: '+a.first_name+' account created');
     }
     await loadAllData();
