@@ -446,7 +446,7 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
   <div class="module-page">
     <div class="breadcrumb" style="margin-bottom:20px;">
       <a onclick="goDash()">Dashboard</a><span class="breadcrumb-sep">›</span>
-      <a onclick="goCourse()">Theory of Ancient Music</a><span class="breadcrumb-sep">›</span>
+      <a onclick="goCourse()" id="modBreadcrumbCourse"></a><span class="breadcrumb-sep">›</span>
       <span id="modBreadcrumb"></span>
     </div>
     <div class="module-h1" id="modTitle"></div>
@@ -877,6 +877,26 @@ function renderCourse() {
   }).join('');
 }
 
+// ── YOUTUBE URL NORMALISER ────────────────────────────────────────────────────
+// Accepts any YouTube URL format and returns a clean embed URL
+function toYouTubeEmbed(url) {
+  if (!url) return '';
+  url = url.trim();
+  // Already an embed URL — return as-is
+  if (url.indexOf('youtube.com/embed/') !== -1) return url;
+  // youtu.be/VIDEO_ID
+  var short = url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
+  if (short) return 'https://www.youtube.com/embed/' + short[1];
+  // youtube.com/watch?v=VIDEO_ID
+  var watch = url.match(/[?&]v=([A-Za-z0-9_-]{11})/);
+  if (watch) return 'https://www.youtube.com/embed/' + watch[1];
+  // youtube.com/shorts/VIDEO_ID
+  var shorts = url.match(/youtube\.com\/shorts\/([A-Za-z0-9_-]{11})/);
+  if (shorts) return 'https://www.youtube.com/embed/' + shorts[1];
+  // Fallback — return as-is and hope for the best
+  return url;
+}
+
 // ── MODULE ────────────────────────────────────────────────────────────────────
 function openMod(i) {
   history.pushState({screen:'module',mod:i},'','#module-'+(i+1));
@@ -892,13 +912,16 @@ function openMod(i) {
     shownQuestions.push(pool.splice(idx,1)[0]);
   }
   document.getElementById('modBreadcrumb').textContent = m.title;
+  var bc = document.getElementById('modBreadcrumbCourse');
+  if (bc) bc.textContent = CURRENT_COURSE ? CURRENT_COURSE.title : 'Course';
   document.getElementById('modTitle').textContent = m.title;
   document.getElementById('modContent').innerHTML = m.content;
-  // video — only show if URL set
+  // video — normalise any YouTube URL format to embed
   var vw = document.getElementById('videoWrap');
   var vs = document.getElementById('videoSection');
   if (m.videoUrl) {
-    vw.innerHTML = '<iframe src="'+m.videoUrl+'" allow="accelerometer;autoplay;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>';
+    var embedUrl = toYouTubeEmbed(m.videoUrl);
+    vw.innerHTML = '<iframe src="'+embedUrl+'" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>';
     vs.style.display = 'block';
   } else {
     vs.style.display = 'none';
