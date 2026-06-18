@@ -312,14 +312,40 @@ footer{background:var(--navy);padding:56px 40px 28px;}
     <div class="section-eyebrow">Programmes Offered</div>
     <h2 class="section-title">Current Programmes</h2>
     <p class="section-sub">Apply for the programme that matches your interests and experience level.</p>
-    <div class="programmes-grid">
-      <div class="programme-card"><div class="prog-card-top"></div><div class="prog-card-body"><div class="prog-num">Course 01</div><div class="prog-title">Theory of Ancient Music</div><div class="prog-desc">Trace the origins of music from ancient civilisations through medieval sacred traditions to the emergence of modern harmony.</div><div class="prog-tags"><span class="prog-tag">3 Modules</span><span class="prog-tag">~4 hrs</span></div></div></div>
-      <div class="programme-card"><div class="prog-card-top"></div><div class="prog-card-body"><div class="prog-num">Course 02</div><div class="prog-title">Liturgical Music Theology</div><div class="prog-desc">The theological foundations of sacred music in Catholic worship, from the Council of Trent to Vatican II.</div><div class="prog-tags"><span class="prog-tag">4 Modules</span><span class="prog-tag">~5 hrs</span></div></div></div>
-      <div class="programme-card"><div class="prog-card-top"></div><div class="prog-card-body"><div class="prog-num">Course 03</div><div class="prog-title">Choral Leadership</div><div class="prog-desc">Skills to lead, coordinate, and inspire a choir from rehearsal through to Sunday Mass performance.</div><div class="prog-tags"><span class="prog-tag">5 Modules</span><span class="prog-tag">~6 hrs</span></div></div></div>
-      <div class="programme-card"><div class="prog-card-top"></div><div class="prog-card-body"><div class="prog-num">Course 04</div><div class="prog-title">The Choirmaster's Craft</div><div class="prog-desc">A practical guide to the role: voice training, score reading, liturgical planning, and administration.</div><div class="prog-tags"><span class="prog-tag">4 Modules</span><span class="prog-tag">~5 hrs</span></div></div></div>
-      <div class="programme-card"><div class="prog-card-top"></div><div class="prog-card-body"><div class="prog-num">Course 05</div><div class="prog-title">Sacred Music Composition</div><div class="prog-desc">Compose original hymns and Mass settings covering melody, harmony, text setting, and liturgical appropriateness.</div><div class="prog-tags"><span class="prog-tag">6 Modules</span><span class="prog-tag">~8 hrs</span></div></div></div>
-      <div class="programme-card"><div class="prog-card-top"></div><div class="prog-card-body"><div class="prog-num">Course 06</div><div class="prog-title">Voice &amp; Instrument Proficiency</div><div class="prog-desc">Technical foundations in vocal production and instrumental accompaniment for liturgical settings.</div><div class="prog-tags"><span class="prog-tag">4 Modules</span><span class="prog-tag">~5 hrs</span></div></div></div>
+    <div class="programmes-grid" id="programmesGrid">
+      <div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--muted);font-size:14px;">Loading programmes...</div>
     </div>
+    <script>
+    (async function(){
+      var SUPA_URL='https://ltqwofagofmvufvqsuyj.supabase.co';
+      var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0cXdvZmFnb2ZtdnVmdnFzdXlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjgyMTgsImV4cCI6MjA5NzMwNDIxOH0.7EkluJspwopQxxQmL7AuYxx4XHgchpYR7tsajyoXHaI';
+      var grid=document.getElementById('programmesGrid');
+      try{
+        var res=await fetch(SUPA_URL+'/rest/v1/course_content?order=course_order.asc,module_index.asc',
+          {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+        var rows=await res.json();
+        // Deduplicate by course_id, preserve order
+        var seen={},courses=[];
+        rows.forEach(function(r){
+          if(!seen[r.course_id]){
+            seen[r.course_id]={id:r.course_id,title:r.course_title,color:r.course_color||'#0D1B3E',order:r.course_order,count:0};
+            courses.push(seen[r.course_id]);
+          }
+          seen[r.course_id].count++;
+        });
+        if(!courses.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--muted);font-size:14px;">No programmes available yet. Check back soon.</div>';return;}
+        grid.innerHTML=courses.map(function(c,i){
+          return '<div class="programme-card"><div class="prog-card-top" style="background:'+c.color+';"></div>'
+            +'<div class="prog-card-body">'
+            +'<div class="prog-num">'+c.title+'</div>'
+            +'<div class="prog-tags"><span class="prog-tag">'+c.count+' Module'+(c.count!==1?'s':'')+'</span></div>'
+            +'</div></div>';
+        }).join('');
+      }catch(e){
+        grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--muted);font-size:14px;">Programmes loading — please try again shortly.</div>';
+      }
+    })();
+    </script>
   </div>
 </section><section class="contact-section">
   <div class="contact-inner">
