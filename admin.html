@@ -178,6 +178,8 @@ tr:hover td{background:var(--surface);}
       <div class="sidebar-section">Tools</div>
       <div class="nav-item" onclick="goPage('cohort')">📅 Cohort & Deadline</div>
       <div class="nav-item" onclick="goPage('announcements')">📢 Announcements</div>
+      <div class="sidebar-section">Dev Tools</div>
+      <div class="nav-item" onclick="goPage('devtools')" style="color:rgba(255,165,0,0.7);">🛠 Clear Test Data</div>
       <div class="sidebar-footer">
         <div class="sidebar-user">
           <div class="sidebar-avatar" id="sidebarInitial">D</div>
@@ -241,6 +243,34 @@ tr:hover td{background:var(--surface);}
         <div id="cohortView"></div>
       </div>
 
+      <!-- DEV TOOLS -->
+      <div class="page" id="page-devtools">
+        <div class="page-header"><div><div class="page-title">Developer Tools</div><div class="page-sub">Clear test data before going live. These actions are irreversible.</div></div></div>
+        <div class="alert alert-warn">⚠️ These tools exist for testing only. When the platform goes live with real students, use them with extreme caution. Consider archiving rather than deleting.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="card">
+            <div class="card-title">Clear Applications</div>
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6;">Deletes all applications (pending, approved, and rejected) from the database. Student accounts are not affected.</p>
+            <button class="btn btn-danger" onclick="clearApplications()">🗑 Clear All Applications</button>
+          </div>
+          <div class="card">
+            <div class="card-title">Clear Student Accounts</div>
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6;">Deletes all student accounts and their progress records. Applications are not affected.</p>
+            <button class="btn btn-danger" onclick="clearStudents()">🗑 Clear All Students</button>
+          </div>
+          <div class="card">
+            <div class="card-title">Clear Progress Records</div>
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6;">Resets all module completion records without deleting student accounts.</p>
+            <button class="btn btn-danger" onclick="clearProgress()">🗑 Clear All Progress</button>
+          </div>
+          <div class="card">
+            <div class="card-title">Nuclear Option</div>
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6;">Clears everything: applications, students, and progress. Full clean slate. Use before going live.</p>
+            <button class="btn btn-danger" onclick="clearEverything()" style="background:#7f1d1d;">☢️ Clear Everything</button>
+          </div>
+        </div>
+      </div>
+
       <!-- ANNOUNCEMENTS -->
       <div class="page" id="page-announcements">
         <div class="page-header"><div><div class="page-title">Announcements</div><div class="page-sub">Post notices for students.</div></div></div>
@@ -252,7 +282,19 @@ tr:hover td{background:var(--surface);}
             <select class="form-input" id="annType" style="width:auto;padding:8px 12px;">
               <option value="info">ℹ️ Info</option><option value="warn">⚠️ Warning</option><option value="ok">✅ Good news</option>
             </select>
-            <button class="btn btn-primary" onclick="postAnnouncement()">Post Announcement</button>
+            <div class="form-group">
+            <label class="form-label">Target Audience</label>
+            <select class="form-input" id="annTarget" style="padding:8px 12px;">
+              <option value="all">All Students</option>
+              <option value="Course 01">Course 01 — Theory of Ancient Music</option>
+              <option value="Course 02">Course 02 — Liturgical Music Theology</option>
+              <option value="Course 03">Course 03 — Choral Leadership</option>
+              <option value="Course 04">Course 04 — The Choirmaster's Craft</option>
+              <option value="Course 05">Course 05 — Sacred Music Composition</option>
+              <option value="Course 06">Course 06 — Voice & Instrument Proficiency</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="postAnnouncement()">Post Announcement</button>
           </div>
         </div>
         <div class="card-title" style="margin-bottom:12px;">Posted</div>
@@ -424,76 +466,114 @@ function renderApplications() {
     document.getElementById('appList').innerHTML = '<div class="alert alert-info">No '+appTabFilter+' applications.</div>';
     return;
   }
+  // Store apps in a map so onclick can look up by id safely (avoids special char issues)
+  window._appMap = {};
+  allApplications.forEach(a => { window._appMap[a.id] = a; });
+
   document.getElementById('appList').innerHTML = list.map(a => {
     var wappNum = a.whatsapp || a.phone;
-    var acceptMsg = 'Dear '+a.first_name+', your application to the Catholic Music Academy has been approved! 🎉\n\nYou can now log in at: learn-cma.vercel.app/login\n\nUse your registered email and the password you created during application.\n\nWelcome to the Academy!';
-    var rejectMsg = 'Dear '+a.first_name+', thank you for your application to the Catholic Music Academy. After review, we are unable to approve your application at this time. Please contact us for more information.';
-    return '<div class="app-card '+a.status+'">'
-      +'<div class="app-card-header">'
-      +'<div><div class="app-name">'+a.first_name+' '+a.last_name+'</div><div class="app-email">'+a.email+'</div></div>'
-      +'<span class="pill '+(a.status==='pending'?'pill-warn':a.status==='approved'?'pill-ok':'pill-danger')+'">'+a.status+'</span>'
-      +'</div>'
-      +'<div class="app-meta">'
-      +'<div class="app-meta-item"><div class="app-meta-label">Programme</div><div class="app-meta-val">'+a.programme+'</div></div>'
-      +'<div class="app-meta-item"><div class="app-meta-label">State</div><div class="app-meta-val">'+(a.state||'—')+'</div></div>'
-      +'<div class="app-meta-item"><div class="app-meta-label">Phone</div><div class="app-meta-val">'+(a.phone||'—')+'</div></div>'
-      +'<div class="app-meta-item"><div class="app-meta-label">WhatsApp</div><div class="app-meta-val">'+(a.whatsapp||a.phone||'—')+'</div></div>'
-      +'<div class="app-meta-item"><div class="app-meta-label">Background</div><div class="app-meta-val">'+(a.background||'—')+'</div></div>'
-      +'<div class="app-meta-item"><div class="app-meta-label">Receipt</div><div class="app-meta-val">'+(a.receipt_path?'<button class="btn-ghost" style="font-size:12px;padding:5px 10px;cursor:pointer;" onclick="viewReceipt(\''+a.receipt_path+'\')">📎 View Receipt</button>':(a.receipt_name?'📎 '+a.receipt_name+' (not uploaded)':'Not uploaded'))+'</div></div>'
-      +'<div class="app-meta-item"><div class="app-meta-label">Applied</div><div class="app-meta-val">'+fmtDate(a.submitted_at)+'</div></div>'
-      +'<div class="app-meta-item"><div class="app-meta-label">Ref</div><div class="app-meta-val">'+a.ref+'</div></div>'
-      +'</div>'
-      +(a.motivation?'<div class="app-motivation"><strong style="font-size:11px;color:var(--muted);">MOTIVATION:</strong><br>'+a.motivation+'</div>':'')
-      +'<div class="app-actions">'
-      +(a.status==='pending'
-        ?'<button class="btn btn-ok" onclick="approveApp(\''+a.id+'\',\''+a.email+'\',\''+a.first_name+'\',\''+a.last_name+'\',\''+a.password_hash+'\',\''+a.phone+'\',\''+a.whatsapp+'\',\''+a.programme+'\',\''+a.state+'\')">✓ Approve</button>'
-        +'<button class="btn btn-danger" onclick="rejectApp(\''+a.id+'\')">✕ Reject</button>'
-        :'')
-      +(a.status==='approved'
-        ?'<button class="btn btn-danger" onclick="rejectApp(\''+a.id+'\')">Revoke</button>':'')
-      +(wappNum?'<a class="btn-whatsapp" href="'+waLink(wappNum, a.status==='approved'?acceptMsg:a.status==='rejected'?rejectMsg:'Hello '+a.first_name+', regarding your Catholic Music Academy application...')+'" target="_blank">💬 WhatsApp '+(a.status==='approved'?'Acceptance':'Message')+'</a>':'')
-      +'<span class="app-ref">'+fmtDate(a.submitted_at)+'</span>'
-      +'</div></div>';
+    var statusPill = a.status==='pending'?'pill-warn':a.status==='approved'?'pill-ok':'pill-danger';
+    var receiptBtn = a.receipt_path
+      ? '<button class="btn-ghost" style="font-size:12px;padding:5px 10px;cursor:pointer;" onclick="viewReceipt(\'' + a.id + '\')">📎 View Receipt</button>'
+      : (a.receipt_name ? '📎 ' + a.receipt_name + ' (not stored)' : 'Not uploaded');
+    var actionBtns = '';
+    if (a.status==='pending') {
+      actionBtns += '<button class="btn btn-ok" onclick="approveApp(\'' + a.id + '\')">✓ Approve</button>';
+      actionBtns += '<button class="btn btn-danger" onclick="rejectApp(\'' + a.id + '\')">✕ Reject</button>';
+    } else if (a.status==='approved') {
+      actionBtns += '<button class="btn btn-danger" onclick="rejectApp(\'' + a.id + '\')">Revoke</button>';
+    } else if (a.status==='rejected') {
+      actionBtns += '<button class="btn btn-ok" onclick="approveApp(\'' + a.id + '\')">Re-approve</button>';
+    }
+    var waMsg = '';
+    if (wappNum) {
+      var msg = a.status==='approved'
+        ? 'Dear '+a.first_name+', your application to the Catholic Music Academy has been approved! 🎉\n\nLog in at: learn-cma.vercel.app/login\n\nUse your registered email and the password you set during application.\n\nWelcome to the Academy! 🎶'
+        : a.status==='rejected'
+          ? 'Dear '+a.first_name+', thank you for your application to the Catholic Music Academy. After review, we are unable to approve your application at this time. Please contact us for more information.'
+          : 'Hello '+a.first_name+', this is the Catholic Music Academy regarding your application (Ref: '+a.ref+').';
+      waMsg = '<a class="btn-whatsapp" href="' + waLink(wappNum, msg) + '" target="_blank">💬 WhatsApp ' + (a.status==='approved'?'Acceptance':a.status==='rejected'?'Rejection':'Message') + '</a>';
+    }
+    return '<div class="app-card ' + a.status + '" id="appcard-' + a.id + '">'
+      + '<div class="app-card-header">'
+      + '<div><div class="app-name">' + a.first_name + ' ' + a.last_name + '</div><div class="app-email">' + a.email + '</div></div>'
+      + '<span class="pill ' + statusPill + '">' + a.status + '</span>'
+      + '</div>'
+      + '<div class="app-meta">'
+      + '<div class="app-meta-item"><div class="app-meta-label">Programme</div><div class="app-meta-val">' + (a.programme||'—') + '</div></div>'
+      + '<div class="app-meta-item"><div class="app-meta-label">State</div><div class="app-meta-val">' + (a.state||'—') + '</div></div>'
+      + '<div class="app-meta-item"><div class="app-meta-label">Phone</div><div class="app-meta-val">' + (a.phone||'—') + '</div></div>'
+      + '<div class="app-meta-item"><div class="app-meta-label">WhatsApp</div><div class="app-meta-val">' + (a.whatsapp||a.phone||'—') + '</div></div>'
+      + '<div class="app-meta-item"><div class="app-meta-label">Background</div><div class="app-meta-val">' + (a.background||'—') + '</div></div>'
+      + '<div class="app-meta-item"><div class="app-meta-label">Receipt</div><div class="app-meta-val">' + receiptBtn + '</div></div>'
+      + '<div class="app-meta-item"><div class="app-meta-label">Applied</div><div class="app-meta-val">' + fmtDate(a.submitted_at) + '</div></div>'
+      + '<div class="app-meta-item"><div class="app-meta-label">Ref</div><div class="app-meta-val">' + a.ref + '</div></div>'
+      + '</div>'
+      + '<div class="app-actions">' + actionBtns + waMsg
+      + '<span class="app-ref">' + fmtDate(a.submitted_at) + '</span>'
+      + '</div></div>';
   }).join('');
 }
 
-async function approveApp(id, email, firstName, lastName, pwHash, phone, whatsapp, programme, state) {
-  if (!confirm('Approve this application and activate a student account for '+firstName+' '+lastName+'?')) return;
+async function approveApp(id) {
+  var a = window._appMap[id];
+  if (!a) { showToast('Application not found. Please refresh.', 'err'); return; }
+  if (!confirm('Approve this application and activate a student account for ' + a.first_name + ' ' + a.last_name + '?')) return;
   try {
-    // Update application status
+    // Update application status first
     await sb('applications', 'PATCH', {status:'approved', reviewed_at:new Date().toISOString(), reviewed_by:currentAdmin}, 'id=eq.'+id);
-    // Create student account
-    await sb('students', 'POST', {
-      application_id: id,
-      first_name: firstName,
-      last_name: lastName,
-      email: email,
-      password_hash: pwHash,
-      phone: phone,
-      whatsapp: whatsapp||phone,
-      programme: programme,
-      state: state,
-      status: 'active'
-    });
-    showToast('✓ Approved. Student account created for '+firstName+'.');
+    // Check if student account already exists for this email
+    var existing = await sb('students', 'GET', null, 'email=eq.'+encodeURIComponent(a.email)+'&select=id,status');
+    if (existing && existing.length > 0) {
+      // Reactivate existing account and update their programme
+      await sb('students', 'PATCH', {
+        status: 'active',
+        programme: a.programme,
+        password_hash: a.password_hash,
+        application_id: id,
+        phone: a.phone,
+        whatsapp: a.whatsapp || a.phone,
+        state: a.state
+      }, 'id=eq.'+existing[0].id);
+      showToast('✓ Approved. Existing account reactivated for ' + a.first_name + '.');
+    } else {
+      // Create new student account
+      await sb('students', 'POST', {
+        application_id: id,
+        first_name: a.first_name,
+        last_name: a.last_name,
+        email: a.email,
+        password_hash: a.password_hash,
+        phone: a.phone,
+        whatsapp: a.whatsapp || a.phone,
+        programme: a.programme,
+        state: a.state,
+        status: 'active'
+      });
+      showToast('✓ Approved. Student account created for ' + a.first_name + '.');
+    }
     await loadAllData();
   } catch(e) {
-    if (e.message.includes('duplicate') || e.message.includes('unique')) {
-      // Account might already exist — just update status
-      await sb('applications','PATCH',{status:'approved',reviewed_at:new Date().toISOString(),reviewed_by:currentAdmin},'id=eq.'+id);
-      showToast('Application approved. (Account already exists for this email.)','warn');
-      await loadAllData();
-    } else {
-      showToast('Error: '+e.message,'err');
-    }
+    showToast('Approval failed: ' + e.message, 'err');
+    console.error('approveApp error:', e);
   }
 }
 
 async function rejectApp(id) {
-  if (!confirm('Reject this application?')) return;
+  var a = window._appMap[id];
+  var name = a ? a.first_name + ' ' + a.last_name : 'this applicant';
+  var action = a && a.status === 'approved' ? 'Revoke access for' : 'Reject application from';
+  if (!confirm(action + ' ' + name + '?')) return;
   try {
     await sb('applications','PATCH',{status:'rejected',reviewed_at:new Date().toISOString(),reviewed_by:currentAdmin},'id=eq.'+id);
-    showToast('Application rejected.');
+    // If was approved, also deactivate the student account
+    if (a && a.email) {
+      var existing = await sb('students','GET',null,'email=eq.'+encodeURIComponent(a.email)+'&select=id');
+      if (existing && existing.length > 0) {
+        await sb('students','PATCH',{status:'inactive'},'id=eq.'+existing[0].id);
+      }
+    }
+    showToast(a && a.status==='approved' ? 'Access revoked for ' + a.first_name + '.' : 'Application rejected.');
     await loadAllData();
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
@@ -595,18 +675,30 @@ async function renderAnnouncements() {
     var anns = await sb('announcements','GET',null,'order=created_at.desc');
     document.getElementById('annList').innerHTML = anns.length===0
       ? '<div style="font-size:13px;color:var(--dim);text-align:center;padding:24px 0;">No announcements posted yet.</div>'
-      : anns.map(a=>'<div class="ann-item"><div style="flex:1;"><div style="font-size:14px;font-weight:600;margin-bottom:3px;">'+a.title+'</div><div style="font-size:13px;color:var(--muted);">'+a.body+'</div><div style="font-size:11px;color:var(--dim);margin-top:5px;">'+fmtDate(a.created_at)+' · '+a.type+'</div></div><button class="ann-del" onclick="deleteAnn(\''+a.id+'\')">🗑</button></div>').join('');
+      : anns.map(a=>{
+          var targetLabel = (!a.target||a.target==='all') ? '🌐 All students' : '📚 '+a.target+' only';
+          var targetColor = (!a.target||a.target==='all') ? 'var(--ok)' : 'var(--amber-dark)';
+          return '<div class="ann-item"><div style="flex:1;">'
+            +'<div style="font-size:14px;font-weight:600;margin-bottom:3px;">'+a.title+'</div>'
+            +'<div style="font-size:13px;color:var(--muted);">'+a.body+'</div>'
+            +'<div style="font-size:11px;color:var(--dim);margin-top:6px;display:flex;gap:12px;align-items:center;">'
+            +'<span>'+fmtDate(a.created_at)+'</span>'
+            +'<span style="color:'+targetColor+';font-weight:600;">'+targetLabel+'</span>'
+            +'</div></div>'
+            +'<button class="ann-del" onclick="deleteAnn(\''+a.id+'\')">🗑</button></div>';
+        }).join('');
   } catch(e){ document.getElementById('annList').innerHTML='<div class="alert-warn">Error loading announcements.</div>'; }
 }
 async function postAnnouncement() {
   var title=document.getElementById('annTitle').value.trim();
   var body=document.getElementById('annText').value.trim();
   var type=document.getElementById('annType').value;
+  var target=document.getElementById('annTarget').value;
   if (!title||!body){alert('Please enter a title and message.');return;}
   try {
-    await sb('announcements','POST',{title,body,type,created_by:currentAdmin});
+    await sb('announcements','POST',{title,body,type,target,created_by:currentAdmin});
     document.getElementById('annTitle').value=''; document.getElementById('annText').value='';
-    showToast('Announcement posted.');
+    showToast('Announcement posted' + (target==='all'?' for all students':' for '+target) + '.');
     renderAnnouncements();
   } catch(e){ showToast('Error: '+e.message,'err'); }
 }
@@ -624,10 +716,46 @@ function showToast(msg, type='ok') {
   setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity 0.3s';setTimeout(()=>t.remove(),300);},3000);
 }
 
+// ── DEV TOOLS ─────────────────────────────────────────────────────────────────
+async function clearApplications() {
+  if (!confirm('Delete ALL applications? This cannot be undone.')) return;
+  try { await sb('applications','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000'); showToast('All applications cleared.'); await loadAllData(); }
+  catch(e){ showToast('Error: '+e.message,'err'); }
+}
+async function clearStudents() {
+  if (!confirm('Delete ALL student accounts and progress? This cannot be undone.')) return;
+  try {
+    await sb('progress','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');
+    await sb('students','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');
+    showToast('All student accounts and progress cleared.'); await loadAllData();
+  } catch(e){ showToast('Error: '+e.message,'err'); }
+}
+async function clearProgress() {
+  if (!confirm('Clear ALL progress records? Students keep their accounts but lose all module completions.')) return;
+  try { await sb('progress','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000'); showToast('All progress records cleared.'); await loadAllData(); }
+  catch(e){ showToast('Error: '+e.message,'err'); }
+}
+async function clearEverything() {
+  if (!confirm('⚠️ NUCLEAR OPTION: Delete ALL applications, students, and progress? This is irreversible.')) return;
+  if (!confirm('Are you absolutely sure? Type OK in the next prompt.')) return;
+  var confirm2 = prompt('Type DELETE to confirm complete data wipe:');
+  if (confirm2 !== 'DELETE') { showToast('Cancelled.','warn'); return; }
+  try {
+    await sb('progress','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');
+    await sb('students','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');
+    await sb('applications','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');
+    showToast('All data cleared. Clean slate.'); await loadAllData();
+  } catch(e){ showToast('Error: '+e.message,'err'); }
+}
+
 (function(){document.getElementById('adminUser').focus();})();
 
 // ── RECEIPT VIEWER ────────────────────────────────────────────────────────────
-async function viewReceipt(path) {
+async function viewReceipt(idOrPath) {
+  // Accept either an app ID (new) or raw path (legacy)
+  var path = idOrPath;
+  var a = window._appMap && window._appMap[idOrPath];
+  if (a) path = a.receipt_path;
   if (!path) { showToast('No receipt file stored.', 'warn'); return; }
   try {
     // Generate a signed URL (valid for 60 minutes)
