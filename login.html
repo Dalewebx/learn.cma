@@ -549,47 +549,83 @@ var CURRENT_COURSE = null;
 
 // ── AUTH ──────────────────────────────────────────────────────────────────────
 async function doLogin() {
-  var email = document.getElementById('loginEmail').value.trim().toLowerCase();
-  var pass = document.getElementById('loginPass').value;
-  var err = document.getElementById('loginErr');
-  var btn = document.getElementById('loginBtn');
+  var emailEl = document.getElementById('loginEmail');
+  var passEl  = document.getElementById('loginPass');
+  var btn     = document.getElementById('loginBtn');
+  var email   = emailEl.value.trim().toLowerCase();
+  var pass    = passEl.value;
+
   if (!email || !pass) { showErr('Please enter your email and password.'); return; }
   btn.disabled = true; btn.textContent = 'Signing in...';
-  err.style.display = 'none';
+  document.getElementById('loginErr').style.display = 'none';
+
   try {
+    // 1. Hash password
     var hash = await hashPassword(pass);
-    var results = await sbGet('students', 'email=eq.'+encodeURIComponent(email)+'&select=*');
-    if (!results || results.length === 0) { showErr('No account found with that email address.'); btn.disabled=false; btn.textContent='Sign in →'; return; }
+
+    // 2. Fetch student record
+    var res = await fetch(SUPA_URL + '/rest/v1/students?email=eq.' + encodeURIComponent(email) + '&select=*', {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+    });
+    if (!res.ok) throw new Error('Network error (' + res.status + '). Please try again.');
+    var results = await res.json();
+
+    if (!results || results.length === 0) {
+      showErr('No account found with that email. Have you been approved yet?');
+      btn.disabled = false; btn.textContent = 'Sign in →'; return;
+    }
     var student = results[0];
-    if (student.password_hash !== hash) { showErr('Incorrect password. Please try again.'); btn.disabled=false; btn.textContent='Sign in →'; return; }
-    if (student.status !== 'active') { showErr('Your application is still pending approval. The Academy will notify you via WhatsApp once your account is activated.'); btn.disabled=false; btn.textContent='Sign in →'; return; }
-    // Update last login
-    await sbPatch('students', 'id=eq.'+student.id, {last_login: new Date().toISOString()});
+
+    // 3. Check password
+    if (student.password_hash !== hash) {
+      showErr('Incorrect password. Please try again, or use Forgot password below.');
+      btn.disabled = false; btn.textContent = 'Sign in →'; return;
+    }
+
+    // 4. Check account status
+    if (student.status !== 'active') {
+      showErr('Your account is pending approval. The Academy will contact you via WhatsApp once activated.');
+      btn.disabled = false; btn.textContent = 'Sign in →'; return;
+    }
+
+    // 5. Record login time (fire and forget — don't let this block login)
+    fetch(SUPA_URL + '/rest/v1/students?id=eq.' + student.id, {
+      method: 'PATCH',
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ last_login: new Date().toISOString() })
+    }).catch(function(){});
+
+    // 6. Set state
     currentStudent = student;
-    // Set course based on enrolled programme
     CURRENT_COURSE = getCourseFromProgramme(student.programme);
-    MODULES = CURRENT_COURSE.modules || [];
+    MODULES = CURRENT_COURSE ? (CURRENT_COURSE.modules || []) : [];
+
+    // 7. Load progress
     await loadProgress();
-    // Update dashboard display
+
+    // 8. Update UI
     document.getElementById('topbar').style.display = 'flex';
     document.getElementById('topbarName').textContent = student.first_name;
     document.getElementById('dashName').textContent = 'Welcome back, ' + student.first_name + '.';
-    // Update enrolled course card
-    function setEl(id, text, html) {
+    var safeSet = function(id, val, isHtml) {
       var el = document.getElementById(id);
-      if (!el) return;
-      if (html) el.innerHTML = text; else el.textContent = text;
-    }
-    setEl('enrolledCourseNum', CURRENT_COURSE.code + ' of 6');
-    setEl('enrolledCourseTitle', CURRENT_COURSE.title);
-    setEl('enrolledCourseDesc', CURRENT_COURSE.desc);
-    setEl('enrolledCourseMeta', '📖 '+CURRENT_COURSE.moduleCount+' Modules &nbsp;·&nbsp; ⏱ '+CURRENT_COURSE.duration+' &nbsp;·&nbsp; ✍ Assessment per module &nbsp;·&nbsp; 🎓 Final exam (in-person)', true);
-    history.replaceState({screen:'dash'},'','#dash');
+      if (!el || !CURRENT_COURSE) return;
+      if (isHtml) el.innerHTML = val; else el.textContent = val;
+    };
+    safeSet('enrolledCourseNum', CURRENT_COURSE.code + ' of 6');
+    safeSet('enrolledCourseTitle', CURRENT_COURSE.title);
+    safeSet('enrolledCourseDesc', CURRENT_COURSE.desc);
+    safeSet('enrolledCourseMeta',
+      '📖 ' + CURRENT_COURSE.moduleCount + ' Modules &nbsp;·&nbsp; ⏱ ' + CURRENT_COURSE.duration +
+      ' &nbsp;·&nbsp; ✍ Assessment per module &nbsp;·&nbsp; 🎓 Final exam (in-person)', true);
+
+    history.replaceState({ screen: 'dash' }, '', '#dash');
     showScreen('screen-dash');
+
   } catch(e) {
     console.error('Login error:', e);
-    showErr('Login failed: ' + (e.message || 'Please check your details and try again.'));
-    btn.disabled=false; btn.textContent='Sign in →';
+    showErr('Login error: ' + (e.message || 'Unable to connect. Check your internet and try again.'));
+    btn.disabled = false; btn.textContent = 'Sign in →';
   }
 }
 
