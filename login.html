@@ -426,66 +426,124 @@ var SHOW_COUNT = 4;
 var READ_TIME = 90;
 var PASS_MARK = 100;
 
-// ── MODULE DATA ───────────────────────────────────────────────────────────────
-var MODULES = [
+// ─── ALL 6 COURSES ────────────────────────────────────────────────────────────
+// Course content is loaded by the academy admin via Content Manager.
+// Course 01 has full content. Courses 02-06 show "Content coming soon" until
+// the academy uploads lesson text, videos, audio, and PDFs via admin panel.
+
+var ALL_COURSES = [
   {
-    num:'Module 01',title:'The Origin of Music',duration:'~75 min',
-    videoUrl:'',audioTracks:[],downloads:[],
-    content:`<h3>Where Did Music Begin?</h3><p>The question of music's origin is as old as civilisation itself. Ancient Greek philosophers believed music was a gift from the gods. But archaeological evidence tells us the story begins far earlier — approximately 40,000 years ago with bone flutes found in caves across southern Germany.</p><p>These instruments were deliberately shaped, pierced with finger holes, and designed to produce specific pitches. The people who made them already understood, on some intuitive level, the difference between noise and music.</p><h3>Music in Ancient Civilisations</h3><p>In ancient Mesopotamia, the Sumerians developed one of the earliest musical traditions. The <strong>Hurrian Hymn No. 6</strong>, discovered at Ugarit in modern Syria, is the oldest notated song ever recovered — written for a stringed instrument called the sammuri.</p><p>In ancient Egypt, temple musicians were among the most respected figures in society. The <strong>sistrum</strong> was associated with the goddess Hathor. In ancient China, Confucius considered music one of the highest expressions of moral order, using pentatonic (five-tone) scales.</p><p><strong>Pythagoras</strong> of ancient Greece discovered that musical intervals could be expressed as mathematical ratios — the octave as 2:1, the perfect fifth as 3:2. Plato argued in <em>The Republic</em> that the mode of music played in a city could shape the character of its citizens.</p><h3>Music and the Human Voice</h3><p>Before instruments, there was the voice. The earliest human music was entirely vocal — chanting, call-and-response, communal singing used in labour, mourning, celebration, and worship. <strong>The origins of music are the origins of worship itself.</strong></p>`,
-    pool:[
-      {q:'What is the oldest notated song ever recovered?',opts:['The Gregorian Chant','The Hurrian Hymn No. 6','The Psalms of David','The Egyptian Book of Ra'],ans:1},
-      {q:'Which philosopher discovered musical intervals as mathematical ratios?',opts:['Aristotle','Plato','Pythagoras','Socrates'],ans:2},
-      {q:'Approximately how old are the oldest known musical instruments?',opts:['5,000 years','15,000 years','40,000 years','100,000 years'],ans:2},
-      {q:'In which ancient civilisation were temple musicians most respected?',opts:['Ancient Greece','Ancient Mesopotamia','Ancient Egypt','Ancient Rome'],ans:2},
-      {q:'What material were the oldest known musical instruments made from?',opts:['Clay and stone','Animal bone','Hardwood','Copper ore'],ans:1},
-      {q:'What does this module identify as the earliest form of human music?',opts:['Instrumental performance','Sacred temple chanting','Vocal music: chanting and call-and-response','Written compositions on clay tablets'],ans:2},
-      {q:'Which ancient civilisation used a pentatonic (five-tone) scale?',opts:['Ancient Egypt','Ancient Greece','Ancient China','Ancient Mesopotamia'],ans:2},
-      {q:'According to Plato, what could the mode of music affect?',opts:['The weather','The character of a city\'s citizens','Military outcomes','The fertility of crops'],ans:1},
-      {q:'The Hurrian Hymn No. 6 was written for which instrument?',opts:['A wind instrument','A percussion instrument','A stringed instrument called the sammuri','A keyboard'],ans:2},
-      {q:'The sistrum was associated with which Egyptian goddess?',opts:['Isis','Ra','Hathor','Osiris'],ans:2},
-      {q:'Which philosopher considered music one of the highest expressions of moral order?',opts:['Pythagoras','Confucius','Plato','Aristotle'],ans:1},
-      {q:'Choral music at Mass today traces back to psalm-singing in which location?',opts:['The Roman Forum','The Jewish temple in Jerusalem','Medieval French cathedrals','The courts of ancient Greece'],ans:1}
+    id: 1,
+    code: 'Course 01',
+    title: 'Theory of Ancient Music',
+    tag: '♪ Music Theory',
+    desc: 'Trace the origins of music from ancient civilisations through medieval sacred traditions to the emergence of modern harmony and notation.',
+    moduleCount: 3,
+    duration: '~4 hours',
+    modules: [
+      {
+        num:'Module 01', title:'The Origin of Music', duration:'~75 min',
+        videoUrl:'', audioTracks:[], downloads:[],
+        content:`<h3>Where Did Music Begin?</h3><p>The question of music's origin is as old as civilisation itself. Ancient Greek philosophers believed music was a gift from the gods. But archaeological evidence tells us the story begins far earlier — approximately 40,000 years ago with bone flutes found in caves across southern Germany.</p><p>These instruments were deliberately shaped, pierced with finger holes, and designed to produce specific pitches. The people who made them already understood, on some intuitive level, the difference between noise and music.</p><h3>Music in Ancient Civilisations</h3><p>In ancient Mesopotamia, the Sumerians developed one of the earliest musical traditions. The <strong>Hurrian Hymn No. 6</strong>, discovered at Ugarit in modern Syria, is the oldest notated song ever recovered — written for a stringed instrument called the sammuri.</p><p>In ancient Egypt, temple musicians were among the most respected figures in society. The <strong>sistrum</strong> was associated with the goddess Hathor. In ancient China, Confucius considered music one of the highest expressions of moral order, using pentatonic (five-tone) scales.</p><p><strong>Pythagoras</strong> of ancient Greece discovered that musical intervals could be expressed as mathematical ratios — the octave as 2:1, the perfect fifth as 3:2. Plato argued in <em>The Republic</em> that the mode of music played in a city could shape the character of its citizens.</p><h3>Music and the Human Voice</h3><p>Before instruments, there was the voice. The earliest human music was entirely vocal — chanting, call-and-response, communal singing used in labour, mourning, celebration, and worship. <strong>The origins of music are the origins of worship itself.</strong></p>`,
+        pool:[
+          {q:'What is the oldest notated song ever recovered?',opts:['The Gregorian Chant','The Hurrian Hymn No. 6','The Psalms of David','The Egyptian Book of Ra'],ans:1},
+          {q:'Which philosopher discovered musical intervals as mathematical ratios?',opts:['Aristotle','Plato','Pythagoras','Socrates'],ans:2},
+          {q:'Approximately how old are the oldest known musical instruments?',opts:['5,000 years','15,000 years','40,000 years','100,000 years'],ans:2},
+          {q:'In which ancient civilisation were temple musicians most respected?',opts:['Ancient Greece','Ancient Mesopotamia','Ancient Egypt','Ancient Rome'],ans:2},
+          {q:'What material were the oldest known musical instruments made from?',opts:['Clay and stone','Animal bone','Hardwood','Copper ore'],ans:1},
+          {q:'What does this module identify as the earliest form of human music?',opts:['Instrumental performance','Sacred temple chanting','Vocal music: chanting and call-and-response','Written compositions on clay tablets'],ans:2},
+          {q:'Which ancient civilisation used a pentatonic (five-tone) scale?',opts:['Ancient Egypt','Ancient Greece','Ancient China','Ancient Mesopotamia'],ans:2},
+          {q:'According to Plato, what could the mode of music affect?',opts:['The weather','The character of a city\'s citizens','Military outcomes','The fertility of crops'],ans:1},
+          {q:'The Hurrian Hymn No. 6 was written for which instrument?',opts:['A wind instrument','A percussion instrument','A stringed instrument called the sammuri','A keyboard'],ans:2},
+          {q:'The sistrum was associated with which Egyptian goddess?',opts:['Isis','Ra','Hathor','Osiris'],ans:2},
+          {q:'Which philosopher considered music one of the highest expressions of moral order?',opts:['Pythagoras','Confucius','Plato','Aristotle'],ans:1},
+          {q:'Choral music at Mass today traces back to psalm-singing in which location?',opts:['The Roman Forum','The Jewish temple in Jerusalem','Medieval French cathedrals','The courts of ancient Greece'],ans:1}
+        ]
+      },
+      {
+        num:'Module 02', title:'Medieval Times & Sacred Rhythm', duration:'~80 min',
+        videoUrl:'', audioTracks:[], downloads:[],
+        content:`<h3>The Medieval Musical World</h3><p>The medieval period (500–1400 CE) was defined by the dominance of the Catholic Church across all aspects of European life. It was during this era that the foundations of Western classical music were laid, rooted entirely in sacred worship.</p><h3>Gregorian Chant</h3><p>Named after Pope Gregory I (590–604 CE), <strong>Gregorian Chant</strong> became the official music of the Roman Catholic Church. Its defining features: a single unharmonised melodic line, free rhythm following the natural stress of Latin text, and a deeply contemplative quality. Performed entirely without instruments by trained monks.</p><p>The purpose was never to entertain or display skill, but to create conditions in which sung prayer could rise undistracted toward God.</p><h3>The Invention of Musical Notation</h3><p>Before the 9th century, music was transmitted entirely by oral tradition. <strong>Guido d'Arezzo</strong> (991–1050 CE), a Benedictine monk, changed this permanently — developing a system of four horizontal lines on which symbols called <em>neumes</em> could be placed to indicate pitch and rhythm. This was the ancestor of the five-line staff used today.</p><p>Guido also introduced <strong>solmisation syllables</strong> — Ut, Re, Mi, Fa, Sol, La — from the Latin hymn <em>Ut queant laxis</em>. Today's Do Re Mi system descends directly from his invention.</p><h3>Polyphony and the Birth of Harmony</h3><p>By the 12th century, composers at the Cathedral of Notre Dame in Paris began experimenting with <strong>polyphony</strong> — combining two or more independent melodic lines simultaneously. <strong>Leonin</strong> compiled the Magnus Liber Organi (two-voice settings of chant). <strong>Perotin</strong> extended this to three and four voices.</p><p>Pope John XXII issued a decree in 1324 criticising polyphony for obscuring sacred texts. Despite resistance, polyphony developed into the choral music of the Renaissance — Palestrina, Victoria, Byrd — music Catholic choirs still sing today.</p>`,
+        pool:[
+          {q:'What does "monophonic" mean in Gregorian Chant?',opts:['Complex harmonies','A single unharmonised melodic line','Instrumental accompaniment','A strict rhythmic beat'],ans:1},
+          {q:'Who developed the staff notation system still used today?',opts:['Pope Gregory I','Johann Sebastian Bach','Guido d\'Arezzo','Leonin'],ans:2},
+          {q:'What is polyphony?',opts:['Music for one voice','Music without rhythm','Multiple independent melodic lines sounding simultaneously','Music only for the Mass'],ans:2},
+          {q:'Which school produced the first great polyphonic sacred compositions?',opts:['The Bologna School','The Notre Dame School','The Venetian School','The Roman School'],ans:1},
+          {q:'What did Guido d\'Arezzo introduce alongside the staff system?',opts:['The pipe organ','The Latin Mass','Solmisation syllables (Ut Re Mi Fa Sol La)','The choir stall arrangement'],ans:2},
+          {q:'What was the primary purpose of Gregorian Chant?',opts:['To entertain worshippers','To demonstrate musical skill','To elevate the heart toward God','To teach Latin'],ans:2},
+          {q:'Which pope served 590–604 CE and gave his name to the Church\'s chant?',opts:['Pope John XXII','Pope Gregory I','Pope Innocent III','Pope Clement V'],ans:1},
+          {q:'What are neumes?',opts:['Medieval monks','Symbols on staff lines indicating pitch and rhythm','Another name for Gregorian melodies','Instruments in early medieval worship'],ans:1},
+          {q:'The solmisation syllables were taken from which work?',opts:['The Gregorian Antiphonary','The Rule of Saint Benedict','The Latin hymn Ut queant laxis','The Magnus Liber Organi'],ans:2},
+          {q:'Who compiled the Magnus Liber Organi?',opts:['Perotin','Guido d\'Arezzo','Leonin','Pope Gregory I'],ans:2},
+          {q:'Which pope issued a decree in 1324 criticising polyphony?',opts:['Pope Gregory I','Pope John XXII','Pope Clement V','Pope Innocent III'],ans:1},
+          {q:'Before Guido d\'Arezzo, how was music transmitted?',opts:['Through illustrated manuscripts','Entirely by oral tradition','Through rhythmic symbols only','By performance at public festivals'],ans:1}
+        ]
+      },
+      {
+        num:'Module 03', title:'Evolution of Musical Instruments', duration:'~70 min',
+        videoUrl:'', audioTracks:[], downloads:[],
+        content:`<h3>From Bone to Brass</h3><p>The story of musical instruments is the story of human ingenuity across every era. From the simplest bone flute to the most complex keyboard ever built, humans have always sought to expand the range of sounds available to them in worship, celebration, and daily life.</p><h3>The Four Families</h3><p><strong>Chordophones</strong> produce sound through vibrating strings — from the ancient harp to the modern violin and piano.</p><p><strong>Aerophones</strong> produce sound through a vibrating column of air — from ancient Egyptian double-reed instruments to the modern oboe and flute.</p><p><strong>Membranophones</strong> produce sound through a vibrating membrane. Drums are found in every known human culture. In West African traditions that influenced Nigerian worship, specific drum patterns communicate specific messages.</p><p><strong>Idiophones</strong> produce sound through the vibration of the instrument body itself — bells, gongs, xylophones, and the church bells that have called the faithful to worship since the 6th century.</p><h3>The Pipe Organ</h3><p>No instrument is more closely associated with sacred music. Mozart called it the king of instruments. Its ancestor, the <em>hydraulis</em>, was invented by <strong>Ctesibius</strong> in Alexandria around 250 BCE. By the Baroque period, <strong>Johann Sebastian Bach</strong> wrote organ music of extraordinary spiritual depth still performed every Sunday.</p><h3>Instruments in Nigerian Catholic Worship</h3><p>The Second Vatican Council (1962–1965) endorsed <strong>inculturation</strong> — integrating local cultural expressions into Catholic liturgy. In Nigeria: the <strong>udu drum</strong> (clay percussion, Igbo origin), the <strong>ekwe</strong> (slit drum), and various shakers have found a natural place in contemporary Catholic worship.</p>`,
+        pool:[
+          {q:'What instrument is called the "King of Instruments"?',opts:['The harp','The violin','The pipe organ','The trumpet'],ans:2},
+          {q:'Who invented the hydraulis, ancestor of the pipe organ?',opts:['Pythagoras','Ctesibius','Guido d\'Arezzo','Aristotle'],ans:1},
+          {q:'Which Vatican Council endorsed inculturation in Catholic worship?',opts:['First Vatican Council','Council of Trent','Second Vatican Council','Council of Nicaea'],ans:2},
+          {q:'Which family produces sound through a vibrating membrane?',opts:['Chordophones','Aerophones','Idiophones','Membranophones'],ans:3},
+          {q:'The harp belongs to which instrument family?',opts:['Aerophones','Membranophones','Chordophones','Idiophones'],ans:2},
+          {q:'Which Nigerian instruments have been incorporated into Catholic worship?',opts:['Violin and piano','Udu drum and ekwe','Trumpet and trombone','Sitar and tabla'],ans:1},
+          {q:'The Hornbostel-Sachs system was developed in which year?',opts:['1850','1880','1914','1945'],ans:2},
+          {q:'The hydraulis was originally used in ancient Rome for what purpose?',opts:['Sacred worship','Theatres and gladiatorial contests','Military battle','Private households'],ans:1},
+          {q:'Which family produces sound through the vibration of the instrument body?',opts:['Chordophones','Membranophones','Aerophones','Idiophones'],ans:3},
+          {q:'Bach composed organ music during which period?',opts:['The Renaissance','The Medieval period','The Baroque period','The Classical period'],ans:2},
+          {q:'The udu drum originates among which Nigerian people?',opts:['The Yoruba','The Igbo','The Hausa','The Efik'],ans:1},
+          {q:'Who called the pipe organ the "King of Instruments"?',opts:['Johann Sebastian Bach','Ludwig van Beethoven','Wolfgang Amadeus Mozart','Antonio Vivaldi'],ans:2}
+        ]
+      }
     ]
   },
   {
-    num:'Module 02',title:'Medieval Times & Sacred Rhythm',duration:'~80 min',
-    videoUrl:'',audioTracks:[],downloads:[],
-    content:`<h3>The Medieval Musical World</h3><p>The medieval period (500–1400 CE) was defined by the dominance of the Catholic Church across all aspects of European life. It was during this era that the foundations of Western classical music were laid, rooted entirely in sacred worship.</p><h3>Gregorian Chant</h3><p>Named after Pope Gregory I (590–604 CE), <strong>Gregorian Chant</strong> became the official music of the Roman Catholic Church. Its defining features: a single unharmonised melodic line, free rhythm following the natural stress of Latin text, and a deeply contemplative quality. Performed entirely without instruments by trained monks.</p><p>The purpose was never to entertain or display skill, but to create conditions in which sung prayer could rise undistracted toward God.</p><h3>The Invention of Musical Notation</h3><p>Before the 9th century, music was transmitted entirely by oral tradition. <strong>Guido d'Arezzo</strong> (991–1050 CE), a Benedictine monk, changed this permanently — developing a system of four horizontal lines on which symbols called <em>neumes</em> could be placed to indicate pitch and rhythm. This was the ancestor of the five-line staff used today.</p><p>Guido also introduced <strong>solmisation syllables</strong> — Ut, Re, Mi, Fa, Sol, La — from the Latin hymn <em>Ut queant laxis</em>. Today's Do Re Mi system descends directly from his invention.</p><h3>Polyphony and the Birth of Harmony</h3><p>By the 12th century, composers at the Cathedral of Notre Dame in Paris began experimenting with <strong>polyphony</strong> — combining two or more independent melodic lines simultaneously. <strong>Leonin</strong> compiled the Magnus Liber Organi (two-voice settings of chant). <strong>Perotin</strong> extended this to three and four voices.</p><p>Pope John XXII issued a decree in 1324 criticising polyphony for obscuring sacred texts. Despite resistance, polyphony developed into the choral music of the Renaissance — Palestrina, Victoria, Byrd — music Catholic choirs still sing today.</p>`,
-    pool:[
-      {q:'What does "monophonic" mean in Gregorian Chant?',opts:['Complex harmonies','A single unharmonised melodic line','Instrumental accompaniment','A strict rhythmic beat'],ans:1},
-      {q:'Who developed the staff notation system still used today?',opts:['Pope Gregory I','Johann Sebastian Bach','Guido d\'Arezzo','Leonin'],ans:2},
-      {q:'What is polyphony?',opts:['Music for one voice','Music without rhythm','Multiple independent melodic lines sounding simultaneously','Music only for the Mass'],ans:2},
-      {q:'Which school produced the first great polyphonic sacred compositions?',opts:['The Bologna School','The Notre Dame School','The Venetian School','The Roman School'],ans:1},
-      {q:'What did Guido d\'Arezzo introduce alongside the staff system?',opts:['The pipe organ','The Latin Mass','Solmisation syllables (Ut Re Mi Fa Sol La)','The choir stall arrangement'],ans:2},
-      {q:'What was the primary purpose of Gregorian Chant?',opts:['To entertain worshippers','To demonstrate musical skill','To elevate the heart toward God','To teach Latin'],ans:2},
-      {q:'Which pope served 590–604 CE and gave his name to the Church\'s chant?',opts:['Pope John XXII','Pope Gregory I','Pope Innocent III','Pope Clement V'],ans:1},
-      {q:'What are neumes?',opts:['Medieval monks','Symbols on staff lines indicating pitch and rhythm','Another name for Gregorian melodies','Instruments in early medieval worship'],ans:1},
-      {q:'The solmisation syllables were taken from which work?',opts:['The Gregorian Antiphonary','The Rule of Saint Benedict','The Latin hymn Ut queant laxis','The Magnus Liber Organi'],ans:2},
-      {q:'Who compiled the Magnus Liber Organi?',opts:['Perotin','Guido d\'Arezzo','Leonin','Pope Gregory I'],ans:2},
-      {q:'Which pope issued a decree in 1324 criticising polyphony?',opts:['Pope Gregory I','Pope John XXII','Pope Clement V','Pope Innocent III'],ans:1},
-      {q:'Before Guido d\'Arezzo, how was music transmitted?',opts:['Through illustrated manuscripts','Entirely by oral tradition','Through rhythmic symbols only','By performance at public festivals'],ans:1}
-    ]
+    id: 2, code: 'Course 02', title: 'Liturgical Music Theology',
+    tag: '✝ Theology', desc: 'The theological foundations of sacred music in Catholic worship, from the Council of Trent to Vatican II.',
+    moduleCount: 4, duration: '~5 hours',
+    modules: [] // Content to be added by academy admin
   },
   {
-    num:'Module 03',title:'Evolution of Musical Instruments',duration:'~70 min',
-    videoUrl:'',audioTracks:[],downloads:[],
-    content:`<h3>From Bone to Brass</h3><p>The story of musical instruments is the story of human ingenuity across every era. From the simplest bone flute to the most complex keyboard ever built, humans have always sought to expand the range of sounds available to them in worship, celebration, and daily life.</p><h3>The Four Families</h3><p>Musicologists classify all instruments into four families based on how they produce sound (Hornbostel and Sachs, 1914):</p><p><strong>Chordophones</strong> produce sound through vibrating strings. The harp appears in Sumerian art from 3000 BCE. From the lyre of ancient Greece to the modern violin, guitar, and grand piano — all share the same principle.</p><p><strong>Aerophones</strong> produce sound through a vibrating column of air. Ancient Egyptians played double-reed instruments similar to the modern oboe. The connection between breath and music is no accident — air is the medium of the voice.</p><p><strong>Membranophones</strong> produce sound through a vibrating membrane. Drums are found in every known human culture. In West African traditions that influenced Nigerian worship, specific drum patterns communicate specific messages.</p><p><strong>Idiophones</strong> produce sound through the vibration of the instrument body itself. Bells, gongs, xylophones, the sistrum — and the church bells that have called the faithful to worship since the 6th century.</p><h3>The Pipe Organ</h3><p>No instrument is more closely associated with sacred music. Mozart called it the king of instruments. Its ancestor, the <em>hydraulis</em>, was invented by <strong>Ctesibius</strong> in Alexandria around 250 BCE for Roman theatres. By the medieval period, organs had become permanent fixtures in cathedrals. <strong>Johann Sebastian Bach</strong> wrote organ music of extraordinary spiritual depth in the Baroque period — still performed in Catholic churches every Sunday.</p><h3>Instruments in Nigerian Catholic Worship</h3><p>The Second Vatican Council (1962–1965) endorsed <strong>inculturation</strong> — integrating local cultural expressions into Catholic liturgy. In Nigeria, this opened the door to indigenous instruments: the <strong>udu drum</strong> (clay percussion, Igbo origin), the <strong>ekwe</strong> (slit drum, also Igbo), and various shakers and call-and-response patterns. This integration remains an active theological and aesthetic conversation.</p>`,
-    pool:[
-      {q:'What instrument is called the "King of Instruments"?',opts:['The harp','The violin','The pipe organ','The trumpet'],ans:2},
-      {q:'Who invented the hydraulis, ancestor of the pipe organ?',opts:['Pythagoras','Ctesibius','Guido d\'Arezzo','Aristotle'],ans:1},
-      {q:'Which Vatican Council endorsed inculturation in Catholic worship?',opts:['First Vatican Council','Council of Trent','Second Vatican Council','Council of Nicaea'],ans:2},
-      {q:'Which family produces sound through a vibrating membrane?',opts:['Chordophones','Aerophones','Idiophones','Membranophones'],ans:3},
-      {q:'The harp belongs to which instrument family?',opts:['Aerophones','Membranophones','Chordophones','Idiophones'],ans:2},
-      {q:'Which Nigerian instruments have been incorporated into Catholic worship?',opts:['Violin and piano','Udu drum and ekwe','Trumpet and trombone','Sitar and tabla'],ans:1},
-      {q:'The Hornbostel-Sachs system was developed in which year?',opts:['1850','1880','1914','1945'],ans:2},
-      {q:'The hydraulis was originally used in ancient Rome for what purpose?',opts:['Sacred worship','Theatres and gladiatorial contests','Military battle','Private households'],ans:1},
-      {q:'Which family produces sound through the vibration of the instrument body?',opts:['Chordophones','Membranophones','Aerophones','Idiophones'],ans:3},
-      {q:'Bach composed organ music during which period?',opts:['The Renaissance','The Medieval period','The Baroque period','The Classical period'],ans:2},
-      {q:'The udu drum originates among which Nigerian people?',opts:['The Yoruba','The Igbo','The Hausa','The Efik'],ans:1},
-      {q:'Who called the pipe organ the "King of Instruments"?',opts:['Johann Sebastian Bach','Ludwig van Beethoven','Wolfgang Amadeus Mozart','Antonio Vivaldi'],ans:2}
-    ]
+    id: 3, code: 'Course 03', title: 'Choral Leadership',
+    tag: '🎼 Leadership', desc: 'Skills to lead, coordinate, and inspire a choir from rehearsal through to Sunday Mass performance.',
+    moduleCount: 5, duration: '~6 hours',
+    modules: []
+  },
+  {
+    id: 4, code: 'Course 04', title: "The Choirmaster's Craft",
+    tag: '🎓 Practice', desc: 'A practical guide to the role: voice training, score reading, liturgical planning, and administration.',
+    moduleCount: 4, duration: '~5 hours',
+    modules: []
+  },
+  {
+    id: 5, code: 'Course 05', title: 'Sacred Music Composition',
+    tag: '✍ Composition', desc: 'Compose original hymns and Mass settings covering melody, harmony, text setting, and liturgical appropriateness.',
+    moduleCount: 6, duration: '~8 hours',
+    modules: []
+  },
+  {
+    id: 6, code: 'Course 06', title: 'Voice & Instrument Proficiency',
+    tag: '🎵 Performance', desc: 'Technical foundations in vocal production and instrumental accompaniment for liturgical settings.',
+    moduleCount: 4, duration: '~5 hours',
+    modules: []
   }
 ];
+
+// Parse programme string from application e.g. "Course 05 — Sacred Music Composition" → course object
+function getCourseFromProgramme(programmeStr) {
+  if (!programmeStr) return ALL_COURSES[0];
+  var match = programmeStr.match(/Course\s+0?(\d+)/i);
+  if (!match) return ALL_COURSES[0];
+  var num = parseInt(match[1]);
+  return ALL_COURSES.find(c => c.id === num) || ALL_COURSES[0];
+}
+
+
+var MODULES = []; // set after login based on student's enrolled course
+var CURRENT_COURSE = null;
 
 // ── AUTH ──────────────────────────────────────────────────────────────────────
 async function doLogin() {
@@ -506,10 +564,19 @@ async function doLogin() {
     // Update last login
     await sbPatch('students', 'id=eq.'+student.id, {last_login: new Date().toISOString()});
     currentStudent = student;
+    // Set course based on enrolled programme
+    CURRENT_COURSE = getCourseFromProgramme(student.programme);
+    MODULES = CURRENT_COURSE.modules || [];
     await loadProgress();
+    // Update dashboard display
     document.getElementById('topbar').style.display = 'flex';
     document.getElementById('topbarName').textContent = student.first_name;
     document.getElementById('dashName').textContent = 'Welcome back, ' + student.first_name + '.';
+    // Update enrolled course card
+    document.getElementById('enrolledCourseNum').textContent = CURRENT_COURSE.code + ' of 6';
+    document.getElementById('enrolledCourseTitle').textContent = CURRENT_COURSE.title;
+    document.getElementById('enrolledCourseDesc').textContent = CURRENT_COURSE.desc;
+    document.getElementById('enrolledCourseMeta').innerHTML = '📖 '+CURRENT_COURSE.moduleCount+' Modules &nbsp;<span style="color:var(--dim)">·</span>&nbsp; ⏱ '+CURRENT_COURSE.duration+' &nbsp;<span style="color:var(--dim)">·</span>&nbsp; ✍ Assessment per module &nbsp;<span style="color:var(--dim)">·</span>&nbsp; 🎓 Final exam (in-person)';
     history.replaceState({screen:'dash'},'','#dash');
     showScreen('screen-dash');
   } catch(e) {
@@ -541,7 +608,8 @@ function logout() {
 async function loadProgress() {
   if (!currentStudent) return;
   try {
-    var rows = await sbGet('progress', 'student_id=eq.'+currentStudent.id+'&course_id=eq.1&select=module_index');
+    var courseId = CURRENT_COURSE ? CURRENT_COURSE.id : 1;
+    var rows = await sbGet('progress', 'student_id=eq.'+currentStudent.id+'&course_id=eq.'+courseId+'&select=module_index');
     completedModules = rows.map(r => r.module_index);
   } catch(e) { completedModules = []; }
 }
@@ -551,7 +619,7 @@ async function saveProgress(modIndex) {
   try {
     await sbPost('progress', {
       student_id: currentStudent.id,
-      course_id: 1,
+      course_id: CURRENT_COURSE ? CURRENT_COURSE.id : 1,
       module_index: modIndex
     });
   } catch(e) { /* ignore duplicate unique constraint */ }
@@ -568,6 +636,18 @@ function goCourse() { renderCourse(); history.pushState({screen:'course'},'','#c
 
 // ── COURSE ────────────────────────────────────────────────────────────────────
 function renderCourse() {
+  // Update course header with correct course info
+  if (CURRENT_COURSE) {
+    document.getElementById('courseTitle2').textContent = CURRENT_COURSE.title;
+    document.getElementById('courseH1').textContent = CURRENT_COURSE.title;
+  }
+  // If no modules yet (content not uploaded), show placeholder
+  if (!MODULES || MODULES.length === 0) {
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('progressText').textContent = 'Content coming soon';
+    document.getElementById('modulesList').innerHTML = '<div style="text-align:center;padding:48px 24px;color:var(--muted);"><div style="font-size:40px;margin-bottom:16px;">📚</div><div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:8px;">Content Coming Soon</div><div style="font-size:14px;line-height:1.65;">The academy is preparing content for <strong>'+((CURRENT_COURSE&&CURRENT_COURSE.title)||'this course')+'</strong>.<br>Check back soon or contact your coordinator.</div></div>';
+    return;
+  }
   var pct = Math.round((completedModules.length / MODULES.length) * 100);
   document.getElementById('progressFill').style.width = pct+'%';
   document.getElementById('progressText').textContent = completedModules.length+' of '+MODULES.length+' complete';
