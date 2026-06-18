@@ -159,7 +159,7 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
 .q-item{margin-bottom:22px;} .q-item:last-child{margin-bottom:0;}
 .q-text{font-size:14px;font-weight:500;color:var(--text);margin-bottom:12px;line-height:1.5;}
 .q-options{display:flex;flex-direction:column;gap:8px;}
-.q-opt{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.15s;font-size:13px;color:var(--muted);background:var(--white);}
+.q-opt{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.15s;font-size:14px;color:var(--muted);background:var(--white);min-height:52px;}
 .q-opt:hover{border-color:var(--blue);color:var(--text);background:var(--blue-pale);}
 .q-opt.sel{border-color:var(--blue);background:var(--blue-light);color:var(--blue);font-weight:500;}
 .q-opt.correct{border-color:var(--ok);background:var(--ok-light);color:var(--ok);font-weight:500;pointer-events:none;}
@@ -399,6 +399,7 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
     <div class="dash-sub">Your enrolled course is ready. Continue where you left off.</div>
   </div>
   <div class="dash-body">
+    <div id="dashAnnouncements" style="display:none;margin-bottom:24px;"></div>
     <div class="dash-section-label">Your Enrolled Course</div>
     <div class="course-card" onclick="goCourse()">
       <div class="course-card-band"></div>
@@ -449,6 +450,7 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
       <a onclick="goCourse()" id="modBreadcrumbCourse"></a><span class="breadcrumb-sep">›</span>
       <span id="modBreadcrumb"></span>
     </div>
+    <div id="modTopic" style="display:none;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold-dark);background:var(--gold-light);border-radius:8px;padding:8px 14px;margin-bottom:12px;"></div>
     <div class="module-h1" id="modTitle"></div>
     <div class="read-timer" id="readTimer">
       <div class="rt-top"><span>⏱</span><span class="rt-msg" id="timerMsg">Reading timer active</span></div>
@@ -485,6 +487,9 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
       <div class="quiz-result" id="quizResult"></div>
     </div>
     <div class="mod-actions" id="modActions"></div>
+    <div style="margin-top:8px;padding-top:16px;border-top:1px solid var(--border);">
+      <button class="btn btn-secondary" style="font-size:12px;padding:8px 16px;" onclick="showFeedbackModal()">💬 Send feedback on this module</button>
+    </div>
   </div>
 </div>
 
@@ -499,6 +504,7 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
       <div class="complete-card-item"><div>📞</div>Your instructor will contact you with exam details</div>
       <div class="complete-card-item"><div>🎓</div>Certificate issued upon passing the final examination</div>
     </div>
+    <button class="btn btn-amber" onclick="generateCertificate()" style="margin-right:10px;">🎓 Download Certificate</button>
     <button class="btn btn-secondary" onclick="goDash()">← Back to Dashboard</button>
   </div>
 </div>
@@ -555,7 +561,9 @@ var scrollDone = false;
 var timerInterval = null;
 var SHOW_COUNT = 4;
 var READ_TIME = 90;
-var PASS_MARK = 100;
+var PASS_MARK = 100; // overridden per module
+var MAX_ATTEMPTS = 0; // overridden per module; 0 = unlimited
+var currentAttemptCount = 0; // attempts on current module this session
 
 // ── COURSE STATE (DB-driven, no hardcoding) ─────────────────────────────────
 var MODULES = [];
@@ -648,12 +656,15 @@ async function loadCourseAndModulesFromDB(programmeStr) {
       return {
         num: 'Module ' + String(r.module_index + 1).padStart(2, '0'),
         title: r.module_title || ('Module ' + (r.module_index + 1)),
+        topic: r.module_topic || '',
         duration: '~60 min',
         videoUrl: r.video_url || '',
         audioTracks: audio,
         downloads: downloads,
         content: r.reading_html || '<p>Content coming soon.</p>',
-        pool: questions
+        pool: questions,
+        passMark: r.pass_mark || 100,
+        maxAttempts: r.max_attempts || 0
       };
     });
 
@@ -735,7 +746,7 @@ async function doLogin() {
     // 6. Handle Remember Me
     var rememberCb = document.getElementById('rememberMe');
     if (rememberCb && rememberCb.checked) {
-      saveRememberMe(email, pass);
+      saveRememberMe(email, hash); // store hash, not raw password
     } else {
       clearRememberMe();
     }
@@ -770,6 +781,7 @@ async function doLogin() {
     history.replaceState({ screen: 'dash' }, '', '#dash');
     renderOtherCourses();
     showScreen('screen-dash');
+    loadAnnouncements();
 
   } catch(e) {
     console.error('Login error:', e);
@@ -845,7 +857,31 @@ function showScreen(id) {
   if (tb) tb.style.display = (id === 'screen-login') ? 'none' : 'flex';
   window.scrollTo(0,0);
 }
-function goDash() { history.pushState({screen:'dash'},'','#dash'); showScreen('screen-dash'); }
+function goDash() {
+  history.pushState({screen:'dash'},'','#dash');
+  showScreen('screen-dash');
+  loadAnnouncements();
+}
+
+async function loadAnnouncements() {
+  try {
+    var prog = CURRENT_COURSE ? CURRENT_COURSE.id : '';
+    var rows = await sbGet('announcements','order=created_at.desc&limit=3');
+    if (!rows.length) return;
+    var banner = document.getElementById('dashAnnouncements');
+    if (!banner) return;
+    banner.innerHTML = rows.map(function(a) {
+      var icons = {info:'ℹ️',warn:'⚠️',ok:'✅'};
+      var bgs = {info:'var(--navy-light)',warn:'var(--warn-light)',ok:'var(--ok-light)'};
+      var colors = {info:'var(--navy-mid)',warn:'var(--gold-dark)',ok:'var(--ok)'};
+      return '<div style="background:'+(bgs[a.type]||'var(--navy-light)')+';border-radius:10px;padding:12px 16px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start;">'
+        +'<span style="font-size:16px;flex-shrink:0;">'+(icons[a.type]||'ℹ️')+'</span>'
+        +'<div><div style="font-size:13px;font-weight:700;color:'+(colors[a.type]||'var(--navy)')+';margin-bottom:2px;">'+a.title+'</div>'
+        +'<div style="font-size:12px;color:var(--muted);">'+a.body+'</div></div></div>';
+    }).join('');
+    banner.style.display = 'block';
+  } catch(e){}
+}
 function goCourse() { renderCourse(); history.pushState({screen:'course'},'','#course'); showScreen('screen-course'); }
 
 // ── COURSE ────────────────────────────────────────────────────────────────────
@@ -904,6 +940,23 @@ function openMod(i) {
   timerDone = false; scrollDone = false;
   if (timerInterval) clearInterval(timerInterval);
   var m = MODULES[i];
+  PASS_MARK = m.passMark || 100;
+  MAX_ATTEMPTS = m.maxAttempts || 0;
+  // Count existing attempts for this module from DB
+  currentAttemptCount = 0;
+  if (MAX_ATTEMPTS > 0 && currentStudent) {
+    sbGet('assessment_attempts','student_id=eq.'+currentStudent.id+'&module_index=eq.'+i+'&select=id').then(function(rows){
+      currentAttemptCount = rows.length;
+      if (currentAttemptCount >= MAX_ATTEMPTS) {
+        var quizBody = document.getElementById('quizBody');
+        if (quizBody) quizBody.innerHTML = '<div class="quiz-locked" style="background:var(--danger-light);border-radius:10px;padding:24px;">'
+          +'<div class="quiz-locked-icon">🔒</div>'
+          +'<div class="quiz-locked-title" style="color:var(--danger);">Attempt limit reached</div>'
+          +'<div class="quiz-locked-text">You have used all '+MAX_ATTEMPTS+' attempt(s) for this module. Please contact your instructor.</div>'
+          +'</div>';
+      }
+    }).catch(function(){});
+  }
   var pool = [...m.pool];
   shownQuestions = [];
   var count = Math.min(SHOW_COUNT, pool.length);
@@ -915,7 +968,20 @@ function openMod(i) {
   var bc = document.getElementById('modBreadcrumbCourse');
   if (bc) bc.textContent = CURRENT_COURSE ? CURRENT_COURSE.title : 'Course';
   document.getElementById('modTitle').textContent = m.title;
-  document.getElementById('modContent').innerHTML = m.content;
+  // Show topic/header if set
+  var topicEl = document.getElementById('modTopic');
+  if (topicEl) {
+    if (m.topic) { topicEl.textContent = m.topic; topicEl.style.display = 'block'; }
+    else { topicEl.style.display = 'none'; }
+  }
+  var wordCount = (m.content || '').replace(/<[^>]*>/g,'').split(/\s+/).filter(Boolean).length;
+  var readMins = Math.max(1, Math.ceil(wordCount / 200));
+  document.getElementById('modContent').innerHTML =
+    '<div style="font-size:11px;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:8px;">'
+    +'<span>📖 Estimated reading time: ~'+readMins+' min</span>'
+    +'<span style="color:var(--dim);">·</span>'
+    +'<span>'+wordCount+' words</span></div>'
+    + m.content;
   // video — normalise any YouTube URL format to embed
   var vw = document.getElementById('videoWrap');
   var vs = document.getElementById('videoSection');
@@ -1027,6 +1093,7 @@ async function submitQuiz() {
   submitted = true;
   var score = shownQuestions.filter((q,qi) => answers[qi]===q.ans).length;
   var passCount = Math.ceil(shownQuestions.length * PASS_MARK / 100);
+  currentAttemptCount++;
   var passed = score >= passCount;
   if (passed) {
     // PASS: show correct answers, unlock next module
@@ -1139,14 +1206,12 @@ function loadSession() {
   } catch(e){ return null; }
 }
 
-// Remember Me — save email + password
-function saveRememberMe(email, password) {
-  try {
-    localStorage.setItem('cma_remember', JSON.stringify({email: email, password: password}));
-  } catch(e){}
+// Remember Me — store email + hash (never the raw password)
+function saveRememberMe(email, passHash) {
+  try { localStorage.setItem('cma_remember', JSON.stringify({email:email, passHash:passHash})); } catch(e){}
 }
 function getRemembered() {
-  try { return JSON.parse(localStorage.getItem('cma_remember') || 'null'); } catch(e){ return null; }
+  try { return JSON.parse(localStorage.getItem('cma_remember')||'null'); } catch(e){ return null; }
 }
 function clearRememberMe() {
   try { localStorage.removeItem('cma_remember'); } catch(e){}
@@ -1160,10 +1225,8 @@ function clearRememberMe() {
   if (remembered && remembered.email) {
     var emailEl = document.getElementById('loginEmail');
     if (emailEl) emailEl.value = remembered.email;
-    if (remembered.password) {
-      var passEl = document.getElementById('loginPass');
-      if (passEl) passEl.value = remembered.password;
-    }
+    // Note: we store a hash, not the raw password, so we cannot prefill the password field.
+    // The checkbox is checked to signal the user their email is remembered.
     var cb = document.getElementById('rememberMe');
     if (cb) cb.checked = true;
   }
@@ -1196,10 +1259,115 @@ function clearRememberMe() {
     renderOtherCourses();
     history.replaceState({screen:'dash'},'','#dash');
     showScreen('screen-dash');
+    loadAnnouncements();
     return;
   }
   showScreen('screen-login');
 })();
+
+// ── STUDENT FEEDBACK ─────────────────────────────────────────────────────────
+function showFeedbackModal() {
+  var existing = document.getElementById('feedbackModal');
+  if (existing) existing.remove();
+  var m = MODULES[currentMod] || {};
+  var modal = document.createElement('div');
+  modal.id = 'feedbackModal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+  modal.innerHTML = '<div style="background:white;border-radius:16px;padding:28px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,0.2);">'
+    +'<div style="font-family:\'DM Serif Display\',serif;font-size:20px;color:var(--text);margin-bottom:4px;">Send Feedback</div>'
+    +'<div style="font-size:13px;color:var(--muted);margin-bottom:18px;">Module: '+m.title+'</div>'
+    +'<div style="margin-bottom:12px;">'
+    +'<label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:5px;">Type</label>'
+    +'<select id="fbType" style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:13px;font-family:\'DM Sans\',sans-serif;outline:none;">'
+    +'<option value="question">❓ Question about content</option>'
+    +'<option value="issue">⚠️ Problem / technical issue</option>'
+    +'<option value="suggestion">💡 Suggestion</option>'
+    +'<option value="compliment">⭐ Compliment</option>'
+    +'</select></div>'
+    +'<div style="margin-bottom:16px;">'
+    +'<label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:5px;">Message</label>'
+    +'<textarea id="fbMessage" placeholder="Type your message here..." style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:13px;font-family:\'DM Sans\',sans-serif;outline:none;min-height:100px;resize:vertical;"></textarea>'
+    +'</div>'
+    +'<div id="fbMsg" style="display:none;font-size:13px;color:var(--ok);background:var(--ok-light);border-radius:8px;padding:9px 13px;margin-bottom:10px;"></div>'
+    +'<div style="display:flex;gap:8px;">'
+    +'<button class="btn btn-primary" onclick="submitFeedback()">Send →</button>'
+    +'<button class="btn btn-secondary" onclick="document.getElementById(\'feedbackModal\').remove()">Cancel</button>'
+    +'</div></div>';
+  modal.addEventListener('click',function(e){if(e.target===modal)modal.remove();});
+  document.body.appendChild(modal);
+}
+
+async function submitFeedback() {
+  var type = (document.getElementById('fbType')||{}).value||'general';
+  var message = ((document.getElementById('fbMessage')||{}).value||'').trim();
+  if (!message) { alert('Please enter a message.'); return; }
+  var msg = document.getElementById('fbMsg');
+  try {
+    await sbPost('student_feedback', {
+      student_id: currentStudent ? currentStudent.id : null,
+      module_index: currentMod,
+      type: type,
+      message: message,
+      submitted_at: new Date().toISOString(),
+      resolved: false
+    });
+    if (msg) { msg.textContent = '✓ Feedback sent. Thank you!'; msg.style.display = 'block'; }
+    setTimeout(function(){ var m=document.getElementById('feedbackModal'); if(m) m.remove(); }, 2000);
+  } catch(e) {
+    if (msg) { msg.textContent = 'Could not send. Please try again.'; msg.style.color='var(--danger)'; msg.style.background='var(--danger-light)'; msg.style.display='block'; }
+  }
+}
+
+// ── CERTIFICATE GENERATION ────────────────────────────────────────────────────
+function generateCertificate() {
+  if (!currentStudent || !CURRENT_COURSE) return;
+  var name = currentStudent.first_name + ' ' + currentStudent.last_name;
+  var course = CURRENT_COURSE.title;
+  var date = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  var certId = 'CMA-' + Date.now().toString(36).toUpperCase();
+
+  var win = window.open('','_blank','width=900,height=640');
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"/>'
+    +'<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet"/>'
+    +'<style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#f8f6f0;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:\'DM Sans\',sans-serif;padding:24px;}'
+    +'.cert{background:white;width:820px;padding:56px 64px;border:3px solid #0D1B3E;border-radius:4px;position:relative;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.12);}'
+    +'.cert::before{content:"";position:absolute;inset:10px;border:1px solid #C9A84C;border-radius:2px;pointer-events:none;}'
+    +'.eyebrow{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#9A7A2E;margin-bottom:24px;}'
+    +'.academy{font-family:\'DM Serif Display\',serif;font-size:28px;color:#0D1B3E;margin-bottom:4px;}'
+    +'.diocese{font-size:13px;color:#64748B;margin-bottom:40px;}'
+    +'.awarded{font-size:14px;color:#64748B;margin-bottom:12px;}'
+    +'.student-name{font-family:\'DM Serif Display\',serif;font-size:48px;color:#0D1B3E;border-bottom:2px solid #C9A84C;padding-bottom:8px;display:inline-block;margin-bottom:20px;line-height:1.15;}'
+    +'.completion{font-size:14px;color:#64748B;margin-bottom:8px;}'
+    +'.course-name{font-family:\'DM Serif Display\',serif;font-size:24px;color:#0D1B3E;margin-bottom:32px;}'
+    +'.seal{font-size:56px;margin:16px 0;}'
+    +'.date-row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:40px;padding-top:24px;border-top:1px solid #E2E8F0;}'
+    +'.sig-block{text-align:left;}'
+    +'.sig-name{font-family:\'DM Serif Display\',serif;font-size:16px;color:#0D1B3E;border-bottom:1px solid #0D1B3E;padding-bottom:4px;margin-bottom:4px;}'
+    +'.sig-label{font-size:11px;color:#94A3B8;letter-spacing:0.5px;}'
+    +'.cert-id{font-size:10px;color:#CBD5E1;margin-top:20px;letter-spacing:1px;}'
+    +'@media print{body{background:white;padding:0;}.cert{box-shadow:none;border:3px solid #0D1B3E;}}'
+    +'</style></head><body>'
+    +'<div class="cert">'
+    +'<div class="eyebrow">Certificate of Completion</div>'
+    +'<div class="academy">Catholic Music Academy</div>'
+    +'<div class="diocese">Diocese of Warri · Ozoro, Delta State, Nigeria</div>'
+    +'<div class="awarded">This is to certify that</div>'
+    +'<div><div class="student-name">'+name+'</div></div>'
+    +'<div class="completion">has successfully completed all modules of</div>'
+    +'<div class="course-name">'+course+'</div>'
+    +'<div class="seal">✝</div>'
+    +'<div class="date-row">'
+    +'<div class="sig-block"><div class="sig-name">The Director</div><div class="sig-label">Catholic Music Academy</div></div>'
+    +'<div style="text-align:center;"><div style="font-size:13px;color:#0D1B3E;font-weight:600;">'+date+'</div><div class="sig-label">Date of Completion</div></div>'
+    +'<div class="sig-block" style="text-align:right;"><div class="sig-name">DaleX Platform</div><div class="sig-label">Learning Management System</div></div>'
+    +'</div>'
+    +'<div class="cert-id">Certificate ID: '+certId+' · Issued by the Catholic Music Academy LMS</div>'
+    +'</div>'
+    +'<script>window.onload=function(){window.print();}<\/script>'
+    +'</body></html>');
+  win.document.close();
+}
+
 </script>
 </body>
 </html>
