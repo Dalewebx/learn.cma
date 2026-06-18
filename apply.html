@@ -350,36 +350,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px
       <div class="card-title">Programme of Interest</div>
       <div class="card-sub">Select the course you would like to enrol in.</div>
       <div class="prog-grid" id="progGrid">
-        <div class="prog-option selected" onclick="selectProg(this,'Course 01 — Theory of Ancient Music')">
-          <div class="prog-check">✓</div>
-          <div class="prog-title">Course 01</div>
-          <div class="prog-meta">Theory of Ancient Music</div>
-        </div>
-        <div class="prog-option" onclick="selectProg(this,'Course 02 — Liturgical Music Theology')">
-          <div class="prog-check">✓</div>
-          <div class="prog-title">Course 02</div>
-          <div class="prog-meta">Liturgical Music Theology</div>
-        </div>
-        <div class="prog-option" onclick="selectProg(this,'Course 03 — Choral Leadership')">
-          <div class="prog-check">✓</div>
-          <div class="prog-title">Course 03</div>
-          <div class="prog-meta">Choral Leadership</div>
-        </div>
-        <div class="prog-option" onclick="selectProg(this,'Course 04 — The Choirmaster\'s Craft')">
-          <div class="prog-check">✓</div>
-          <div class="prog-title">Course 04</div>
-          <div class="prog-meta">The Choirmaster's Craft</div>
-        </div>
-        <div class="prog-option" onclick="selectProg(this,'Course 05 — Sacred Music Composition')">
-          <div class="prog-check">✓</div>
-          <div class="prog-title">Course 05</div>
-          <div class="prog-meta">Sacred Music Composition</div>
-        </div>
-        <div class="prog-option" onclick="selectProg(this,'Course 06 — Voice & Instrument Proficiency')">
-          <div class="prog-check">✓</div>
-          <div class="prog-title">Course 06</div>
-          <div class="prog-meta">Voice & Instrument Proficiency</div>
-        </div>
+        <div style="text-align:center;padding:24px;color:var(--muted);font-size:13px;">Loading available courses...</div>
       </div>
       <div class="field-err" id="err-prog" style="margin-top:8px;">Please select a programme.</div>
     </div>
@@ -534,9 +505,50 @@ async function hashPassword(password) {
 }
 
 var currentStep = 1;
-var selectedProg = 'Course 01 — Theory of Ancient Music';
+var selectedProg = '';
 var selectedBg = 'No formal training — I sing but have not studied music formally';
 var selectedFile = null;
+
+// ── LOAD COURSES DYNAMICALLY FROM SUPABASE ────────────────────────────────────
+async function loadCoursesForApply() {
+  var grid = document.getElementById('progGrid');
+  if (!grid) return;
+  try {
+    var res = await fetch(
+      SUPA_URL + '/rest/v1/course_content?order=course_order.asc,module_index.asc',
+      { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
+    );
+    if (!res.ok) throw new Error('fetch failed');
+    var rows = await res.json();
+    // Deduplicate by course_id — one card per unique course
+    var seen = {};
+    var courses = [];
+    rows.forEach(function(r) {
+      if (!seen[r.course_id]) {
+        seen[r.course_id] = true;
+        courses.push({ id: r.course_id, title: r.course_title, color: r.course_color || '#0D1B3E', order: r.course_order });
+      }
+    });
+    if (!courses.length) throw new Error('no courses');
+    grid.innerHTML = courses.map(function(c, i) {
+      // Value stored in applications.programme = course title e.g. "Course 01: Theory of Ancient Music"
+      var val = c.title;
+      var isFirst = i === 0;
+      if (isFirst) selectedProg = val;
+      return '<div class="prog-option'+(isFirst?' selected':'')+'" onclick="selectProg(this,\''+val.replace(/'/g,"\\'")+'\')">'
+        + '<div class="prog-check">✓</div>'
+        + '<div style="width:10px;height:10px;border-radius:50%;background:'+c.color+';margin-bottom:4px;"></div>'
+        + '<div class="prog-title">'+val+'</div>'
+        + '</div>';
+    }).join('');
+  } catch(e) {
+    // Fallback: show a text input so they can still apply
+    grid.innerHTML = '<div style="width:100%;">'
+      + '<p style="font-size:13px;color:var(--muted);margin-bottom:10px;">Could not load live courses. Please type your programme below.</p>'
+      + '<input class="field-input" id="progTextInput" placeholder="e.g. Theory of Ancient Music" oninput="selectedProg=this.value" style="width:100%;"/>'
+      + '</div>';
+  }
+}
 
 function goStep(n) {
   if (n > currentStep && !validateStep(currentStep)) return;
@@ -544,6 +556,7 @@ function goStep(n) {
   [1,2,3,4].forEach(i => document.getElementById('step'+i).style.display = i===n?'block':'none');
   document.getElementById('stepSuccess').style.display = 'none';
   updateStepUI(n);
+  if (n===2) loadCoursesForApply();
   if (n===4) buildReview();
   window.scrollTo({top:0,behavior:'smooth'});
 }
