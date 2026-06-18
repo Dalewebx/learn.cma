@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Catholic Music Academy — Admin</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDxwYXRoIGQ9Ik03IDQgTDI1IDQgTDI1IDIyIFExNiAyOCA3IDIyIFoiIGZpbGw9IiMxQTJFNkMiLz4KICA8cGF0aCBkPSJNNyA0IEwyNSA0IEwyNSAyMiBRMTYgMjggNyAyMiBaIiBmaWxsPSJub25lIiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxyZWN0IHg9IjE0LjUiIHk9IjciIHdpZHRoPSIzIiBoZWlnaHQ9IjEyIiByeD0iMSIgZmlsbD0iI0M5QTg0QyIvPgogIDxyZWN0IHg9IjkiIHk9IjExIiB3aWR0aD0iMTQiIGhlaWdodD0iMyIgcng9IjEiIGZpbGw9IiNDOUE4NEMiLz4KICA8bGluZSB4MT0iMTAiIHkxPSIyMCIgeDI9IjIyIiB5Mj0iMjAiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIwLjgiIG9wYWNpdHk9IjAuNyIvPgogIDxsaW5lIHgxPSIxMCIgeTE9IjIyLjUiIHgyPSIyMiIgeTI9IjIyLjUiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIwLjgiIG9wYWNpdHk9IjAuNyIvPgo8L3N2Zz4="/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDwhLS0gV3JlbmNoIGJvZHkgLS0+CiAgPHBhdGggZD0iTTIwLjUgNUMxNy40IDUgMTUgNy40IDE1IDEwLjVjMCAuNS4xIDEgLjIgMS40TDYgMjFsLS4yLjJhMiAyIDAgMCAwIDIuOCAyLjhsLjItLjIgOS4xLTkuMWMuNC4xLjkuMiAxLjQuMiAzLjEgMCA1LjUtMi40IDUuNS01LjUgMC0uNy0uMS0xLjMtLjMtMS45bC0yLjggMi44LTEuNy0uNS0uNS0xLjcgMi44LTIuOEMyMS44IDUuMSAyMS4yIDUgMjAuNSA1eiIgZmlsbD0iI0M5QTg0QyIvPgogIDwhLS0gTXVzaWMgbm90ZSBkb3QgLS0+CiAgPGNpcmNsZSBjeD0iOCIgY3k9IjI0IiByPSIxLjQiIGZpbGw9IiMxQTJFNkMiLz4KPC9zdmc+"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -141,7 +141,7 @@ tr:hover td{background:var(--surface);}
 <div id="loginScreen">
   <div class="login-wrap">
     <div class="login-box">
-      <div class="login-box-logo">
+      <a href="index.html" class="login-box-logo" style="text-decoration:none;display:flex;align-items:center;gap:10px;margin-bottom:32px;">
         <div class="login-box-icon" style="display:flex;align-items:center;justify-content:center;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="42" height="42" aria-hidden="true" style="flex-shrink:0;">
   <rect width="48" height="48" rx="10" fill="#0D1B3E"/>
   <path d="M24 5 L41 5 L41 32 Q24 43 7 32 L7 5 Z" fill="#1A2E6C"/>
@@ -157,9 +157,8 @@ tr:hover td{background:var(--surface);}
           <div class="login-box-name">Catholic Music Academy</div>
           <div class="login-box-sub" style="color:var(--gold-dark);font-weight:600;">Admin Portal</div>
         </div>
-      </div>
+      </a>
       <h2 style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--text);margin-bottom:6px;">Admin Sign In</h2>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">Sign in to manage applications, students, and content.</p>
       <label class="f-label">Username</label>
       <input class="f-input" id="adminUser" type="text" placeholder="Admin username" autocomplete="username"/>
       <label class="f-label">Password</label>
