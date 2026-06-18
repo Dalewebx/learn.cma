@@ -4,31 +4,34 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Catholic Music Academy — Admin</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDxwYXRoIGQ9Ik03IDQgTDI1IDQgTDI1IDIyIFExNiAyOCA3IDIyIFoiIGZpbGw9IiMxQTJFNkMiLz4KICA8cGF0aCBkPSJNNyA0IEwyNSA0IEwyNSAyMiBRMTYgMjggNyAyMiBaIiBmaWxsPSJub25lIiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxyZWN0IHg9IjE0LjUiIHk9IjciIHdpZHRoPSIzIiBoZWlnaHQ9IjEyIiByeD0iMSIgZmlsbD0iI0M5QTg0QyIvPgogIDxyZWN0IHg9IjkiIHk9IjExIiB3aWR0aD0iMTQiIGhlaWdodD0iMyIgcng9IjEiIGZpbGw9IiNDOUE4NEMiLz4KICA8bGluZSB4MT0iMTAiIHkxPSIyMCIgeDI9IjIyIiB5Mj0iMjAiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIwLjgiIG9wYWNpdHk9IjAuNyIvPgogIDxsaW5lIHgxPSIxMCIgeTE9IjIyLjUiIHgyPSIyMiIgeTI9IjIyLjUiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIwLjgiIG9wYWNpdHk9IjAuNyIvPgo8L3N2Zz4="/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --blue:#1A2E6C;--blue-mid:#2B47A8;--blue-light:#EEF2FF;--blue-pale:#F0F4FF;
-  --amber:#F59E0B;--amber-light:#FEF3C7;--amber-dark:#D97706;
+  --navy:#0D1B3E;--navy-mid:#1A2E6C;--navy-light:#EEF2FF;--navy-pale:#F4F6FF;
+  --blue:#1A2E6C;--blue-mid:#2B47A8;--blue-light:#EEF2FF;--blue-pale:#F4F6FF;
+  --gold:#C9A84C;--gold-light:#F5E6C0;--gold-dark:#9A7A2E;
+  --amber:#C9A84C;--amber-light:#F5E6C0;--amber-dark:#9A7A2E;
   --text:#0F172A;--muted:#64748B;--dim:#94A3B8;--border:#E2E8F0;
-  --surface:#F8FAFC;--white:#FFFFFF;--ok:#16A34A;--ok-light:#DCFCE7;
-  --danger:#DC2626;--danger-light:#FEE2E2;--warn:#F59E0B;--warn-light:#FEF3C7;
+  --surface:#FAFAF7;--white:#FFFFFF;--ok:#16A34A;--ok-light:#DCFCE7;
+  --danger:#DC2626;--danger-light:#FEE2E2;--warn:#C9A84C;--warn-light:#F5E6C0;
   --sidebar:240px;
 }
 body{background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
-.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;background:var(--blue);}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;background:var(--navy);}
 .login-box{background:var(--white);border-radius:20px;padding:44px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
 .login-box-logo{display:flex;align-items:center;gap:10px;margin-bottom:32px;}
-.login-box-icon{width:42px;height:42px;background:var(--blue);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--white);}
+.login-box-icon{width:42px;height:42px;background:var(--navy);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--white);}
 .login-box-name{font-family:'DM Serif Display',serif;font-size:18px;color:var(--blue);}
 .login-box-sub{font-size:11px;color:var(--muted);}
 .f-label{font-size:12px;font-weight:600;color:var(--text);display:block;margin-bottom:5px;}
 .f-input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;margin-bottom:14px;transition:border-color 0.2s;}
-.f-input:focus{border-color:var(--blue);}
+.f-input:focus{border-color:var(--navy);}
 .f-err{font-size:12px;color:var(--danger);background:var(--danger-light);border-radius:8px;padding:9px 13px;margin-bottom:12px;display:none;}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:all 0.18s;}
-.btn-primary{background:var(--blue);color:var(--white);padding:12px 24px;font-size:14px;}
-.btn-primary:hover{background:var(--blue-mid);}
+.btn-primary{background:var(--navy);color:var(--white);padding:12px 24px;font-size:14px;}
+.btn-primary:hover{background:var(--navy-mid);}
 .btn-primary:disabled{opacity:0.45;cursor:not-allowed;}
 .btn-ok{background:var(--ok);color:var(--white);padding:8px 16px;font-size:12px;}
 .btn-ok:hover{opacity:0.88;}
@@ -40,8 +43,8 @@ body{background:var(--surface);color:var(--text);font-family:'DM Sans',sans-seri
 .btn-whatsapp:hover{background:#20ba5a;}
 .btn-amber{background:var(--amber);color:var(--white);padding:8px 16px;font-size:12px;}
 .admin-wrap{display:flex;min-height:100vh;}
-.sidebar{width:var(--sidebar);background:var(--blue);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;overflow-y:auto;}
-.sidebar-brand{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,0.1);}
+.sidebar{width:var(--sidebar);background:var(--navy);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;overflow-y:auto;}
+.sidebar-brand{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,0.08);}
 .sidebar-brand-row{display:flex;align-items:center;gap:9px;}
 .sidebar-icon{width:32px;height:32px;background:rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;color:white;flex-shrink:0;}
 .sidebar-brand-name{font-family:'DM Serif Display',serif;font-size:14px;color:white;line-height:1.2;}
@@ -69,7 +72,7 @@ body{background:var(--surface);color:var(--text);font-family:'DM Sans',sans-seri
 .card-title{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-bottom:28px;}
 .stat-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;}
-.stat-val{font-family:'DM Serif Display',serif;font-size:36px;color:var(--blue);line-height:1;}
+.stat-val{font-family:'DM Serif Display',serif;font-size:36px;color:var(--navy);line-height:1;}
 .stat-label{font-size:12px;color:var(--muted);margin-top:4px;}
 .stat-card.danger-card .stat-val{color:var(--danger);}
 .stat-card.ok-card .stat-val{color:var(--ok);}
@@ -84,7 +87,7 @@ tr:hover td{background:var(--surface);}
 .pill-ok{background:var(--ok-light);color:var(--ok);}
 .pill-warn{background:var(--warn-light);color:var(--amber-dark);}
 .pill-danger{background:var(--danger-light);color:var(--danger);}
-.pill-blue{background:var(--blue-light);color:var(--blue);}
+.pill-blue{background:var(--navy-light);color:var(--navy);}
 .pill-dim{background:var(--surface);color:var(--muted);border:1px solid var(--border);}
 .prog-bar-bg{height:6px;background:var(--border);border-radius:6px;overflow:hidden;min-width:80px;}
 .prog-bar{height:100%;background:linear-gradient(90deg,var(--blue),var(--amber));border-radius:6px;transition:width 0.4s;}
@@ -99,10 +102,10 @@ tr:hover td{background:var(--surface);}
 .form-group{margin-bottom:16px;}
 .form-label{font-size:12px;font-weight:600;color:var(--text);display:block;margin-bottom:5px;}
 .form-input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;background:var(--white);}
-.form-input:focus{border-color:var(--blue);}
+.form-input:focus{border-color:var(--navy);}
 .form-textarea{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;min-height:90px;resize:vertical;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.cohort-card{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-mid) 100%);border-radius:16px;padding:28px;color:white;margin-bottom:24px;}
+.cohort-card{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);border-radius:16px;padding:28px;color:white;margin-bottom:24px;}
 .cohort-name{font-family:'DM Serif Display',serif;font-size:28px;margin-bottom:4px;}
 .cohort-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px;}
 .cohort-stat{background:rgba(255,255,255,0.12);border-radius:10px;padding:14px;}
@@ -139,10 +142,20 @@ tr:hover td{background:var(--surface);}
   <div class="login-wrap">
     <div class="login-box">
       <div class="login-box-logo">
-        <div class="login-box-icon">⚙</div>
+        <div class="login-box-icon" style="display:flex;align-items:center;justify-content:center;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="42" height="42" aria-hidden="true" style="flex-shrink:0;">
+  <rect width="48" height="48" rx="10" fill="#0D1B3E"/>
+  <path d="M24 5 L41 5 L41 32 Q24 43 7 32 L7 5 Z" fill="#1A2E6C"/>
+  <path d="M24 7 L39 7 L39 31 Q24 41 9 31 L9 7 Z" fill="none" stroke="#C9A84C" stroke-width="1.2"/>
+  <rect x="22" y="10" width="4" height="16" rx="1.2" fill="#C9A84C"/>
+  <rect x="14" y="16" width="20" height="4" rx="1.2" fill="#C9A84C"/>
+  <line x1="16" y1="32" x2="32" y2="32" stroke="#C9A84C" stroke-width="0.9" opacity="0.7"/>
+  <line x1="16" y1="35" x2="32" y2="35" stroke="#C9A84C" stroke-width="0.9" opacity="0.7"/>
+  <ellipse cx="20" cy="32" rx="2.5" ry="1.8" fill="#C9A84C" opacity="0.85"/>
+  <ellipse cx="28" cy="32" rx="2.5" ry="1.8" fill="#C9A84C" opacity="0.85"/>
+</svg></div>
         <div>
           <div class="login-box-name">Catholic Music Academy</div>
-          <div class="login-box-sub">Admin Portal</div>
+          <div class="login-box-sub" style="color:var(--gold-dark);font-weight:600;">Admin Portal</div>
         </div>
       </div>
       <h2 style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--text);margin-bottom:6px;">Admin Sign In</h2>
@@ -163,8 +176,18 @@ tr:hover td{background:var(--surface);}
     <div class="sidebar">
       <div class="sidebar-brand">
         <div class="sidebar-brand-row">
-          <div class="sidebar-icon">♪</div>
-          <div><div class="sidebar-brand-name">Catholic Music Academy</div><div class="sidebar-brand-tag">Admin Portal</div></div>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="42" height="42" aria-hidden="true" style="flex-shrink:0;">
+  <rect width="48" height="48" rx="10" fill="#0D1B3E"/>
+  <path d="M24 5 L41 5 L41 32 Q24 43 7 32 L7 5 Z" fill="#1A2E6C"/>
+  <path d="M24 7 L39 7 L39 31 Q24 41 9 31 L9 7 Z" fill="none" stroke="#C9A84C" stroke-width="1.2"/>
+  <rect x="22" y="10" width="4" height="16" rx="1.2" fill="#C9A84C"/>
+  <rect x="14" y="16" width="20" height="4" rx="1.2" fill="#C9A84C"/>
+  <line x1="16" y1="32" x2="32" y2="32" stroke="#C9A84C" stroke-width="0.9" opacity="0.7"/>
+  <line x1="16" y1="35" x2="32" y2="35" stroke="#C9A84C" stroke-width="0.9" opacity="0.7"/>
+  <ellipse cx="20" cy="32" rx="2.5" ry="1.8" fill="#C9A84C" opacity="0.85"/>
+  <ellipse cx="28" cy="32" rx="2.5" ry="1.8" fill="#C9A84C" opacity="0.85"/>
+</svg>
+          <div><div class="sidebar-brand-name">Catholic Music Academy</div><div class="sidebar-brand-tag" style="color:#C9A84C;font-size:9px;letter-spacing:1px;text-transform:uppercase;">Admin Portal</div></div>
         </div>
       </div>
       <div class="sidebar-section">Overview</div>
@@ -533,11 +556,13 @@ async function approveApp(id) {
         application_id: id,
         phone: a.phone,
         whatsapp: a.whatsapp || a.phone,
-        state: a.state
+        state: a.state,
+        security_question: a.security_question || null,
+        security_answer_hash: a.security_answer_hash || null
       }, 'id=eq.'+existing[0].id);
       showToast('✓ Approved. Existing account reactivated for ' + a.first_name + '.');
     } else {
-      // Create new student account
+      // Create new student account (including security question for password reset)
       await sb('students', 'POST', {
         application_id: id,
         first_name: a.first_name,
@@ -548,6 +573,8 @@ async function approveApp(id) {
         whatsapp: a.whatsapp || a.phone,
         programme: a.programme,
         state: a.state,
+        security_question: a.security_question || null,
+        security_answer_hash: a.security_answer_hash || null,
         status: 'active'
       });
       showToast('✓ Approved. Student account created for ' + a.first_name + '.');
