@@ -307,11 +307,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px
         <label class="field-label">Current role (optional)</label>
         <input class="field-input" id="role" type="text" placeholder="e.g. Choir member, Choirmaster, Music Director"/>
       </div>
-      <div class="field" style="margin-bottom:0;">
-        <label class="field-label">Why are you applying? <span class="req">*</span></label>
-        <textarea class="field-textarea" id="motivation" placeholder="Tell us what motivated you to apply and what you hope to gain..."></textarea>
-        <div class="field-err" id="err-motivation">Please tell us why you are applying.</div>
-      </div>
+
     </div>
 
     <!-- PAYMENT -->
@@ -483,7 +479,6 @@ function validateStep(n) {
   if (n===3) {
     if (!selectedBg) { document.getElementById('err-bg').style.display='block'; ok=false; }
     else { document.getElementById('err-bg').style.display='none'; }
-    req('motivation','err-motivation');
     if (!selectedFile) { document.getElementById('err-receipt').style.display='block'; ok=false; }
     else { document.getElementById('err-receipt').style.display='none'; }
   }
@@ -548,7 +543,7 @@ function buildReview() {
     ['Programme', selectedProg],
     ['Musical Background', selectedBg],
     ['Current Role', v('role')||'—'],
-    ['Motivation', v('motivation')],
+
     ['Payment Receipt', selectedFile ? selectedFile.name : 'Not uploaded']
   ];
   document.getElementById('reviewContent').innerHTML = rows.map(([l,val]) =>
@@ -598,7 +593,7 @@ async function submitApplication() {
       programme: selectedProg,
       background: selectedBg,
       role_in_parish: v('role'),
-      motivation: v('motivation'),
+
       receipt_name: selectedFile ? selectedFile.name : null,
       receipt_path: receiptPath,
       password_hash: pwHash,
