@@ -4,14 +4,18 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Apply — Catholic Music Academy</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDxwYXRoIGQ9Ik03IDQgTDI1IDQgTDI1IDIyIFExNiAyOCA3IDIyIFoiIGZpbGw9IiMxQTJFNkMiLz4KICA8cGF0aCBkPSJNNyA0IEwyNSA0IEwyNSAyMiBRMTYgMjggNyAyMiBaIiBmaWxsPSJub25lIiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxyZWN0IHg9IjE0LjUiIHk9IjciIHdpZHRoPSIzIiBoZWlnaHQ9IjEyIiByeD0iMSIgZmlsbD0iI0M5QTg0QyIvPgogIDxyZWN0IHg9IjkiIHk9IjExIiB3aWR0aD0iMTQiIGhlaWdodD0iMyIgcng9IjEiIGZpbGw9IiNDOUE4NEMiLz4KICA8bGluZSB4MT0iMTAiIHkxPSIyMCIgeDI9IjIyIiB5Mj0iMjAiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIwLjgiIG9wYWNpdHk9IjAuNyIvPgogIDxsaW5lIHgxPSIxMCIgeTE9IjIyLjUiIHgyPSIyMiIgeTI9IjIyLjUiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIwLjgiIG9wYWNpdHk9IjAuNyIvPgo8L3N2Zz4="/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --blue:#1A2E6C;--blue-mid:#2B47A8;--blue-light:#EEF2FF;--blue-pale:#F0F4FF;
-  --amber:#F59E0B;--amber-light:#FEF3C7;--amber-dark:#D97706;
+  --navy:#0D1B3E;--navy-mid:#1A2E6C;--navy-light:#EEF2FF;--navy-pale:#F4F6FF;
+  --blue:#1A2E6C;--blue-mid:#2B47A8;--blue-light:#EEF2FF;--blue-pale:#F4F6FF;
+  --gold:#C9A84C;--gold-light:#F5E6C0;--gold-dark:#9A7A2E;
+  --amber:#C9A84C;--amber-light:#F5E6C0;--amber-dark:#9A7A2E;
+  --cream:#FAFAF7;
   --text:#0F172A;--muted:#64748B;--dim:#94A3B8;--border:#E2E8F0;
-  --surface:#F8FAFC;--white:#FFFFFF;--ok:#16A34A;--ok-light:#DCFCE7;
+  --surface:#FAFAF7;--white:#FFFFFF;--ok:#16A34A;--ok-light:#DCFCE7;
   --danger:#DC2626;--danger-light:#FEE2E2;
 }
 html{scroll-behavior:smooth;}
@@ -24,10 +28,10 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:all 0.18s;text-decoration:none;}
 .btn-outline{background:none;border:1.5px solid var(--border);color:var(--text);padding:9px 20px;font-size:13px;}
 .btn-outline:hover{border-color:var(--blue);color:var(--blue);}
-.btn-primary{background:var(--blue);color:var(--white);padding:14px 32px;font-size:15px;border-radius:11px;width:100%;}
-.btn-primary:hover{background:var(--blue-mid);}
+.btn-primary{background:var(--navy);color:var(--white);padding:14px 32px;font-size:15px;border-radius:11px;width:100%;}
+.btn-primary:hover{background:var(--navy-mid);}
 .btn-primary:disabled{opacity:0.45;cursor:not-allowed;}
-.page-head{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-mid) 100%);padding:56px 32px 52px;text-align:center;}
+.page-head{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);padding:56px 32px 52px;text-align:center;}
 .page-head-eyebrow{font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:12px;}
 .page-head-title{font-family:'DM Serif Display',serif;font-size:clamp(30px,5vw,48px);color:var(--white);margin-bottom:10px;line-height:1.1;}
 .page-head-sub{font-size:15px;color:rgba(255,255,255,0.68);line-height:1.65;max-width:480px;margin:0 auto;}
@@ -35,11 +39,11 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px
 .steps{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:36px;flex-wrap:wrap;gap:4px;}
 .step{display:flex;align-items:center;gap:8px;}
 .step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;transition:all 0.2s;}
-.step-num.active{background:var(--blue);color:var(--white);}
+.step-num.active{background:var(--navy);color:var(--white);}
 .step-num.done{background:var(--ok);color:var(--white);}
 .step-num.pending{background:var(--border);color:var(--muted);}
 .step-label{font-size:12px;font-weight:600;color:var(--muted);}
-.step-label.active{color:var(--blue);}
+.step-label.active{color:var(--navy);}
 .step-label.done{color:var(--ok);}
 .step-connector{width:32px;height:2px;background:var(--border);margin:0 4px;flex-shrink:0;transition:background 0.3s;}
 .step-connector.done{background:var(--ok);}
@@ -50,7 +54,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px
 .field-label{font-size:12px;font-weight:700;color:var(--text);display:block;margin-bottom:6px;}
 .field-label .req{color:var(--danger);}
 .field-input,.field-select,.field-textarea{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 15px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;background:var(--white);}
-.field-input:focus,.field-select:focus,.field-textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,46,108,0.07);}
+.field-input:focus,.field-select:focus,.field-textarea:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(13,27,62,0.07);}
 .field-input::placeholder,.field-textarea::placeholder{color:var(--dim);}
 .field-textarea{min-height:90px;resize:vertical;}
 .field-hint{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.5;}
@@ -62,27 +66,27 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px
 .prog-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .prog-option{border:1.5px solid var(--border);border-radius:11px;padding:14px 16px;cursor:pointer;transition:all 0.15s;position:relative;}
 .prog-option:hover{border-color:var(--blue-mid);}
-.prog-option.selected{border-color:var(--blue);background:var(--blue-pale);}
+.prog-option.selected{border-color:var(--navy);background:var(--navy-pale);}
 .prog-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:var(--white);float:right;transition:all 0.15s;}
-.prog-option.selected .prog-check{background:var(--blue);border-color:var(--blue);}
+.prog-option.selected .prog-check{background:var(--navy);border-color:var(--navy);}
 .prog-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;padding-right:24px;}
 .prog-meta{font-size:11px;color:var(--muted);}
 .bg-opts{display:flex;flex-direction:column;gap:8px;}
 .bg-opt{display:flex;align-items:center;gap:10px;padding:11px 15px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.15s;}
 .bg-opt:hover{border-color:var(--blue-mid);}
-.bg-opt.selected{border-color:var(--blue);background:var(--blue-pale);}
+.bg-opt.selected{border-color:var(--navy);background:var(--navy-pale);}
 .bg-radio{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
-.bg-opt.selected .bg-radio{border-color:var(--blue);background:var(--blue);}
+.bg-opt.selected .bg-radio{border-color:var(--navy);background:var(--navy);}
 .bg-radio-dot{width:6px;height:6px;border-radius:50%;background:white;display:none;}
 .bg-opt.selected .bg-radio-dot{display:block;}
 .bg-opt-text{font-size:13px;color:var(--text);}
-.payment-box{background:var(--blue-pale);border:1.5px solid var(--blue-light);border-radius:14px;padding:22px 24px;margin-bottom:20px;}
-.payment-box-title{font-size:13px;font-weight:700;color:var(--blue);margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.payment-box{background:var(--navy-pale);border:1.5px solid var(--navy-light);border-radius:14px;padding:22px 24px;margin-bottom:20px;}
+.payment-box-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:6px;}
 .payment-detail{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);}
 .payment-detail:last-of-type{border-bottom:none;}
 .payment-detail-label{font-size:12px;color:var(--muted);}
 .payment-detail-val{font-size:13px;font-weight:700;color:var(--text);}
-.payment-detail-val.highlight{color:var(--blue);font-size:15px;}
+.payment-detail-val.highlight{color:var(--gold-dark);font-size:15px;font-weight:700;}
 .upload-box{border:2px dashed var(--border);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--surface);}
 .upload-box:hover,.upload-box.over{border-color:var(--blue);background:var(--blue-pale);}
 .upload-box.has-file{border-color:var(--ok);background:var(--ok-light);border-style:solid;}
@@ -123,15 +127,28 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px
 </style>
 </head>
 <body>
-<nav>
-  <a class="nav-brand" href="index.html">
-    <div class="nav-icon">♪</div>
+<nav style="background:var(--white);border-bottom:1px solid var(--border);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:100;">
+  <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="42" height="42" aria-hidden="true" style="flex-shrink:0;">
+  <rect width="48" height="48" rx="10" fill="#0D1B3E"/>
+  <path d="M24 5 L41 5 L41 32 Q24 43 7 32 L7 5 Z" fill="#1A2E6C"/>
+  <path d="M24 7 L39 7 L39 31 Q24 41 9 31 L9 7 Z" fill="none" stroke="#C9A84C" stroke-width="1.2"/>
+  <rect x="22" y="10" width="4" height="16" rx="1.2" fill="#C9A84C"/>
+  <rect x="14" y="16" width="20" height="4" rx="1.2" fill="#C9A84C"/>
+  <line x1="16" y1="32" x2="32" y2="32" stroke="#C9A84C" stroke-width="0.9" opacity="0.7"/>
+  <line x1="16" y1="35" x2="32" y2="35" stroke="#C9A84C" stroke-width="0.9" opacity="0.7"/>
+  <ellipse cx="20" cy="32" rx="2.5" ry="1.8" fill="#C9A84C" opacity="0.85"/>
+  <ellipse cx="28" cy="32" rx="2.5" ry="1.8" fill="#C9A84C" opacity="0.85"/>
+</svg>
     <div>
-      <div class="nav-name">Catholic Music Academy</div>
-      <div class="nav-sub">Online Learning Portal</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">Catholic Music Academy</div>
+      <div style="font-size:10px;color:var(--muted);letter-spacing:0.4px;">Excellence in Sacred Arts</div>
     </div>
   </a>
-  <a class="btn btn-outline" href="login.html">Student Login</a>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <a href="index.html" style="font-size:12px;color:var(--muted);text-decoration:none;">← Home</a>
+    <a href="login.html" style="background:var(--navy);color:white;border:none;border-radius:9px;padding:9px 18px;font-size:13px;font-weight:600;text-decoration:none;">Student Login</a>
+  </div>
 </nav>
 
 <div class="page-head">
@@ -457,7 +474,7 @@ function validateStep(n) {
   }
   if (n===1) {
     req('firstName','err-firstName'); req('lastName','err-lastName');
-    req('phone','err-phone'); req('country','err-country'); req('state','err-state');
+    req('phone','err-phone'); req('securityQuestion','err-securityQuestion'); req('securityAnswer','err-securityAnswer'); req('country','err-country'); req('state','err-state');
     var em = document.getElementById('email').value.trim();
     var emErr = document.getElementById('err-email');
     if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) {
@@ -538,6 +555,7 @@ function buildReview() {
     ['Phone', v('phone')],
     ['WhatsApp', v('whatsapp')||'—'],
     ['Country', v('country')],
+    ['Security Question', v('securityQuestion')],
     ['State / Region', v('state')],
     ['LGA', v('lga') || '—'],
     ['Programme', selectedProg],
@@ -721,6 +739,7 @@ async function submitApplication() {
   try {
     var ref = 'CMA-' + Date.now().toString().slice(-6);
     var pwHash = await hashPassword(document.getElementById('password').value);
+    var ansHash = await hashPassword((document.getElementById('securityAnswer').value||'').toLowerCase().trim());
     var wapp = v('whatsapp') || v('phone');
 
     // Upload receipt to Supabase Storage
@@ -753,6 +772,8 @@ async function submitApplication() {
       email: v('email'),
       phone: v('phone'),
       whatsapp: wapp,
+      security_question: v('securityQuestion'),
+      security_answer_hash: ansHash,
       country: v('country'),
       state: v('state'),
       lga: v('lga') || null,
@@ -777,5 +798,22 @@ async function submitApplication() {
   }
 }
 </script>
+<footer style="background:var(--navy);padding:32px 40px;text-align:center;">
+  <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="42" height="42" aria-hidden="true" style="flex-shrink:0;">
+  <rect width="48" height="48" rx="10" fill="#0D1B3E"/>
+  <path d="M24 5 L41 5 L41 32 Q24 43 7 32 L7 5 Z" fill="#1A2E6C"/>
+  <path d="M24 7 L39 7 L39 31 Q24 41 9 31 L9 7 Z" fill="none" stroke="#C9A84C" stroke-width="1.2"/>
+  <rect x="22" y="10" width="4" height="16" rx="1.2" fill="#C9A84C"/>
+  <rect x="14" y="16" width="20" height="4" rx="1.2" fill="#C9A84C"/>
+  <line x1="16" y1="32" x2="32" y2="32" stroke="#C9A84C" stroke-width="0.9" opacity="0.7"/>
+  <line x1="16" y1="35" x2="32" y2="35" stroke="#C9A84C" stroke-width="0.9" opacity="0.7"/>
+  <ellipse cx="20" cy="32" rx="2.5" ry="1.8" fill="#C9A84C" opacity="0.85"/>
+  <ellipse cx="28" cy="32" rx="2.5" ry="1.8" fill="#C9A84C" opacity="0.85"/>
+</svg>
+    <div style="text-align:left;"><div style="font-family:'DM Serif Display',serif;font-size:18px;color:white;">Catholic Music Academy</div><div style="font-size:10px;color:#C9A84C;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;">Excellence in Sacred Arts</div></div>
+  </div>
+  <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:10px;">Catholic Diocese of Warri · Ozoro, Delta State, Nigeria</div>
+  <div style="font-size:11px;color:rgba(255,255,255,0.22);margin-top:8px;">Developed by <span style="color:#C9A84C;">DaleX</span></div>
+</footer>
 </body>
 </html>
