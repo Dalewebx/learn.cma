@@ -571,7 +571,7 @@ async function loadCourseAndModulesFromDB(programmeStr) {
   var result = { course: null, modules: [] };
   try {
     var res = await fetch(
-      SUPA_URL + '/rest/v1/course_content?published=eq.true&order=course_order.asc,module_index.asc',
+      SUPA_URL + '/rest/v1/course_content?order=course_order.asc,module_index.asc',
       { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
     );
     if (!res.ok) throw new Error('fetch failed');
@@ -627,15 +627,20 @@ async function loadCourseAndModulesFromDB(programmeStr) {
       }
     }
 
+    // Only show published modules to students; use all rows to identify the course
+    var publishedRows = matchedGroup.rows.filter(function(r) { return r.published; });
+    // If admin hasn't published any yet, show all (better than blank — useful during setup)
+    var moduleRows = publishedRows.length ? publishedRows : matchedGroup.rows;
+
     result.course = {
       id: matchedGroup.id,
       title: matchedGroup.title,
       code: matchedGroup.title,
-      moduleCount: matchedGroup.rows.length,
-      duration: '~' + (matchedGroup.rows.length * 60) + ' min'
+      moduleCount: moduleRows.length,
+      duration: '~' + (moduleRows.length * 60) + ' min'
     };
 
-    result.modules = matchedGroup.rows.map(function(r) {
+    result.modules = moduleRows.map(function(r) {
       var questions = [], audio = [], downloads = [];
       try { questions = JSON.parse(typeof r.questions === 'string' ? r.questions : '[]'); } catch(e){}
       try { audio = JSON.parse(typeof r.audio_tracks === 'string' ? r.audio_tracks : '[]'); } catch(e){}
