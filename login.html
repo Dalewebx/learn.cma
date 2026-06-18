@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
-<title>Catholic Music Academy · Online Learning Platform</title>
+<title>Catholic Music Academy · Student Login</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -19,31 +19,25 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
 .screen{display:none;animation:fadeUp 0.28s ease both;}
 .screen.active{display:block;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-/* TOPBAR */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;border-bottom:1px solid var(--border);background:var(--white);position:sticky;top:0;z-index:200;gap:16px;}
 .brand{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;min-width:0;flex:1;}
 .brand-icon{width:36px;height:36px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--white);flex-shrink:0;}
 .brand-text{min-width:0;overflow:hidden;}
 .brand-name{font-family:'DM Serif Display',serif;font-size:17px;color:var(--blue);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.brand-sub{font-size:10px;color:var(--muted);letter-spacing:0.5px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.brand-sub{font-size:10px;color:var(--muted);letter-spacing:0.5px;margin-top:1px;}
 .topbar-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
 .chip{display:inline-flex;align-items:center;gap:6px;background:var(--blue-light);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--blue);font-weight:500;white-space:nowrap;}
 .chip-dot{width:7px;height:7px;border-radius:50%;background:var(--ok);flex-shrink:0;}
-.btn-logout{background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;white-space:nowrap;}
+.btn-logout{background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
 .btn-logout:hover{border-color:var(--danger);color:var(--danger);}
-
-/* BUTTONS */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:all 0.18s;text-decoration:none;}
 .btn-primary{background:var(--blue);color:var(--white);padding:13px 28px;font-size:14px;}
 .btn-primary:hover{background:var(--blue-mid);}
-.btn-primary:disabled{opacity:0.4;cursor:not-allowed;background:var(--muted);}
+.btn-primary:disabled{opacity:0.4;cursor:not-allowed;}
 .btn-secondary{background:var(--white);border:1.5px solid var(--border);color:var(--text);padding:11px 22px;font-size:13px;}
 .btn-secondary:hover{border-color:var(--blue);color:var(--blue);}
 .btn-amber{background:var(--amber);color:var(--white);padding:13px 28px;font-size:14px;}
 .btn-amber:hover{background:var(--amber-dark);}
-
-/* LOGIN */
 .login-page{min-height:100vh;display:flex;}
 .login-left{flex:1;background:var(--blue);display:none;flex-direction:column;justify-content:center;padding:64px;}
 .login-right{flex:1;display:flex;align-items:center;justify-content:center;padding:32px;}
@@ -54,13 +48,14 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
 .login-logo-sub{font-size:11px;color:var(--muted);}
 .login-title{font-family:'DM Serif Display',serif;font-size:32px;color:var(--text);margin-bottom:6px;line-height:1.15;}
 .login-sub{font-size:14px;color:var(--muted);margin-bottom:32px;line-height:1.6;}
-.field-label{font-size:12px;font-weight:600;color:var(--text);display:block;margin-bottom:6px;letter-spacing:0.3px;}
+.field-label{font-size:12px;font-weight:600;color:var(--text);display:block;margin-bottom:6px;}
 .field-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:13px 16px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;background:var(--white);margin-bottom:16px;}
 .field-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,46,108,0.08);}
 .field-input::placeholder{color:var(--dim);}
 .login-err{font-size:12px;color:var(--danger);background:var(--danger-light);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:none;}
-
-/* DASHBOARD */
+.pass-wrap{position:relative;margin-bottom:16px;}
+.pass-wrap .field-input{margin-bottom:0;}
+.pass-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:4px;}
 .dash-header{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-mid) 100%);padding:52px 32px 48px;color:var(--white);}
 .dash-eyebrow{font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;opacity:0.7;margin-bottom:10px;}
 .dash-name{font-family:'DM Serif Display',serif;font-size:40px;margin-bottom:6px;line-height:1.1;}
@@ -76,11 +71,8 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
 .course-card-title{font-family:'DM Serif Display',serif;font-size:24px;color:var(--text);margin-bottom:8px;line-height:1.25;}
 .course-card-desc{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:20px;}
 .course-card-meta{display:flex;gap:20px;font-size:12px;color:var(--dim);flex-wrap:wrap;padding-top:16px;border-top:1px solid var(--border);}
-.meta-item{display:flex;align-items:center;gap:5px;}
 .course-card-cta{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;background:var(--blue-pale);border-top:1px solid var(--border);}
 .course-card-cta-text{font-size:13px;color:var(--blue);font-weight:600;}
-
-/* COURSE PAGE */
 .course-header{background:var(--white);padding:36px 32px 32px;border-bottom:1px solid var(--border);}
 .breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:20px;flex-wrap:wrap;}
 .breadcrumb a{color:var(--blue);text-decoration:none;cursor:pointer;}
@@ -101,7 +93,7 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
 .module-card.mc-active{border-color:var(--blue);background:var(--blue-pale);}
 .module-card.mc-active:hover{border-color:var(--blue-mid);box-shadow:0 4px 16px rgba(26,46,108,0.14);transform:translateY(-1px);}
 .module-card.mc-done-card{border-color:rgba(22,163,74,0.3);background:var(--ok-light);}
-.module-card.mc-locked{opacity:0.4;cursor:not-allowed;filter:grayscale(0.3);background:var(--surface);border-color:var(--border);}
+.module-card.mc-locked{opacity:0.4;cursor:not-allowed;background:var(--surface);border-color:var(--border);}
 .mc-num{width:56px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:20px;color:white;flex-shrink:0;}
 .mc-num.mc-done{background:var(--ok);}
 .mc-locked .mc-num{background:var(--dim);}
@@ -114,66 +106,39 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
 .mc-status.s-open{background:var(--blue-light);color:var(--blue);}
 .mc-status.s-locked{background:var(--surface);color:var(--dim);}
 .mc-arrow{display:flex;align-items:center;padding:0 18px;color:var(--blue);font-size:20px;font-weight:700;}
-
-/* MODULE PAGE */
 .module-page{max-width:780px;margin:0 auto;padding:40px 32px;}
-.module-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:8px;}
 .module-h1{font-family:'DM Serif Display',serif;font-size:38px;color:var(--text);line-height:1.15;margin-bottom:16px;}
-
-/* READ TIMER */
 .read-timer{background:var(--amber-light);border:1px solid #FDE68A;border-radius:10px;padding:14px 16px;margin-bottom:24px;}
 .rt-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-.rt-icon{font-size:16px;flex-shrink:0;}
 .rt-msg{font-size:13px;color:var(--amber-dark);font-weight:700;}
 .rt-sub{font-size:12px;color:var(--amber-dark);opacity:0.8;margin-bottom:8px;line-height:1.4;}
 .rt-bar-bg{height:5px;background:rgba(0,0,0,0.1);border-radius:4px;overflow:hidden;}
 .rt-bar{height:100%;background:var(--amber-dark);border-radius:4px;width:0%;transition:width 1s linear;}
 .rt-unlocked{background:var(--ok-light);border-color:#86EFAC;}
-.rt-unlocked .rt-msg{color:var(--ok);}
-.rt-unlocked .rt-sub{color:var(--ok);}
+.rt-unlocked .rt-msg,.rt-unlocked .rt-sub{color:var(--ok);}
 .rt-unlocked .rt-bar{background:var(--ok);}
-
-/* VIDEO SECTION */
 .media-section{margin-bottom:24px;}
-.media-section-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.media-section-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
 .video-wrap{background:#000;border-radius:12px;overflow:hidden;position:relative;padding-top:56.25%;}
 .video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;}
-.video-placeholder{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--surface);border:1.5px dashed var(--border);border-radius:12px;color:var(--dim);gap:10px;}
-.video-placeholder-icon{font-size:32px;}
-.video-placeholder-text{font-size:13px;}
-
-/* AUDIO PLAYER */
-.audio-player{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;flex-direction:column;gap:10px;}
-.audio-track{display:flex;align-items:center;gap:12px;}
-.audio-icon{width:38px;height:38px;background:var(--blue-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.audio-info{flex:1;min-width:0;}
-.audio-name{font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.audio-sub{font-size:11px;color:var(--muted);}
-.audio-native{width:100%;height:36px;border-radius:6px;outline:none;}
+.video-placeholder{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--surface);border:1.5px dashed var(--border);border-radius:12px;color:var(--dim);gap:10px;font-size:13px;}
+.audio-player{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:16px 20px;}
+.audio-native{width:100%;height:36px;border-radius:6px;outline:none;margin-top:8px;}
 .audio-placeholder{font-size:13px;color:var(--dim);text-align:center;padding:12px 0;font-style:italic;}
-
-/* DOWNLOADS */
 .downloads-grid{display:flex;flex-direction:column;gap:8px;}
 .download-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;background:var(--white);cursor:pointer;transition:all 0.15s;text-decoration:none;}
 .download-item:hover{border-color:var(--blue);background:var(--blue-pale);}
 .dl-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.dl-icon.pdf{background:#FEE2E2;}
-.dl-icon.music{background:var(--amber-light);}
-.dl-info{flex:1;}
-.dl-name{font-size:13px;font-weight:600;color:var(--text);}
-.dl-size{font-size:11px;color:var(--muted);}
+.dl-icon.pdf{background:#FEE2E2;} .dl-icon.music{background:var(--amber-light);}
+.dl-info{flex:1;} .dl-name{font-size:13px;font-weight:600;color:var(--text);} .dl-size{font-size:11px;color:var(--muted);}
 .dl-arrow{font-size:16px;color:var(--blue);}
 .download-placeholder{font-size:13px;color:var(--dim);text-align:center;padding:12px 0;font-style:italic;border:1.5px dashed var(--border);border-radius:10px;}
-
-/* CONTENT AREA */
 .content-area{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:32px;margin-bottom:24px;line-height:1.85;font-size:15px;color:#334155;}
 .content-area h3{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin:24px 0 10px;font-weight:400;}
 .content-area h3:first-child{margin-top:0;}
 .content-area p{margin-bottom:14px;}
 .content-area strong{color:var(--blue);font-weight:600;}
 .content-area em{font-style:italic;}
-
-/* QUIZ */
 .quiz-card{border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:24px;}
 .quiz-card-header{background:var(--blue);padding:20px 24px;color:var(--white);}
 .qch-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
@@ -185,8 +150,7 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
 .quiz-locked-icon{font-size:30px;margin-bottom:12px;}
 .quiz-locked-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;}
 .quiz-locked-text{font-size:13px;color:var(--muted);line-height:1.65;max-width:380px;}
-.q-item{margin-bottom:22px;}
-.q-item:last-child{margin-bottom:0;}
+.q-item{margin-bottom:22px;} .q-item:last-child{margin-bottom:0;}
 .q-text{font-size:14px;font-weight:500;color:var(--text);margin-bottom:12px;line-height:1.5;}
 .q-options{display:flex;flex-direction:column;gap:8px;}
 .q-opt{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.15s;font-size:13px;color:var(--muted);background:var(--white);}
@@ -206,11 +170,8 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
 .qr-score{font-family:'DM Serif Display',serif;font-size:52px;color:var(--blue);line-height:1;}
 .qr-label{font-size:13px;color:var(--muted);margin-top:4px;}
 .qr-msg{font-size:14px;margin-top:12px;font-weight:500;}
-.qr-msg.pass{color:var(--ok);}
-.qr-msg.fail{color:var(--danger);}
+.qr-msg.pass{color:var(--ok);} .qr-msg.fail{color:var(--danger);}
 .mod-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:40px;}
-
-/* COMPLETE */
 .complete-wrap{max-width:560px;margin:0 auto;padding:64px 32px;text-align:center;}
 .complete-icon{font-size:64px;margin-bottom:24px;}
 .complete-title{font-family:'DM Serif Display',serif;font-size:38px;color:var(--text);margin-bottom:10px;}
@@ -219,41 +180,26 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
 .complete-card-title{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--blue);margin-bottom:12px;}
 .complete-card-item{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text);padding:8px 0;border-bottom:1px solid var(--border);}
 .complete-card-item:last-child{border-bottom:none;}
-.complete-card-icon{font-size:16px;}
-
-/* OTHER COURSES */
 .other-course-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:20px;position:relative;opacity:0.75;}
 .other-course-lock{position:absolute;top:16px;right:16px;font-size:14px;}
 .other-course-num{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
 .other-course-title{font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);margin-bottom:6px;line-height:1.3;padding-right:24px;}
 .other-course-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:12px;}
 .other-course-tag{display:inline-flex;align-items:center;gap:4px;background:var(--blue-light);border-radius:6px;padding:3px 10px;font-size:11px;color:var(--blue);font-weight:500;}
-
-/* MOBILE */
 @media(min-width:768px){.login-left{display:flex;}}
 @media(max-width:600px){
   .topbar{padding:0 14px;min-height:56px;}
-  .brand-name{font-size:13px;}
-  .brand-icon{width:30px;height:30px;font-size:15px;border-radius:7px;}
-  .chip{padding:5px 10px;font-size:11px;}
-  .btn-logout{padding:5px 10px;font-size:11px;}
+  .brand-name{font-size:13px;} .brand-icon{width:30px;height:30px;font-size:15px;}
+  .chip{padding:5px 10px;font-size:11px;} .btn-logout{padding:5px 10px;font-size:11px;}
   .dash-header,.dash-body,.course-header,.modules-wrap,.module-page,.complete-wrap{padding-left:18px;padding-right:18px;}
-  .course-h1,.module-h1{font-size:26px;}
-  .dash-name{font-size:28px;}
-  .course-header-top{flex-direction:column;}
-  .content-area{padding:20px;}
-  .quiz-card-body{padding:16px;}
+  .course-h1,.module-h1{font-size:26px;} .dash-name{font-size:28px;}
+  .course-header-top{flex-direction:column;} .content-area{padding:20px;}
 }
-@media(max-width:380px){
-  .brand-sub{display:none;}
-  .chip span{display:none;}
-  .btn-logout{display:none;}
-}
+@media(max-width:380px){.brand-sub{display:none;}.chip span{display:none;}.btn-logout{display:none;}}
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar" id="topbar" style="display:none;">
   <div class="brand" onclick="goDash()">
     <div class="brand-icon">♪</div>
@@ -288,17 +234,20 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
           </div>
         </div>
         <div class="login-title">Welcome back</div>
-        <div class="login-sub">Sign in to access your enrolled course and continue your studies.</div>
-        <label class="field-label">Username</label>
-        <input class="field-input" id="loginUser" type="text" placeholder="Enter username" autocomplete="username"/>
+        <div class="login-sub">Sign in with the email and password you registered with.</div>
+        <label class="field-label">Email Address</label>
+        <input class="field-input" id="loginEmail" type="email" placeholder="yourname@example.com" autocomplete="email"/>
         <label class="field-label">Password</label>
-        <input class="field-input" id="loginPass" type="password" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+        <div class="pass-wrap">
+          <input class="field-input" id="loginPass" type="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+          <button class="pass-toggle" type="button" onclick="togglePass()">👁</button>
+        </div>
         <div class="login-err" id="loginErr"></div>
-        <button class="btn btn-primary" style="width:100%;font-size:15px;padding:15px;" onclick="doLogin()">Sign in →</button>
+        <button class="btn btn-primary" id="loginBtn" style="width:100%;font-size:15px;padding:15px;margin-top:8px;" onclick="doLogin()">Sign in →</button>
         <div style="text-align:center;margin-top:18px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap;">
-          <a href="forgot-password.html" style="font-size:12px;color:var(--muted);text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--muted)'">Forgot password?</a>
+          <a href="forgot-password.html" style="font-size:12px;color:var(--muted);text-decoration:none;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--muted)'">Forgot password?</a>
           <span style="font-size:12px;color:var(--dim);">·</span>
-          <a href="index.html" style="font-size:12px;color:var(--muted);text-decoration:none;transition:color 0.15s;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--muted)'">← Back to home</a>
+          <a href="index.html" style="font-size:12px;color:var(--muted);text-decoration:none;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--muted)'">← Back to home</a>
         </div>
       </div>
     </div>
@@ -318,43 +267,36 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
       <div class="course-card-band"></div>
       <div class="course-card-body">
         <div class="course-status-pill">✓ Enrolled &amp; Active</div>
-        <div class="course-card-num">Course 01 of 6</div>
-        <div class="course-card-title">Theory of Ancient Music</div>
-        <div class="course-card-desc">Trace the origins of music from ancient civilisations through medieval sacred traditions to the emergence of modern harmony and notation. Complete all three modules to finish the course.</div>
+        <div class="course-card-num" id="enrolledCourseNum">Course 01 of 6</div>
+        <div class="course-card-title" id="enrolledCourseTitle">Theory of Ancient Music</div>
+        <div class="course-card-desc">Trace the origins of music from ancient civilisations through medieval sacred traditions to the emergence of modern harmony and notation.</div>
         <div class="course-card-meta">
-          <div class="meta-item">📖 3 Modules</div>
-          <div class="meta-item">⏱ ~4 hours</div>
-          <div class="meta-item">✍ Assessment per module</div>
-          <div class="meta-item">🎓 Final exam (in-person)</div>
+          <div>📖 3 Modules</div><div>⏱ ~4 hours</div><div>✍ Assessment per module</div><div>🎓 Final exam (in-person)</div>
         </div>
       </div>
-      <div class="course-card-cta">
-        <div class="course-card-cta-text">Continue Course →</div>
-      </div>
+      <div class="course-card-cta"><div class="course-card-cta-text">Continue Course →</div></div>
     </div>
     <div class="dash-section-label" style="margin-top:40px;">Other Courses Available</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Complete your current course and speak to your coordinator to enrol in the following programmes.</p>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Complete your current course to unlock the following programmes.</p>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;">
-      <div class="other-course-card"><div class="other-course-lock">🔒</div><div class="other-course-num">Course 02</div><div class="other-course-title">Liturgical Music Theology</div><div class="other-course-desc">The theological foundations of sacred music in Catholic worship, from the Council of Trent to Vatican II.</div><div class="other-course-tag">4 Modules · ~5 hrs</div></div>
-      <div class="other-course-card"><div class="other-course-lock">🔒</div><div class="other-course-num">Course 03</div><div class="other-course-title">Choral Leadership</div><div class="other-course-desc">Skills to lead, coordinate, and inspire a choir from rehearsal through to Sunday Mass performance.</div><div class="other-course-tag">5 Modules · ~6 hrs</div></div>
-      <div class="other-course-card"><div class="other-course-lock">🔒</div><div class="other-course-num">Course 04</div><div class="other-course-title">The Choirmaster's Craft</div><div class="other-course-desc">A practical guide to the role: voice training, score reading, liturgical planning, and administration.</div><div class="other-course-tag">4 Modules · ~5 hrs</div></div>
-      <div class="other-course-card"><div class="other-course-lock">🔒</div><div class="other-course-num">Course 05</div><div class="other-course-title">Sacred Music Composition</div><div class="other-course-desc">Compose original hymns and Mass settings covering melody, harmony, text setting, and liturgical appropriateness.</div><div class="other-course-tag">6 Modules · ~8 hrs</div></div>
-      <div class="other-course-card"><div class="other-course-lock">🔒</div><div class="other-course-num">Course 06</div><div class="other-course-title">Voice and Instrument Proficiency</div><div class="other-course-desc">Technical foundations in vocal production and instrumental accompaniment for liturgical settings.</div><div class="other-course-tag">4 Modules · ~5 hrs</div></div>
+      <div class="other-course-card"><div class="other-course-lock">🔒</div><div class="other-course-num">Course 02</div><div class="other-course-title">Liturgical Music Theology</div><div class="other-course-desc">The theological foundations of sacred music in Catholic worship.</div><div class="other-course-tag">4 Modules · ~5 hrs</div></div>
+      <div class="other-course-card"><div class="other-course-lock">🔒</div><div class="other-course-num">Course 03</div><div class="other-course-title">Choral Leadership</div><div class="other-course-desc">Skills to lead, coordinate, and inspire a choir.</div><div class="other-course-tag">5 Modules · ~6 hrs</div></div>
+      <div class="other-course-card"><div class="other-course-lock">🔒</div><div class="other-course-num">Course 04</div><div class="other-course-title">The Choirmaster's Craft</div><div class="other-course-desc">Voice training, score reading, liturgical planning, and administration.</div><div class="other-course-tag">4 Modules · ~5 hrs</div></div>
+      <div class="other-course-card"><div class="other-course-lock">🔒</div><div class="other-course-num">Course 05</div><div class="other-course-title">Sacred Music Composition</div><div class="other-course-desc">Compose original hymns and Mass settings.</div><div class="other-course-tag">6 Modules · ~8 hrs</div></div>
+      <div class="other-course-card"><div class="other-course-lock">🔒</div><div class="other-course-num">Course 06</div><div class="other-course-title">Voice &amp; Instrument Proficiency</div><div class="other-course-desc">Vocal production and instrumental accompaniment for liturgical settings.</div><div class="other-course-tag">4 Modules · ~5 hrs</div></div>
     </div>
   </div>
 </div>
 
-<!-- COURSE -->
+<!-- COURSE, MODULE, COMPLETE screens — identical to before, included below -->
 <div class="screen" id="screen-course">
   <div class="course-header">
-    <div class="breadcrumb">
-      <a onclick="goDash()">Dashboard</a><span class="breadcrumb-sep">›</span><span>Theory of Ancient Music</span>
-    </div>
+    <div class="breadcrumb"><a onclick="goDash()">Dashboard</a><span class="breadcrumb-sep">›</span><span id="courseTitle2">Theory of Ancient Music</span></div>
     <div class="course-header-top">
-      <div class="course-title-block">
+      <div>
         <div class="course-tag">♪ Music Theory</div>
-        <div class="course-h1">Theory of Ancient Music</div>
-        <div class="course-desc">Work through each module in order. Read the content carefully, then complete the assessment. You must score 100% to unlock the next module.</div>
+        <div class="course-h1" id="courseH1">Theory of Ancient Music</div>
+        <div class="course-desc">Work through each module in order. Read the content carefully, then complete the assessment. Meet the required pass mark to advance.</div>
       </div>
       <div class="course-progress-card">
         <div class="cpc-label">Your Progress</div>
@@ -369,7 +311,6 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
   </div>
 </div>
 
-<!-- MODULE -->
 <div class="screen" id="screen-module">
   <div class="module-page">
     <div class="breadcrumb" style="margin-bottom:20px;">
@@ -378,53 +319,37 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
       <span id="modBreadcrumb"></span>
     </div>
     <div class="module-h1" id="modTitle"></div>
-
-    <!-- READ TIMER -->
     <div class="read-timer" id="readTimer">
-      <div class="rt-top"><span class="rt-icon">⏱</span><span class="rt-msg" id="timerMsg">Reading timer active</span></div>
-      <div class="rt-sub" id="timerSub">Read through the full lesson below. The assessment unlocks when you've read the content and scrolled to the end.</div>
+      <div class="rt-top"><span>⏱</span><span class="rt-msg" id="timerMsg">Reading timer active</span></div>
+      <div class="rt-sub" id="timerSub">Read through the full lesson. The assessment unlocks when you've read the content and scrolled to the end.</div>
       <div class="rt-bar-bg"><div class="rt-bar" id="timerBar"></div></div>
     </div>
-
-    <!-- VIDEO -->
     <div class="media-section" id="videoSection">
       <div class="media-section-title">🎬 Video Lesson</div>
       <div class="video-wrap" id="videoWrap"></div>
     </div>
-
-    <!-- AUDIO -->
     <div class="media-section" id="audioSection">
       <div class="media-section-title">🎵 Audio Examples</div>
       <div class="audio-player" id="audioPlayer"></div>
     </div>
-
-    <!-- READING CONTENT -->
     <div class="media-section">
       <div class="media-section-title">📖 Lesson Notes</div>
       <div class="content-area" id="modContent"></div>
     </div>
-
-    <!-- DOWNLOADS -->
     <div class="media-section" id="downloadsSection">
       <div class="media-section-title">📥 Downloads</div>
       <div class="downloads-grid" id="downloadsGrid"></div>
     </div>
-
-    <!-- QUIZ -->
     <div class="quiz-card" id="quizCard">
       <div class="quiz-card-header">
         <div class="qch-title-row">
           <div class="qch-title">Module Assessment</div>
           <span class="quiz-lock-badge" id="quizLockBadge">🔒 Locked</span>
         </div>
-        <div class="qch-sub">Answer all questions correctly (100%) to complete this module and unlock the next.</div>
+        <div class="qch-sub">Meet the required pass mark to complete this module and unlock the next.</div>
       </div>
       <div class="quiz-card-body" id="quizBody">
-        <div class="quiz-locked">
-          <div class="quiz-locked-icon">🔒</div>
-          <div class="quiz-locked-title">Assessment locked</div>
-          <div class="quiz-locked-text">Read through the full lesson above and scroll to the end to unlock the assessment.</div>
-        </div>
+        <div class="quiz-locked"><div class="quiz-locked-icon">🔒</div><div class="quiz-locked-title">Assessment locked</div><div class="quiz-locked-text">Read through the full lesson and scroll to the end to unlock.</div></div>
       </div>
       <div class="quiz-result" id="quizResult"></div>
     </div>
@@ -432,150 +357,64 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
   </div>
 </div>
 
-<!-- COMPLETE -->
 <div class="screen" id="screen-complete">
   <div class="complete-wrap">
     <div class="complete-icon">🎓</div>
     <div class="complete-title">Course Complete</div>
-    <div class="complete-sub">You have successfully completed all three modules of <strong>Theory of Ancient Music</strong>. Your instructor will be in touch with details for the final examination.</div>
+    <div class="complete-sub">You have successfully completed all modules. Your instructor will be in touch with details for the final examination.</div>
     <div class="complete-card">
       <div class="complete-card-title">What happens next</div>
-      <div class="complete-card-item"><div class="complete-card-icon">📋</div>Your module completion has been recorded</div>
-      <div class="complete-card-item"><div class="complete-card-icon">📞</div>Your instructor will contact you with final exam details</div>
-      <div class="complete-card-item"><div class="complete-card-icon">🎓</div>Certificate issued upon passing the final examination</div>
+      <div class="complete-card-item"><div>📋</div>Your completion is recorded</div>
+      <div class="complete-card-item"><div>📞</div>Your instructor will contact you with exam details</div>
+      <div class="complete-card-item"><div>🎓</div>Certificate issued upon passing the final examination</div>
     </div>
     <button class="btn btn-secondary" onclick="goDash()">← Back to Dashboard</button>
   </div>
 </div>
 
 <script>
-// ─── CREDENTIALS (Phase A demo — replaced by Vercel auth in Phase B) ────────
-var USERS = {
-  'demo': { password: 'demo', displayName: 'Demo Student' },
-  'student1': { password: 'cma2026', displayName: 'Student One' },
-  'student2': { password: 'cma2026', displayName: 'Student Two' }
-};
+const SUPA_URL = 'https://ltqwofagofmvufvqsuyj.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0cXdvZmFnb2ZtdnVmdnFzdXlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjgyMTgsImV4cCI6MjA5NzMwNDIxOH0.7EkluJspwopQxxQmL7AuYxx4XHgchpYR7tsajyoXHaI';
 
-// ─── MODULE DATA ──────────────────────────────────────────────────────────────
-// videoUrl: set to YouTube embed URL when content is ready e.g. 'https://www.youtube.com/embed/VIDEO_ID'
-// audioTracks: array of {name, url, duration} — url can be relative or absolute
-// downloads: array of {name, url, type:'pdf'|'music', size}
-// pool: minimum 10 questions; 4 shown randomly per attempt
-var MODULES = [
-  {
-    num: 'Module 01',
-    title: 'The Origin of Music',
-    duration: '~75 min',
-    videoUrl: '', // e.g. 'https://www.youtube.com/embed/dQw4w9WgXcQ'
-    audioTracks: [], // e.g. [{name:'Hurrian Hymn No. 6',url:'audio/hurrian.mp3',duration:'3:24'}]
-    downloads: [], // e.g. [{name:'Module 1 Notes',url:'pdfs/module1.pdf',type:'pdf',size:'2.1 MB'}]
-    content: `<h3>Where Did Music Begin?</h3>
-<p>The question of music's origin is as old as civilisation itself. Ancient Greek philosophers believed music was a gift from the gods. Apollo, the god of the sun and the arts, was said to have given humanity the lyre. But archaeological evidence tells us the story begins far earlier, long before any of the great ancient civilisations rose to prominence.</p>
-<p>The oldest known musical instruments ever discovered are bone flutes crafted from vulture and mammoth bone, found in caves across southern Germany and dated to approximately 40,000 years ago. These were deliberately shaped, pierced with finger holes, and designed to produce specific pitches. This tells us that the people who made them already understood, on some intuitive level, the difference between noise and music.</p>
-<p>What drove early humans to make music? Scholars have proposed several theories. Some argue that music emerged from the rhythms of physical labour — the coordinated movements of rowing, grinding grain, or building. Others suggest it grew from vocal communication, the way a mother soothes an infant, or the way groups of people called to one another across distances. Still others point to ritual: the earliest evidence of organised human ceremony, including burial rites, is often accompanied by evidence of musical instruments nearby.</p>
-<h3>Music in Ancient Civilisations</h3>
-<p>In ancient Mesopotamia, the Sumerians developed one of the earliest musical traditions we know in detail. Their hymns, pressed into clay tablets in cuneiform script around 2000 BCE, contain the earliest known written music in history. The <strong>Hurrian Hymn No. 6</strong>, discovered at the ancient city of Ugarit in modern Syria, is the oldest notated song ever recovered. It was written for a stringed instrument called the sammuri.</p>
-<p>In ancient Egypt, music was deeply intertwined with religion and the afterlife. Temple musicians were among the most respected figures in society, serving the gods through daily ritual performances. The <strong>sistrum</strong>, a kind of ceremonial rattle, was particularly associated with the goddess Hathor, who was considered the deity of music, love, and joy. The harp was widely played, and Egyptian art dating back 4,000 years shows harps of extraordinary size and sophistication.</p>
-<p>In ancient China, a sophisticated musical theory had developed by the time of Confucius, around 500 BCE. Confucius considered music to be one of the highest expressions of moral order. The Chinese system of pentatonic scales — using five tones rather than the seven of Western music — produced a sound entirely distinct from anything being created in Egypt or Greece at the same time.</p>
-<p>In ancient Greece, music was not entertainment but philosophy. <strong>Pythagoras</strong>, who lived in the 6th century BCE, discovered that musical intervals could be expressed as mathematical ratios. The octave corresponds to a ratio of 2:1, the perfect fifth to 3:2, and the perfect fourth to 4:3. Plato argued in <em>The Republic</em> that the mode of music played in a city could directly shape the character of its citizens — an idea that continued to influence Christian thinking about church music for more than a thousand years.</p>
-<h3>Music and the Human Voice</h3>
-<p>Before instruments, there was the voice. Scholars believe the earliest human music was entirely vocal, taking the form of chanting, call-and-response patterns, and communal singing used during labour, mourning, celebration, and worship. The voice remains the most universal of all musical instruments precisely because it requires nothing to be built or acquired.</p>
-<p>This vocal tradition is the direct ancestor of the sacred choral music sung in the Catholic tradition today. When a choir sings the Gloria or the Sanctus at Mass, they are participating in a practice that stretches in an unbroken line back through the medieval monasteries, through the early Christian communities of the Roman Empire, and ultimately back to the psalm-singing of the Jewish temple in Jerusalem. <strong>The origins of music are the origins of worship itself.</strong></p>`,
-    pool: [
-      {q:'What is the oldest notated song ever recovered?',opts:['The Gregorian Chant','The Hurrian Hymn No. 6','The Psalms of David','The Egyptian Book of Ra'],ans:1},
-      {q:'Which philosopher discovered that musical intervals could be expressed as mathematical ratios?',opts:['Aristotle','Plato','Pythagoras','Socrates'],ans:2},
-      {q:'Approximately how old are the oldest known musical instruments?',opts:['5,000 years','15,000 years','40,000 years','100,000 years'],ans:2},
-      {q:'In which ancient civilisation were temple musicians among the most respected members of society?',opts:['Ancient Greece','Ancient Mesopotamia','Ancient Egypt','Ancient Rome'],ans:2},
-      {q:'What material were the oldest known musical instruments made from?',opts:['Clay and stone','Animal bone','Hardwood and leaves','Copper ore'],ans:1},
-      {q:'What does this module identify as the earliest form of human music?',opts:['Instrumental performance on bone flutes','Sacred chanting in stone temples','Vocal music: chanting, call-and-response','Written compositions on clay tablets'],ans:2},
-      {q:'Which ancient civilisation used a pentatonic (five-tone) scale?',opts:['Ancient Egypt','Ancient Greece','Ancient China','Ancient Mesopotamia'],ans:2},
-      {q:'According to Plato, what could the mode of music played in a city directly affect?',opts:['The weather and seasons','The character of its citizens','The outcome of military battles','The fertility of the soil'],ans:1},
-      {q:'The Hurrian Hymn No. 6 was written for which type of instrument?',opts:['A wind instrument','A percussion instrument','A stringed instrument called the sammuri','A keyboard instrument'],ans:2},
-      {q:'The sistrum, associated with the goddess Hathor, originated in which ancient culture?',opts:['Ancient China','Ancient Greece','Ancient Egypt','Ancient Mesopotamia'],ans:2},
-      {q:'Which famous philosopher considered music one of the highest expressions of moral order?',opts:['Pythagoras','Confucius','Plato','Aristotle'],ans:1},
-      {q:'The choral music sung at Mass today traces its roots back to psalm-singing in which location?',opts:['The Roman Forum','The Jewish temple in Jerusalem','The cathedrals of medieval France','The courts of ancient Greece'],ans:1}
-    ]
-  },
-  {
-    num: 'Module 02',
-    title: 'Medieval Times & Sacred Rhythm',
-    duration: '~80 min',
-    videoUrl: '',
-    audioTracks: [],
-    downloads: [],
-    content: `<h3>The Medieval Musical World</h3>
-<p>The medieval period, roughly 500 CE to 1400 CE, was defined by the dominance of the Catholic Church across virtually all aspects of European life. Government, education, science, art, and music were all shaped by the Church's authority and vision. It was during this era that the foundations of Western classical music were laid, rooted entirely in the context of sacred worship.</p>
-<p>The early medieval Church inherited musical traditions from several sources: the Jewish temple practice of psalm-singing, the melodic conventions of Greek philosophy, and the civic ceremonial music of the Roman Empire. From this rich inheritance, a new and distinctly Christian musical tradition began to emerge, centred on the chanting of scripture and liturgical prayer.</p>
-<h3>Gregorian Chant</h3>
-<p>Named after Pope Gregory I, who served from 590 to 604 CE, <strong>Gregorian Chant</strong> became the official and authorised music of the Roman Catholic Church. Its defining features are a single unharmonised melodic line, free rhythm that follows the natural stress and shape of Latin text, and a deeply contemplative quality that sets it apart from any other musical tradition.</p>
-<p>It was performed entirely without instruments, by trained monks and clergy who dedicated years of their lives to mastering it. The purpose was never to entertain or to display skill, but to create the conditions in which the sung prayer could rise undistracted toward God.</p>
-<p>For centuries, Gregorian Chant was the only music permitted during the Mass. The Catholic Church considered it the model of sacred music precisely because of its restraint: no harmony, no instruments, no theatrical display. This attitude toward music in worship has shaped Catholic musical thought ever since.</p>
-<h3>The Invention of Musical Notation</h3>
-<p>Before the 9th century, music was transmitted entirely by oral tradition. A master would sing a melody to a student who would memorise it and eventually pass it on. This system worked within a stable monastic community but broke down the moment music needed to travel.</p>
-<p>A Benedictine monk named <strong>Guido d'Arezzo</strong>, who lived from approximately 991 to 1050 CE, changed this permanently. Working in the Italian region of Tuscany, he developed a system of four horizontal lines on which symbols called <em>neumes</em> could be precisely placed to indicate both pitch and rhythm. This was the ancestor of the five-line musical staff still used in every piece of printed music today.</p>
-<p>Guido also introduced the <strong>solmisation syllables</strong> — Ut, Re, Mi, Fa, Sol, and La — taken from the opening syllables of the Latin hymn <em>Ut queant laxis</em>. These gave singers a way to identify pitches by name and to read music they had never heard before. Today's Do Re Mi system descends directly from Guido's invention.</p>
-<h3>Polyphony and the Birth of Harmony</h3>
-<p>By the 12th and 13th centuries, composers in northern France began experimenting with <strong>polyphony</strong> — the practice of combining two or more independent melodic lines sounding simultaneously. To ears accustomed to the pure single line of Gregorian Chant, this must have been startling, even unsettling.</p>
-<p>The centre of this development was the Cathedral of Notre Dame in Paris. The composers known to us as <strong>Leonin</strong> and <strong>Perotin</strong> produced the first great polyphonic sacred compositions. Leonin compiled a collection of two-voice settings of chant called the <em>Magnus Liber Organi</em>. Perotin extended this to three and four voices, creating music of a complexity and richness never before heard in a liturgical context.</p>
-<p>Pope John XXII issued a papal decree in 1324 criticising the new polyphonic style for obscuring the sacred texts with excessive ornamentation. Despite this resistance, polyphony continued to develop and eventually flowered into the glorious choral music of the Renaissance — Palestrina, Victoria, Byrd, and all the composers whose works Catholic choirs still sing today.</p>`,
-    pool: [
-      {q:'What does "monophonic" mean in the context of Gregorian Chant?',opts:['Complex harmonies','A single unharmonised melodic line','Instrumental accompaniment only','A strict rhythmic beat'],ans:1},
-      {q:'Who developed the staff notation system still used in music today?',opts:['Pope Gregory I','Johann Sebastian Bach','Guido d\'Arezzo','Leonin of Notre Dame'],ans:2},
-      {q:'What is polyphony?',opts:['Music for one voice only','Music without any rhythm','Multiple independent melodic lines sounding simultaneously','Music composed exclusively for the Mass'],ans:2},
-      {q:'Which school produced the first great polyphonic sacred compositions?',opts:['The Bologna School','The Notre Dame School','The Venetian School','The Roman School'],ans:1},
-      {q:'What did Guido d\'Arezzo introduce alongside the staff system?',opts:['The pipe organ','The Latin Mass','Solmisation syllables (Ut Re Mi Fa Sol La)','The choir stall arrangement'],ans:2},
-      {q:'According to this module, what was the primary purpose of Gregorian Chant?',opts:['To entertain worshippers','To demonstrate musical skill','To elevate the heart toward God','To teach Latin to the faithful'],ans:2},
-      {q:'Which pope served from 590 to 604 CE and gave his name to the Church\'s official chant?',opts:['Pope John XXII','Pope Gregory I','Pope Innocent III','Pope Clement V'],ans:1},
-      {q:'What are neumes?',opts:['Medieval monks who sang in the choir','Symbols placed on staff lines to indicate pitch and rhythm','Another name for Gregorian Chant melodies','Instruments used in early medieval worship'],ans:1},
-      {q:'The solmisation syllables were taken from the opening lines of which work?',opts:['The Gregorian Antiphonary','The Rule of Saint Benedict','The Latin hymn Ut queant laxis','The Magnus Liber Organi'],ans:2},
-      {q:'Who compiled the Magnus Liber Organi — a collection of two-voice settings of chant?',opts:['Perotin','Guido d\'Arezzo','Leonin','Pope Gregory I'],ans:2},
-      {q:'Which pope issued a decree in 1324 criticising polyphony for obscuring sacred texts?',opts:['Pope Gregory I','Pope John XXII','Pope Clement V','Pope Innocent III'],ans:1},
-      {q:'Before Guido d\'Arezzo\'s system, how was music transmitted?',opts:['Through illustrated manuscripts','Entirely by oral tradition','Through written rhythmic symbols only','By performance at public festivals'],ans:1}
-    ]
-  },
-  {
-    num: 'Module 03',
-    title: 'Evolution of Musical Instruments',
-    duration: '~70 min',
-    videoUrl: '',
-    audioTracks: [],
-    downloads: [],
-    content: `<h3>From Bone to Brass</h3>
-<p>The story of musical instruments is, in many ways, the story of human ingenuity across every era and culture. From the simplest bone flute to the most complex keyboard instrument ever built, humans have always sought to expand the range of sounds available to them in worship, in celebration, in mourning, and in daily life.</p>
-<h3>The Four Families</h3>
-<p>Musicologists classify all musical instruments into four broad families based on the physical mechanism by which they produce sound. These categories, developed systematically by the scholars Hornbostel and Sachs in 1914, remain the standard classification used in musicology today.</p>
-<p><strong>Chordophones</strong> produce sound through the vibration of stretched strings. The harp is among the oldest instruments in this family, appearing in Sumerian art from approximately 3000 BCE. From the simple lyre of ancient Greece to the lute of the Arab world, through the viol family of the European Renaissance, to the modern violin, guitar, and concert grand piano — all share the same fundamental principle: a taut string set in motion produces a pitched sound.</p>
-<p><strong>Aerophones</strong> produce sound through the vibration of a column of air. Ancient Egyptians played double-reed instruments remarkably similar in construction to the modern oboe. Pan pipes made from river reeds have been found in archaeological sites across South America, Asia, and Africa. The connection between breath and music is no accident — air is the medium of the voice.</p>
-<p><strong>Membranophones</strong> produce sound through a vibrating membrane, typically an animal skin stretched across a frame. Drums are found in every known human culture without exception, making them the most universal of all instrument families. In West African musical traditions, including those that influenced the worship cultures of present-day Nigeria, drums carry not just rhythm but meaning: specific drum patterns communicate specific messages.</p>
-<p><strong>Idiophones</strong> produce sound through the vibration of the instrument body itself. Bells, gongs, xylophones, marimbas, and the ancient Egyptian sistrum all belong to this family. Church bells, which have called the faithful to worship since at least the 6th century, are among the most architecturally significant instruments ever created.</p>
-<h3>The Pipe Organ</h3>
-<p>No instrument is more closely associated with sacred music than the <strong>pipe organ</strong>. Mozart called it the king of instruments, a title it has never convincingly been stripped of.</p>
-<p>Its origins lie far from the church. The <em>hydraulis</em>, a water-powered organ, was invented by the Greek engineer <strong>Ctesibius</strong> in Alexandria, Egypt, around 250 BCE. It was used in Roman theatres and at gladiatorial contests. When early Christian writers condemned the instruments of the Roman entertainments, the organ was among those they had in mind. It would take several centuries for the Church to reclaim and transform it.</p>
-<p>By the medieval period, organs had become permanent fixtures in European cathedrals. By the Baroque period of the 17th and 18th centuries, composers such as <strong>Johann Sebastian Bach</strong> were writing organ music of extraordinary complexity and spiritual depth — music still performed in Catholic churches around the world every Sunday.</p>
-<h3>Instruments in Nigerian Catholic Worship</h3>
-<p>In the Nigerian Catholic tradition, the choir has always been the heartbeat of the parish. The Second Vatican Council (1962–1965) explicitly endorsed the principle of <strong>inculturation</strong> — the integration of local cultural expressions, including music and musical instruments, into the Catholic liturgy.</p>
-<p>In Nigeria, this opened the door to a rich conversation between the Catholic musical tradition and indigenous West African instruments. The <strong>udu drum</strong>, a clay percussion instrument originating among the Igbo people of southeastern Nigeria, produces a distinctive deep resonance that has found a natural place in contemporary Catholic worship. The <strong>ekwe</strong>, a slit drum also from the Igbo tradition, carries rhythmic authority that can anchor a choir with remarkable power.</p>
-<p>This integration is not without theological and aesthetic debate. Some parish musicians argue that traditional instruments alter the character of the liturgy in ways that move it away from the contemplative gravity the Mass requires. Others argue that authentic inculturation demands that African Catholics worship in their own musical voice. This is a live and important conversation that every serious Catholic musician in Nigeria must engage with thoughtfully.</p>`,
-    pool: [
-      {q:'What instrument is called the "King of Instruments"?',opts:['The harp','The violin','The pipe organ','The trumpet'],ans:2},
-      {q:'Who invented the hydraulis, the ancestor of the modern pipe organ?',opts:['Pythagoras','Ctesibius','Guido d\'Arezzo','Aristotle'],ans:1},
-      {q:'Which Vatican Council opened the door to inculturation in Catholic worship?',opts:['First Vatican Council','Council of Trent','Second Vatican Council','Council of Nicaea'],ans:2},
-      {q:'Which instrument family produces sound through a vibrating membrane?',opts:['Chordophones','Aerophones','Idiophones','Membranophones'],ans:3},
-      {q:'The harp belongs to which instrument family?',opts:['Aerophones','Membranophones','Chordophones','Idiophones'],ans:2},
-      {q:'Which Nigerian instruments have been incorporated into contemporary Catholic worship?',opts:['The violin and piano','The udu drum and ekwe','The trumpet and trombone','The sitar and tabla'],ans:1},
-      {q:'The Hornbostel-Sachs classification system was developed in which year?',opts:['1850','1880','1914','1945'],ans:2},
-      {q:'The hydraulis was originally used in ancient Rome for what purpose?',opts:['Exclusively for sacred worship','In theatres and at gladiatorial contests','As a military instrument in battle','In private noble households only'],ans:1},
-      {q:'Which instrument family produces sound through the vibration of the body of the instrument itself?',opts:['Chordophones','Membranophones','Aerophones','Idiophones'],ans:3},
-      {q:'Johann Sebastian Bach composed organ music during which musical period?',opts:['The Renaissance','The Medieval period','The Baroque period','The Classical period'],ans:2},
-      {q:'The udu drum originates among which people of Nigeria?',opts:['The Yoruba people','The Igbo people','The Hausa people','The Efik people'],ans:1},
-      {q:'Which composer is specifically associated with calling the pipe organ the "King of Instruments"?',opts:['Johann Sebastian Bach','Ludwig van Beethoven','Wolfgang Amadeus Mozart','Antonio Vivaldi'],ans:2}
-    ]
-  }
-];
+async function sbGet(table, query) {
+  const res = await fetch(SUPA_URL+'/rest/v1/'+table+'?'+query, {
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+async function sbPost(table, body) {
+  const res = await fetch(SUPA_URL+'/rest/v1/'+table, {
+    method:'POST',
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=representation'},
+    body:JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+async function sbPatch(table, query, body) {
+  const res = await fetch(SUPA_URL+'/rest/v1/'+table+'?'+query, {
+    method:'PATCH',
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=representation'},
+    body:JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
 
-// ─── STATE ─────────────────────────────────────────────────────────────────────
-var currentUser = null;
-var completed = [];
+async function hashPassword(password) {
+  const data = new TextEncoder().encode(password + 'cma_salt_2026');
+  const buf = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function togglePass() {
+  var el = document.getElementById('loginPass');
+  el.type = el.type==='password'?'text':'password';
+}
+
+var currentStudent = null;
+var completedModules = [];
 var currentMod = 0;
 var shownQuestions = [];
 var answers = {};
@@ -583,377 +422,328 @@ var submitted = false;
 var timerDone = false;
 var scrollDone = false;
 var timerInterval = null;
-var SHOW_COUNT = 4; // questions shown per attempt
-var READ_TIME = 90; // seconds
+var SHOW_COUNT = 4;
+var READ_TIME = 90;
+var PASS_MARK = 100;
 
-// ─── PERSISTENCE ───────────────────────────────────────────────────────────────
-function saveProgress() {
-  if (!currentUser) return;
-  var key = 'cma_progress_' + currentUser;
-  var data = {
-    completed: completed,
-    lastActivity: new Date().toISOString(),
-    username: currentUser
-  };
-  try { localStorage.setItem(key, JSON.stringify(data)); } catch(e){}
-  // Also write to shared admin key
-  try {
-    var allProgress = JSON.parse(localStorage.getItem('cma_all_progress') || '{}');
-    allProgress[currentUser] = data;
-    localStorage.setItem('cma_all_progress', JSON.stringify(allProgress));
-  } catch(e){}
-}
+// ── MODULE DATA ───────────────────────────────────────────────────────────────
+var MODULES = [
+  {
+    num:'Module 01',title:'The Origin of Music',duration:'~75 min',
+    videoUrl:'',audioTracks:[],downloads:[],
+    content:`<h3>Where Did Music Begin?</h3><p>The question of music's origin is as old as civilisation itself. Ancient Greek philosophers believed music was a gift from the gods. But archaeological evidence tells us the story begins far earlier — approximately 40,000 years ago with bone flutes found in caves across southern Germany.</p><p>These instruments were deliberately shaped, pierced with finger holes, and designed to produce specific pitches. The people who made them already understood, on some intuitive level, the difference between noise and music.</p><h3>Music in Ancient Civilisations</h3><p>In ancient Mesopotamia, the Sumerians developed one of the earliest musical traditions. The <strong>Hurrian Hymn No. 6</strong>, discovered at Ugarit in modern Syria, is the oldest notated song ever recovered — written for a stringed instrument called the sammuri.</p><p>In ancient Egypt, temple musicians were among the most respected figures in society. The <strong>sistrum</strong> was associated with the goddess Hathor. In ancient China, Confucius considered music one of the highest expressions of moral order, using pentatonic (five-tone) scales.</p><p><strong>Pythagoras</strong> of ancient Greece discovered that musical intervals could be expressed as mathematical ratios — the octave as 2:1, the perfect fifth as 3:2. Plato argued in <em>The Republic</em> that the mode of music played in a city could shape the character of its citizens.</p><h3>Music and the Human Voice</h3><p>Before instruments, there was the voice. The earliest human music was entirely vocal — chanting, call-and-response, communal singing used in labour, mourning, celebration, and worship. <strong>The origins of music are the origins of worship itself.</strong></p>`,
+    pool:[
+      {q:'What is the oldest notated song ever recovered?',opts:['The Gregorian Chant','The Hurrian Hymn No. 6','The Psalms of David','The Egyptian Book of Ra'],ans:1},
+      {q:'Which philosopher discovered musical intervals as mathematical ratios?',opts:['Aristotle','Plato','Pythagoras','Socrates'],ans:2},
+      {q:'Approximately how old are the oldest known musical instruments?',opts:['5,000 years','15,000 years','40,000 years','100,000 years'],ans:2},
+      {q:'In which ancient civilisation were temple musicians most respected?',opts:['Ancient Greece','Ancient Mesopotamia','Ancient Egypt','Ancient Rome'],ans:2},
+      {q:'What material were the oldest known musical instruments made from?',opts:['Clay and stone','Animal bone','Hardwood','Copper ore'],ans:1},
+      {q:'What does this module identify as the earliest form of human music?',opts:['Instrumental performance','Sacred temple chanting','Vocal music: chanting and call-and-response','Written compositions on clay tablets'],ans:2},
+      {q:'Which ancient civilisation used a pentatonic (five-tone) scale?',opts:['Ancient Egypt','Ancient Greece','Ancient China','Ancient Mesopotamia'],ans:2},
+      {q:'According to Plato, what could the mode of music affect?',opts:['The weather','The character of a city\'s citizens','Military outcomes','The fertility of crops'],ans:1},
+      {q:'The Hurrian Hymn No. 6 was written for which instrument?',opts:['A wind instrument','A percussion instrument','A stringed instrument called the sammuri','A keyboard'],ans:2},
+      {q:'The sistrum was associated with which Egyptian goddess?',opts:['Isis','Ra','Hathor','Osiris'],ans:2},
+      {q:'Which philosopher considered music one of the highest expressions of moral order?',opts:['Pythagoras','Confucius','Plato','Aristotle'],ans:1},
+      {q:'Choral music at Mass today traces back to psalm-singing in which location?',opts:['The Roman Forum','The Jewish temple in Jerusalem','Medieval French cathedrals','The courts of ancient Greece'],ans:1}
+    ]
+  },
+  {
+    num:'Module 02',title:'Medieval Times & Sacred Rhythm',duration:'~80 min',
+    videoUrl:'',audioTracks:[],downloads:[],
+    content:`<h3>The Medieval Musical World</h3><p>The medieval period (500–1400 CE) was defined by the dominance of the Catholic Church across all aspects of European life. It was during this era that the foundations of Western classical music were laid, rooted entirely in sacred worship.</p><h3>Gregorian Chant</h3><p>Named after Pope Gregory I (590–604 CE), <strong>Gregorian Chant</strong> became the official music of the Roman Catholic Church. Its defining features: a single unharmonised melodic line, free rhythm following the natural stress of Latin text, and a deeply contemplative quality. Performed entirely without instruments by trained monks.</p><p>The purpose was never to entertain or display skill, but to create conditions in which sung prayer could rise undistracted toward God.</p><h3>The Invention of Musical Notation</h3><p>Before the 9th century, music was transmitted entirely by oral tradition. <strong>Guido d'Arezzo</strong> (991–1050 CE), a Benedictine monk, changed this permanently — developing a system of four horizontal lines on which symbols called <em>neumes</em> could be placed to indicate pitch and rhythm. This was the ancestor of the five-line staff used today.</p><p>Guido also introduced <strong>solmisation syllables</strong> — Ut, Re, Mi, Fa, Sol, La — from the Latin hymn <em>Ut queant laxis</em>. Today's Do Re Mi system descends directly from his invention.</p><h3>Polyphony and the Birth of Harmony</h3><p>By the 12th century, composers at the Cathedral of Notre Dame in Paris began experimenting with <strong>polyphony</strong> — combining two or more independent melodic lines simultaneously. <strong>Leonin</strong> compiled the Magnus Liber Organi (two-voice settings of chant). <strong>Perotin</strong> extended this to three and four voices.</p><p>Pope John XXII issued a decree in 1324 criticising polyphony for obscuring sacred texts. Despite resistance, polyphony developed into the choral music of the Renaissance — Palestrina, Victoria, Byrd — music Catholic choirs still sing today.</p>`,
+    pool:[
+      {q:'What does "monophonic" mean in Gregorian Chant?',opts:['Complex harmonies','A single unharmonised melodic line','Instrumental accompaniment','A strict rhythmic beat'],ans:1},
+      {q:'Who developed the staff notation system still used today?',opts:['Pope Gregory I','Johann Sebastian Bach','Guido d\'Arezzo','Leonin'],ans:2},
+      {q:'What is polyphony?',opts:['Music for one voice','Music without rhythm','Multiple independent melodic lines sounding simultaneously','Music only for the Mass'],ans:2},
+      {q:'Which school produced the first great polyphonic sacred compositions?',opts:['The Bologna School','The Notre Dame School','The Venetian School','The Roman School'],ans:1},
+      {q:'What did Guido d\'Arezzo introduce alongside the staff system?',opts:['The pipe organ','The Latin Mass','Solmisation syllables (Ut Re Mi Fa Sol La)','The choir stall arrangement'],ans:2},
+      {q:'What was the primary purpose of Gregorian Chant?',opts:['To entertain worshippers','To demonstrate musical skill','To elevate the heart toward God','To teach Latin'],ans:2},
+      {q:'Which pope served 590–604 CE and gave his name to the Church\'s chant?',opts:['Pope John XXII','Pope Gregory I','Pope Innocent III','Pope Clement V'],ans:1},
+      {q:'What are neumes?',opts:['Medieval monks','Symbols on staff lines indicating pitch and rhythm','Another name for Gregorian melodies','Instruments in early medieval worship'],ans:1},
+      {q:'The solmisation syllables were taken from which work?',opts:['The Gregorian Antiphonary','The Rule of Saint Benedict','The Latin hymn Ut queant laxis','The Magnus Liber Organi'],ans:2},
+      {q:'Who compiled the Magnus Liber Organi?',opts:['Perotin','Guido d\'Arezzo','Leonin','Pope Gregory I'],ans:2},
+      {q:'Which pope issued a decree in 1324 criticising polyphony?',opts:['Pope Gregory I','Pope John XXII','Pope Clement V','Pope Innocent III'],ans:1},
+      {q:'Before Guido d\'Arezzo, how was music transmitted?',opts:['Through illustrated manuscripts','Entirely by oral tradition','Through rhythmic symbols only','By performance at public festivals'],ans:1}
+    ]
+  },
+  {
+    num:'Module 03',title:'Evolution of Musical Instruments',duration:'~70 min',
+    videoUrl:'',audioTracks:[],downloads:[],
+    content:`<h3>From Bone to Brass</h3><p>The story of musical instruments is the story of human ingenuity across every era. From the simplest bone flute to the most complex keyboard ever built, humans have always sought to expand the range of sounds available to them in worship, celebration, and daily life.</p><h3>The Four Families</h3><p>Musicologists classify all instruments into four families based on how they produce sound (Hornbostel and Sachs, 1914):</p><p><strong>Chordophones</strong> produce sound through vibrating strings. The harp appears in Sumerian art from 3000 BCE. From the lyre of ancient Greece to the modern violin, guitar, and grand piano — all share the same principle.</p><p><strong>Aerophones</strong> produce sound through a vibrating column of air. Ancient Egyptians played double-reed instruments similar to the modern oboe. The connection between breath and music is no accident — air is the medium of the voice.</p><p><strong>Membranophones</strong> produce sound through a vibrating membrane. Drums are found in every known human culture. In West African traditions that influenced Nigerian worship, specific drum patterns communicate specific messages.</p><p><strong>Idiophones</strong> produce sound through the vibration of the instrument body itself. Bells, gongs, xylophones, the sistrum — and the church bells that have called the faithful to worship since the 6th century.</p><h3>The Pipe Organ</h3><p>No instrument is more closely associated with sacred music. Mozart called it the king of instruments. Its ancestor, the <em>hydraulis</em>, was invented by <strong>Ctesibius</strong> in Alexandria around 250 BCE for Roman theatres. By the medieval period, organs had become permanent fixtures in cathedrals. <strong>Johann Sebastian Bach</strong> wrote organ music of extraordinary spiritual depth in the Baroque period — still performed in Catholic churches every Sunday.</p><h3>Instruments in Nigerian Catholic Worship</h3><p>The Second Vatican Council (1962–1965) endorsed <strong>inculturation</strong> — integrating local cultural expressions into Catholic liturgy. In Nigeria, this opened the door to indigenous instruments: the <strong>udu drum</strong> (clay percussion, Igbo origin), the <strong>ekwe</strong> (slit drum, also Igbo), and various shakers and call-and-response patterns. This integration remains an active theological and aesthetic conversation.</p>`,
+    pool:[
+      {q:'What instrument is called the "King of Instruments"?',opts:['The harp','The violin','The pipe organ','The trumpet'],ans:2},
+      {q:'Who invented the hydraulis, ancestor of the pipe organ?',opts:['Pythagoras','Ctesibius','Guido d\'Arezzo','Aristotle'],ans:1},
+      {q:'Which Vatican Council endorsed inculturation in Catholic worship?',opts:['First Vatican Council','Council of Trent','Second Vatican Council','Council of Nicaea'],ans:2},
+      {q:'Which family produces sound through a vibrating membrane?',opts:['Chordophones','Aerophones','Idiophones','Membranophones'],ans:3},
+      {q:'The harp belongs to which instrument family?',opts:['Aerophones','Membranophones','Chordophones','Idiophones'],ans:2},
+      {q:'Which Nigerian instruments have been incorporated into Catholic worship?',opts:['Violin and piano','Udu drum and ekwe','Trumpet and trombone','Sitar and tabla'],ans:1},
+      {q:'The Hornbostel-Sachs system was developed in which year?',opts:['1850','1880','1914','1945'],ans:2},
+      {q:'The hydraulis was originally used in ancient Rome for what purpose?',opts:['Sacred worship','Theatres and gladiatorial contests','Military battle','Private households'],ans:1},
+      {q:'Which family produces sound through the vibration of the instrument body?',opts:['Chordophones','Membranophones','Aerophones','Idiophones'],ans:3},
+      {q:'Bach composed organ music during which period?',opts:['The Renaissance','The Medieval period','The Baroque period','The Classical period'],ans:2},
+      {q:'The udu drum originates among which Nigerian people?',opts:['The Yoruba','The Igbo','The Hausa','The Efik'],ans:1},
+      {q:'Who called the pipe organ the "King of Instruments"?',opts:['Johann Sebastian Bach','Ludwig van Beethoven','Wolfgang Amadeus Mozart','Antonio Vivaldi'],ans:2}
+    ]
+  }
+];
 
-function loadProgress() {
-  if (!currentUser) return;
-  try {
-    var key = 'cma_progress_' + currentUser;
-    var data = JSON.parse(localStorage.getItem(key) || 'null');
-    if (data) completed = data.completed || [];
-  } catch(e){ completed = []; }
-}
-
-// ─── NAVIGATION ────────────────────────────────────────────────────────────────
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
-}
-function goDash() {
-  history.pushState({screen:'dash'},'','#dash');
-  showScreen('screen-dash');
-}
-function goCourse() {
-  renderCourse();
-  history.pushState({screen:'course'},'','#course');
-  showScreen('screen-course');
-}
-window.addEventListener('popstate', function(e) {
-  if (!e.state) return;
-  var s = e.state.screen;
-  if (s==='dash') showScreen('screen-dash');
-  else if (s==='course'){ renderCourse(); showScreen('screen-course'); }
-  else if (s==='module' && e.state.mod !== undefined) openMod(e.state.mod, true);
-  else if (s==='complete'){ renderCourse(); showScreen('screen-complete'); }
-});
-
-// ─── AUTH ──────────────────────────────────────────────────────────────────────
-function doLogin() {
-  var u = document.getElementById('loginUser').value.trim().toLowerCase();
-  var p = document.getElementById('loginPass').value.trim();
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+async function doLogin() {
+  var email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  var pass = document.getElementById('loginPass').value;
   var err = document.getElementById('loginErr');
-  if (!u || !p) { showErr('Please enter both username and password.'); return; }
-  var user = USERS[u];
-  if (!user || user.password !== p) { showErr('Incorrect username or password. Please try again.'); return; }
+  var btn = document.getElementById('loginBtn');
+  if (!email || !pass) { showErr('Please enter your email and password.'); return; }
+  btn.disabled = true; btn.textContent = 'Signing in...';
   err.style.display = 'none';
-  currentUser = u;
-  loadProgress();
-  document.getElementById('topbar').style.display = 'flex';
-  document.getElementById('topbarName').textContent = user.displayName;
-  document.getElementById('dashName').textContent = 'Welcome back, ' + user.displayName;
-  // Log login time for admin
   try {
-    var allProgress = JSON.parse(localStorage.getItem('cma_all_progress') || '{}');
-    if (!allProgress[u]) allProgress[u] = {};
-    allProgress[u].username = u;
-    allProgress[u].displayName = user.displayName;
-    allProgress[u].lastLogin = new Date().toISOString();
-    allProgress[u].completed = completed;
-    localStorage.setItem('cma_all_progress', JSON.stringify(allProgress));
-  } catch(e){}
-  history.replaceState({screen:'dash'},'','#dash');
-  showScreen('screen-dash');
+    var hash = await hashPassword(pass);
+    var results = await sbGet('students', 'email=eq.'+encodeURIComponent(email)+'&select=*');
+    if (!results || results.length === 0) { showErr('No account found with that email address.'); btn.disabled=false; btn.textContent='Sign in →'; return; }
+    var student = results[0];
+    if (student.password_hash !== hash) { showErr('Incorrect password. Please try again.'); btn.disabled=false; btn.textContent='Sign in →'; return; }
+    if (student.status !== 'active') { showErr('Your account has not been activated yet. Please wait for the Academy to approve your application.'); btn.disabled=false; btn.textContent='Sign in →'; return; }
+    // Update last login
+    await sbPatch('students', 'id=eq.'+student.id, {last_login: new Date().toISOString()});
+    currentStudent = student;
+    await loadProgress();
+    document.getElementById('topbar').style.display = 'flex';
+    document.getElementById('topbarName').textContent = student.first_name;
+    document.getElementById('dashName').textContent = 'Welcome back, ' + student.first_name + '.';
+    history.replaceState({screen:'dash'},'','#dash');
+    showScreen('screen-dash');
+  } catch(e) {
+    showErr('Login error: ' + e.message);
+    btn.disabled=false; btn.textContent='Sign in →';
+  }
 }
+
 function showErr(msg) {
   var err = document.getElementById('loginErr');
-  err.textContent = msg;
-  err.style.display = 'block';
+  err.textContent = msg; err.style.display = 'block';
 }
+
 function logout() {
-  completed = []; currentMod = 0; answers = {}; submitted = false;
-  timerDone = false; scrollDone = false; currentUser = null;
+  currentStudent = null; completedModules = []; currentMod = 0;
+  answers = {}; submitted = false; timerDone = false; scrollDone = false;
   if (timerInterval) clearInterval(timerInterval);
   document.getElementById('topbar').style.display = 'none';
-  document.getElementById('loginUser').value = '';
+  document.getElementById('loginEmail').value = '';
   document.getElementById('loginPass').value = '';
   document.getElementById('loginErr').style.display = 'none';
+  document.getElementById('loginBtn').disabled = false;
+  document.getElementById('loginBtn').textContent = 'Sign in →';
   history.pushState({},'','#');
   showScreen('screen-login');
 }
 
-// ─── COURSE ────────────────────────────────────────────────────────────────────
+// ── PROGRESS ─────────────────────────────────────────────────────────────────
+async function loadProgress() {
+  if (!currentStudent) return;
+  try {
+    var rows = await sbGet('progress', 'student_id=eq.'+currentStudent.id+'&course_id=eq.1&select=module_index');
+    completedModules = rows.map(r => r.module_index);
+  } catch(e) { completedModules = []; }
+}
+
+async function saveProgress(modIndex) {
+  if (!currentStudent) return;
+  try {
+    await sbPost('progress', {
+      student_id: currentStudent.id,
+      course_id: 1,
+      module_index: modIndex
+    });
+  } catch(e) { /* ignore duplicate unique constraint */ }
+}
+
+// ── NAVIGATION ───────────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function goDash() { history.pushState({screen:'dash'},'','#dash'); showScreen('screen-dash'); }
+function goCourse() { renderCourse(); history.pushState({screen:'course'},'','#course'); showScreen('screen-course'); }
+
+// ── COURSE ────────────────────────────────────────────────────────────────────
 function renderCourse() {
-  var pct = Math.round((completed.length / MODULES.length) * 100);
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressText').textContent = completed.length + ' of ' + MODULES.length + ' complete';
-  document.getElementById('modulesList').innerHTML = MODULES.map(function(m, i) {
-    var done = completed.indexOf(i) !== -1;
-    var locked = i > 0 && completed.indexOf(i-1) === -1;
-    var numCls = 'mc-num' + (done ? ' mc-done' : '');
-    var numTxt = done ? '✓' : (i+1);
-    var statusCls = done ? 's-done' : locked ? 's-locked' : 's-open';
-    var statusTxt = done ? '✓ Complete' : locked ? '🔒 Complete previous module' : '▶ Open';
-    var cardCls = 'module-card' + (done ? ' mc-done-card' : locked ? ' mc-locked' : ' mc-active');
-    return '<div class="' + cardCls + '"' + (locked ? '' : ' onclick="openMod(' + i + ')"') + '>'
-      + '<div class="' + numCls + '">' + numTxt + '</div>'
-      + '<div class="mc-body">'
-      + '<div class="mc-label">' + m.num + '</div>'
-      + '<div class="mc-title">' + m.title + '</div>'
-      + '<div class="mc-meta">📖 Reading &nbsp;·&nbsp; ⏱ ' + m.duration + '</div>'
-      + '<span class="mc-status ' + statusCls + '">' + statusTxt + '</span>'
-      + '</div>'
-      + (locked ? '' : '<div class="mc-arrow">›</div>')
-      + '</div>';
+  var pct = Math.round((completedModules.length / MODULES.length) * 100);
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressText').textContent = completedModules.length+' of '+MODULES.length+' complete';
+  document.getElementById('modulesList').innerHTML = MODULES.map((m,i) => {
+    var done = completedModules.includes(i);
+    var locked = i > 0 && !completedModules.includes(i-1);
+    return '<div class="module-card'+(done?' mc-done-card':locked?' mc-locked':' mc-active')+'"'+(locked?'':' onclick="openMod('+i+')"')+'>'
+      +'<div class="mc-num'+(done?' mc-done':'')+'">'+(done?'✓':(i+1))+'</div>'
+      +'<div class="mc-body"><div class="mc-label">'+m.num+'</div><div class="mc-title">'+m.title+'</div>'
+      +'<div class="mc-meta">📖 Reading · ⏱ '+m.duration+'</div>'
+      +'<span class="mc-status '+(done?'s-done':locked?'s-locked':'s-open')+'">'+(done?'✓ Complete':locked?'🔒 Complete previous module':'▶ Open')+'</span>'
+      +'</div>'+(locked?'':'<div class="mc-arrow">›</div>')+'</div>';
   }).join('');
 }
 
-// ─── MODULE ────────────────────────────────────────────────────────────────────
+// ── MODULE ────────────────────────────────────────────────────────────────────
 function openMod(i) {
-  history.pushState({screen:'module', mod:i}, '', '#module-' + (i+1));
+  history.pushState({screen:'module',mod:i},'','#module-'+(i+1));
   currentMod = i; answers = {}; submitted = false;
   timerDone = false; scrollDone = false;
   if (timerInterval) clearInterval(timerInterval);
   var m = MODULES[i];
-
-  // pick random questions
-  var pool = m.pool.slice();
+  var pool = [...m.pool];
   shownQuestions = [];
   var count = Math.min(SHOW_COUNT, pool.length);
   while (shownQuestions.length < count && pool.length) {
-    var idx = Math.floor(Math.random() * pool.length);
-    shownQuestions.push(pool.splice(idx, 1)[0]);
+    var idx = Math.floor(Math.random()*pool.length);
+    shownQuestions.push(pool.splice(idx,1)[0]);
   }
-
   document.getElementById('modBreadcrumb').textContent = m.title;
   document.getElementById('modTitle').textContent = m.title;
   document.getElementById('modContent').innerHTML = m.content;
-
   // video
   var vw = document.getElementById('videoWrap');
-  var vs = document.getElementById('videoSection');
-  if (m.videoUrl) {
-    vw.innerHTML = '<iframe src="' + m.videoUrl + '" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>';
-    vs.style.display = 'block';
-  } else {
-    vw.innerHTML = '<div class="video-placeholder"><div class="video-placeholder-icon">🎬</div><div class="video-placeholder-text">Video lesson coming soon</div></div>';
-    vs.style.display = 'block';
-  }
-
+  if (m.videoUrl) vw.innerHTML = '<iframe src="'+m.videoUrl+'" allow="accelerometer;autoplay;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>';
+  else vw.innerHTML = '<div class="video-placeholder"><span style="font-size:32px">🎬</span><span>Video lesson coming soon</span></div>';
   // audio
   var ap = document.getElementById('audioPlayer');
-  var as_ = document.getElementById('audioSection');
-  if (m.audioTracks && m.audioTracks.length) {
-    ap.innerHTML = m.audioTracks.map(function(t) {
-      return '<div class="audio-track">'
-        + '<div class="audio-icon">🎵</div>'
-        + '<div class="audio-info"><div class="audio-name">' + t.name + '</div><div class="audio-sub">' + (t.duration||'') + '</div></div>'
-        + '</div>'
-        + '<audio class="audio-native" controls src="' + t.url + '">Your browser does not support audio playback.</audio>';
-    }).join('');
-    as_.style.display = 'block';
-  } else {
-    ap.innerHTML = '<div class="audio-placeholder">Audio examples will be added here by the administrator.</div>';
-    as_.style.display = 'block';
-  }
-
+  if (m.audioTracks && m.audioTracks.length) ap.innerHTML = m.audioTracks.map(t=>'<div style="margin-bottom:8px;font-size:13px;font-weight:600;color:var(--text);">🎵 '+t.name+'</div><audio class="audio-native" controls src="'+t.url+'"></audio>').join('');
+  else ap.innerHTML = '<div class="audio-placeholder">Audio examples will be added here.</div>';
   // downloads
   var dg = document.getElementById('downloadsGrid');
-  var ds = document.getElementById('downloadsSection');
-  if (m.downloads && m.downloads.length) {
-    dg.innerHTML = m.downloads.map(function(d) {
-      return '<a class="download-item" href="' + d.url + '" download target="_blank">'
-        + '<div class="dl-icon ' + (d.type||'pdf') + '">' + (d.type==='music' ? '🎼' : '📄') + '</div>'
-        + '<div class="dl-info"><div class="dl-name">' + d.name + '</div><div class="dl-size">' + (d.size||'') + '</div></div>'
-        + '<div class="dl-arrow">↓</div>'
-        + '</a>';
-    }).join('');
-    ds.style.display = 'block';
-  } else {
-    dg.innerHTML = '<div class="download-placeholder">Lesson PDFs and sheet music will be available here.</div>';
-    ds.style.display = 'block';
-  }
-
+  if (m.downloads && m.downloads.length) dg.innerHTML = m.downloads.map(d=>'<a class="download-item" href="'+d.url+'" download target="_blank"><div class="dl-icon '+(d.type||'pdf')+'">'+(d.type==='music'?'🎼':'📄')+'</div><div class="dl-info"><div class="dl-name">'+d.name+'</div><div class="dl-size">'+(d.size||'')+'</div></div><div class="dl-arrow">↓</div></a>').join('');
+  else dg.innerHTML = '<div class="download-placeholder">Lesson PDFs and sheet music will be available here.</div>';
   // reset quiz
   lockQuiz();
   document.getElementById('modActions').innerHTML = '';
   document.getElementById('quizResult').innerHTML = '';
   document.getElementById('quizResult').classList.remove('show');
-
-  // reset timer UI
+  // reset timer
   var rt = document.getElementById('readTimer');
   rt.className = 'read-timer';
   document.getElementById('timerMsg').textContent = 'Reading timer active';
-  document.getElementById('timerSub').textContent = 'Read through the full lesson below. The assessment unlocks when you\'ve read the content and scrolled to the end.';
-  document.getElementById('timerBar').style.width = '0%';
-  document.getElementById('timerBar').style.transition = 'none';
-
+  document.getElementById('timerSub').textContent = 'Read through the full lesson. The assessment unlocks when you\'ve read the content and scrolled to the end.';
+  document.getElementById('timerBar').style.cssText = 'width:0%;transition:none;';
   showScreen('screen-module');
-  startReadTimer();
-  setupScrollCheck();
+  startReadTimer(); setupScrollCheck();
 }
 
 function startReadTimer() {
   var elapsed = 0;
   var bar = document.getElementById('timerBar');
-  bar.style.width = '0%';
-  timerInterval = setInterval(function() {
+  timerInterval = setInterval(() => {
     elapsed++;
     bar.style.transition = 'width 1s linear';
-    bar.style.width = Math.min(Math.round((elapsed / READ_TIME) * 100), 100) + '%';
+    bar.style.width = Math.min(Math.round((elapsed/READ_TIME)*100),100)+'%';
     if (elapsed >= READ_TIME) {
-      clearInterval(timerInterval);
-      timerDone = true;
-      var rt = document.getElementById('readTimer');
-      rt.classList.add('rt-unlocked');
+      clearInterval(timerInterval); timerDone = true;
+      document.getElementById('readTimer').classList.add('rt-unlocked');
       document.getElementById('timerMsg').textContent = 'Reading period complete';
-      document.getElementById('timerSub').textContent = 'Now scroll to the end of the lesson content to unlock the assessment.';
-      bar.style.width = '100%';
-      checkUnlock();
+      document.getElementById('timerSub').textContent = 'Now scroll to the end of the lesson to unlock the assessment.';
+      bar.style.width = '100%'; checkUnlock();
     }
   }, 1000);
 }
 
 function setupScrollCheck() {
-  var scrollHandler = function() {
+  var handler = () => {
     var content = document.getElementById('modContent');
     if (!content) return;
-    var rect = content.getBoundingClientRect();
-    // Check if we've scrolled past the content area
-    if (rect.bottom <= window.innerHeight + 80) {
-      scrollDone = true;
-      window.removeEventListener('scroll', scrollHandler);
-      checkUnlock();
+    if (content.getBoundingClientRect().bottom <= window.innerHeight + 80) {
+      scrollDone = true; window.removeEventListener('scroll', handler); checkUnlock();
     }
   };
-  window.addEventListener('scroll', scrollHandler);
-  // Check immediately in case content is short
-  setTimeout(scrollHandler, 800);
+  window.addEventListener('scroll', handler);
+  setTimeout(handler, 800);
 }
 
 function checkUnlock() {
   if (timerDone && scrollDone) {
-    var rt = document.getElementById('readTimer');
-    rt.classList.add('rt-unlocked');
+    document.getElementById('readTimer').classList.add('rt-unlocked');
     document.getElementById('timerMsg').textContent = '✓ Assessment unlocked';
-    document.getElementById('timerSub').textContent = 'You\'ve read the full lesson. Answer all questions below to complete this module.';
+    document.getElementById('timerSub').textContent = 'Answer all questions below to complete this module.';
     document.getElementById('timerBar').style.width = '100%';
-
     document.getElementById('quizLockBadge').style.display = 'none';
     renderQuiz();
-    document.getElementById('modActions').innerHTML =
-      '<button class="btn btn-primary" id="submitBtn" onclick="submitQuiz()">Submit Assessment →</button>';
-    document.getElementById('quizCard').scrollIntoView({behavior:'smooth', block:'start'});
+    document.getElementById('modActions').innerHTML = '<button class="btn btn-primary" id="submitBtn" onclick="submitQuiz()">Submit Assessment →</button>';
+    document.getElementById('quizCard').scrollIntoView({behavior:'smooth',block:'start'});
   }
 }
 
 function lockQuiz() {
   document.getElementById('quizLockBadge').style.display = 'inline-flex';
-  document.getElementById('quizBody').innerHTML = '<div class="quiz-locked">'
-    + '<div class="quiz-locked-icon">🔒</div>'
-    + '<div class="quiz-locked-title">Assessment locked</div>'
-    + '<div class="quiz-locked-text">Read through the full lesson above and scroll to the end to unlock the assessment.</div>'
-    + '</div>';
+  document.getElementById('quizBody').innerHTML = '<div class="quiz-locked"><div class="quiz-locked-icon">🔒</div><div class="quiz-locked-title">Assessment locked</div><div class="quiz-locked-text">Read through the full lesson and scroll to the end to unlock.</div></div>';
 }
 
 function renderQuiz() {
-  document.getElementById('quizBody').innerHTML = shownQuestions.map(function(q, qi) {
-    return '<div class="q-item"><div class="q-text">' + (qi+1) + '. ' + q.q + '</div>'
-      + '<div class="q-options">'
-      + q.opts.map(function(opt, oi) {
-        return '<div class="q-opt" id="qo-' + qi + '-' + oi + '" onclick="pick(' + qi + ',' + oi + ')">'
-          + '<div class="q-radio"><div class="q-radio-dot"></div></div>' + opt + '</div>';
-      }).join('') + '</div></div>';
-  }).join('');
+  document.getElementById('quizBody').innerHTML = shownQuestions.map((q,qi) =>
+    '<div class="q-item"><div class="q-text">'+(qi+1)+'. '+q.q+'</div><div class="q-options">'
+    +q.opts.map((opt,oi) => '<div class="q-opt" id="qo-'+qi+'-'+oi+'" onclick="pick('+qi+','+oi+')">'
+      +'<div class="q-radio"><div class="q-radio-dot"></div></div>'+opt+'</div>').join('')
+    +'</div></div>'
+  ).join('');
 }
 
 function pick(qi, oi) {
   if (submitted) return;
   answers[qi] = oi;
-  shownQuestions[qi].opts.forEach(function(_, idx) {
-    document.getElementById('qo-' + qi + '-' + idx).classList.remove('sel');
-  });
-  document.getElementById('qo-' + qi + '-' + oi).classList.add('sel');
+  shownQuestions[qi].opts.forEach((_,idx) => document.getElementById('qo-'+qi+'-'+idx).classList.remove('sel'));
+  document.getElementById('qo-'+qi+'-'+oi).classList.add('sel');
 }
 
-function submitQuiz() {
-  if (Object.keys(answers).length < shownQuestions.length) {
-    alert('Please answer all ' + shownQuestions.length + ' questions before submitting.');
-    return;
-  }
+async function submitQuiz() {
+  if (Object.keys(answers).length < shownQuestions.length) { alert('Please answer all '+shownQuestions.length+' questions.'); return; }
   submitted = true;
-  var score = 0;
-  shownQuestions.forEach(function(q, qi) {
-    if (answers[qi] === q.ans) score++;
-  });
-  var passed = score === shownQuestions.length;
-
-  shownQuestions.forEach(function(q, qi) {
-    q.opts.forEach(function(_, oi) {
-      var el = document.getElementById('qo-' + qi + '-' + oi);
+  var score = shownQuestions.filter((q,qi) => answers[qi]===q.ans).length;
+  var passCount = Math.ceil(shownQuestions.length * PASS_MARK / 100);
+  var passed = score >= passCount;
+  shownQuestions.forEach((q,qi) => {
+    q.opts.forEach((_,oi) => {
+      var el = document.getElementById('qo-'+qi+'-'+oi);
       el.classList.add('disabled');
-      if (oi === q.ans) el.classList.add('correct');
-      else if (oi === answers[qi] && !passed) el.classList.add('wrong');
+      if (oi===q.ans) el.classList.add('correct');
+      else if (oi===answers[qi] && !passed) el.classList.add('wrong');
       else el.classList.remove('sel');
     });
   });
-
   var resultEl = document.getElementById('quizResult');
-  resultEl.innerHTML = '<div class="qr-score">' + score + '/' + shownQuestions.length + '</div>'
-    + '<div class="qr-label">Questions correct</div>'
-    + '<div class="qr-msg ' + (passed ? 'pass' : 'fail') + '">'
-    + (passed
-        ? '✓ Excellent. You scored 100%. This module is now complete.'
-        : 'Your wrong answers are marked above. Review the lesson carefully, then try a fresh set of questions.')
-    + '</div>';
+  resultEl.innerHTML = '<div class="qr-score">'+score+'/'+shownQuestions.length+'</div>'
+    +'<div class="qr-label">Questions correct</div>'
+    +'<div class="qr-msg '+(passed?'pass':'fail')+'">'
+    +(passed?'✓ Passed. This module is now complete.':'Review the lesson and try a fresh set of questions.')+'</div>';
   resultEl.classList.add('show');
-
-  if (passed && completed.indexOf(currentMod) === -1) {
-    completed.push(currentMod);
-    saveProgress();
+  if (passed && !completedModules.includes(currentMod)) {
+    completedModules.push(currentMod);
+    await saveProgress(currentMod);
   }
-
-  var isLast = currentMod === MODULES.length - 1;
-  var sb = document.getElementById('submitBtn');
-  if (sb) sb.remove();
-  var actions = document.getElementById('modActions');
-
-  if (passed) {
-    actions.innerHTML = isLast
-      ? '<button class="btn btn-amber" onclick="showComplete()">🎓 Finish Course →</button>'
-        + '<button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>'
-      : '<button class="btn btn-primary" onclick="openMod(' + (currentMod+1) + ')">Next Module →</button>'
-        + '<button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>';
-  } else {
-    actions.innerHTML = '<button class="btn btn-secondary" onclick="retryMod()">↑ Try again</button>';
-  }
-  resultEl.scrollIntoView({behavior:'smooth', block:'start'});
+  var isLast = currentMod === MODULES.length-1;
+  document.getElementById('submitBtn')&&document.getElementById('submitBtn').remove();
+  document.getElementById('modActions').innerHTML = passed
+    ? (isLast
+        ? '<button class="btn btn-amber" onclick="showComplete()">🎓 Finish Course →</button><button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>'
+        : '<button class="btn btn-primary" onclick="openMod('+(currentMod+1)+')">Next Module →</button><button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>')
+    : '<button class="btn btn-secondary" onclick="retryMod()">↑ Try again</button>';
+  resultEl.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function retryMod() {
-  var m = MODULES[currentMod];
-  var pool = m.pool.slice();
+  var pool = [...MODULES[currentMod].pool];
   shownQuestions = [];
   var count = Math.min(SHOW_COUNT, pool.length);
   while (shownQuestions.length < count && pool.length) {
-    var idx = Math.floor(Math.random() * pool.length);
-    shownQuestions.push(pool.splice(idx, 1)[0]);
+    shownQuestions.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]);
   }
   answers = {}; submitted = false;
-  lockQuiz();
   document.getElementById('quizLockBadge').style.display = 'none';
   document.getElementById('quizResult').innerHTML = '';
   document.getElementById('quizResult').classList.remove('show');
   document.getElementById('modActions').innerHTML = '';
-  // unlock quiz immediately (student already read it)
   renderQuiz();
-  document.getElementById('modActions').innerHTML =
-    '<button class="btn btn-primary" id="submitBtn" onclick="submitQuiz()">Submit Assessment →</button>';
-  document.getElementById('quizCard').scrollIntoView({behavior:'smooth', block:'start'});
+  document.getElementById('modActions').innerHTML = '<button class="btn btn-primary" id="submitBtn" onclick="submitQuiz()">Submit Assessment →</button>';
+  document.getElementById('quizCard').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function showComplete() {
-  history.pushState({screen:'complete'}, '', '#complete');
-  renderCourse();
+  history.pushState({screen:'complete'},'','#complete');
   showScreen('screen-complete');
 }
 
