@@ -5,144 +5,321 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Catholic Music Academy — Admin</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDx0ZXh0IHg9IjYiIHk9IjIwIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNDOUE4NEMiPvCdhJ48L3RleHQ+CiAgPHBhdGggZD0iTTIyIDZDMjAgNiAxOC41IDcuNSAxOC41IDkuNUMxOC41IDEwLjIgMTguNyAxMC44IDE5IDExLjNMMTYgMTYuNUMxNS42IDE3LjEgMTUuOCAxNy45IDE2LjQgMTguM0MxNyAxOC43IDE3LjggMTguNSAxOC4yIDE3LjlMMjEuMiAxMi43QzIxLjYgMTIuOSAyMiAxMyAyMi41IDEzQzI0LjUgMTMgMjYgMTEuNSAyNiA5LjVDMjYgOC44IDI1LjggOC4yIDI1LjUgNy43TDIzLjUgOS43TDIxLjggOS40TDIxLjUgNy43TDIzLjUgNS43QzIzIDUuMiAyMi41IDYgMjIgNloiIGZpbGw9IiNDOUE4NEMiLz4KPC9zdmc+"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
   --navy:#0D1B3E;--navy-mid:#1A2E6C;--navy-light:#EEF2FF;--navy-pale:#F4F6FF;
-  --blue:#1A2E6C;--blue-mid:#2B47A8;--blue-light:#EEF2FF;--blue-pale:#F4F6FF;
   --gold:#C9A84C;--gold-light:#F5E6C0;--gold-dark:#9A7A2E;
-  --amber:#C9A84C;--amber-light:#F5E6C0;--amber-dark:#9A7A2E;
   --text:#0F172A;--muted:#64748B;--dim:#94A3B8;--border:#E2E8F0;
   --surface:#FAFAF7;--white:#FFFFFF;--ok:#16A34A;--ok-light:#DCFCE7;
   --danger:#DC2626;--danger-light:#FEE2E2;--warn:#C9A84C;--warn-light:#F5E6C0;
-  --sidebar:240px;
+  --sidebar:256px;
 }
-body{background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+body{background:var(--surface);color:var(--text);font-family:"DM Sans",sans-serif;min-height:100vh;}
+
+/* LOGIN */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;background:var(--navy);}
-.login-box{background:var(--white);border-radius:20px;padding:44px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
-.login-box-logo{display:flex;align-items:center;gap:10px;margin-bottom:32px;}
-.login-box-icon{width:42px;height:42px;background:var(--navy);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--white);}
-.login-box-name{font-family:'DM Serif Display',serif;font-size:18px;color:var(--blue);}
-.login-box-sub{font-size:11px;color:var(--muted);}
-.f-label{font-size:12px;font-weight:600;color:var(--text);display:block;margin-bottom:5px;}
-.f-input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;margin-bottom:14px;transition:border-color 0.2s;}
+.login-box{background:var(--white);border-radius:20px;padding:44px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.25);}
+.login-box-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.login-box-name{font-family:"DM Serif Display",serif;font-size:17px;color:var(--navy);}
+.login-box-sub{font-size:10px;color:var(--gold-dark);font-weight:700;letter-spacing:0.5px;}
+.f-label{font-size:12px;font-weight:700;color:var(--text);display:block;margin-bottom:5px;}
+.f-input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;font-size:14px;font-family:"DM Sans",sans-serif;color:var(--text);outline:none;margin-bottom:14px;transition:border-color 0.2s;}
 .f-input:focus{border-color:var(--navy);}
 .f-err{font-size:12px;color:var(--danger);background:var(--danger-light);border-radius:8px;padding:9px 13px;margin-bottom:12px;display:none;}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:all 0.18s;}
-.btn-primary{background:var(--navy);color:var(--white);padding:12px 24px;font-size:14px;}
-.btn-primary:hover{background:var(--navy-mid);}
-.btn-primary:disabled{opacity:0.45;cursor:not-allowed;}
-.btn-ok{background:var(--ok);color:var(--white);padding:8px 16px;font-size:12px;}
-.btn-ok:hover{opacity:0.88;}
-.btn-danger{background:var(--danger);color:var(--white);padding:7px 14px;font-size:12px;}
-.btn-danger:hover{opacity:0.88;}
-.btn-ghost{background:none;border:1.5px solid var(--border);color:var(--muted);padding:7px 14px;font-size:12px;border-radius:8px;cursor:pointer;}
-.btn-ghost:hover{border-color:var(--blue);color:var(--blue);}
-.btn-whatsapp{background:#25D366;color:white;padding:7px 14px;font-size:12px;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;display:inline-flex;align-items:center;gap:5px;}
-.btn-whatsapp:hover{background:#20ba5a;}
-.btn-amber{background:var(--amber);color:var(--white);padding:8px 16px;font-size:12px;}
-.admin-wrap{display:flex;min-height:100vh;}
+
+/* LAYOUT */
+.admin-layout{display:flex;min-height:100vh;}
 .sidebar{width:var(--sidebar);background:var(--navy);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;overflow-y:auto;}
-.sidebar-brand{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,0.08);}
-.sidebar-brand-row{display:flex;align-items:center;gap:9px;}
-.sidebar-icon{width:32px;height:32px;background:rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;color:white;flex-shrink:0;}
-.sidebar-brand-name{font-family:'DM Serif Display',serif;font-size:14px;color:white;line-height:1.2;}
-.sidebar-brand-tag{font-size:10px;color:rgba(255,255,255,0.5);margin-top:2px;}
-.sidebar-section{padding:16px 10px 4px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:9px;margin:2px 8px;cursor:pointer;transition:all 0.15s;font-size:13px;color:rgba(255,255,255,0.7);font-weight:500;position:relative;}
-.nav-item:hover{background:rgba(255,255,255,0.1);color:white;}
-.nav-item.active{background:rgba(255,255,255,0.15);color:white;}
-.nav-badge{position:absolute;right:10px;background:var(--danger);color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;min-width:18px;text-align:center;}
-.sidebar-footer{margin-top:auto;padding:16px;border-top:1px solid rgba(255,255,255,0.1);}
-.sidebar-user{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.sidebar-avatar{width:34px;height:34px;background:var(--amber);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;}
-.sidebar-user-name{font-size:13px;color:white;font-weight:600;}
-.sidebar-user-role{font-size:11px;color:rgba(255,255,255,0.5);}
-.sidebar-logout{width:100%;text-align:left;background:none;border:1px solid rgba(255,255,255,0.2);border-radius:7px;padding:8px 12px;font-size:12px;color:rgba(255,255,255,0.6);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
-.sidebar-logout:hover{border-color:rgba(255,255,255,0.5);color:white;}
-.main{margin-left:var(--sidebar);flex:1;padding:32px;max-width:calc(100% - var(--sidebar));}
+.sb-brand{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:10px;}
+.sb-brand-text .sb-name{font-family:"DM Serif Display",serif;font-size:13px;color:white;line-height:1.2;}
+.sb-brand-text .sb-sub{font-size:9px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.sb-section{padding:14px 12px 4px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 13px;border-radius:8px;margin:1px 8px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.65);font-weight:500;transition:all 0.15s;position:relative;text-decoration:none;}
+.nav-item:hover{background:rgba(255,255,255,0.08);color:white;}
+.nav-item.active{background:rgba(255,255,255,0.14);color:white;}
+.nav-badge{position:absolute;right:10px;background:var(--danger);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;min-width:18px;text-align:center;}
+.nav-badge.gold{background:var(--gold);color:var(--navy);}
+.sb-footer{margin-top:auto;padding:14px;border-top:1px solid rgba(255,255,255,0.08);}
+.sb-user{display:flex;align-items:center;gap:9px;margin-bottom:10px;}
+.sb-avatar{width:32px;height:32px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--navy);flex-shrink:0;}
+.sb-user-name{font-size:13px;color:white;font-weight:600;}
+.sb-user-role{font-size:10px;color:rgba(255,255,255,0.4);}
+.sb-logout{width:100%;background:none;border:1px solid rgba(255,255,255,0.18);border-radius:7px;padding:7px 12px;font-size:12px;color:rgba(255,255,255,0.55);cursor:pointer;font-family:"DM Sans",sans-serif;transition:all 0.15s;text-align:left;}
+.sb-logout:hover{border-color:rgba(255,255,255,0.45);color:white;}
+
+/* NOTIFICATIONS BELL */
+.notif-btn{position:relative;background:rgba(255,255,255,0.08);border:none;border-radius:8px;padding:8px 10px;cursor:pointer;color:rgba(255,255,255,0.7);font-size:16px;margin:4px 8px;display:flex;align-items:center;gap:6px;font-family:"DM Sans",sans-serif;font-size:12px;transition:all 0.15s;}
+.notif-btn:hover{background:rgba(255,255,255,0.14);color:white;}
+.notif-dot{width:8px;height:8px;background:var(--danger);border-radius:50%;position:absolute;top:6px;right:6px;}
+
+/* MAIN */
+.main{margin-left:var(--sidebar);flex:1;padding:28px 32px;max-width:calc(100% - var(--sidebar));}
 .page{display:none;}
 .page.active{display:block;animation:fadeIn 0.22s ease;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.page-header{margin-bottom:28px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
-.page-title{font-family:'DM Serif Display',serif;font-size:32px;color:var(--text);margin-bottom:4px;}
-.page-sub{font-size:14px;color:var(--muted);}
-.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:24px;}
-.card-title{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
-.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-bottom:28px;}
-.stat-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;}
-.stat-val{font-family:'DM Serif Display',serif;font-size:36px;color:var(--navy);line-height:1;}
-.stat-label{font-size:12px;color:var(--muted);margin-top:4px;}
-.stat-card.danger-card .stat-val{color:var(--danger);}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;}
+.page-title{font-family:"DM Serif Display",serif;font-size:30px;color:var(--text);margin-bottom:3px;}
+.page-sub{font-size:13px;color:var(--muted);}
+
+/* CARDS */
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:22px;}
+.card-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:24px;}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.stat-val{font-family:"DM Serif Display",serif;font-size:34px;color:var(--navy);line-height:1;}
+.stat-label{font-size:11px;color:var(--muted);margin-top:4px;}
 .stat-card.ok-card .stat-val{color:var(--ok);}
-.stat-card.warn-card .stat-val{color:var(--amber-dark);}
+.stat-card.warn-card .stat-val{color:var(--gold-dark);}
+.stat-card.danger-card .stat-val{color:var(--danger);}
+
+/* TABLES */
 .table-wrap{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;}
-th{font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--muted);padding:10px 14px;text-align:left;border-bottom:1.5px solid var(--border);}
-td{font-size:13px;color:var(--text);padding:12px 14px;border-bottom:1px solid var(--surface);vertical-align:middle;}
+th{font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--muted);padding:9px 14px;text-align:left;border-bottom:1.5px solid var(--border);white-space:nowrap;}
+td{font-size:13px;color:var(--text);padding:11px 14px;border-bottom:1px solid var(--surface);vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
-tr:hover td{background:var(--surface);}
-.pill{display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;}
+tr:hover td{background:var(--surface);cursor:pointer;}
+.tr-clickable{cursor:pointer;}
+
+/* PILLS */
+.pill{display:inline-flex;align-items:center;gap:3px;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;white-space:nowrap;}
 .pill-ok{background:var(--ok-light);color:var(--ok);}
-.pill-warn{background:var(--warn-light);color:var(--amber-dark);}
+.pill-warn{background:var(--warn-light);color:var(--gold-dark);}
 .pill-danger{background:var(--danger-light);color:var(--danger);}
-.pill-blue{background:var(--navy-light);color:var(--navy);}
+.pill-blue{background:var(--navy-light);color:var(--navy-mid);}
 .pill-dim{background:var(--surface);color:var(--muted);border:1px solid var(--border);}
-.prog-bar-bg{height:6px;background:var(--border);border-radius:6px;overflow:hidden;min-width:80px;}
-.prog-bar{height:100%;background:linear-gradient(90deg,var(--blue),var(--amber));border-radius:6px;transition:width 0.4s;}
-.alert{border-radius:10px;padding:14px 18px;font-size:13px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px;line-height:1.55;}
-.alert-info{background:var(--blue-light);color:var(--blue);border:1px solid #C7D2FE;}
-.alert-warn{background:var(--warn-light);color:var(--amber-dark);border:1px solid #FDE68A;}
-.alert-ok{background:var(--ok-light);color:var(--ok);border:1px solid #86EFAC;}
-.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:24px;}
-.tab{padding:10px 20px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s;}
-.tab:hover{color:var(--blue);}
-.tab.active{color:var(--blue);border-bottom-color:var(--blue);}
-.form-group{margin-bottom:16px;}
+.pill-gold{background:var(--gold-light);color:var(--gold-dark);}
+
+/* PROGRESS BAR */
+.prog-bg{height:5px;background:var(--border);border-radius:5px;overflow:hidden;min-width:70px;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--navy-mid),var(--gold));border-radius:5px;transition:width 0.4s;}
+.prog-fill.ok{background:var(--ok);}
+.prog-fill.danger{background:var(--danger);}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:8px;font-family:"DM Sans",sans-serif;font-weight:600;cursor:pointer;transition:all 0.18s;font-size:13px;padding:9px 16px;}
+.btn-primary{background:var(--navy);color:white;}
+.btn-primary:hover{background:var(--navy-mid);}
+.btn-primary:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-ok{background:var(--ok);color:white;}
+.btn-ok:hover{opacity:0.88;}
+.btn-danger{background:var(--danger);color:white;}
+.btn-danger:hover{opacity:0.88;}
+.btn-ghost{background:none;border:1.5px solid var(--border);color:var(--muted);}
+.btn-ghost:hover{border-color:var(--navy);color:var(--navy);}
+.btn-gold{background:var(--gold);color:var(--navy);font-weight:700;}
+.btn-gold:hover{background:var(--gold-dark);color:white;}
+.btn-wa{background:#25D366;color:white;}
+.btn-wa:hover{background:#20ba5a;}
+
+/* FORMS */
+.form-group{margin-bottom:14px;}
 .form-label{font-size:12px;font-weight:600;color:var(--text);display:block;margin-bottom:5px;}
-.form-input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;background:var(--white);}
+.form-input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:13px;font-family:"DM Sans",sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;background:var(--white);}
 .form-input:focus{border-color:var(--navy);}
-.form-textarea{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;min-height:90px;resize:vertical;}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.cohort-card{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);border-radius:16px;padding:28px;color:white;margin-bottom:24px;}
-.cohort-name{font-family:'DM Serif Display',serif;font-size:28px;margin-bottom:4px;}
-.cohort-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px;}
-.cohort-stat{background:rgba(255,255,255,0.12);border-radius:10px;padding:14px;}
-.cohort-stat-val{font-family:'DM Serif Display',serif;font-size:28px;}
-.cohort-stat-label{font-size:11px;opacity:0.7;margin-top:3px;}
-.app-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:12px;}
-.app-card.pending{border-left:4px solid var(--amber);}
+.form-select{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:13px;font-family:"DM Sans",sans-serif;color:var(--text);outline:none;background:var(--white);}
+.form-textarea{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:13px;font-family:"DM Sans",sans-serif;color:var(--text);outline:none;min-height:100px;resize:vertical;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-section{border-bottom:1px solid var(--border);margin-bottom:20px;padding-bottom:20px;}
+.form-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.form-section-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;}
+
+/* TABS */
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;}
+.tab{padding:9px 18px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s;}
+.tab:hover{color:var(--navy);}
+.tab.active{color:var(--navy);border-bottom-color:var(--navy);}
+
+/* ALERT */
+.alert{border-radius:10px;padding:12px 16px;font-size:13px;margin-bottom:14px;display:flex;align-items:flex-start;gap:9px;line-height:1.55;}
+.alert-info{background:var(--navy-light);color:var(--navy-mid);border:1px solid #C7D2FE;}
+.alert-warn{background:var(--warn-light);color:var(--gold-dark);border:1px solid #FDE68A;}
+.alert-ok{background:var(--ok-light);color:var(--ok);border:1px solid #86EFAC;}
+.alert-danger{background:var(--danger-light);color:var(--danger);border:1px solid #FECACA;}
+
+/* APP CARDS */
+.app-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:10px;}
+.app-card.pending{border-left:4px solid var(--gold);}
 .app-card.approved{border-left:4px solid var(--ok);}
-.app-card.rejected{border-left:4px solid var(--danger);opacity:0.7;}
-.app-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap;}
-.app-name{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);}
+.app-card.rejected{border-left:4px solid var(--danger);opacity:0.75;}
+.app-name{font-family:"DM Serif Display",serif;font-size:18px;color:var(--text);}
 .app-email{font-size:12px;color:var(--muted);}
-.app-meta{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:14px;padding:14px;background:var(--surface);border-radius:10px;}
-.app-meta-item{font-size:12px;}
-.app-meta-label{color:var(--muted);margin-bottom:2px;}
-.app-meta-val{font-weight:600;color:var(--text);}
-.app-motivation{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;padding:12px;background:var(--surface);border-radius:8px;border-left:3px solid var(--border);}
+.app-meta{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;padding:12px;background:var(--surface);border-radius:10px;margin:12px 0;}
+.app-meta-item .lbl{font-size:10px;color:var(--muted);margin-bottom:2px;text-transform:uppercase;letter-spacing:0.5px;}
+.app-meta-item .val{font-size:13px;font-weight:600;color:var(--text);}
 .app-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
-.app-ref{font-size:11px;color:var(--dim);margin-left:auto;}
-.search-bar{display:flex;gap:10px;margin-bottom:20px;}
-.search-input{flex:1;border:1.5px solid var(--border);border-radius:9px;padding:10px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;}
-.search-input:focus{border-color:var(--blue);}
-.ann-item{border:1.5px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:10px;background:var(--white);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
-.ann-del{background:none;border:none;cursor:pointer;color:var(--dim);font-size:16px;padding:4px;}
+.app-time{font-size:11px;color:var(--dim);margin-left:auto;}
+
+/* STUDENT DETAIL */
+.student-header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);border-radius:16px;padding:24px 28px;color:white;margin-bottom:20px;display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;}
+.student-avatar-lg{width:60px;height:60px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"DM Serif Display",serif;font-size:24px;color:var(--navy);font-weight:700;flex-shrink:0;}
+.student-detail-name{font-family:"DM Serif Display",serif;font-size:26px;margin-bottom:4px;}
+.student-detail-meta{font-size:13px;opacity:0.65;}
+.student-stat{background:rgba(255,255,255,0.1);border-radius:10px;padding:12px 16px;}
+.student-stat-val{font-family:"DM Serif Display",serif;font-size:24px;}
+.student-stat-label{font-size:10px;opacity:0.6;margin-top:2px;text-transform:uppercase;letter-spacing:1px;}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:24px;}
+.timeline::before{content:"";position:absolute;left:8px;top:4px;bottom:4px;width:2px;background:var(--border);}
+.tl-item{position:relative;margin-bottom:18px;}
+.tl-dot{position:absolute;left:-20px;top:3px;width:14px;height:14px;border-radius:50%;background:var(--navy);border:2px solid white;box-shadow:0 0 0 2px var(--navy);}
+.tl-dot.ok{background:var(--ok);box-shadow:0 0 0 2px var(--ok);}
+.tl-dot.danger{background:var(--danger);box-shadow:0 0 0 2px var(--danger);}
+.tl-dot.gold{background:var(--gold);box-shadow:0 0 0 2px var(--gold);}
+.tl-time{font-size:11px;color:var(--dim);margin-bottom:3px;}
+.tl-text{font-size:13px;color:var(--text);font-weight:500;}
+.tl-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+
+/* COHORT */
+.cohort-card{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);border-radius:16px;padding:26px;color:white;margin-bottom:20px;}
+.cohort-name{font-family:"DM Serif Display",serif;font-size:26px;margin-bottom:4px;}
+.cohort-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px;}
+.cohort-stat{background:rgba(255,255,255,0.1);border-radius:10px;padding:12px;}
+.cohort-stat-val{font-family:"DM Serif Display",serif;font-size:26px;}
+.cohort-stat-label{font-size:10px;opacity:0.6;margin-top:2px;}
+
+/* COURSE HEALTH */
+.course-health-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--surface);}
+.course-health-item:last-child{border-bottom:none;}
+.ch-name{font-size:13px;font-weight:600;color:var(--text);flex:1;}
+.ch-pct{font-size:13px;font-weight:700;color:var(--navy);width:36px;text-align:right;}
+
+/* NOTIFICATIONS PANEL */
+.notif-panel{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:0;overflow:hidden;margin-bottom:20px;}
+.notif-item{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-bottom:1px solid var(--surface);}
+.notif-item:last-child{border-bottom:none;}
+.notif-icon{font-size:18px;flex-shrink:0;}
+.notif-text{font-size:13px;color:var(--text);flex:1;line-height:1.4;}
+.notif-time{font-size:11px;color:var(--dim);white-space:nowrap;}
+
+/* MODULE EDITOR */
+.module-card-edit{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:18px;margin-bottom:10px;}
+.module-card-edit-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.module-num{font-size:10px;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:1px;}
+.module-title-text{font-family:"DM Serif Display",serif;font-size:17px;color:var(--text);}
+
+/* RISK CARD */
+.risk-card{background:var(--white);border:1.5px solid var(--danger);border-radius:14px;padding:18px;margin-bottom:10px;}
+
+/* SEARCH */
+.search-bar{display:flex;gap:10px;margin-bottom:18px;}
+.search-input{flex:1;border:1.5px solid var(--border);border-radius:9px;padding:10px 14px;font-size:13px;font-family:"DM Sans",sans-serif;outline:none;}
+.search-input:focus{border-color:var(--navy);}
+
+/* ANN */
+.ann-item{display:flex;align-items:flex-start;gap:14px;padding:14px 18px;border:1.5px solid var(--border);border-radius:12px;background:var(--white);margin-bottom:8px;}
+.ann-del{background:none;border:none;cursor:pointer;color:var(--dim);font-size:16px;padding:2px;}
 .ann-del:hover{color:var(--danger);}
-.risk-card{background:var(--white);border:1.5px solid var(--danger);border-radius:14px;padding:20px;margin-bottom:12px;}
-@media(max-width:768px){:root{--sidebar:200px;}.main{padding:20px;}.form-row{grid-template-columns:1fr;}}
+
+/* ASSESSMENT ANALYTICS */
+.analytics-module{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:20px;margin-bottom:12px;}
+.analytics-module-title{font-family:"DM Serif Display",serif;font-size:18px;color:var(--text);margin-bottom:14px;}
+.analytics-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.analytics-label{font-size:12px;color:var(--muted);width:120px;flex-shrink:0;}
+.analytics-bar-bg{flex:1;height:8px;background:var(--border);border-radius:8px;overflow:hidden;}
+.analytics-bar{height:100%;border-radius:8px;transition:width 0.5s;}
+.analytics-val{font-size:12px;font-weight:700;color:var(--text);width:36px;text-align:right;}
+
+@media(max-width:800px){:root{--sidebar:0px;}.sidebar{transform:translateX(-100%);transition:transform 0.3s;}.main{margin-left:0;}}
+
+/* CONTENT MANAGER */
+.cm-layout{display:grid;grid-template-columns:260px 1fr;gap:16px;align-items:start;}
+.cm-sidebar{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.cm-sidebar-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+.cm-course-grp{border-bottom:1px solid var(--border);}
+.cm-course-grp:last-child{border-bottom:none;}
+.cm-course-label{display:flex;align-items:center;gap:8px;padding:11px 14px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text);user-select:none;transition:background 0.15s;}
+.cm-course-label:hover{background:var(--navy-pale);}
+.cm-course-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.cm-course-chevron{font-size:10px;color:var(--dim);transition:transform 0.2s;margin-left:auto;}
+.cm-course-grp.open .cm-course-chevron{transform:rotate(90deg);}
+.cm-module-list{background:var(--surface);padding:4px 0 8px 0;display:none;}
+.cm-course-grp.open .cm-module-list{display:block;}
+.cm-module-item{display:flex;align-items:center;gap:7px;padding:8px 14px 8px 26px;font-size:12px;color:var(--muted);cursor:pointer;transition:all 0.12s;}
+.cm-module-item:hover{background:var(--navy-light);color:var(--navy);}
+.cm-module-item.active{background:var(--navy-light);color:var(--navy);font-weight:600;}
+.cm-module-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.cm-add-mod{padding:6px 14px 2px 26px;}
+.cm-empty-state{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:56px 32px;text-align:center;}
+.btn-xs{padding:5px 10px;font-size:11px;}
+.btn-sm{padding:7px 13px;font-size:12px;}
+
+/* MODULE EDITOR CARD */
+.me-card{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.me-card-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);gap:12px;flex-wrap:wrap;}
+.me-section{padding:20px 18px;border-bottom:1px solid var(--border);}
+.me-section:last-child{border-bottom:none;}
+.me-section-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--navy);margin-bottom:12px;}
+.pub-toggle{display:flex;align-items:center;gap:8px;}
+.pub-switch{width:38px;height:22px;background:var(--border);border-radius:11px;cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0;}
+.pub-switch.on{background:var(--ok);}
+.pub-switch-dot{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:white;box-shadow:0 1px 4px rgba(0,0,0,0.2);transition:transform 0.2s;}
+.pub-switch.on .pub-switch-dot{transform:translateX(16px);}
+
+/* RICH TEXT EDITOR */
+.rte-toolbar{display:flex;gap:3px;flex-wrap:wrap;padding:6px 8px;background:var(--surface);border:1.5px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;}
+.rte-btn{background:none;border:1px solid transparent;border-radius:5px;padding:4px 8px;font-size:12px;cursor:pointer;color:var(--text);font-family:'DM Sans',sans-serif;transition:all 0.1s;}
+.rte-btn:hover{background:var(--white);border-color:var(--border);}
+.rte-sep{width:1px;background:var(--border);margin:2px 4px;}
+.rte-area{border:1.5px solid var(--border);border-radius:0 0 8px 8px;padding:14px;font-size:14px;line-height:1.7;min-height:180px;outline:none;color:var(--text);overflow-y:auto;}
+.rte-area h2{font-family:'DM Serif Display',serif;font-size:18px;color:var(--navy);margin:12px 0 6px;}
+.rte-area p{margin-bottom:8px;}
+
+/* AUDIO TRACK ROW */
+.audio-row{display:grid;grid-template-columns:1fr 1fr 80px 36px;gap:7px;align-items:center;margin-bottom:7px;}
+
+/* DOWNLOAD ROW */
+.dl-row{display:grid;grid-template-columns:1fr 1fr 80px 60px 36px;gap:7px;align-items:center;margin-bottom:7px;}
+
+/* QUESTION BUILDER */
+.q-block{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;}
+.q-block-num{font-size:10px;font-weight:700;color:var(--gold-dark);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+.q-text-input{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:10px;}
+.q-text-input:focus{border-color:var(--navy);}
+.q-opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px;}
+.q-opt-wrap{display:flex;align-items:center;gap:6px;}
+.q-opt-label{font-size:11px;font-weight:700;color:var(--muted);width:14px;flex-shrink:0;}
+.q-opt-input{flex:1;border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.15s;}
+.q-opt-input:focus{border-color:var(--navy);}
+.q-opt-input.is-correct{border-color:var(--ok);background:var(--ok-light);}
+.q-correct-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.q-correct-label{font-size:11px;color:var(--muted);}
+.q-correct-select{border:1.5px solid var(--border);border-radius:7px;padding:5px 8px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;}
+
+/* COURSE BLOCKS (overview page) */
+.course-block{background:var(--white);border:1.5px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;transition:border-color 0.15s;}
+.course-block:hover{border-color:var(--navy);}
+.course-block-hdr{display:flex;align-items:center;gap:10px;padding:14px 18px;cursor:pointer;user-select:none;}
+.course-block-hdr:hover{background:var(--navy-pale);}
+.cb-chevron{font-size:11px;color:var(--dim);transition:transform 0.2s;flex-shrink:0;}
+.course-block.open .cb-chevron{transform:rotate(90deg);}
+.cb-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.cb-title{font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);flex:1;}
+.course-block-body{display:none;border-top:1px solid var(--border);padding:14px 18px;background:var(--surface);}
+.course-block.open .course-block-body{display:block;}
+.cb-mod-row{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--white);border:1px solid var(--border);border-radius:9px;margin-bottom:6px;}
+.cb-mod-num{width:26px;height:26px;border-radius:6px;background:var(--navy-light);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--navy);flex-shrink:0;}
+.cb-mod-name{flex:1;font-size:13px;font-weight:500;color:var(--text);}
+.cb-mod-meta{font-size:11px;color:var(--dim);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9998;display:flex;align-items:center;justify-content:center;padding:24px;}
+.modal-box{background:var(--white);border-radius:16px;padding:30px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
 </style>
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="loginScreen">
-  <div class="login-wrap">
-    <div class="login-box">
-      <a href="index.html" class="login-box-logo" style="text-decoration:none;display:flex;align-items:center;gap:10px;margin-bottom:32px;">
-        <div class="login-box-icon" style="display:flex;align-items:center;justify-content:center;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="42" height="42" style="flex-shrink:0;" aria-label="Catholic Music Academy">
+<div class="login-wrap">
+<div class="login-box">
+  <div class="login-box-logo">
+    <div style="flex-shrink:0;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="44" height="44" aria-label="Catholic Music Academy">
   <!-- Outer circle ring -->
   <circle cx="60" cy="60" r="58" fill="white" stroke="#1A2E6C" stroke-width="3"/>
   <circle cx="60" cy="60" r="52" fill="white" stroke="#1A2E6C" stroke-width="1"/>
@@ -203,29 +380,28 @@ tr:hover td{background:var(--surface);}
   <text x="18" y="85" font-size="7" fill="#C9A84C">✦</text>
   <text x="96" y="85" font-size="7" fill="#C9A84C">✦</text>
 </svg></div>
-        <div>
-          <div class="login-box-name">Catholic Music Academy</div>
-          <div class="login-box-sub" style="color:var(--gold-dark);font-weight:600;">Admin Portal</div>
-        </div>
-      </a>
-      <h2 style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--text);margin-bottom:6px;">Admin Sign In</h2>
-      <label class="f-label">Username</label>
-      <input class="f-input" id="adminUser" type="text" placeholder="Admin username" autocomplete="username"/>
-      <label class="f-label">Password</label>
-      <input class="f-input" id="adminPass" type="password" placeholder="Admin password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doAdminLogin()"/>
-      <div class="f-err" id="adminErr"></div>
-      <button class="btn btn-primary" style="width:100%;padding:14px;font-size:15px;" onclick="doAdminLogin()">Sign in to Admin →</button>
-    </div>
+    <div><div class="login-box-name">Catholic Music Academy</div><div class="login-box-sub">Admin Portal</div></div>
   </div>
+  <h2 style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--text);margin-bottom:5px;">Admin Sign In</h2>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:22px;">Manage applications, students, courses and progress.</p>
+  <label class="f-label">Username</label>
+  <input class="f-input" id="adminUser" type="text" placeholder="Admin username" autocomplete="username"/>
+  <label class="f-label">Password</label>
+  <input class="f-input" id="adminPass" type="password" placeholder="Admin password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doAdminLogin()"/>
+  <div class="f-err" id="adminErr"></div>
+  <button class="btn btn-primary" style="width:100%;padding:13px;font-size:15px;" onclick="doAdminLogin()">Sign in to Admin →</button>
+</div>
+</div>
 </div>
 
 <!-- ADMIN SHELL -->
 <div id="adminShell" style="display:none;">
-  <div class="admin-wrap">
-    <div class="sidebar">
-      <div class="sidebar-brand">
-        <div class="sidebar-brand-row">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="42" height="42" style="flex-shrink:0;" aria-label="Catholic Music Academy">
+<div class="admin-layout">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-brand">
+    <div style="flex-shrink:0;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="36" height="36" aria-label="Catholic Music Academy">
   <!-- Outer circle ring -->
   <circle cx="60" cy="60" r="58" fill="white" stroke="#1A2E6C" stroke-width="3"/>
   <circle cx="60" cy="60" r="52" fill="white" stroke="#1A2E6C" stroke-width="1"/>
@@ -285,675 +461,1271 @@ tr:hover td{background:var(--surface);}
   <!-- Gold star decorations on banner sides -->
   <text x="18" y="85" font-size="7" fill="#C9A84C">✦</text>
   <text x="96" y="85" font-size="7" fill="#C9A84C">✦</text>
-</svg>
-          <div><div class="sidebar-brand-name">Catholic Music Academy</div><div class="sidebar-brand-tag" style="color:#C9A84C;font-size:9px;letter-spacing:1px;text-transform:uppercase;">Admin Portal</div></div>
-        </div>
-      </div>
-      <div class="sidebar-section">Overview</div>
-      <div class="nav-item active" onclick="goPage('dashboard')">📊 Dashboard</div>
-      <div class="sidebar-section">Admissions</div>
-      <div class="nav-item" onclick="goPage('applications')" id="navApplications">📋 Applications</div>
-      <div class="sidebar-section">Students</div>
-      <div class="nav-item" onclick="goPage('students')">👥 All Students</div>
-      <div class="nav-item" onclick="goPage('progress')">📈 Progress Records</div>
-      <div class="nav-item" onclick="goPage('atrisk')" id="navAtrisk">⚠️ At-Risk Students</div>
-      <div class="sidebar-section">Tools</div>
-      <div class="nav-item" onclick="goPage('cohort')">📅 Cohort & Deadline</div>
-      <div class="nav-item" onclick="goPage('announcements')">📢 Announcements</div>
-      <div class="sidebar-section">Dev Tools</div>
-      <div class="nav-item" onclick="goPage('devtools')" style="color:rgba(255,165,0,0.7);">🛠 Clear Test Data</div>
-      <div class="sidebar-footer">
-        <div class="sidebar-user">
-          <div class="sidebar-avatar" id="sidebarInitial">D</div>
-          <div><div class="sidebar-user-name" id="sidebarName">Admin</div><div class="sidebar-user-role">Administrator</div></div>
-        </div>
-        <button class="sidebar-logout" onclick="adminLogout()">↩ Sign out</button>
-      </div>
+</svg></div>
+    <div class="sb-brand-text"><div class="sb-name">Catholic Music Academy</div><div class="sb-sub">Admin Portal</div></div>
+  </div>
+  <div class="notif-btn" onclick="goPage('dashboard')" id="notifBell">🔔 <span id="notifCount" style="font-weight:700;"></span></div>
+  <div class="sb-section">Overview</div>
+  <div class="nav-item active" onclick="goPage('dashboard')">📊 Dashboard</div>
+  <div class="sb-section">Admissions</div>
+  <div class="nav-item" onclick="goPage('applications')" id="navApplications">📋 Applications</div>
+  <div class="sb-section">Academics</div>
+  <div class="nav-item" onclick="goPage('courses')">📚 Courses & Modules</div>
+  <div class="nav-item" onclick="goPage('analytics')">📈 Assessment Analytics</div>
+  <div class="sb-section">Students</div>
+  <div class="nav-item" onclick="goPage('students')">👥 All Students</div>
+  <div class="nav-item" onclick="goPage('progress')">✅ Progress Records</div>
+  <div class="nav-item" onclick="goPage('atrisk')" id="navAtrisk">⚠️ At-Risk Students</div>
+  <div class="sb-section">Communication</div>
+  <div class="nav-item" onclick="goPage('announcements')">📢 Announcements</div>
+  <div class="sb-section">Settings</div>
+  <div class="nav-item" onclick="goPage('cohort')">📅 Cohort & Deadline</div>
+  <div class="nav-item" onclick="goPage('devtools')" style="color:rgba(255,165,0,0.6);">🛠 Dev Tools</div>
+  <div class="sb-footer">
+    <div class="sb-user">
+      <div class="sb-avatar" id="sidebarInitial">D</div>
+      <div><div class="sb-user-name" id="sidebarName">Admin</div><div class="sb-user-role">Administrator</div></div>
     </div>
+    <button class="sb-logout" onclick="adminLogout()">↩ Sign out</button>
+  </div>
+</div>
 
-    <div class="main">
-      <!-- DASHBOARD -->
-      <div class="page active" id="page-dashboard">
-        <div class="page-header"><div><div class="page-title">Dashboard</div><div class="page-sub" id="dashSub">Loading...</div></div><button class="btn btn-ghost" onclick="loadAllData();showToast('Refreshed')">↻ Refresh</button></div>
-        <div class="stat-grid" id="dashStats"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;flex-wrap:wrap;">
-          <div class="card"><div class="card-title">Student Progress</div><div id="dashProgressList">Loading...</div></div>
-          <div class="card"><div class="card-title">Recent Activity</div><div id="dashActivity">Loading...</div></div>
-        </div>
-      </div>
+<!-- MAIN -->
+<div class="main">
 
-      <!-- APPLICATIONS -->
-      <div class="page" id="page-applications">
-        <div class="page-header"><div><div class="page-title">Applications</div><div class="page-sub">Review and approve student applications.</div></div></div>
-        <div class="tabs">
-          <div class="tab active" onclick="setAppTab('pending',this)">Pending <span id="pendingCount"></span></div>
-          <div class="tab" onclick="setAppTab('approved',this)">Approved</div>
-          <div class="tab" onclick="setAppTab('rejected',this)">Rejected</div>
-          <div class="tab" onclick="setAppTab('all',this)">All</div>
-        </div>
-        <div id="appList">Loading...</div>
-      </div>
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="page-header">
+    <div><div class="page-title">Dashboard</div><div class="page-sub" id="dashSub">Loading...</div></div>
+    <button class="btn btn-ghost" onclick="loadAllData();showToast('Refreshed')">↻ Refresh</button>
+  </div>
+  <div class="stat-grid" id="dashStats"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
+    <div class="card"><div class="card-title">Course Health</div><div id="courseHealth">Loading...</div></div>
+    <div class="card"><div class="card-title">Notifications</div><div id="dashNotifs">Loading...</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+    <div class="card"><div class="card-title">Student Progress</div><div id="dashProgress">Loading...</div></div>
+    <div class="card"><div class="card-title">Recent Activity</div><div id="dashActivity">Loading...</div></div>
+  </div>
+</div>
 
-      <!-- STUDENTS -->
-      <div class="page" id="page-students">
-        <div class="page-header"><div><div class="page-title">All Students</div><div class="page-sub">Active student accounts.</div></div></div>
-        <div class="search-bar"><input class="search-input" id="studentSearch" placeholder="Search students..." oninput="renderStudents()"/></div>
-        <div class="card"><div class="table-wrap"><table>
-          <thead><tr><th>Student</th><th>Email</th><th>Programme</th><th>Progress</th><th>Last Active</th><th>WhatsApp</th></tr></thead>
-          <tbody id="studentsTable"></tbody>
-        </table></div></div>
-      </div>
+<!-- APPLICATIONS -->
+<div class="page" id="page-applications">
+  <div class="page-header"><div><div class="page-title">Applications</div><div class="page-sub">Review and approve student applications.</div></div></div>
+  <div class="tabs">
+    <div class="tab active" onclick="setAppTab('pending',this)">Pending <span id="pendingCount"></span></div>
+    <div class="tab" onclick="setAppTab('approved',this)">Approved</div>
+    <div class="tab" onclick="setAppTab('rejected',this)">Rejected</div>
+    <div class="tab" onclick="setAppTab('all',this)">All</div>
+  </div>
+  <div id="appList">Loading...</div>
+</div>
 
-      <!-- PROGRESS -->
-      <div class="page" id="page-progress">
-        <div class="page-header"><div><div class="page-title">Progress Records</div><div class="page-sub">Module completion per student.</div></div></div>
-        <div class="card"><div class="table-wrap"><table>
-          <thead><tr><th>Student</th><th>Module 1</th><th>Module 2</th><th>Module 3</th><th>Complete</th><th>Last Activity</th></tr></thead>
-          <tbody id="progressTable"></tbody>
-        </table></div></div>
-      </div>
-
-      <!-- AT RISK -->
-      <div class="page" id="page-atrisk">
-        <div class="page-header"><div><div class="page-title">At-Risk Students</div><div class="page-sub">Students flagged for intervention.</div></div></div>
-        <div id="atriskList"></div>
-      </div>
-
-      <!-- COHORT -->
-      <div class="page" id="page-cohort">
-        <div class="page-header"><div><div class="page-title">Cohort & Deadline</div><div class="page-sub">Manage cohort settings and pass mark.</div></div></div>
-        <div id="cohortView"></div>
-      </div>
-
-      <!-- DEV TOOLS -->
-      <div class="page" id="page-devtools">
-        <div class="page-header"><div><div class="page-title">Developer Tools</div><div class="page-sub">Clear test data before going live. These actions are irreversible.</div></div></div>
-        <div class="alert alert-warn">⚠️ These tools exist for testing only. When the platform goes live with real students, use them with extreme caution. Consider archiving rather than deleting.</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-          <div class="card">
-            <div class="card-title">Clear Applications</div>
-            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6;">Deletes all applications (pending, approved, and rejected) from the database. Student accounts are not affected.</p>
-            <button class="btn btn-danger" onclick="clearApplications()">🗑 Clear All Applications</button>
-          </div>
-          <div class="card">
-            <div class="card-title">Clear Student Accounts</div>
-            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6;">Deletes all student accounts and their progress records. Applications are not affected.</p>
-            <button class="btn btn-danger" onclick="clearStudents()">🗑 Clear All Students</button>
-          </div>
-          <div class="card">
-            <div class="card-title">Clear Progress Records</div>
-            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6;">Resets all module completion records without deleting student accounts.</p>
-            <button class="btn btn-danger" onclick="clearProgress()">🗑 Clear All Progress</button>
-          </div>
-          <div class="card">
-            <div class="card-title">Nuclear Option</div>
-            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6;">Clears everything: applications, students, and progress. Full clean slate. Use before going live.</p>
-            <button class="btn btn-danger" onclick="clearEverything()" style="background:#7f1d1d;">☢️ Clear Everything</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ANNOUNCEMENTS -->
-      <div class="page" id="page-announcements">
-        <div class="page-header"><div><div class="page-title">Announcements</div><div class="page-sub">Post notices for students.</div></div></div>
-        <div class="card" style="margin-bottom:20px;">
-          <div class="card-title">New Announcement</div>
-          <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="annTitle" placeholder="Announcement title"/></div>
-          <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" id="annText" placeholder="Message..."></textarea></div>
-          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-            <select class="form-input" id="annType" style="width:auto;padding:8px 12px;">
-              <option value="info">ℹ️ Info</option><option value="warn">⚠️ Warning</option><option value="ok">✅ Good news</option>
-            </select>
-            <div class="form-group">
-            <label class="form-label">Target Audience</label>
-            <select class="form-input" id="annTarget" style="padding:8px 12px;">
-              <option value="all">All Students</option>
-              <option value="Course 01">Course 01 — Theory of Ancient Music</option>
-              <option value="Course 02">Course 02 — Liturgical Music Theology</option>
-              <option value="Course 03">Course 03 — Choral Leadership</option>
-              <option value="Course 04">Course 04 — The Choirmaster's Craft</option>
-              <option value="Course 05">Course 05 — Sacred Music Composition</option>
-              <option value="Course 06">Course 06 — Voice & Instrument Proficiency</option>
-            </select>
-          </div>
-          <button class="btn btn-primary" onclick="postAnnouncement()">Post Announcement</button>
-          </div>
-        </div>
-        <div class="card-title" style="margin-bottom:12px;">Posted</div>
-        <div id="annList"></div>
+<!-- COURSES & MODULES -->
+<div class="page" id="page-courses">
+  <div class="page-header">
+    <div><div class="page-title">Courses & Modules</div><div class="page-sub">Create courses, add modules, upload content, build question banks.</div></div>
+    <button class="btn btn-primary" onclick="showAddCourseModal()">+ New Course</button>
+  </div>
+  <div class="cm-layout">
+    <div id="cm-sidebar-wrap"></div>
+    <div id="cm-editor-wrap">
+      <div class="cm-empty-state">
+        <div style="font-size:40px;margin-bottom:12px;">📚</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:8px;">Content Manager</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.7;max-width:360px;margin:0 auto 20px;">Select a course and module from the left panel to edit content and manage assessments.</div>
+        <button class="btn btn-primary" onclick="showAddCourseModal()">+ Create First Course</button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- ASSESSMENT ANALYTICS -->
+<div class="page" id="page-analytics">
+  <div class="page-header"><div><div class="page-title">Assessment Analytics</div><div class="page-sub">Performance data across all modules.</div></div></div>
+  <div id="analyticsContent"></div>
+</div>
+
+<!-- ALL STUDENTS -->
+<div class="page" id="page-students">
+  <div class="page-header"><div><div class="page-title">All Students</div><div class="page-sub">Click any student to view their full profile.</div></div></div>
+  <div class="search-bar"><input class="search-input" id="studentSearch" placeholder="Search by name or email..." oninput="renderStudents()"/></div>
+  <div class="card"><div class="table-wrap"><table>
+    <thead><tr><th>Student</th><th>Programme</th><th>Progress</th><th>Last Login</th><th>Applied</th><th>Status</th></tr></thead>
+    <tbody id="studentsTable"></tbody>
+  </table></div></div>
+</div>
+
+<!-- STUDENT DETAIL -->
+<div class="page" id="page-student-detail">
+  <div class="page-header">
+    <div><button class="btn btn-ghost" onclick="goPage('students')">← All Students</button></div>
+  </div>
+  <div id="studentDetailContent"></div>
+</div>
+
+<!-- PROGRESS RECORDS -->
+<div class="page" id="page-progress">
+  <div class="page-header"><div><div class="page-title">Progress Records</div><div class="page-sub">Module completion with attempt counts.</div></div></div>
+  <div class="card"><div class="table-wrap"><table>
+    <thead><tr><th>Student</th><th>Module 1</th><th>Module 2</th><th>Module 3</th><th>Complete</th><th>Last Activity</th></tr></thead>
+    <tbody id="progressTable"></tbody>
+  </table></div></div>
+</div>
+
+<!-- AT RISK -->
+<div class="page" id="page-atrisk">
+  <div class="page-header"><div><div class="page-title">At-Risk Students</div><div class="page-sub">Students flagged for intervention.</div></div></div>
+  <div id="atriskList"></div>
+</div>
+
+<!-- ANNOUNCEMENTS -->
+<div class="page" id="page-announcements">
+  <div class="page-header"><div><div class="page-title">Announcements</div><div class="page-sub">Post notices visible to students in the portal.</div></div></div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title">New Announcement</div>
+    <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="annTitle" placeholder="Announcement title"/></div>
+    <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" id="annText" placeholder="Message..."></textarea></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <select class="form-select" id="annType" style="width:auto;padding:8px 12px;"><option value="info">ℹ️ Info</option><option value="warn">⚠️ Warning</option><option value="ok">✅ Good news</option></select>
+      <select class="form-select" id="annTarget" style="width:auto;padding:8px 12px;"><option value="all">All Students</option><option value="Course 01">Course 01</option><option value="Course 02">Course 02</option><option value="Course 03">Course 03</option><option value="Course 04">Course 04</option><option value="Course 05">Course 05</option><option value="Course 06">Course 06</option></select>
+      <button class="btn btn-primary" onclick="postAnnouncement()">Post</button>
+    </div>
+  </div>
+  <div class="card-title" style="margin-bottom:10px;">Posted</div>
+  <div id="annList"></div>
+</div>
+
+<!-- COHORT -->
+<div class="page" id="page-cohort">
+  <div class="page-header"><div><div class="page-title">Cohort & Deadline</div><div class="page-sub">Manage cohort settings and pass mark.</div></div></div>
+  <div id="cohortView"></div>
+</div>
+
+<!-- DEV TOOLS -->
+<div class="page" id="page-devtools">
+  <div class="page-header"><div><div class="page-title">Developer Tools</div><div class="page-sub">Clear test data before going live. Irreversible.</div></div></div>
+  <div class="alert alert-warn">⚠️ Use with extreme caution. These actions cannot be undone.</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+    <div class="card"><div class="card-title">Clear Applications</div><p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Delete all applications from the database.</p><button class="btn btn-danger" onclick="clearApplications()">🗑 Clear Applications</button></div>
+    <div class="card"><div class="card-title">Clear Students</div><p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Delete all student accounts and progress.</p><button class="btn btn-danger" onclick="clearStudents()">🗑 Clear Students</button></div>
+    <div class="card"><div class="card-title">Clear Progress</div><p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Reset all module completions.</p><button class="btn btn-danger" onclick="clearProgress()">🗑 Clear Progress</button></div>
+    <div class="card"><div class="card-title">Nuclear Option</div><p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Clear everything. Full clean slate.</div><button class="btn btn-danger" style="background:#7f1d1d;" onclick="clearEverything()">☢️ Clear Everything</button></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /admin-layout -->
+</div><!-- /adminShell -->
+
 <script>
 const SUPA_URL = 'https://ltqwofagofmvufvqsuyj.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0cXdvZmFnb2ZtdnVmdnFzdXlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjgyMTgsImV4cCI6MjA5NzMwNDIxOH0.7EkluJspwopQxxQmL7AuYxx4XHgchpYR7tsajyoXHaI';
-const ADMIN_CREDS = {'dale':'dale','admin':'cma2026admin'};
-const ADMIN_NAMES = {'dale':'Dale','admin':'Administrator'};
+const ADMIN_CREDS = {"dale":"dale","admin":"cma2026admin"};
+const ADMIN_NAMES = {"dale":"Dale","admin":"Administrator"};
 const MODULE_COUNT = 3;
+const MODULE_NAMES = ['The Origin of Music','Medieval Times & Sacred Rhythm','Evolution of Musical Instruments'];
+const COURSE_NAMES = ['Theory of Ancient Music','Liturgical Music Theology','Choral Leadership','The Choirmaster\'s Craft','Sacred Music Composition','Voice & Instrument Proficiency'];
 
+// ── SUPABASE ────────────────────────────────────────────────────────────────
 async function sb(table, method='GET', body=null, query='') {
-  const url = SUPA_URL+'/rest/v1/'+table+(query?'?'+query:'');
-  const opts = {method, headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':method==='POST'?'return=representation':''}};
+  var url = SUPA_URL+'/rest/v1/'+table+(query?'?'+query:'');
+  var opts = {method, headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':method==='POST'?'return=representation':''}};
   if (body) opts.body = JSON.stringify(body);
-  const res = await fetch(url, opts);
-  const text = await res.text();
+  var res = await fetch(url, opts);
+  var text = await res.text();
   if (!res.ok) throw new Error(text);
   return text ? JSON.parse(text) : [];
 }
 
+// ── STATE ────────────────────────────────────────────────────────────────────
 var currentAdmin = null;
 var currentPage = 'dashboard';
 var appTabFilter = 'pending';
 var allApplications = [];
 var allStudents = [];
-var allAttempts = [];
 var allProgress = [];
+var allAttempts = [];
 var cohortSettings = {};
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+function fmtDateTime(s) {
+  if (!s) return '—';
+  var d = new Date(s);
+  var h = d.getHours(), m = d.getMinutes();
+  var ampm = h>=12?'pm':'am'; h = h%12||12;
+  return (h+':'+(m<10?'0':'')+m+ampm+' '+d.getDate()+'/'+(d.getMonth()+1)+'/'+String(d.getFullYear()).slice(2));
+}
+function fmtDate(s) {
+  if (!s) return '—';
+  var d = new Date(s);
+  return d.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]+' '+d.getFullYear();
+}
+function daysUntil(s) { return Math.ceil((new Date(s)-Date.now())/86400000); }
+function daysAgo(s) { if(!s) return 999; return Math.floor((Date.now()-new Date(s))/86400000); }
+function getStudentProgress(sid) { return allProgress.filter(p=>p.student_id===sid).map(p=>p.module_index); }
+function getStudentAttempts(sid) { return allAttempts.filter(a=>a.student_id===sid); }
+function isAtRisk(s) {
+  var du=daysUntil(cohortSettings.deadline||'2099-01-01');
+  var comp=getStudentProgress(s.id).length;
+  var da=daysAgo(s.last_login);
+  return (da>=5)||(du<=7&&comp<MODULE_COUNT)||(du<=14&&comp===0);
+}
+function waLink(num, msg) {
+  var n=(num||'').replace(/\D/g,'');
+  if(n.startsWith('0')) n='234'+n.slice(1);
+  return 'https://wa.me/'+n+'?text='+encodeURIComponent(msg);
+}
+function statCard(val,label,cls) {
+  return '<div class="stat-card '+cls+'"><div class="stat-val">'+val+'</div><div class="stat-label">'+label+'</div></div>';
+}
+
+// ── SESSION ──────────────────────────────────────────────────────────────────
+function saveAdminSession(user) { try{localStorage.setItem('cma_admin_session',JSON.stringify({user,at:Date.now()}));}catch(e){} }
+function clearAdminSession() { try{localStorage.removeItem('cma_admin_session');}catch(e){} }
+function loadAdminSession() {
+  try{
+    var raw=localStorage.getItem('cma_admin_session');
+    if(!raw) return null;
+    var s=JSON.parse(raw);
+    if(Date.now()-s.at>8*60*60*1000){clearAdminSession();return null;}
+    return s;
+  }catch(e){return null;}
+}
 
 // ── AUTH ─────────────────────────────────────────────────────────────────────
 function doAdminLogin() {
-  var u = document.getElementById('adminUser').value.trim().toLowerCase();
-  var p = document.getElementById('adminPass').value.trim();
-  var err = document.getElementById('adminErr');
-  if (!u || !p) { err.textContent='Please enter both fields.'; err.style.display='block'; return; }
-  if (!ADMIN_CREDS[u] || ADMIN_CREDS[u] !== p) { err.textContent='Incorrect credentials.'; err.style.display='block'; return; }
-  currentAdmin = u;
-  document.getElementById('sidebarName').textContent = ADMIN_NAMES[u];
-  document.getElementById('sidebarInitial').textContent = ADMIN_NAMES[u].charAt(0);
+  var u=document.getElementById('adminUser').value.trim().toLowerCase();
+  var p=document.getElementById('adminPass').value.trim();
+  var err=document.getElementById('adminErr');
+  if(!u||!p){err.textContent='Please enter both fields.';err.style.display='block';return;}
+  if(!ADMIN_CREDS[u]||ADMIN_CREDS[u]!==p){err.textContent='Incorrect credentials.';err.style.display='block';return;}
+  currentAdmin=u;
   saveAdminSession(u);
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('adminShell').style.display = 'block';
+  document.getElementById('sidebarName').textContent=ADMIN_NAMES[u];
+  document.getElementById('sidebarInitial').textContent=ADMIN_NAMES[u].charAt(0);
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('adminShell').style.display='block';
   loadAllData();
 }
 function adminLogout() {
   clearAdminSession();
-  currentAdmin = null;
-  document.getElementById('adminShell').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'block';
-  document.getElementById('adminUser').value = '';
-  document.getElementById('adminPass').value = '';
-  document.getElementById('adminErr').style.display = 'none';
+  currentAdmin=null;
+  document.getElementById('adminShell').style.display='none';
+  document.getElementById('loginScreen').style.display='block';
+  document.getElementById('adminUser').value='';
+  document.getElementById('adminPass').value='';
+  document.getElementById('adminErr').style.display='none';
 }
 
-// ── DATA LOAD ─────────────────────────────────────────────────────────────────
-async function loadAllData() {
-  try {
-    var [apps, studs, prog, atts] = await Promise.all([
-      sb('applications', 'GET', null, 'order=submitted_at.desc'),
-      sb('students', 'GET', null, 'order=created_at.desc&select=*'),
-      sb('progress', 'GET', null, 'select=*'),
-      sb('assessment_attempts', 'GET', null, 'select=*&order=attempted_at.desc').catch(function(){return[];})
-    ]);
-    allApplications = apps; allStudents = studs; allProgress = prog; allAttempts = atts;
-    var cohortArr = await sb('cohort_settings', 'GET', null, 'limit=1');
-    cohortSettings = cohortArr[0] || {name:'Cohort 1',start_date:'2026-06-01',deadline:'2026-07-13',pass_mark:100};
-    updateBadges();
-    renderCurrentPage();
-  } catch(e) { showToast('Error loading data: '+e.message, 'err'); }
-}
-
-function updateBadges() {
-  var pending = allApplications.filter(a=>a.status==='pending').length;
-  var navApp = document.getElementById('navApplications');
-  navApp.innerHTML = '📋 Applications' + (pending>0?'<span class="nav-badge">'+pending+'</span>':'');
-  var atRisk = getAtRiskStudents().length;
-  var navAt = document.getElementById('navAtrisk');
-  navAt.innerHTML = '⚠️ At-Risk Students' + (atRisk>0?'<span class="nav-badge">'+atRisk+'</span>':'');
-  document.getElementById('pendingCount').textContent = pending > 0 ? '('+pending+')' : '';
-}
-
-function renderCurrentPage() {
-  if (currentPage==='dashboard') renderDashboard();
-  else if (currentPage==='applications') renderApplications();
-  else if (currentPage==='students') renderStudents();
-  else if (currentPage==='progress') renderProgress();
-  else if (currentPage==='atrisk') renderAtrisk();
-  else if (currentPage==='cohort') renderCohort();
-  else if (currentPage==='announcements') renderAnnouncements();
-}
-
-// ── NAVIGATION ────────────────────────────────────────────────────────────────
+// ── NAVIGATION ───────────────────────────────────────────────────────────────
 function goPage(id) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  currentPage = id;
+  currentPage=id;
   document.querySelectorAll('.nav-item').forEach(n=>{
     if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
   });
-  renderCurrentPage();
+  var renders={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics};
+  if(id==='courses'){
+    cmState.selectedModule=null;
+    renderCourses();
+  } else if(renders[id]) { renders[id](); }
 }
 
-// ── HELPERS ───────────────────────────────────────────────────────────────────
-function fmtDate(s){if(!s)return'—';return new Date(s).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}
-function fmtTime(s){if(!s)return'—';return new Date(s).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}
-function daysUntil(s){return Math.ceil((new Date(s)-Date.now())/86400000);}
-function daysAgo(s){if(!s)return 999;return Math.floor((Date.now()-new Date(s))/86400000);}
-
-function getStudentProgress(studentId) {
-  return allProgress.filter(p=>p.student_id===studentId).map(p=>p.module_index);
+// ── DATA LOAD ────────────────────────────────────────────────────────────────
+async function loadAllData() {
+  try {
+    var [apps,studs,prog,atts,coh] = await Promise.all([
+      sb('applications','GET',null,'order=submitted_at.desc'),
+      sb('students','GET',null,'order=created_at.desc&select=*'),
+      sb('progress','GET',null,'select=*'),
+      sb('assessment_attempts','GET',null,'select=*&order=attempted_at.desc').catch(()=>[]),
+      sb('cohort_settings','GET',null,'limit=1')
+    ]);
+    allApplications=apps; allStudents=studs; allProgress=prog; allAttempts=atts;
+    cohortSettings=coh[0]||{name:'Cohort 1',deadline:'2026-07-13',pass_mark:100};
+    // Load course content
+    await loadCourseContent();
+    updateBadges();
+    renderCurrentPage();
+  } catch(e) { showToast('Error loading data: '+e.message,'err'); }
 }
 
-function getAtRiskStudents() {
-  var du = daysUntil(cohortSettings.deadline);
-  return allStudents.filter(s=>{
-    var comp = getStudentProgress(s.id).length;
-    var da = daysAgo(s.last_login);
-    return (da>=5)||(du<=7&&comp<MODULE_COUNT)||(du<=14&&comp===0);
-  });
+function updateBadges() {
+  var pending=allApplications.filter(a=>a.status==='pending').length;
+  var atRisk=allStudents.filter(isAtRisk).length;
+  var navApp=document.getElementById('navApplications');
+  navApp.innerHTML='📋 Applications'+(pending>0?'<span class="nav-badge">'+pending+'</span>':'');
+  var navAt=document.getElementById('navAtrisk');
+  navAt.innerHTML='⚠️ At-Risk Students'+(atRisk>0?'<span class="nav-badge">'+atRisk+'</span>':'');
+  // Notif bell
+  var total=pending+atRisk;
+  var bell=document.getElementById('notifCount');
+  if(bell) bell.textContent=total>0?total+' alerts':'';
 }
-
-function waLink(number, message) {
-  var num = (number||'').replace(/\D/g,'');
-  if (!num.startsWith('234') && num.startsWith('0')) num = '234'+num.slice(1);
-  return 'https://wa.me/'+num+'?text='+encodeURIComponent(message);
+function renderCurrentPage() {
+  var r={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics};
+  if(currentPage==='courses') renderCourses();
+  else if(r[currentPage]) r[currentPage]();
 }
 
 // ── DASHBOARD ────────────────────────────────────────────────────────────────
 function renderDashboard() {
-  var du = daysUntil(cohortSettings.deadline);
-  document.getElementById('dashSub').textContent = (cohortSettings.name||'Cohort 1')+' · Deadline: '+fmtDate(cohortSettings.deadline)+' ('+(du>0?du+' days remaining':'Deadline passed')+')';
-  var pending = allApplications.filter(a=>a.status==='pending').length;
-  var approved = allApplications.filter(a=>a.status==='approved').length;
-  var total = allStudents.length;
-  var complete = allStudents.filter(s=>getStudentProgress(s.id).length>=MODULE_COUNT).length;
-  var atRisk = getAtRiskStudents().length;
-  document.getElementById('dashStats').innerHTML =
-    stat(pending,'Pending Applications','warn-card')+stat(approved,'Approved','ok-card')+
-    stat(total,'Active Students','')+stat(complete,'Course Complete','ok-card')+stat(atRisk,'At Risk',atRisk>0?'danger-card':'ok-card');
-  document.getElementById('dashProgressList').innerHTML = allStudents.length===0
-    ? '<div style="font-size:13px;color:var(--dim);text-align:center;padding:24px 0;">No active students yet.</div>'
-    : allStudents.map(s=>{
-        var comp=getStudentProgress(s.id).length;
-        var pct=Math.round((comp/MODULE_COUNT)*100);
-        return '<div style="margin-bottom:14px;"><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:13px;font-weight:600;">'+s.first_name+' '+s.last_name+'</span><span style="font-size:12px;color:var(--muted);">'+pct+'%</span></div>'
-          +'<div class="prog-bar-bg"><div class="prog-bar" style="width:'+pct+'%;'+(pct===100?'background:var(--ok)':pct===0?'background:var(--border)':'')+'"></div></div>'
-          +'<div style="font-size:11px;color:var(--dim);margin-top:2px;">'+comp+'/'+MODULE_COUNT+' modules · Last login: '+fmtTime(s.last_login)+'</div></div>';
-      }).join('');
-  // Recent activity: combine logins and attempts
-  var actEvents = [];
-  allStudents.filter(function(s){return s.last_login;}).forEach(function(s){
-    actEvents.push({time:s.last_login, icon:'🔑', text:s.first_name+' '+s.last_name+' logged in'});
-  });
-  allAttempts.slice(0,20).forEach(function(a){
-    var s = allStudents.find(function(st){return st.id===a.student_id;});
-    if (!s) return;
-    var icon = a.passed ? '✅' : '❌';
-    var modName = 'Module '+(a.module_index+1);
-    actEvents.push({time:a.attempted_at, icon:icon,
-      text:s.first_name+' '+s.last_name+' — '+modName+': '+a.score+'/'+a.total+(a.passed?' (Passed)':' (Failed)')});
-  });
-  actEvents.sort(function(a,b){return new Date(b.time)-new Date(a.time);});
-  document.getElementById('dashActivity').innerHTML = actEvents.length===0
-    ? '<div style="font-size:13px;color:var(--dim);text-align:center;padding:24px 0;">No activity yet.</div>'
-    : actEvents.slice(0,10).map(function(a){
-        return '<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--surface);align-items:flex-start;">'
-          +'<span style="font-size:16px;flex-shrink:0;">'+a.icon+'</span>'
-          +'<div><div style="font-size:13px;color:var(--text);">'+a.text+'</div>'
-          +'<div style="font-size:11px;color:var(--dim);">'+fmtTime(a.time)+'</div></div></div>';
-      }).join('');
-}
-function stat(val,label,cls){return'<div class="stat-card '+cls+'"><div class="stat-val">'+val+'</div><div class="stat-label">'+label+'</div></div>';}
+  var du=daysUntil(cohortSettings.deadline||'2099-01-01');
+  document.getElementById('dashSub').textContent=(cohortSettings.name||'Cohort 1')+' · Deadline: '+fmtDate(cohortSettings.deadline)+(du>0?' ('+du+' days remaining)':' (Deadline passed)');
+  var pending=allApplications.filter(a=>a.status==='pending').length;
+  var total=allStudents.length;
+  var complete=allStudents.filter(s=>getStudentProgress(s.id).length>=MODULE_COUNT).length;
+  var atRisk=allStudents.filter(isAtRisk).length;
+  var failsToday=allAttempts.filter(a=>{var d=new Date(a.attempted_at);return !a.passed&&(Date.now()-d)<86400000;}).length;
+  document.getElementById('dashStats').innerHTML=
+    statCard(pending,'Pending Applications','warn-card')+
+    statCard(total,'Active Students','')+
+    statCard(complete,'Course Complete','ok-card')+
+    statCard(atRisk,'At Risk',atRisk>0?'danger-card':'ok-card')+
+    statCard(failsToday,'Failed Today',failsToday>0?'danger-card':'');
 
-// ── APPLICATIONS ──────────────────────────────────────────────────────────────
-function setAppTab(filter, el) {
-  appTabFilter = filter;
-  document.querySelectorAll('#page-applications .tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  renderApplications();
+  // Course health
+  var courseIds=[...new Set(allStudents.map(s=>{var c=s.programme||'';var m=c.match(/Course\s+0?(\d+)/i);return m?parseInt(m[1]):1;}))] ;
+  var healthHtml=COURSE_NAMES.map(function(name,i){
+    var courseStudents=allStudents.filter(s=>{var c=s.programme||'';var m=c.match(/Course\s+0?(\d+)/i);return m?parseInt(m[1])===i+1:i===0;});
+    if(!courseStudents.length) return '';
+    var comp=courseStudents.filter(s=>getStudentProgress(s.id).length>=MODULE_COUNT).length;
+    var pct=Math.round((comp/courseStudents.length)*100);
+    return '<div class="course-health-item"><div class="ch-name">'+name+'<br><span style="font-size:11px;color:var(--muted);">'+courseStudents.length+' student(s)</span></div><div class="prog-bg" style="flex:1;"><div class="prog-fill'+(pct>=70?' ok':pct<40?' danger':'')+'" style="width:'+pct+'%"></div></div><div class="ch-pct">'+pct+'%</div></div>';
+  }).filter(Boolean).join('');
+  document.getElementById('courseHealth').innerHTML=healthHtml||'<div style="font-size:13px;color:var(--dim);padding:12px 0;text-align:center;">No enrolled students yet.</div>';
+
+  // Notifications
+  var notifs=[];
+  if(pending>0) notifs.push({icon:'📋',text:pending+' pending application'+(pending>1?'s':'')+' awaiting review',time:'Now'});
+  if(atRisk>0) notifs.push({icon:'⚠️',text:atRisk+' student'+(atRisk>1?'s':'')+' flagged at-risk',time:'Now'});
+  if(failsToday>0) notifs.push({icon:'❌',text:failsToday+' assessment failure'+(failsToday>1?'s':'')+' today',time:'Today'});
+  var passesToday=allAttempts.filter(a=>{var d=new Date(a.attempted_at);return a.passed&&(Date.now()-d)<86400000;}).length;
+  if(passesToday>0) notifs.push({icon:'✅',text:passesToday+' assessment'+(passesToday>1?'s':'')+' passed today',time:'Today'});
+  document.getElementById('dashNotifs').innerHTML=notifs.length===0
+    ?'<div style="font-size:13px;color:var(--dim);padding:12px 0;text-align:center;">No new notifications.</div>'
+    :notifs.map(n=>'<div class="notif-item"><span class="notif-icon">'+n.icon+'</span><span class="notif-text">'+n.text+'</span><span class="notif-time">'+n.time+'</span></div>').join('');
+
+  // Student progress
+  document.getElementById('dashProgress').innerHTML=allStudents.length===0
+    ?'<div style="font-size:13px;color:var(--dim);text-align:center;padding:20px;">No students yet.</div>'
+    :allStudents.map(s=>{
+      var comp=getStudentProgress(s.id).length;
+      var pct=Math.round((comp/MODULE_COUNT)*100);
+      var sid = s.id;
+      return '<div style="margin-bottom:12px;cursor:pointer;" onclick="openStudentDetail(\''+sid+'\')">'
+        +'<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:13px;font-weight:600;color:var(--navy);">'+s.first_name+' '+s.last_name+'</span><span style="font-size:12px;color:var(--muted);">'+pct+'%</span></div>'
+        +'<div class="prog-bg"><div class="prog-fill'+(pct===100?' ok':'')+'" style="width:'+pct+'%'+(pct===0?';background:var(--border)':'')+'"></div></div>'
+        +'<div style="font-size:11px;color:var(--dim);margin-top:2px;">Last login: '+fmtDateTime(s.last_login)+'</div></div>';
+    }).join('');
+
+  // Activity feed
+  var acts=[];
+  allStudents.filter(s=>s.last_login).forEach(s=>acts.push({time:s.last_login,icon:'🔑',text:s.first_name+' '+s.last_name+' logged in'}));
+  allAttempts.slice(0,30).forEach(a=>{
+    var s=allStudents.find(st=>st.id===a.student_id);
+    if(!s) return;
+    acts.push({time:a.attempted_at,icon:a.passed?'✅':'❌',text:s.first_name+' '+s.last_name+' — Module '+(a.module_index+1)+': '+a.score+'/'+a.total+(a.passed?' (Passed)':' (Failed)')});
+  });
+  acts.sort((a,b)=>new Date(b.time)-new Date(a.time));
+  document.getElementById('dashActivity').innerHTML=acts.length===0
+    ?'<div style="font-size:13px;color:var(--dim);text-align:center;padding:20px;">No activity yet.</div>'
+    :acts.slice(0,12).map(a=>'<div style="display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--surface);align-items:flex-start;"><span style="font-size:15px;flex-shrink:0;">'+a.icon+'</span><div><div style="font-size:13px;">'+a.text+'</div><div style="font-size:11px;color:var(--dim);">'+fmtDateTime(a.time)+'</div></div></div>').join('');
 }
 
+// ── APPLICATIONS ─────────────────────────────────────────────────────────────
+window._appMap={};
+var _appTabFilter='pending';
+function setAppTab(f,el){_appTabFilter=f;document.querySelectorAll('#page-applications .tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderApplications();}
 function renderApplications() {
-  var list = appTabFilter==='all' ? allApplications : allApplications.filter(a=>a.status===appTabFilter);
-  if (list.length===0) {
-    document.getElementById('appList').innerHTML = '<div class="alert alert-info">No '+appTabFilter+' applications.</div>';
-    return;
-  }
-  // Store apps in a map so onclick can look up by id safely (avoids special char issues)
-  window._appMap = {};
-  allApplications.forEach(a => { window._appMap[a.id] = a; });
-
-  document.getElementById('appList').innerHTML = list.map(a => {
-    var wappNum = a.whatsapp || a.phone;
-    var statusPill = a.status==='pending'?'pill-warn':a.status==='approved'?'pill-ok':'pill-danger';
-    var receiptBtn = a.receipt_path
-      ? '<button class="btn-ghost" style="font-size:12px;padding:5px 10px;cursor:pointer;" onclick="viewReceipt(\'' + a.id + '\')">📎 View Receipt</button>'
-      : (a.receipt_name ? '📎 ' + a.receipt_name + ' (not stored)' : 'Not uploaded');
-    var actionBtns = '';
-    if (a.status==='pending') {
-      actionBtns += '<button class="btn btn-ok" onclick="approveApp(\'' + a.id + '\')">✓ Approve</button>';
-      actionBtns += '<button class="btn btn-danger" onclick="rejectApp(\'' + a.id + '\')">✕ Reject</button>';
-    } else if (a.status==='approved') {
-      actionBtns += '<button class="btn btn-danger" onclick="rejectApp(\'' + a.id + '\')">Revoke</button>';
-    } else if (a.status==='rejected') {
-      actionBtns += '<button class="btn btn-ok" onclick="approveApp(\'' + a.id + '\')">Re-approve</button>';
-    }
-    var waMsg = '';
-    if (wappNum) {
-      var msg = a.status==='approved'
-        ? 'Dear '+a.first_name+', your application to the Catholic Music Academy has been approved! 🎉\n\nLog in at: learn-cma.vercel.app/login\n\nUse your registered email and the password you set during application.\n\nWelcome to the Academy! 🎶'
-        : a.status==='rejected'
-          ? 'Dear '+a.first_name+', thank you for your application to the Catholic Music Academy. After review, we are unable to approve your application at this time. Please contact us for more information.'
-          : 'Hello '+a.first_name+', this is the Catholic Music Academy regarding your application (Ref: '+a.ref+').';
-      waMsg = '<a class="btn-whatsapp" href="' + waLink(wappNum, msg) + '" target="_blank">💬 WhatsApp ' + (a.status==='approved'?'Acceptance':a.status==='rejected'?'Rejection':'Message') + '</a>';
-    }
-    return '<div class="app-card ' + a.status + '" id="appcard-' + a.id + '">'
-      + '<div class="app-card-header">'
-      + '<div><div class="app-name">' + a.first_name + ' ' + a.last_name + '</div><div class="app-email">' + a.email + '</div></div>'
-      + '<span class="pill ' + statusPill + '">' + a.status + '</span>'
-      + '</div>'
-      + '<div class="app-meta">'
-      + '<div class="app-meta-item"><div class="app-meta-label">Programme</div><div class="app-meta-val">' + (a.programme||'—') + '</div></div>'
-      + '<div class="app-meta-item"><div class="app-meta-label">State</div><div class="app-meta-val">' + (a.state||'—') + '</div></div>'
-      + '<div class="app-meta-item"><div class="app-meta-label">Phone</div><div class="app-meta-val">' + (a.phone||'—') + '</div></div>'
-      + '<div class="app-meta-item"><div class="app-meta-label">WhatsApp</div><div class="app-meta-val">' + (a.whatsapp||a.phone||'—') + '</div></div>'
-      + '<div class="app-meta-item"><div class="app-meta-label">Background</div><div class="app-meta-val">' + (a.background||'—') + '</div></div>'
-      + '<div class="app-meta-item"><div class="app-meta-label">Receipt</div><div class="app-meta-val">' + receiptBtn + '</div></div>'
-      + '<div class="app-meta-item"><div class="app-meta-label">Applied</div><div class="app-meta-val">' + fmtDate(a.submitted_at) + '</div></div>'
-      + '<div class="app-meta-item"><div class="app-meta-label">Ref</div><div class="app-meta-val">' + a.ref + '</div></div>'
-      + '</div>'
-      + '<div class="app-actions">' + actionBtns + waMsg
-      + '<span class="app-ref">' + fmtDate(a.submitted_at) + '</span>'
-      + '</div></div>';
+  allApplications.forEach(a=>{window._appMap[a.id]=a;});
+  var list=_appTabFilter==='all'?allApplications:allApplications.filter(a=>a.status===_appTabFilter);
+  document.getElementById('pendingCount').textContent=allApplications.filter(a=>a.status==='pending').length>0?'('+allApplications.filter(a=>a.status==='pending').length+')':'';
+  if(!list.length){document.getElementById('appList').innerHTML='<div class="alert alert-info">No '+_appTabFilter+' applications.</div>';return;}
+  document.getElementById('appList').innerHTML=list.map(a=>{
+    var wn=a.whatsapp||a.phone;
+    var acceptMsg='Dear '+a.first_name+', your application to the Catholic Music Academy has been approved! 🎉\n\nLog in at: learn-cma.vercel.app/login\n\nUse your registered email and the password you set during application.\n\nWelcome to the Academy!';
+        window._appMap[a.id] = a;
+    var aid = a.id;
+    var acts='';
+    if(a.status==='pending') { acts='<button class="btn btn-ok" onclick="approveApp(this.dataset.id)" data-id="'+aid+'">✓ Approve</button> <button class="btn btn-danger" onclick="rejectApp(this.dataset.id)" data-id="'+aid+'">✕ Reject</button>'; }
+    else if(a.status==='approved') { acts='<button class="btn btn-danger" onclick="rejectApp(this.dataset.id)" data-id="'+aid+'">Revoke</button>'; }
+    else { acts='<button class="btn btn-ok" onclick="approveApp(this.dataset.id)" data-id="'+aid+'">Re-approve</button>'; }
+    if(wn) acts+=' <a class="btn btn-wa" href="'+waLink(wn,acceptMsg)+'" target="_blank">💬 WhatsApp</a>';
+    return '<div class="app-card '+a.status+'">'
+      +'<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">'
+      +'<div><div class="app-name">'+a.first_name+' '+a.last_name+'</div><div class="app-email">'+a.email+'</div></div>'
+      +'<span class="pill '+(a.status==='pending'?'pill-warn':a.status==='approved'?'pill-ok':'pill-danger')+'">'+a.status+'</span></div>'
+      +'<div class="app-meta">'
+      +'<div class="app-meta-item"><div class="lbl">Programme</div><div class="val">'+(a.programme||'—')+'</div></div>'
+      +'<div class="app-meta-item"><div class="lbl">Country</div><div class="val">'+(a.country||'—')+'</div></div>'
+      +'<div class="app-meta-item"><div class="lbl">State</div><div class="val">'+(a.state||'—')+'</div></div>'
+      +'<div class="app-meta-item"><div class="lbl">Phone</div><div class="val">'+(a.phone||'—')+'</div></div>'
+      +'<div class="app-meta-item"><div class="lbl">WhatsApp</div><div class="val">'+(a.whatsapp||a.phone||'—')+'</div></div>'
+      +'<div class="app-meta-item"><div class="lbl">Background</div><div class="val">'+(a.background||'—')+'</div></div>'
+      +'<div class="app-meta-item"><div class="lbl">Receipt</div><div class="val">'+(a.receipt_path?'<button class="btn btn-ghost" style="padding:4px 10px;font-size:11px;" onclick="viewReceipt(this.dataset.id)" data-id="'+aid+'">📎 View</button>':a.receipt_name?'📎 '+a.receipt_name:'Not uploaded')+'</div></div>'
+      +'<div class="app-meta-item"><div class="lbl">Applied</div><div class="val">'+fmtDateTime(a.submitted_at)+'</div></div>'
+      +(a.reviewed_at?'<div class="app-meta-item"><div class="lbl">Reviewed</div><div class="val">'+fmtDateTime(a.reviewed_at)+'</div></div>':'')
+      +'</div>'
+      +'<div class="app-actions">'+acts+'</div></div>';
   }).join('');
 }
 
 async function approveApp(id) {
-  var a = window._appMap[id];
-  if (!a) { showToast('Application not found. Please refresh.', 'err'); return; }
-  if (!confirm('Approve this application and activate a student account for ' + a.first_name + ' ' + a.last_name + '?')) return;
+  var a=window._appMap[id];
+  if(!a||!confirm('Approve application for '+a.first_name+' '+a.last_name+'?')) return;
   try {
-    // Update application status first
-    await sb('applications', 'PATCH', {status:'approved', reviewed_at:new Date().toISOString(), reviewed_by:currentAdmin}, 'id=eq.'+id);
-    // Check if student account already exists for this email
-    var existing = await sb('students', 'GET', null, 'email=eq.'+encodeURIComponent(a.email)+'&select=id,status');
-    if (existing && existing.length > 0) {
-      // Reactivate existing account and update their programme
-      await sb('students', 'PATCH', {
-        status: 'active',
-        programme: a.programme,
-        password_hash: a.password_hash,
-        application_id: id,
-        phone: a.phone,
-        whatsapp: a.whatsapp || a.phone,
-        state: a.state,
-        security_question: a.security_question || null,
-        security_answer_hash: a.security_answer_hash || null
-      }, 'id=eq.'+existing[0].id);
-      showToast('✓ Approved. Existing account reactivated for ' + a.first_name + '.');
+    await sb('applications','PATCH',{status:'approved',reviewed_at:new Date().toISOString(),reviewed_by:currentAdmin},'id=eq.'+id);
+    var existing=await sb('students','GET',null,'email=eq.'+encodeURIComponent(a.email)+'&select=id');
+    if(existing&&existing.length>0) {
+      await sb('students','PATCH',{status:'active',programme:a.programme,password_hash:a.password_hash,application_id:id,phone:a.phone,whatsapp:a.whatsapp||a.phone,state:a.state,security_question:a.security_question||null,security_answer_hash:a.security_answer_hash||null},'id=eq.'+existing[0].id);
+      showToast('✓ Reactivated: '+a.first_name);
     } else {
-      // Create new student account (including security question for password reset)
-      await sb('students', 'POST', {
-        application_id: id,
-        first_name: a.first_name,
-        last_name: a.last_name,
-        email: a.email,
-        password_hash: a.password_hash,
-        phone: a.phone,
-        whatsapp: a.whatsapp || a.phone,
-        programme: a.programme,
-        state: a.state,
-        security_question: a.security_question || null,
-        security_answer_hash: a.security_answer_hash || null,
-        status: 'active'
-      });
-      showToast('✓ Approved. Student account created for ' + a.first_name + '.');
+      await sb('students','POST',{application_id:id,first_name:a.first_name,last_name:a.last_name,email:a.email,password_hash:a.password_hash,phone:a.phone,whatsapp:a.whatsapp||a.phone,programme:a.programme,state:a.state,country:a.country||null,security_question:a.security_question||null,security_answer_hash:a.security_answer_hash||null,status:'active'});
+      showToast('✓ Approved: '+a.first_name+' account created');
     }
-    await loadAllData();
-  } catch(e) {
-    showToast('Approval failed: ' + e.message, 'err');
-    console.error('approveApp error:', e);
-  }
-}
-
-async function rejectApp(id) {
-  var a = window._appMap[id];
-  var name = a ? a.first_name + ' ' + a.last_name : 'this applicant';
-  var action = a && a.status === 'approved' ? 'Revoke access for' : 'Reject application from';
-  if (!confirm(action + ' ' + name + '?')) return;
-  try {
-    await sb('applications','PATCH',{status:'rejected',reviewed_at:new Date().toISOString(),reviewed_by:currentAdmin},'id=eq.'+id);
-    // If was approved, also deactivate the student account
-    if (a && a.email) {
-      var existing = await sb('students','GET',null,'email=eq.'+encodeURIComponent(a.email)+'&select=id');
-      if (existing && existing.length > 0) {
-        await sb('students','PATCH',{status:'inactive'},'id=eq.'+existing[0].id);
-      }
-    }
-    showToast(a && a.status==='approved' ? 'Access revoked for ' + a.first_name + '.' : 'Application rejected.');
     await loadAllData();
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
 
-// ── STUDENTS ─────────────────────────────────────────────────────────────────
-function renderStudents() {
-  var q = (document.getElementById('studentSearch')||{}).value||'';
-  var list = allStudents.filter(s=>!q||[s.first_name,s.last_name,s.email].join(' ').toLowerCase().includes(q.toLowerCase()));
-  document.getElementById('studentsTable').innerHTML = list.map(s=>{
-    var comp=getStudentProgress(s.id).length;
-    var pct=Math.round((comp/MODULE_COUNT)*100);
-    var wappNum=s.whatsapp||s.phone;
-    var checkMsg='Hi '+s.first_name+', this is a follow-up from the Catholic Music Academy regarding your progress. Please log in to continue your studies: learn-cma.vercel.app/login';
-    return '<tr>'
-      +'<td><strong>'+s.first_name+' '+s.last_name+'</strong></td>'
-      +'<td style="color:var(--muted);">'+s.email+'</td>'
-      +'<td style="font-size:12px;color:var(--muted);">'+(s.programme||'—').replace('Course 0','C')+'</td>'
-      +'<td><div class="prog-bar-bg"><div class="prog-bar" style="width:'+pct+'%;'+(pct===100?'background:var(--ok)':pct===0?'background:var(--border)':'')+'"></div></div><span style="font-size:11px;color:var(--muted);margin-left:6px;">'+pct+'%</span></td>'
-      +'<td style="font-size:12px;color:var(--muted);">'+fmtTime(s.last_login)+'</td>'
-      +'<td>'+(wappNum?'<a class="btn-whatsapp" href="'+waLink(wappNum,checkMsg)+'" target="_blank" style="font-size:11px;padding:5px 10px;">💬</a>':'—')+'</td>'
-      +'</tr>';
-  }).join('');
+async function rejectApp(id) {
+  var a=window._appMap[id];
+  if(!a||!confirm((a.status==='approved'?'Revoke access for':'Reject')+' '+a.first_name+'?')) return;
+  try {
+    await sb('applications','PATCH',{status:'rejected',reviewed_at:new Date().toISOString(),reviewed_by:currentAdmin},'id=eq.'+id);
+    if(a.email) {
+      var ex=await sb('students','GET',null,'email=eq.'+encodeURIComponent(a.email)+'&select=id');
+      if(ex&&ex.length>0) await sb('students','PATCH',{status:'inactive'},'id=eq.'+ex[0].id);
+    }
+    showToast(a.status==='approved'?'Access revoked':'Application rejected');
+    await loadAllData();
+  } catch(e) { showToast('Error: '+e.message,'err'); }
 }
 
-// ── PROGRESS ─────────────────────────────────────────────────────────────────
+async function viewReceipt(id) {
+  var a=window._appMap[id];
+  if(!a||!a.receipt_path){showToast('No receipt stored','warn');return;}
+  try {
+    var res=await fetch(SUPA_URL+'/storage/v1/object/sign/receipts/'+a.receipt_path,{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json'},body:JSON.stringify({expiresIn:3600})});
+    var data=await res.json();
+    window.open(SUPA_URL+'/storage/v1'+data.signedURL,'_blank');
+  } catch(e) { showToast('Could not open receipt','err'); }
+}
+
+// ── STUDENTS ─────────────────────────────────────────────────────────────────
+function renderStudents() {
+  var q=(document.getElementById('studentSearch')||{}).value||'';
+  var list=allStudents.filter(function(s){
+    return !q||[s.first_name,s.last_name,s.email].join(' ').toLowerCase().includes(q.toLowerCase());
+  });
+  var rows = list.map(function(s) {
+    var comp=getStudentProgress(s.id).length;
+    var pct=Math.round((comp/MODULE_COUNT)*100);
+    var risk=isAtRisk(s);
+    var status=comp>=MODULE_COUNT
+      ?'<span class="pill pill-ok">Complete</span>'
+      :risk?'<span class="pill pill-danger">At Risk</span>'
+      :comp>0?'<span class="pill pill-blue">In Progress</span>'
+      :'<span class="pill pill-dim">Not Started</span>';
+    var pb = pct===0
+      ?'<div class="prog-bg"><div class="prog-fill" style="width:0%;background:var(--border)"></div></div>'
+      :'<div class="prog-bg"><div class="prog-fill'+(pct===100?' ok':'')+'" style="width:'+pct+'%"></div></div>';
+    return '<tr class="tr-clickable" onclick="openStudentDetail(\''+s.id+'\')"><td><strong>'+s.first_name+' '+s.last_name+'</strong><br><span style="font-size:11px;color:var(--muted);">'+s.email+'</span></td>'
+      +'<td style="font-size:12px;color:var(--muted);">'+(s.programme||'—')+'</td>'
+      +'<td>'+pb+'<span style="font-size:11px;color:var(--muted);margin-left:6px;">'+pct+'%</span></td>'
+      +'<td style="font-size:12px;color:var(--muted);">'+fmtDateTime(s.last_login)+'</td>'
+      +'<td style="font-size:12px;color:var(--muted);">'+fmtDateTime(s.created_at)+'</td>'
+      +'<td>'+status+'</td></tr>';
+  });
+  document.getElementById('studentsTable').innerHTML=rows.join('');
+}
+
+
+function openStudentDetail(sid) {
+  var s=allStudents.find(function(st){return st.id===sid;});
+  if(!s) return;
+  var comp=getStudentProgress(s.id);
+  var attempts=getStudentAttempts(s.id);
+  var pct=Math.round((comp.length/MODULE_COUNT)*100);
+  var risk=isAtRisk(s);
+  var app=allApplications.find(function(a){return a.email===s.email;})||{};
+  var wn=s.whatsapp||s.phone;
+  var nudgeMsg='Hello '+s.first_name+', this is the Catholic Music Academy. You have '+(MODULE_COUNT-comp.length)+' module(s) remaining. Log in: learn-cma.vercel.app/login';
+
+  // Overview
+  var ov='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:18px;">'
+    +'<div class="student-stat"><div class="student-stat-val">'+pct+'%</div><div class="student-stat-label">Progress</div></div>'
+    +'<div class="student-stat"><div class="student-stat-val">'+comp.length+'</div><div class="student-stat-label">Modules Done</div></div>'
+    +'<div class="student-stat"><div class="student-stat-val">'+attempts.length+'</div><div class="student-stat-label">Attempts</div></div>'
+    +'<div class="student-stat"><div class="student-stat-val">'+attempts.filter(function(a){return a.passed;}).length+'</div><div class="student-stat-label">Passed</div></div>'
+    +'</div>'
+    +'<div class="card"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'
+    +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Email</div><div style="font-size:13px;font-weight:600;">'+s.email+'</div></div>'
+    +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Phone</div><div style="font-size:13px;font-weight:600;">'+(s.phone||'—')+'</div></div>'
+    +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Programme</div><div style="font-size:13px;font-weight:600;">'+(s.programme||'—')+'</div></div>'
+    +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">State</div><div style="font-size:13px;font-weight:600;">'+(s.state||'—')+'</div></div>'
+    +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Joined</div><div style="font-size:13px;font-weight:600;">'+fmtDateTime(s.created_at)+'</div></div>'
+    +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Last Login</div><div style="font-size:13px;font-weight:600;">'+fmtDateTime(s.last_login)+'</div></div>'
+    +'</div></div>';
+
+  // Progress tab
+  var pr='<div class="card">'+MODULE_NAMES.map(function(name,i){
+    var done=comp.includes(i);
+    var modAtts=attempts.filter(function(a){return a.module_index===i;});
+    return '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--surface);">'
+      +'<div style="width:30px;height:30px;border-radius:7px;background:'+(done?'var(--ok)':'var(--border)')+';display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0;">'+(done?'✓':(i+1))+'</div>'
+      +'<div style="flex:1;"><div style="font-size:13px;font-weight:600;">Module '+(i+1)+': '+name+'</div>'
+      +'<div style="font-size:11px;color:var(--muted);">'+modAtts.length+' attempt(s) · '+modAtts.filter(function(a){return a.passed;}).length+' pass · '+modAtts.filter(function(a){return !a.passed;}).length+' fail</div></div>'
+      +'<span class="pill '+(done?'pill-ok':'pill-dim')+'">'+(done?'Done':'Pending')+'</span></div>';
+  }).join('')+'</div>';
+
+  // Timeline
+  var tlEvents=[];
+  if(app.submitted_at) tlEvents.push({time:app.submitted_at,type:'navy',text:'Applied',sub:fmtDateTime(app.submitted_at)});
+  if(app.reviewed_at) tlEvents.push({time:app.reviewed_at,type:app.status==='approved'?'ok':'danger',text:app.status==='approved'?'Approved':'Rejected',sub:'By admin · '+fmtDateTime(app.reviewed_at)});
+  attempts.forEach(function(a){
+    tlEvents.push({time:a.attempted_at,type:a.passed?'ok':'danger',text:(a.passed?'Passed':'Failed')+' Module '+(a.module_index+1),sub:a.score+'/'+a.total+' correct · '+fmtDateTime(a.attempted_at)});
+  });
+  allProgress.filter(function(p){return p.student_id===sid;}).forEach(function(p){
+    tlEvents.push({time:p.completed_at||'',type:'gold',text:'Completed Module '+(p.module_index+1),sub:MODULE_NAMES[p.module_index]});
+  });
+  tlEvents.sort(function(a,b){return new Date(a.time)-new Date(b.time);});
+  var tl='<div class="card"><div class="timeline">'+tlEvents.map(function(e){
+    return '<div class="tl-item"><div class="tl-dot '+e.type+'"></div><div class="tl-time">'+fmtDateTime(e.time)+'</div><div class="tl-text">'+e.text+'</div><div class="tl-sub">'+e.sub+'</div></div>';
+  }).join('')+(tlEvents.length===0?'<div style="font-size:13px;color:var(--dim);padding:20px;text-align:center;">No activity yet.</div>':'')+'</div></div>';
+
+  // Build header
+  var hdr='<div class="student-header">'
+    +'<div class="student-avatar-lg">'+s.first_name.charAt(0)+s.last_name.charAt(0)+'</div>'
+    +'<div style="flex:1;"><div class="student-detail-name">'+s.first_name+' '+s.last_name+'</div>'
+    +'<div class="student-detail-meta">'+(s.programme||'—')+' · '+s.email+'</div>'
+    +(wn?'<div style="margin-top:10px;"><a class="btn btn-wa" href="'+waLink(wn,nudgeMsg)+'" target="_blank" style="font-size:12px;padding:7px 14px;">💬 WhatsApp</a></div>':'')
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">'
+    +'<div class="student-stat"><div class="student-stat-val">'+pct+'%</div><div class="student-stat-label">Progress</div></div>'
+    +'<div class="student-stat"><div class="student-stat-val">'+attempts.length+'</div><div class="student-stat-label">Attempts</div></div>'
+    +'<div class="student-stat"><div class="student-stat-val">'+daysAgo(s.last_login)+'d</div><div class="student-stat-label">Since Login</div></div>'
+    +'</div></div>';
+
+  document.getElementById('studentDetailContent').innerHTML=hdr
+    +'<div class="tabs"><div class="tab active" onclick="showStudentTab(this,0)">Overview</div>'
+    +'<div class="tab" onclick="showStudentTab(this,1)">Progress</div>'
+    +'<div class="tab" onclick="showStudentTab(this,2)">Timeline</div></div>'
+    +'<div id="sd0">'+ov+'</div>'
+    +'<div id="sd1" style="display:none;">'+pr+'</div>'
+    +'<div id="sd2" style="display:none;">'+tl+'</div>';
+  goPage('student-detail');
+}
+
+function showStudentTab(el, idx) {
+  document.querySelectorAll('#page-student-detail .tab').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');
+  [0,1,2].forEach(function(i){
+    var el2=document.getElementById('sd'+i);
+    if(el2) el2.style.display=i===idx?'block':'none';
+  });
+}
+
+
+function switchStudentTab(el,tab) {
+  document.querySelectorAll('#studentDetailTabs .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['ov','pr','tl'].forEach(t=>{var el2=document.getElementById('sd'+t.charAt(0).toUpperCase()+t.slice(1));if(el2)el2.style.display='none';});
+  ['sdOv','sdPr','sdTl'].forEach(t=>{var el2=document.getElementById(t);if(el2)el2.style.display='none';});
+  var map={'ov':'sdOv','pr':'sdPr','tl':'sdTl'};
+  var target=document.getElementById(map[tab]);
+  if(target) target.style.display='block';
+}
+
+// ── PROGRESS RECORDS ─────────────────────────────────────────────────────────
 function renderProgress() {
-  document.getElementById('progressTable').innerHTML = allStudents.map(s=>{
+  var rows = allStudents.map(function(s) {
     var comp=getStudentProgress(s.id);
-    var cells=[0,1,2].map(i=>'<td>'+(comp.includes(i)?'<span class="pill pill-ok">✓ Done</span>':'<span class="pill pill-dim">Pending</span>')+'</td>').join('');
-    return '<tr><td><strong>'+s.first_name+' '+s.last_name+'</strong><br><span style="font-size:11px;color:var(--muted);">'+s.email+'</span></td>'
-      +cells+'<td>'+(comp.length>=MODULE_COUNT?'<span class="pill pill-ok">✓ Complete</span>':'<span class="pill pill-dim">In progress</span>')+'</td>'
-      +'<td style="font-size:12px;color:var(--muted);">'+fmtTime(s.last_login)+'</td></tr>';
+    var attempts=getStudentAttempts(s.id);
+    var struggling=attempts.filter(function(a){return !a.passed;}).length>=3;
+    var cells=[0,1,2].map(function(i){
+      var done=comp.includes(i);
+      var modAtts=attempts.filter(function(a){return a.module_index===i;});
+      var fails=modAtts.filter(function(a){return !a.passed;}).length;
+      var badge=done?'<span class="pill pill-ok">Done'+(modAtts.length>1?' ('+modAtts.length+'x)':'')+'</span>'
+        :fails>0?'<span class="pill pill-warn">'+fails+' fail'+(fails>1?'s':'')+'</span>'
+        :'<span class="pill pill-dim">Pending</span>';
+      return '<td>'+badge+'</td>';
+    }).join('');
+    var rowStyle=struggling?' style="background:var(--danger-light);"':'';
+    return '<tr class="tr-clickable"'+rowStyle+' onclick="openStudentDetail(\''+s.id+'\')"><td><strong>'+s.first_name+' '+s.last_name+'</strong>'+(struggling?' <span class="pill pill-danger">⚠</span>':'')+'<br><span style="font-size:11px;color:var(--muted);">'+s.email+'</span></td>'+cells+'<td>'+(comp.length>=MODULE_COUNT?'<span class="pill pill-ok">Complete</span>':'<span class="pill pill-dim">In progress</span>')+'</td><td style="font-size:12px;color:var(--muted);">'+fmtDateTime(s.last_login)+'</td></tr>';
+  });
+  document.getElementById('progressTable').innerHTML=rows.join('');
+}
+
+
+function renderAnalytics() {
+  var html=MODULE_NAMES.map((name,i)=>{
+    var modAtts=allAttempts.filter(a=>a.module_index===i);
+    if(!modAtts.length) return '<div class="analytics-module"><div class="analytics-module-title">Module '+(i+1)+': '+name+'</div><div style="font-size:13px;color:var(--dim);">No attempts yet.</div></div>';
+    var total=modAtts.length;
+    var passes=modAtts.filter(a=>a.passed).length;
+    var fails=total-passes;
+    var avgScore=Math.round(modAtts.reduce((sum,a)=>sum+((a.score/a.total)*100),0)/total);
+    var passRate=Math.round((passes/total)*100);
+    return '<div class="analytics-module">'
+      +'<div class="analytics-module-title">Module '+(i+1)+': '+name+'</div>'
+      +'<div class="analytics-row"><div class="analytics-label">Average Score</div><div class="analytics-bar-bg"><div class="analytics-bar" style="width:'+avgScore+'%;background:'+(avgScore>=70?'var(--ok)':avgScore>=50?'var(--gold)':'var(--danger)')+'"></div></div><div class="analytics-val">'+avgScore+'%</div></div>'
+      +'<div class="analytics-row"><div class="analytics-label">Pass Rate</div><div class="analytics-bar-bg"><div class="analytics-bar" style="width:'+passRate+'%;background:'+(passRate>=70?'var(--ok)':passRate>=50?'var(--gold)':'var(--danger)')+'"></div></div><div class="analytics-val">'+passRate+'%</div></div>'
+      +'<div style="display:flex;gap:16px;margin-top:10px;font-size:12px;color:var(--muted);">'
+      +'<span>'+total+' total attempts</span><span class="pill pill-ok">'+passes+' passes</span><span class="pill pill-danger">'+fails+' failures</span></div></div>';
   }).join('');
+  document.getElementById('analyticsContent').innerHTML=html||'<div class="alert alert-info">No assessment data yet.</div>';
 }
 
 // ── AT RISK ───────────────────────────────────────────────────────────────────
 function renderAtrisk() {
-  var atRisk = getAtRiskStudents();
-  var du = daysUntil(cohortSettings.deadline);
-  if (atRisk.length===0) { document.getElementById('atriskList').innerHTML='<div class="alert alert-ok">✅ No at-risk students.</div>'; return; }
-  document.getElementById('atriskList').innerHTML =
-    '<div class="alert alert-warn">⚠️ '+atRisk.length+' student(s) flagged. Deadline: '+fmtDate(cohortSettings.deadline)+' ('+du+' days).</div>'
-    +atRisk.map(s=>{
+  var at=allStudents.filter(isAtRisk);
+  var du=daysUntil(cohortSettings.deadline||'2099-01-01');
+  if(!at.length){document.getElementById('atriskList').innerHTML='<div class="alert alert-ok">✅ No students at risk.</div>';return;}
+  document.getElementById('atriskList').innerHTML='<div class="alert alert-warn">⚠️ '+at.length+' student(s) need attention. Deadline: '+fmtDate(cohortSettings.deadline)+' ('+du+' days).</div>'
+    +at.map(s=>{
       var comp=getStudentProgress(s.id).length;
       var pct=Math.round((comp/MODULE_COUNT)*100);
       var da=daysAgo(s.last_login);
       var reasons=[];
-      if(da>=5) reasons.push('No login for '+da+' days');
+      if(da>=5) reasons.push('No login for '+(da<999?da+' days':'unknown'));
       if(du<=7&&comp<MODULE_COUNT) reasons.push('Deadline in '+du+' days');
       if(du<=14&&comp===0) reasons.push('Not started');
-      var wappNum=s.whatsapp||s.phone;
-      var nudgeMsg='Hi '+s.first_name+', just checking in from the Catholic Music Academy! 📚\n\nYou have '+(MODULE_COUNT-comp)+' module(s) remaining before the deadline on '+fmtDate(cohortSettings.deadline)+'.\n\nLog in now: learn-cma.vercel.app/login\n\nWe\'re rooting for you!';
-      return '<div class="risk-card">'
-        +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap;">'
-        +'<div><div style="font-weight:700;font-size:15px;">'+s.first_name+' '+s.last_name+'</div><div style="font-size:12px;color:var(--muted);">'+s.email+'</div></div>'
+      var wn=s.whatsapp||s.phone;
+      var nudge='Hi '+s.first_name+', this is the Catholic Music Academy! You have '+(MODULE_COUNT-comp)+' module(s) left. Deadline: '+fmtDate(cohortSettings.deadline)+'. Log in: learn-cma.vercel.app/login';
+      return '<div class="risk-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:8px;">'
+        +'<div><div style="font-size:15px;font-weight:700;">'+s.first_name+' '+s.last_name+'</div><div style="font-size:12px;color:var(--muted);">'+s.email+'</div></div>'
         +'<span class="pill pill-danger">⚠ At Risk</span></div>'
-        +'<div style="font-size:12px;color:var(--muted);margin-bottom:10px;">'+reasons.join(' · ')+'</div>'
-        +'<div class="prog-bar-bg" style="margin-bottom:10px;"><div class="prog-bar" style="width:'+pct+'%;background:'+(pct===0?'var(--border)':'')+'"></div></div>'
-        +'<div style="font-size:12px;color:var(--dim);margin-bottom:12px;">'+comp+'/'+MODULE_COUNT+' modules · Last login: '+fmtTime(s.last_login)+'</div>'
-        +(wappNum?'<a class="btn-whatsapp" href="'+waLink(wappNum,nudgeMsg)+'" target="_blank">💬 Send WhatsApp Nudge</a>':'')
-        +'</div>';
+        +'<div style="font-size:12px;color:var(--muted);margin-bottom:8px;">'+reasons.join(' · ')+'</div>'
+        +'<div class="prog-bg" style="margin-bottom:10px;"><div class="prog-fill danger" style="width:'+pct+'%'+(pct===0?';background:var(--border)':'')+'"></div></div>'
+        +'<div style="display:flex;gap:8px;flex-wrap:wrap;">'
+        +(wn?'<a class="btn btn-wa" href="'+waLink(wn,nudge)+'" target="_blank">💬 WhatsApp Nudge</a>':'')
+      var sid = s.id;
+      return '<div style="margin-bottom:12px;cursor:pointer;" onclick="openStudentDetail(\''+sid+'\')">'
+        +'<button class="btn btn-ghost" onclick="openStudentDetail(\''+s.id+'\')">View Profile</button></div></div>';
     }).join('');
+}
+
+// ── COURSES & MODULES (Dynamic) ───────────────────────────────────────────────
+// All course/module/content data lives in Supabase table: course_content
+// Schema: { id, course_id(text), course_title, course_color, course_order, module_index(int),
+//           module_title, video_url, audio_tracks(json), downloads(json),
+//           reading_html, questions(json), published(bool), updated_at }
+// We load all rows once and work from memory.
+
+var cmCourses = [];   // [{id, title, color, order, modules:[{title,questions,published}]}]
+var cmContent = {};   // key: "courseId-modIdx" → full row object
+var cmState = {
+  selectedCourse: null,
+  selectedModule: null,
+  questions: [],
+  published: false,
+  contentMode: 'type'
+};
+
+// Colour palette for courses
+var CM_COLORS = ['#0D1B3E','#C9A84C','#16A34A','#7C3AED','#DC2626','#0891B2','#D97706','#BE185D'];
+
+async function loadCourseContent() {
+  try {
+    var rows = await sb('course_content','GET',null,'order=course_order.asc,module_index.asc');
+    // Rebuild cmCourses and cmContent from flat rows
+    cmCourses = [];
+    cmContent = {};
+    var courseMap = {};
+    rows.forEach(function(row) {
+      var cid = row.course_id;
+      if (!courseMap[cid]) {
+        courseMap[cid] = {id:cid, title:row.course_title, color:row.course_color||'#0D1B3E', order:row.course_order||0, modules:[]};
+        cmCourses.push(courseMap[cid]);
+      }
+      var key = cid + '-' + row.module_index;
+      cmContent[key] = row;
+      // Ensure module slot exists
+      while (courseMap[cid].modules.length <= row.module_index) {
+        courseMap[cid].modules.push({title:'',questions:0,published:false});
+      }
+      courseMap[cid].modules[row.module_index] = {
+        title: row.module_title || ('Module ' + (row.module_index+1)),
+        questions: (row.questions ? JSON.parse(typeof row.questions==='string'?row.questions:'[]') : []).length,
+        published: row.published || false
+      };
+    });
+  } catch(e) {
+    // If table doesn't exist yet, use localStorage fallback
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem('cma_courses')||'null'); } catch(ee){}
+    if (saved) { cmCourses = saved.courses||[]; cmContent = saved.content||{}; }
+  }
+}
+
+function saveCourseLocally() {
+  try { localStorage.setItem('cma_courses', JSON.stringify({courses:cmCourses, content:cmContent})); } catch(e){}
+}
+
+function renderCourses() {
+  renderCMSidebar();
+  if (!cmState.selectedModule) {
+    // Show overview list of all courses
+    renderCMOverview();
+  }
+}
+
+function renderCMOverview() {
+  var el = document.getElementById('cm-editor-wrap');
+  if (!el) return;
+  if (!cmCourses.length) {
+    el.innerHTML = '<div class="cm-empty-state"><div style="font-size:40px;margin-bottom:12px;">📚</div><div style="font-family:\'DM Serif Display\',serif;font-size:22px;color:var(--text);margin-bottom:8px;">No Courses Yet</div><div style="font-size:13px;color:var(--muted);line-height:1.7;max-width:360px;margin:0 auto 20px;">Create your first course to get started. You can add modules, content, and assessments after.</div><button class="btn btn-primary" onclick="showAddCourseModal()">+ Create First Course</button></div>';
+    return;
+  }
+  var html = '<div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;"><span style="font-size:13px;color:var(--muted);">'+cmCourses.length+' course(s) — click to expand and manage modules</span><button class="btn btn-primary btn-sm" onclick="showAddCourseModal()">+ New Course</button></div>';
+  html += cmCourses.map(function(c) {
+    var mods = c.modules||[];
+    var publishedMods = mods.filter(function(m){return m.published;}).length;
+    return '<div class="course-block" id="cbo-'+c.id+'">'
+      +'<div class="course-block-hdr" onclick="toggleCBOverview(\''+c.id+'\')">'
+      +'<span class="cb-chevron">▶</span>'
+      +'<div class="cb-dot" style="background:'+c.color+';"></div>'
+      +'<div class="cb-title">'+c.title+'</div>'
+      +'<div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="pill pill-blue">'+mods.length+' module(s)</span><span class="pill pill-ok">'+publishedMods+' live</span></div>'
+      +'<button class="btn btn-ghost btn-xs" style="margin-left:8px;" onclick="event.stopPropagation();renameCourse(\''+c.id+'\')">✏</button>'
+      +'</div>'
+      +'<div class="course-block-body" id="cbb-'+c.id+'">'
+      +(mods.length ? mods.map(function(m,i){
+        return '<div class="cb-mod-row">'
+          +'<div class="cb-mod-num">'+(i+1)+'</div>'
+          +'<div style="flex:1;"><div class="cb-mod-name">'+m.title+'</div>'
+          +'<div class="cb-mod-meta">'+m.questions+' question(s) · '+(m.published?'<span style="color:var(--ok);">Published</span>':'<span style="color:var(--dim);">Draft</span>')+'</div></div>'
+          +'<button class="btn btn-ghost btn-xs" onclick="selectCMModule(\''+c.id+'\','+i+')">Edit →</button>'
+          +'</div>';
+      }).join('') : '<div style="font-size:13px;color:var(--dim);padding:8px 0;">No modules yet.</div>')
+      +'<div style="margin-top:10px;display:flex;gap:8px;">'
+      +'<button class="btn btn-ghost btn-sm" onclick="addNewModule(\''+c.id+'\')">+ Add Module</button>'
+      +'</div>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+  el.innerHTML = html;
+}
+
+function toggleCBOverview(id) {
+  var el = document.getElementById('cbo-'+id);
+  if (!el) return;
+  el.classList.toggle('open');
+  var body = document.getElementById('cbb-'+id);
+  if (body) body.style.display = el.classList.contains('open') ? 'block' : 'none';
+}
+
+function renderCMSidebar() {
+  var el = document.getElementById('cm-sidebar-wrap');
+  if (!el) return;
+  var html = '<div class="cm-sidebar"><div class="cm-sidebar-hdr">Curriculum <button class="btn btn-primary btn-xs" onclick="showAddCourseModal()">+</button></div>';
+  cmCourses.forEach(function(c) {
+    var isOpen = cmState.selectedCourse === c.id;
+    html += '<div class="cm-course-grp'+(isOpen?' open':'')+'" id="cmcg-'+c.id+'">'
+      +'<div class="cm-course-label" onclick="toggleCMCourse(\''+c.id+'\')">'
+      +'<div class="cm-course-dot" style="background:'+c.color+';"></div>'
+      +'<span style="flex:1;font-size:12px;">'+c.title+'</span>'
+      +'<span class="cm-course-chevron">▶</span>'
+      +'</div>'
+      +(isOpen ? '<div class="cm-module-list">'
+        +(c.modules||[]).map(function(m,i){
+          var key = c.id+'-'+i;
+          var dot = cmContent[key] ? 'var(--ok)' : 'var(--border)';
+          var isActive = cmState.selectedModule === key;
+          return '<div class="cm-module-item'+(isActive?' active':'')+'" onclick="selectCMModule(\''+c.id+'\','+i+')">'
+            +'<div class="cm-module-dot" style="background:'+dot+';"></div>'
+            +(m.title.length>28?m.title.substring(0,26)+'…':m.title)
+            +'</div>';
+        }).join('')
+        +'<div class="cm-add-mod"><button class="btn btn-ghost btn-xs" style="width:100%;font-size:11px;" onclick="addNewModule(\''+c.id+'\')">+ Module</button></div>'
+        +'</div>'
+      : '')
+      +'</div>';
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function toggleCMCourse(id) {
+  cmState.selectedCourse = cmState.selectedCourse === id ? null : id;
+  cmState.selectedModule = null;
+  renderCMSidebar();
+  renderCMOverview();
+}
+
+function selectCMModule(courseId, modIdx) {
+  var key = courseId + '-' + modIdx;
+  cmState.selectedCourse = courseId;
+  cmState.selectedModule = key;
+  var row = cmContent[key] || {};
+  cmState.published = row.published || false;
+  try { cmState.questions = JSON.parse(typeof row.questions==='string'?row.questions:'[]'); } catch(e){ cmState.questions=[]; }
+  if (!cmState.questions.length) cmState.questions = [{q:'',opts:['','','',''],ans:0}];
+  cmState.contentMode = 'type';
+  renderCMSidebar();
+  renderCMEditor(courseId, modIdx, key, row);
+}
+
+function renderCMEditor(courseId, modIdx, key, row) {
+  var c = cmCourses.find(function(x){return x.id===courseId;}) || {};
+  var m = (c.modules||[])[modIdx] || {};
+  var content = row.reading_html || '';
+  var audioTracks = [];
+  var downloads = [];
+  try { audioTracks = JSON.parse(typeof row.audio_tracks==='string'?row.audio_tracks:'[]'); } catch(e){}
+  try { downloads = JSON.parse(typeof row.downloads==='string'?row.downloads:'[]'); } catch(e){}
+
+  var el = document.getElementById('cm-editor-wrap');
+  el.innerHTML = '<div class="me-card">'
+    +'<div class="me-card-hdr">'
+    +'<div><div style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">'+c.title+'</div>'
+    +'<div style="font-family:\'DM Serif Display\',serif;font-size:18px;color:var(--text);">Module '+(modIdx+1)+': '+m.title+'</div></div>'
+    +'<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">'
+    +'<div class="pub-toggle"><div class="pub-switch'+(cmState.published?' on':'')+'" id="cmPubSwitch" onclick="toggleCMPublish()"><div class="pub-switch-dot"></div></div><span style="font-size:12px;color:var(--muted);" id="cmPubLabel">'+(cmState.published?'Published':'Draft')+'</span></div>'
+    +'<button class="btn btn-ghost btn-sm" onclick="renameCMModule(\''+courseId+'\','+modIdx+')">✏ Rename</button>'
+    +'<button class="btn btn-primary btn-sm" onclick="saveCMModule(\''+key+'\')">Save Module</button>'
+    +'</div></div>'
+
+    // SECTION 1: Video
+    +'<div class="me-section"><div class="me-section-title">🎬 01 — Video Lesson</div>'
+    +'<div class="form-group"><label class="form-label">YouTube Embed URL</label>'
+    +'<input class="form-input" id="cm_video" value="'+(row.video_url||'')+'" placeholder="https://www.youtube.com/embed/VIDEO_ID"/>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">YouTube → Share → Embed → copy the src URL only</div></div></div>'
+
+    // SECTION 2: Audio Tracks
+    +'<div class="me-section"><div class="me-section-title">🎵 02 — Audio Tracks</div>'
+    +'<div id="cm_audioList">'+renderCMAudioTracks(audioTracks)+'</div>'
+    +'<button class="btn btn-ghost btn-sm" style="margin-top:6px;" onclick="addCMAudioTrack()">+ Add Track</button></div>'
+
+    // SECTION 3: Reading Content
+    +'<div class="me-section"><div class="me-section-title">📖 03 — Reading Content</div>'
+    +'<div class="rte-toolbar">'
+    +'<button class="rte-btn" onclick="rteExec(\'formatBlock\',\'H2\')">H2</button>'
+    +'<button class="rte-btn" onclick="rteExec(\'formatBlock\',\'P\')">¶</button>'
+    +'<div class="rte-sep"></div>'
+    +'<button class="rte-btn" onclick="rteExec(\'bold\')"><strong>B</strong></button>'
+    +'<button class="rte-btn" onclick="rteExec(\'italic\')"><em>I</em></button>'
+    +'<button class="rte-btn" onclick="rteExec(\'insertUnorderedList\')">• List</button>'
+    +'<div class="rte-sep"></div>'
+    +'<button class="rte-btn" onclick="rteExec(\'removeFormat\')">✕ Clear</button>'
+    +'</div>'
+    +'<div class="rte-area" id="cm_rte" contenteditable="true">'+(content||'<p>Start typing module reading content here...</p>')+'</div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:6px;">Use H2 for section headings. Students read exactly what you type here.</div></div>'
+
+    // SECTION 4: Question Bank
+    +'<div class="me-section"><div class="me-section-title">📝 04 — Question Bank <span style="font-size:10px;font-weight:400;color:var(--muted);letter-spacing:0;text-transform:none;">· 4 shown per attempt (random)</span></div>'
+    +'<div id="cm_qList"></div>'
+    +'<button class="btn btn-ghost btn-sm" style="width:100%;margin-top:6px;" onclick="addCMQuestion()">+ Add Question</button>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:6px;">Build up to 10 questions. 4 are picked randomly each attempt. Correct answer is never revealed on fail.</div>'
+    +'<div id="cmSaveMsg" style="display:none;background:var(--ok-light);border:1px solid #86EFAC;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--ok);margin-top:12px;"></div></div>'
+
+    // SECTION 5: Downloads
+    +'<div class="me-section"><div class="me-section-title">📥 05 — Downloadable Files</div>'
+    +'<div id="cm_dlList">'+renderCMDownloads(downloads)+'</div>'
+    +'<button class="btn btn-ghost btn-sm" style="margin-top:6px;" onclick="addCMDownload()">+ Add File</button>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">PDF handouts, sheet music, or other downloadable resources.</div></div>'
+    +'</div>';
+
+  renderCMQuestions();
+}
+
+function rteExec(cmd, val) {
+  document.getElementById('cm_rte').focus();
+  document.execCommand(cmd, false, val||null);
+}
+
+function toggleCMPublish() {
+  cmState.published = !cmState.published;
+  var sw = document.getElementById('cmPubSwitch');
+  var lb = document.getElementById('cmPubLabel');
+  if (sw) sw.classList.toggle('on', cmState.published);
+  if (lb) lb.textContent = cmState.published ? 'Published' : 'Draft';
+}
+
+// ── AUDIO TRACKS ─────────────────────────────────────────────────────────────
+function renderCMAudioTracks(tracks) {
+  if (!tracks||!tracks.length) return '<div style="font-size:13px;color:var(--dim);padding:4px 0;">No audio tracks added.</div>';
+  return tracks.map(function(t,i){
+    return '<div class="audio-row" id="atr-'+i+'">'
+      +'<input class="form-input" id="at_name_'+i+'" value="'+(t.name||'')+'" placeholder="Track name" style="padding:8px 11px;font-size:12px;"/>'
+      +'<input class="form-input" id="at_url_'+i+'" value="'+(t.url||'')+'" placeholder="Audio URL (mp3, ogg...)" style="padding:8px 11px;font-size:12px;"/>'
+      +'<input class="form-input" id="at_dur_'+i+'" value="'+(t.duration||'')+'" placeholder="3:24" style="padding:8px 11px;font-size:12px;"/>'
+      +'<button class="btn btn-danger btn-xs" onclick="removeCMAudioTrack('+i+')" style="padding:7px 9px;">✕</button></div>';
+  }).join('');
+}
+function collectAudioTracks() {
+  var rows = document.querySelectorAll('[id^="atr-"]');
+  var tracks = [];
+  for (var i=0; i<rows.length; i++) {
+    var n=(document.getElementById('at_name_'+i)||{}).value||'';
+    var u=(document.getElementById('at_url_'+i)||{}).value||'';
+    var d=(document.getElementById('at_dur_'+i)||{}).value||'';
+    if (n||u) tracks.push({name:n,url:u,duration:d});
+  }
+  return tracks;
+}
+function addCMAudioTrack() {
+  var el = document.getElementById('cm_audioList');
+  if (!el) return;
+  var tracks = collectAudioTracks();
+  tracks.push({name:'',url:'',duration:''});
+  el.innerHTML = renderCMAudioTracks(tracks);
+}
+function removeCMAudioTrack(i) {
+  var tracks = collectAudioTracks();
+  tracks.splice(i,1);
+  var el = document.getElementById('cm_audioList');
+  if (el) el.innerHTML = renderCMAudioTracks(tracks);
+}
+
+// ── DOWNLOADS ─────────────────────────────────────────────────────────────────
+function renderCMDownloads(dls) {
+  if (!dls||!dls.length) return '<div style="font-size:13px;color:var(--dim);padding:4px 0;">No downloadable files added.</div>';
+  return dls.map(function(d,i){
+    return '<div class="dl-row" id="dlr-'+i+'">'
+      +'<input class="form-input" id="dl_name_'+i+'" value="'+(d.name||'')+'" placeholder="File name" style="padding:8px 11px;font-size:12px;"/>'
+      +'<input class="form-input" id="dl_url_'+i+'" value="'+(d.url||'')+'" placeholder="File URL" style="padding:8px 11px;font-size:12px;"/>'
+      +'<select class="form-select" id="dl_type_'+i+'" style="padding:8px 10px;font-size:12px;"><option value="pdf"'+(d.type==='pdf'?' selected':'')+'>PDF</option><option value="music"'+(d.type==='music'?' selected':'')+'>Music</option><option value="doc"'+(d.type==='doc'?' selected':'')+'>Doc</option></select>'
+      +'<input class="form-input" id="dl_size_'+i+'" value="'+(d.size||'')+'" placeholder="2 MB" style="padding:8px 11px;font-size:12px;"/>'
+      +'<button class="btn btn-danger btn-xs" onclick="removeCMDownload('+i+')" style="padding:7px 9px;">✕</button></div>';
+  }).join('');
+}
+function collectDownloads() {
+  var rows = document.querySelectorAll('[id^="dlr-"]');
+  var dls = [];
+  for (var i=0;i<rows.length;i++){
+    var n=(document.getElementById('dl_name_'+i)||{}).value||'';
+    var u=(document.getElementById('dl_url_'+i)||{}).value||'';
+    var t=(document.getElementById('dl_type_'+i)||{}).value||'pdf';
+    var s=(document.getElementById('dl_size_'+i)||{}).value||'';
+    if (n||u) dls.push({name:n,url:u,type:t,size:s});
+  }
+  return dls;
+}
+function addCMDownload() {
+  var dls = collectDownloads();
+  dls.push({name:'',url:'',type:'pdf',size:''});
+  var el = document.getElementById('cm_dlList');
+  if (el) el.innerHTML = renderCMDownloads(dls);
+}
+function removeCMDownload(i) {
+  var dls = collectDownloads();
+  dls.splice(i,1);
+  var el = document.getElementById('cm_dlList');
+  if (el) el.innerHTML = renderCMDownloads(dls);
+}
+
+// ── QUESTION BUILDER ──────────────────────────────────────────────────────────
+var LETTERS = ['A','B','C','D'];
+function renderCMQuestions() {
+  var el = document.getElementById('cm_qList');
+  if (!el) return;
+  el.innerHTML = cmState.questions.map(function(q,i){ return buildCMQBlock(q,i); }).join('');
+  cmState.questions.forEach(function(_,i){ highlightCMCorrect(i); });
+}
+function buildCMQBlock(q,i) {
+  return '<div class="q-block" id="qb-'+i+'">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">'
+    +'<div class="q-block-num">Question '+(i+1)+'</div>'
+    +(cmState.questions.length>1?'<button class="btn btn-ghost btn-xs" onclick="removeCMQuestion('+i+')" style="color:var(--danger);padding:3px 8px;">Remove</button>':'')
+    +'</div>'
+    +'<input class="q-text-input" placeholder="Question text..." value="'+escQ(q.q)+'" oninput="cmState.questions['+i+'].q=this.value" id="qt-'+i+'"/>'
+    +'<div class="q-opts-grid">'
+    +LETTERS.map(function(l,oi){
+      return '<div class="q-opt-wrap"><span class="q-opt-label">'+l+'</span>'
+        +'<input class="q-opt-input'+(q.ans===oi?' is-correct':'')+'" id="qo-'+i+'-'+oi+'"'
+        +' placeholder="Option '+l+'..." value="'+escQ(q.opts[oi]||'')+'"'
+        +' oninput="cmState.questions['+i+'].opts['+oi+']=this.value"'
+        +' onfocus="highlightCMCorrect('+i+')" /></div>';
+    }).join('')
+    +'</div>'
+    +'<div class="q-correct-row">'
+    +'<span class="q-correct-label">Correct:</span>'
+    +'<select class="q-correct-select" onchange="setCMCorrect('+i+',this.value)" id="qans-'+i+'">'
+    +LETTERS.map(function(l,oi){ return '<option value="'+oi+'"'+(q.ans===oi?' selected':'')+'>Option '+l+'</option>'; }).join('')
+    +'</select>'
+    +'</div></div>';
+}
+function escQ(s){return (s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function setCMCorrect(i,val){
+  cmState.questions[i].ans=parseInt(val);
+  highlightCMCorrect(i);
+}
+function highlightCMCorrect(i){
+  var q=cmState.questions[i];
+  if(!q) return;
+  [0,1,2,3].forEach(function(oi){
+    var el=document.getElementById('qo-'+i+'-'+oi);
+    if(el) el.classList.toggle('is-correct', oi===q.ans);
+  });
+}
+function addCMQuestion(){
+  if(cmState.questions.length>=10){showToast('Max 10 questions per module','warn');return;}
+  cmState.questions.push({q:'',opts:['','','',''],ans:0});
+  renderCMQuestions();
+  var el=document.getElementById('cm_qList');
+  if(el&&el.lastElementChild) el.lastElementChild.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function removeCMQuestion(i){
+  if(cmState.questions.length<=1){showToast('Need at least 1 question','warn');return;}
+  cmState.questions.splice(i,1);
+  renderCMQuestions();
+}
+
+// ── SAVE MODULE ───────────────────────────────────────────────────────────────
+async function saveCMModule(key) {
+  var parts = key.split('-');
+  var courseId = parts[0];
+  var modIdx = parseInt(parts[1]);
+  var c = cmCourses.find(function(x){return x.id===courseId;});
+  if (!c) return;
+  var m = (c.modules||[])[modIdx] || {};
+
+  var rte = document.getElementById('cm_rte');
+  var html = rte ? rte.innerHTML : '';
+  if (!html.trim() || html === '<p>Start typing module reading content here...</p>') {
+    showToast('Add reading content before saving','warn'); return;
+  }
+
+  var qErrors = cmState.questions.filter(function(q){return !q.q.trim()||q.opts.some(function(o){return !o.trim();});});
+  if (qErrors.length) { showToast('Complete all question fields first','warn'); return; }
+
+  var videoUrl = (document.getElementById('cm_video')||{}).value||'';
+  var audioTracks = collectAudioTracks();
+  var downloads = collectDownloads();
+
+  var row = {
+    course_id: courseId,
+    course_title: c.title,
+    course_color: c.color,
+    course_order: c.order||0,
+    module_index: modIdx,
+    module_title: m.title,
+    video_url: videoUrl,
+    audio_tracks: JSON.stringify(audioTracks),
+    downloads: JSON.stringify(downloads),
+    reading_html: html,
+    questions: JSON.stringify(cmState.questions),
+    published: cmState.published,
+    updated_at: new Date().toISOString()
+  };
+
+  try {
+    var existing = cmContent[key];
+    if (existing && existing.id) {
+      await sb('course_content','PATCH',row,'id=eq.'+existing.id);
+    } else {
+      var res = await sb('course_content','POST',row);
+      if (res && res[0]) row.id = res[0].id;
+    }
+    cmContent[key] = row;
+    // Update in-memory module info
+    c.modules[modIdx] = {title:m.title, questions:cmState.questions.length, published:cmState.published};
+    saveCourseLocally();
+    renderCMSidebar();
+    var msg = document.getElementById('cmSaveMsg');
+    if (msg) {
+      msg.textContent = cmState.published ? '✓ Saved and published. Students can access this module now.' : '✓ Saved as draft. Toggle Published when ready.';
+      msg.style.display = 'block';
+      setTimeout(function(){msg.style.display='none';},4000);
+    }
+  } catch(e) {
+    // Fallback: save to localStorage if Supabase table doesn't exist yet
+    cmContent[key] = row;
+    c.modules[modIdx] = {title:m.title, questions:cmState.questions.length, published:cmState.published};
+    saveCourseLocally();
+    renderCMSidebar();
+    showToast('Saved locally (DB table not yet created)','warn');
+  }
+}
+
+// ── ADD COURSE MODAL ──────────────────────────────────────────────────────────
+function showAddCourseModal() {
+  var existing = document.getElementById('cmCourseModal');
+  if (existing) existing.remove();
+  var modal = document.createElement('div');
+  modal.id = 'cmCourseModal';
+  modal.className = 'modal-overlay';
+  modal.innerHTML = '<div class="modal-box">'
+    +'<div style="font-family:\'DM Serif Display\',serif;font-size:22px;color:var(--text);margin-bottom:4px;">New Course</div>'
+    +'<div style="font-size:13px;color:var(--muted);margin-bottom:22px;">Create a course. Add modules and content after saving.</div>'
+    +'<div class="form-group"><label class="form-label">Course Code</label><input class="form-input" id="ncCode" placeholder="e.g. Course 01"/></div>'
+    +'<div class="form-group"><label class="form-label">Course Title</label><input class="form-input" id="ncTitle" placeholder="e.g. Theory of Ancient Music"/></div>'
+    +'<div class="form-group"><label class="form-label">Course Colour</label>'
+    +'<div style="display:flex;gap:7px;flex-wrap:wrap;">'
+    +CM_COLORS.map(function(col,idx){return '<div onclick="document.getElementById(\'ncColor\').value=\''+col+'\';document.querySelectorAll(\'.nc-swatch\').forEach(function(s){s.style.outline=\'none\';});this.style.outline=\'3px solid var(--navy)\';" class="nc-swatch" style="width:26px;height:26px;border-radius:6px;background:'+col+';cursor:pointer;transition:outline 0.15s;'+(idx===0?'outline:3px solid var(--navy);':'')+'"></div>';}).join('')
+    +'<input type="hidden" id="ncColor" value="'+CM_COLORS[0]+'"/>'
+    +'</div></div>'
+    +'<div style="display:flex;gap:8px;margin-top:6px;">'
+    +'<button class="btn btn-primary" onclick="createCMCourse()">Create Course</button>'
+    +'<button class="btn btn-ghost" onclick="document.getElementById(\'cmCourseModal\').remove()">Cancel</button>'
+    +'</div></div>';
+  modal.addEventListener('click',function(e){if(e.target===modal)modal.remove();});
+  document.body.appendChild(modal);
+}
+
+function createCMCourse() {
+  var code = (document.getElementById('ncCode')||{}).value||'';
+  var title = (document.getElementById('ncTitle')||{}).value||'';
+  var color = (document.getElementById('ncColor')||{}).value||'#0D1B3E';
+  if (!title.trim()) {showToast('Course title required','warn');return;}
+  var id = 'c'+(Date.now());
+  var newCourse = {id:id, title:(code?code+': ':'')+title, color:color, order:cmCourses.length, modules:[]};
+  cmCourses.push(newCourse);
+  saveCourseLocally();
+  var modal = document.getElementById('cmCourseModal');
+  if (modal) modal.remove();
+  cmState.selectedCourse = id;
+  cmState.selectedModule = null;
+  renderCMSidebar();
+  renderCMOverview();
+  showToast('Course created. Add modules from the sidebar.');
+}
+
+// ── ADD MODULE ────────────────────────────────────────────────────────────────
+function addNewModule(courseId) {
+  var name = prompt('Module title:');
+  if (!name||!name.trim()) return;
+  var c = cmCourses.find(function(x){return x.id===courseId;});
+  if (!c) return;
+  c.modules.push({title:name.trim(), questions:0, published:false});
+  saveCourseLocally();
+  cmState.selectedCourse = courseId;
+  renderCMSidebar();
+  renderCMOverview();
+  var modIdx = c.modules.length-1;
+  selectCMModule(courseId, modIdx);
+  showToast('Module added. Add content and save.');
+}
+
+function renameCMModule(courseId, modIdx) {
+  var c = cmCourses.find(function(x){return x.id===courseId;});
+  if (!c) return;
+  var m = (c.modules||[])[modIdx];
+  if (!m) return;
+  var name = prompt('New module title:', m.title);
+  if (!name||!name.trim()) return;
+  m.title = name.trim();
+  var key = courseId+'-'+modIdx;
+  if (cmContent[key]) cmContent[key].module_title = m.title;
+  saveCourseLocally();
+  renderCMSidebar();
+  // Refresh editor header if open
+  if (cmState.selectedModule === key) selectCMModule(courseId, modIdx);
+  showToast('Module renamed.');
+}
+
+function renameCourse(courseId) {
+  var c = cmCourses.find(function(x){return x.id===courseId;});
+  if (!c) return;
+  var name = prompt('New course title:', c.title);
+  if (!name||!name.trim()) return;
+  c.title = name.trim();
+  saveCourseLocally();
+  renderCMSidebar();
+  renderCMOverview();
+  showToast('Course renamed.');
 }
 
 // ── COHORT ────────────────────────────────────────────────────────────────────
 function renderCohort() {
-  var du=daysUntil(cohortSettings.deadline);
-  document.getElementById('cohortView').innerHTML =
-    '<div class="cohort-card">'
-    +'<div class="cohort-name">'+(cohortSettings.name||'Cohort 1')+'</div>'
-    +'<div style="font-size:13px;opacity:0.7;">Deadline: '+fmtDate(cohortSettings.deadline)+'</div>'
+  var du=daysUntil(cohortSettings.deadline||'2099-01-01');
+  document.getElementById('cohortView').innerHTML=
+    '<div class="cohort-card"><div class="cohort-name">'+(cohortSettings.name||'Cohort 1')+'</div>'
+    +'<div style="font-size:13px;opacity:0.65;">Deadline: '+fmtDate(cohortSettings.deadline)+'</div>'
     +'<div class="cohort-stats">'
     +'<div class="cohort-stat"><div class="cohort-stat-val">'+allStudents.length+'</div><div class="cohort-stat-label">Students</div></div>'
     +'<div class="cohort-stat"><div class="cohort-stat-val">'+allStudents.filter(s=>getStudentProgress(s.id).length>=MODULE_COUNT).length+'</div><div class="cohort-stat-label">Complete</div></div>'
-    +'<div class="cohort-stat"><div class="cohort-stat-val">'+(du>0?du:0)+'</div><div class="cohort-stat-label">Days Left</div></div>'
-    +'</div></div>'
-    +'<div class="card">'
-    +'<div class="card-title">Edit Cohort Settings</div>'
+    +'<div class="cohort-stat"><div class="cohort-stat-val">'+(du>0?du:0)+'</div><div class="cohort-stat-label">Days Left</div></div></div></div>'
+    +'<div class="card"><div class="card-title">Edit Cohort Settings</div>'
     +'<div class="form-row">'
     +'<div class="form-group"><label class="form-label">Cohort Name</label><input class="form-input" id="cohortName" value="'+(cohortSettings.name||'')+'"/></div>'
-    +'<div class="form-group"><label class="form-label">Deadline</label><input class="form-input" id="cohortDeadline" type="date" value="'+(cohortSettings.deadline||'')+'"/></div>'
-    +'</div>'
-    +'<div class="form-group"><label class="form-label">Pass Mark (%)</label><input class="form-input" id="cohortPassMark" type="number" min="50" max="100" value="'+(cohortSettings.pass_mark||100)+'" style="max-width:120px;"/><div style="font-size:11px;color:var(--muted);margin-top:4px;">Set to 100 for 100% pass requirement, or lower (e.g. 75) for standard pass mark.</div></div>'
-    +'<button class="btn btn-primary" onclick="saveCohort()">Save Settings</button>'
-    +'</div>';
+    +'<div class="form-group"><label class="form-label">Deadline</label><input class="form-input" id="cohortDeadline" type="date" value="'+(cohortSettings.deadline||'')+'"/></div></div>'
+    +'<div class="form-group"><label class="form-label">Pass Mark (%)</label><input class="form-input" id="cohortPassMark" type="number" min="50" max="100" value="'+(cohortSettings.pass_mark||100)+'" style="max-width:120px;"/>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">100 = must get all correct. Lower value = standard pass mark.</div></div>'
+    +'<button class="btn btn-primary" onclick="saveCohort()">Save Settings</button></div>';
 }
 async function saveCohort() {
-  try {
-    var body = {name:document.getElementById('cohortName').value, deadline:document.getElementById('cohortDeadline').value, pass_mark:parseInt(document.getElementById('cohortPassMark').value)||100, updated_at:new Date().toISOString()};
+  try{
+    var body={name:document.getElementById('cohortName').value,deadline:document.getElementById('cohortDeadline').value,pass_mark:parseInt(document.getElementById('cohortPassMark').value)||100,updated_at:new Date().toISOString()};
     await sb('cohort_settings','PATCH',body,'id=eq.'+cohortSettings.id);
     showToast('Cohort settings saved.');
     await loadAllData();
-  } catch(e){ showToast('Error: '+e.message,'err'); }
+  }catch(e){showToast('Error: '+e.message,'err');}
 }
 
 // ── ANNOUNCEMENTS ─────────────────────────────────────────────────────────────
 async function renderAnnouncements() {
   try {
-    var anns = await sb('announcements','GET',null,'order=created_at.desc');
-    document.getElementById('annList').innerHTML = anns.length===0
-      ? '<div style="font-size:13px;color:var(--dim);text-align:center;padding:24px 0;">No announcements posted yet.</div>'
-      : anns.map(a=>{
-          var targetLabel = (!a.target||a.target==='all') ? '🌐 All students' : '📚 '+a.target+' only';
-          var targetColor = (!a.target||a.target==='all') ? 'var(--ok)' : 'var(--amber-dark)';
-          return '<div class="ann-item"><div style="flex:1;">'
-            +'<div style="font-size:14px;font-weight:600;margin-bottom:3px;">'+a.title+'</div>'
-            +'<div style="font-size:13px;color:var(--muted);">'+a.body+'</div>'
-            +'<div style="font-size:11px;color:var(--dim);margin-top:6px;display:flex;gap:12px;align-items:center;">'
-            +'<span>'+fmtDate(a.created_at)+'</span>'
-            +'<span style="color:'+targetColor+';font-weight:600;">'+targetLabel+'</span>'
-            +'</div></div>'
-            +'<button class="ann-del" onclick="deleteAnn(\''+a.id+'\')">🗑</button></div>';
-        }).join('');
-  } catch(e){ document.getElementById('annList').innerHTML='<div class="alert-warn">Error loading announcements.</div>'; }
+    var anns=await sb('announcements','GET',null,'order=created_at.desc');
+    if(!anns.length) {
+      document.getElementById('annList').innerHTML='<div style="font-size:13px;color:var(--dim);text-align:center;padding:20px;">No announcements.</div>';
+      return;
+    }
+    var html = anns.map(function(a) {
+      var del_btn = '<button class="ann-del" onclick="deleteAnn(\''+a.id+'\')">🗑</button>';
+      return '<div class="ann-item"><div style="flex:1;">'
+        +'<div style="font-size:14px;font-weight:600;margin-bottom:3px;">'+a.title+'</div>'
+        +'<div style="font-size:13px;color:var(--muted);">'+a.body+'</div>'
+        +'<div style="font-size:11px;color:var(--dim);margin-top:5px;">'+fmtDateTime(a.created_at)+' · '+((!a.target||a.target==='all')?'All students':a.target)+'</div>'
+        +'</div>'+del_btn+'</div>';
+    }).join('');
+    document.getElementById('annList').innerHTML=html;
+  } catch(e) { document.getElementById('annList').innerHTML='<div class="alert alert-warn">Error loading announcements.</div>'; }
 }
+
 async function postAnnouncement() {
   var title=document.getElementById('annTitle').value.trim();
   var body=document.getElementById('annText').value.trim();
   var type=document.getElementById('annType').value;
   var target=document.getElementById('annTarget').value;
-  if (!title||!body){alert('Please enter a title and message.');return;}
-  try {
+  if(!title||!body){alert('Please enter title and message.');return;}
+  try{
     await sb('announcements','POST',{title,body,type,target,created_by:currentAdmin});
-    document.getElementById('annTitle').value=''; document.getElementById('annText').value='';
-    showToast('Announcement posted' + (target==='all'?' for all students':' for '+target) + '.');
-    renderAnnouncements();
-  } catch(e){ showToast('Error: '+e.message,'err'); }
+    document.getElementById('annTitle').value='';document.getElementById('annText').value='';
+    showToast('Announcement posted.');renderAnnouncements();
+  }catch(e){showToast('Error: '+e.message,'err');}
 }
 async function deleteAnn(id) {
-  if (!confirm('Delete this announcement?')) return;
-  try { await sb('announcements','DELETE',null,'id=eq.'+id); renderAnnouncements(); } catch(e){ showToast('Error','err'); }
-}
-
-// ── TOAST ─────────────────────────────────────────────────────────────────────
-function showToast(msg, type='ok') {
-  var t=document.createElement('div');
-  var bg=type==='err'?'#DC2626':type==='warn'?'#F59E0B':'#16A34A';
-  t.style.cssText='position:fixed;bottom:24px;right:24px;background:'+bg+';color:white;padding:13px 22px;border-radius:11px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.2);max-width:320px;';
-  t.textContent=msg; document.body.appendChild(t);
-  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity 0.3s';setTimeout(()=>t.remove(),300);},3000);
+  if(!confirm('Delete this announcement?')) return;
+  try{await sb('announcements','DELETE',null,'id=eq.'+id);renderAnnouncements();}catch(e){showToast('Error','err');}
 }
 
 // ── DEV TOOLS ─────────────────────────────────────────────────────────────────
-async function clearApplications() {
-  if (!confirm('Delete ALL applications? This cannot be undone.')) return;
-  try { await sb('applications','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000'); showToast('All applications cleared.'); await loadAllData(); }
-  catch(e){ showToast('Error: '+e.message,'err'); }
-}
-async function clearStudents() {
-  if (!confirm('Delete ALL student accounts and progress? This cannot be undone.')) return;
-  try {
-    await sb('progress','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');
-    await sb('students','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');
-    showToast('All student accounts and progress cleared.'); await loadAllData();
-  } catch(e){ showToast('Error: '+e.message,'err'); }
-}
-async function clearProgress() {
-  if (!confirm('Clear ALL progress records? Students keep their accounts but lose all module completions.')) return;
-  try { await sb('progress','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000'); showToast('All progress records cleared.'); await loadAllData(); }
-  catch(e){ showToast('Error: '+e.message,'err'); }
-}
-async function clearEverything() {
-  if (!confirm('⚠️ NUCLEAR OPTION: Delete ALL applications, students, and progress? This is irreversible.')) return;
-  if (!confirm('Are you absolutely sure? Type OK in the next prompt.')) return;
-  var confirm2 = prompt('Type DELETE to confirm complete data wipe:');
-  if (confirm2 !== 'DELETE') { showToast('Cancelled.','warn'); return; }
-  try {
-    await sb('progress','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');
-    await sb('students','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');
-    await sb('applications','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');
-    showToast('All data cleared. Clean slate.'); await loadAllData();
-  } catch(e){ showToast('Error: '+e.message,'err'); }
+async function clearApplications(){if(!confirm('Delete ALL applications?'))return;try{await sb('applications','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');showToast('Applications cleared.');await loadAllData();}catch(e){showToast('Error: '+e.message,'err');}}
+async function clearStudents(){if(!confirm('Delete ALL students and progress?'))return;try{await sb('progress','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');await sb('assessment_attempts','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000').catch(()=>{});await sb('students','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');showToast('Students cleared.');await loadAllData();}catch(e){showToast('Error: '+e.message,'err');}}
+async function clearProgress(){if(!confirm('Clear all progress?'))return;try{await sb('progress','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');showToast('Progress cleared.');await loadAllData();}catch(e){showToast('Error: '+e.message,'err');}}
+async function clearEverything(){if(!confirm('Delete EVERYTHING?'))return;if(!confirm('Absolutely sure?'))return;var c=prompt('Type DELETE to confirm:');if(c!=='DELETE'){showToast('Cancelled','warn');return;}try{await sb('progress','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');await sb('assessment_attempts','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000').catch(()=>{});await sb('students','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');await sb('applications','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');showToast('Everything cleared.');await loadAllData();}catch(e){showToast('Error: '+e.message,'err');}}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function showToast(msg,type='ok'){
+  var t=document.createElement('div');
+  var bg=type==='err'?'#DC2626':type==='warn'?'#C9A84C':'#16A34A';
+  t.style.cssText='position:fixed;bottom:24px;right:24px;background:'+bg+';color:white;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.2);max-width:300px;';
+  t.textContent=msg;document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity 0.3s';setTimeout(()=>t.remove(),300);},3000);
 }
 
-// ── ADMIN SESSION ──────────────────────────────────────────────────────────
-function saveAdminSession(user) {
-  try { sessionStorage.setItem('cma_admin_session', JSON.stringify({user:user, at:Date.now()})); } catch(e){}
-}
-function clearAdminSession() {
-  try { sessionStorage.removeItem('cma_admin_session'); } catch(e){}
-}
-function loadAdminSession() {
-  try {
-    var raw = sessionStorage.getItem('cma_admin_session');
-    if (!raw) return null;
-    var s = JSON.parse(raw);
-    if (Date.now() - s.at > 8*60*60*1000) { clearAdminSession(); return null; }
-    return s;
-  } catch(e){ return null; }
-}
-
+// ── INIT ──────────────────────────────────────────────────────────────────────
 (function(){
-  var sess = loadAdminSession();
-  if (sess && ADMIN_CREDS[sess.user]) {
-    currentAdmin = sess.user;
-    document.getElementById('sidebarName').textContent = ADMIN_NAMES[sess.user];
-    document.getElementById('sidebarInitial').textContent = ADMIN_NAMES[sess.user].charAt(0);
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminShell').style.display = 'block';
+  var sess=loadAdminSession();
+  if(sess&&ADMIN_CREDS[sess.user]){
+    currentAdmin=sess.user;
+    document.getElementById('sidebarName').textContent=ADMIN_NAMES[sess.user];
+    document.getElementById('sidebarInitial').textContent=ADMIN_NAMES[sess.user].charAt(0);
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('adminShell').style.display='block';
     loadAllData();
     return;
   }
   document.getElementById('adminUser').focus();
 })();
-
-// ── RECEIPT VIEWER ────────────────────────────────────────────────────────────
-async function viewReceipt(idOrPath) {
-  // Accept either an app ID (new) or raw path (legacy)
-  var path = idOrPath;
-  var a = window._appMap && window._appMap[idOrPath];
-  if (a) path = a.receipt_path;
-  if (!path) { showToast('No receipt file stored.', 'warn'); return; }
-  try {
-    // Generate a signed URL (valid for 60 minutes)
-    var res = await fetch(SUPA_URL + '/storage/v1/object/sign/receipts/' + path, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPA_KEY,
-        'Authorization': 'Bearer ' + SUPA_KEY,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ expiresIn: 3600 })
-    });
-    if (!res.ok) throw new Error(await res.text());
-    var data = await res.json();
-    var signedUrl = SUPA_URL + '/storage/v1' + data.signedURL;
-    window.open(signedUrl, '_blank');
-  } catch(e) {
-    showToast('Could not open receipt: ' + e.message, 'err');
-  }
-}
 </script>
 </body>
 </html>
