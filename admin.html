@@ -15,18 +15,13 @@
   --danger:#DC2626;--danger-light:#FEE2E2;--warn:#F59E0B;--warn-light:#FEF3C7;
   --sidebar:240px;
 }
-html{scroll-behavior:smooth;}
 body{background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
-
-/* ── LOGIN ── */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;background:var(--blue);}
 .login-box{background:var(--white);border-radius:20px;padding:44px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
 .login-box-logo{display:flex;align-items:center;gap:10px;margin-bottom:32px;}
 .login-box-icon{width:42px;height:42px;background:var(--blue);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--white);}
 .login-box-name{font-family:'DM Serif Display',serif;font-size:18px;color:var(--blue);}
 .login-box-sub{font-size:11px;color:var(--muted);}
-.login-box h2{font-family:'DM Serif Display',serif;font-size:26px;color:var(--text);margin-bottom:6px;}
-.login-box p{font-size:13px;color:var(--muted);margin-bottom:28px;}
 .f-label{font-size:12px;font-weight:600;color:var(--text);display:block;margin-bottom:5px;}
 .f-input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;margin-bottom:14px;transition:border-color 0.2s;}
 .f-input:focus{border-color:var(--blue);}
@@ -34,15 +29,16 @@ body{background:var(--surface);color:var(--text);font-family:'DM Sans',sans-seri
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:all 0.18s;}
 .btn-primary{background:var(--blue);color:var(--white);padding:12px 24px;font-size:14px;}
 .btn-primary:hover{background:var(--blue-mid);}
-.btn-ok{background:var(--ok);color:var(--white);padding:10px 20px;font-size:13px;}
+.btn-primary:disabled{opacity:0.45;cursor:not-allowed;}
+.btn-ok{background:var(--ok);color:var(--white);padding:8px 16px;font-size:12px;}
 .btn-ok:hover{opacity:0.88;}
-.btn-danger{background:var(--danger);color:var(--white);padding:8px 16px;font-size:12px;}
+.btn-danger{background:var(--danger);color:var(--white);padding:7px 14px;font-size:12px;}
 .btn-danger:hover{opacity:0.88;}
-.btn-ghost{background:none;border:1.5px solid var(--border);color:var(--muted);padding:8px 16px;font-size:12px;border-radius:8px;}
+.btn-ghost{background:none;border:1.5px solid var(--border);color:var(--muted);padding:7px 14px;font-size:12px;border-radius:8px;cursor:pointer;}
 .btn-ghost:hover{border-color:var(--blue);color:var(--blue);}
-.btn-amber{background:var(--amber);color:var(--white);padding:10px 20px;font-size:13px;}
-
-/* ── LAYOUT ── */
+.btn-whatsapp{background:#25D366;color:white;padding:7px 14px;font-size:12px;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;display:inline-flex;align-items:center;gap:5px;}
+.btn-whatsapp:hover{background:#20ba5a;}
+.btn-amber{background:var(--amber);color:var(--white);padding:8px 16px;font-size:12px;}
 .admin-wrap{display:flex;min-height:100vh;}
 .sidebar{width:var(--sidebar);background:var(--blue);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;overflow-y:auto;}
 .sidebar-brand{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,0.1);}
@@ -54,143 +50,86 @@ body{background:var(--surface);color:var(--text);font-family:'DM Sans',sans-seri
 .nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:9px;margin:2px 8px;cursor:pointer;transition:all 0.15s;font-size:13px;color:rgba(255,255,255,0.7);font-weight:500;position:relative;}
 .nav-item:hover{background:rgba(255,255,255,0.1);color:white;}
 .nav-item.active{background:rgba(255,255,255,0.15);color:white;}
-.nav-item .nav-badge{position:absolute;right:10px;background:var(--danger);color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;}
+.nav-badge{position:absolute;right:10px;background:var(--danger);color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;min-width:18px;text-align:center;}
 .sidebar-footer{margin-top:auto;padding:16px;border-top:1px solid rgba(255,255,255,0.1);}
-.sidebar-user{display:flex;align-items:center;gap:10px;}
+.sidebar-user{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
 .sidebar-avatar{width:34px;height:34px;background:var(--amber);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;}
 .sidebar-user-name{font-size:13px;color:white;font-weight:600;}
 .sidebar-user-role{font-size:11px;color:rgba(255,255,255,0.5);}
-.sidebar-logout{margin-top:8px;width:100%;text-align:left;background:none;border:1px solid rgba(255,255,255,0.2);border-radius:7px;padding:8px 12px;font-size:12px;color:rgba(255,255,255,0.6);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.sidebar-logout{width:100%;text-align:left;background:none;border:1px solid rgba(255,255,255,0.2);border-radius:7px;padding:8px 12px;font-size:12px;color:rgba(255,255,255,0.6);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
 .sidebar-logout:hover{border-color:rgba(255,255,255,0.5);color:white;}
-
-/* ── MAIN ── */
 .main{margin-left:var(--sidebar);flex:1;padding:32px;max-width:calc(100% - var(--sidebar));}
 .page{display:none;}
 .page.active{display:block;animation:fadeIn 0.22s ease;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.page-header{margin-bottom:28px;}
+.page-header{margin-bottom:28px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
 .page-title{font-family:'DM Serif Display',serif;font-size:32px;color:var(--text);margin-bottom:4px;}
 .page-sub{font-size:14px;color:var(--muted);}
-
-/* ── CARDS ── */
 .card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:24px;}
 .card-title{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
-.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:28px;}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-bottom:28px;}
 .stat-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;}
 .stat-val{font-family:'DM Serif Display',serif;font-size:36px;color:var(--blue);line-height:1;}
 .stat-label{font-size:12px;color:var(--muted);margin-top:4px;}
 .stat-card.danger-card .stat-val{color:var(--danger);}
 .stat-card.ok-card .stat-val{color:var(--ok);}
-
-/* ── TABLE ── */
+.stat-card.warn-card .stat-val{color:var(--amber-dark);}
 .table-wrap{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;}
 th{font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--muted);padding:10px 14px;text-align:left;border-bottom:1.5px solid var(--border);}
 td{font-size:13px;color:var(--text);padding:12px 14px;border-bottom:1px solid var(--surface);vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:var(--surface);}
-
-/* ── PILLS ── */
 .pill{display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;}
 .pill-ok{background:var(--ok-light);color:var(--ok);}
 .pill-warn{background:var(--warn-light);color:var(--amber-dark);}
 .pill-danger{background:var(--danger-light);color:var(--danger);}
 .pill-blue{background:var(--blue-light);color:var(--blue);}
-.pill-dim{background:var(--surface);color:var(--muted);}
-
-/* ── PROGRESS BAR ── */
+.pill-dim{background:var(--surface);color:var(--muted);border:1px solid var(--border);}
 .prog-bar-bg{height:6px;background:var(--border);border-radius:6px;overflow:hidden;min-width:80px;}
 .prog-bar{height:100%;background:linear-gradient(90deg,var(--blue),var(--amber));border-radius:6px;transition:width 0.4s;}
-.prog-bar.danger{background:var(--danger);}
-.prog-bar.warn{background:var(--warn);}
-
-/* ── FORM ELEMENTS ── */
-.form-group{margin-bottom:18px;}
-.form-label{font-size:12px;font-weight:600;color:var(--text);display:block;margin-bottom:6px;}
-.form-input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:11px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;background:var(--white);}
-.form-input:focus{border-color:var(--blue);}
-.form-select{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:11px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;background:var(--white);}
-.form-textarea{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:11px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;min-height:100px;resize:vertical;}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.form-hint{font-size:11px;color:var(--muted);margin-top:4px;}
-.form-section{margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid var(--border);}
-.form-section:last-child{border-bottom:none;margin-bottom:0;}
-.form-section-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;}
-
-/* ── ALERT BOXES ── */
-.alert{border-radius:10px;padding:14px 18px;font-size:13px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px;}
-.alert-ok{background:var(--ok-light);color:var(--ok);border:1px solid #86EFAC;}
-.alert-warn{background:var(--warn-light);color:var(--amber-dark);border:1px solid #FDE68A;}
-.alert-danger{background:var(--danger-light);color:var(--danger);border:1px solid #FECACA;}
+.alert{border-radius:10px;padding:14px 18px;font-size:13px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px;line-height:1.55;}
 .alert-info{background:var(--blue-light);color:var(--blue);border:1px solid #C7D2FE;}
-
-/* ── TABS ── */
+.alert-warn{background:var(--warn-light);color:var(--amber-dark);border:1px solid #FDE68A;}
+.alert-ok{background:var(--ok-light);color:var(--ok);border:1px solid #86EFAC;}
 .tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:24px;}
 .tab{padding:10px 20px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s;}
 .tab:hover{color:var(--blue);}
 .tab.active{color:var(--blue);border-bottom-color:var(--blue);}
-
-/* ── AT RISK ── */
-.risk-card{background:var(--white);border:1.5px solid var(--danger);border-radius:14px;padding:20px;margin-bottom:12px;}
-.risk-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.risk-name{font-weight:700;font-size:14px;color:var(--text);}
-.risk-reason{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px;}
-.risk-meta{display:flex;gap:12px;font-size:11px;color:var(--dim);}
-
-/* ── ANNOUNCEMENT ── */
-.ann-item{border:1.5px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:10px;background:var(--white);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
-.ann-body{flex:1;}
-.ann-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;}
-.ann-text{font-size:13px;color:var(--muted);line-height:1.5;}
-.ann-meta{font-size:11px;color:var(--dim);margin-top:6px;}
-.ann-del{background:none;border:none;cursor:pointer;color:var(--dim);font-size:16px;flex-shrink:0;padding:4px;}
-.ann-del:hover{color:var(--danger);}
-
-/* ── MODULE EDITOR ── */
-.mod-editor-tabs{display:flex;gap:2px;margin-bottom:20px;background:var(--surface);border-radius:10px;padding:4px;}
-.met{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted);transition:all 0.15s;}
-.met.active{background:var(--white);color:var(--blue);box-shadow:0 1px 4px rgba(0,0,0,0.08);}
-
-/* ── Q BANK ── */
-.q-bank-item{border:1.5px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:10px;background:var(--white);}
-.q-bank-q{font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px;}
-.q-bank-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-.q-bank-opt{font-size:12px;padding:7px 12px;border-radius:7px;background:var(--surface);color:var(--muted);}
-.q-bank-opt.correct{background:var(--ok-light);color:var(--ok);font-weight:600;}
-.q-bank-actions{display:flex;gap:8px;margin-top:12px;}
-
-/* ── SEARCH ── */
-.search-bar{display:flex;gap:10px;margin-bottom:20px;align-items:center;}
-.search-input{flex:1;border:1.5px solid var(--border);border-radius:9px;padding:10px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;}
-.search-input:focus{border-color:var(--blue);}
-
-/* ── COHORT ── */
+.form-group{margin-bottom:16px;}
+.form-label{font-size:12px;font-weight:600;color:var(--text);display:block;margin-bottom:5px;}
+.form-input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;background:var(--white);}
+.form-input:focus{border-color:var(--blue);}
+.form-textarea{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;min-height:90px;resize:vertical;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 .cohort-card{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-mid) 100%);border-radius:16px;padding:28px;color:white;margin-bottom:24px;}
 .cohort-name{font-family:'DM Serif Display',serif;font-size:28px;margin-bottom:4px;}
-.cohort-dates{font-size:13px;opacity:0.75;}
 .cohort-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px;}
 .cohort-stat{background:rgba(255,255,255,0.12);border-radius:10px;padding:14px;}
 .cohort-stat-val{font-family:'DM Serif Display',serif;font-size:28px;}
 .cohort-stat-label{font-size:11px;opacity:0.7;margin-top:3px;}
-.deadline-countdown{background:var(--danger-light);border:1.5px solid var(--danger);border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
-.deadline-countdown.ok{background:var(--ok-light);border-color:var(--ok);}
-.countdown-label{font-size:13px;color:var(--text);font-weight:600;}
-.countdown-val{font-family:'DM Serif Display',serif;font-size:28px;color:var(--danger);}
-.deadline-countdown.ok .countdown-val{color:var(--ok);}
-
-/* ── RESPONSIVE ── */
-@media(max-width:768px){
-  :root{--sidebar:200px;}
-  .main{padding:20px;}
-  .stat-grid{grid-template-columns:1fr 1fr;}
-  .form-row{grid-template-columns:1fr;}
-}
-@media(max-width:600px){
-  .sidebar{transform:translateX(-100%);transition:transform 0.3s;}
-  .sidebar.open{transform:none;}
-  .main{margin-left:0;}
-  .mobile-menu-btn{display:flex;}
-}
+.app-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:12px;}
+.app-card.pending{border-left:4px solid var(--amber);}
+.app-card.approved{border-left:4px solid var(--ok);}
+.app-card.rejected{border-left:4px solid var(--danger);opacity:0.7;}
+.app-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap;}
+.app-name{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);}
+.app-email{font-size:12px;color:var(--muted);}
+.app-meta{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:14px;padding:14px;background:var(--surface);border-radius:10px;}
+.app-meta-item{font-size:12px;}
+.app-meta-label{color:var(--muted);margin-bottom:2px;}
+.app-meta-val{font-weight:600;color:var(--text);}
+.app-motivation{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;padding:12px;background:var(--surface);border-radius:8px;border-left:3px solid var(--border);}
+.app-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.app-ref{font-size:11px;color:var(--dim);margin-left:auto;}
+.search-bar{display:flex;gap:10px;margin-bottom:20px;}
+.search-input{flex:1;border:1.5px solid var(--border);border-radius:9px;padding:10px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;}
+.search-input:focus{border-color:var(--blue);}
+.ann-item{border:1.5px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:10px;background:var(--white);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.ann-del{background:none;border:none;cursor:pointer;color:var(--dim);font-size:16px;padding:4px;}
+.ann-del:hover{color:var(--danger);}
+.risk-card{background:var(--white);border:1.5px solid var(--danger);border-radius:14px;padding:20px;margin-bottom:12px;}
+@media(max-width:768px){:root{--sidebar:200px;}.main{padding:20px;}.form-row{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -206,8 +145,8 @@ tr:hover td{background:var(--surface);}
           <div class="login-box-sub">Admin Portal</div>
         </div>
       </div>
-      <h2>Admin Sign In</h2>
-      <p>Sign in to manage courses, students, and progress.</p>
+      <h2 style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--text);margin-bottom:6px;">Admin Sign In</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">Sign in to manage applications, students, and content.</p>
       <label class="f-label">Username</label>
       <input class="f-input" id="adminUser" type="text" placeholder="Admin username" autocomplete="username"/>
       <label class="f-label">Password</label>
@@ -221,253 +160,146 @@ tr:hover td{background:var(--surface);}
 <!-- ADMIN SHELL -->
 <div id="adminShell" style="display:none;">
   <div class="admin-wrap">
-
-    <!-- SIDEBAR -->
-    <div class="sidebar" id="sidebar">
+    <div class="sidebar">
       <div class="sidebar-brand">
         <div class="sidebar-brand-row">
           <div class="sidebar-icon">♪</div>
-          <div>
-            <div class="sidebar-brand-name">Catholic Music Academy</div>
-            <div class="sidebar-brand-tag">Admin Portal</div>
-          </div>
+          <div><div class="sidebar-brand-name">Catholic Music Academy</div><div class="sidebar-brand-tag">Admin Portal</div></div>
         </div>
       </div>
-
       <div class="sidebar-section">Overview</div>
       <div class="nav-item active" onclick="goPage('dashboard')">📊 Dashboard</div>
-
-      <div class="sidebar-section">Academic</div>
-      <div class="nav-item" onclick="goPage('content')">✏️ Content Manager</div>
-      <div class="nav-item" onclick="goPage('qbank')">❓ Question Bank</div>
-
+      <div class="sidebar-section">Admissions</div>
+      <div class="nav-item" onclick="goPage('applications')" id="navApplications">📋 Applications</div>
       <div class="sidebar-section">Students</div>
       <div class="nav-item" onclick="goPage('students')">👥 All Students</div>
       <div class="nav-item" onclick="goPage('progress')">📈 Progress Records</div>
       <div class="nav-item" onclick="goPage('atrisk')" id="navAtrisk">⚠️ At-Risk Students</div>
-
       <div class="sidebar-section">Tools</div>
       <div class="nav-item" onclick="goPage('cohort')">📅 Cohort & Deadline</div>
       <div class="nav-item" onclick="goPage('announcements')">📢 Announcements</div>
-
       <div class="sidebar-footer">
         <div class="sidebar-user">
           <div class="sidebar-avatar" id="sidebarInitial">D</div>
-          <div>
-            <div class="sidebar-user-name" id="sidebarName">Admin</div>
-            <div class="sidebar-user-role">Administrator</div>
-          </div>
+          <div><div class="sidebar-user-name" id="sidebarName">Admin</div><div class="sidebar-user-role">Administrator</div></div>
         </div>
         <button class="sidebar-logout" onclick="adminLogout()">↩ Sign out</button>
       </div>
     </div>
 
-    <!-- MAIN -->
     <div class="main">
-
       <!-- DASHBOARD -->
       <div class="page active" id="page-dashboard">
-        <div class="page-header">
-          <div class="page-title">Dashboard</div>
-          <div class="page-sub" id="dashCohortLabel">Loading cohort data...</div>
-        </div>
+        <div class="page-header"><div><div class="page-title">Dashboard</div><div class="page-sub" id="dashSub">Loading...</div></div><button class="btn btn-ghost" onclick="loadAllData();showToast('Refreshed')">↻ Refresh</button></div>
         <div class="stat-grid" id="dashStats"></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;flex-wrap:wrap;">
-          <div class="card">
-            <div class="card-title">Student Progress Overview</div>
-            <div id="dashProgressList">Loading...</div>
-          </div>
-          <div class="card">
-            <div class="card-title">Recent Activity</div>
-            <div id="dashActivity">Loading...</div>
-          </div>
+          <div class="card"><div class="card-title">Student Progress</div><div id="dashProgressList">Loading...</div></div>
+          <div class="card"><div class="card-title">Recent Activity</div><div id="dashActivity">Loading...</div></div>
         </div>
       </div>
 
-      <!-- CONTENT MANAGER -->
-      <div class="page" id="page-content">
-        <div class="page-header">
-          <div class="page-title">Content Manager</div>
-          <div class="page-sub">Manage module content, videos, audio, and downloads for Course 1.</div>
+      <!-- APPLICATIONS -->
+      <div class="page" id="page-applications">
+        <div class="page-header"><div><div class="page-title">Applications</div><div class="page-sub">Review and approve student applications.</div></div></div>
+        <div class="tabs">
+          <div class="tab active" onclick="setAppTab('pending',this)">Pending <span id="pendingCount"></span></div>
+          <div class="tab" onclick="setAppTab('approved',this)">Approved</div>
+          <div class="tab" onclick="setAppTab('rejected',this)">Rejected</div>
+          <div class="tab" onclick="setAppTab('all',this)">All</div>
         </div>
-        <div class="alert alert-info">💡 Changes here update the student-facing LMS. Add YouTube URLs, audio tracks, and download links for each module.</div>
-        <div id="contentModuleTabs" class="tabs"></div>
-        <div id="contentEditor"></div>
+        <div id="appList">Loading...</div>
       </div>
 
-      <!-- QUESTION BANK -->
-      <div class="page" id="page-qbank">
-        <div class="page-header">
-          <div class="page-title">Question Bank</div>
-          <div class="page-sub">View and manage assessment questions. Minimum 10 per module; 4 shown randomly per attempt.</div>
-        </div>
-        <div id="qbankModTabs" class="tabs"></div>
-        <div id="qbankContent"></div>
-      </div>
-
-      <!-- ALL STUDENTS -->
+      <!-- STUDENTS -->
       <div class="page" id="page-students">
-        <div class="page-header">
-          <div class="page-title">All Students</div>
-          <div class="page-sub">Enrolled students in the current cohort.</div>
-        </div>
-        <div class="search-bar">
-          <input class="search-input" id="studentSearch" placeholder="Search students..." oninput="renderStudents()"/>
-          <button class="btn btn-ghost">Filter</button>
-        </div>
-        <div class="card">
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Student</th><th>Username</th><th>Progress</th><th>Modules Done</th><th>Last Active</th><th>Status</th></tr></thead>
-              <tbody id="studentsTable"></tbody>
-            </table>
-          </div>
-        </div>
+        <div class="page-header"><div><div class="page-title">All Students</div><div class="page-sub">Active student accounts.</div></div></div>
+        <div class="search-bar"><input class="search-input" id="studentSearch" placeholder="Search students..." oninput="renderStudents()"/></div>
+        <div class="card"><div class="table-wrap"><table>
+          <thead><tr><th>Student</th><th>Email</th><th>Programme</th><th>Progress</th><th>Last Active</th><th>WhatsApp</th></tr></thead>
+          <tbody id="studentsTable"></tbody>
+        </table></div></div>
       </div>
 
-      <!-- PROGRESS RECORDS -->
+      <!-- PROGRESS -->
       <div class="page" id="page-progress">
-        <div class="page-header">
-          <div class="page-title">Progress Records</div>
-          <div class="page-sub">Detailed module completion for each student.</div>
-        </div>
-        <div class="card">
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Student</th><th>Module 1</th><th>Module 2</th><th>Module 3</th><th>Course Complete</th><th>Last Activity</th></tr></thead>
-              <tbody id="progressTable"></tbody>
-            </table>
-          </div>
-        </div>
+        <div class="page-header"><div><div class="page-title">Progress Records</div><div class="page-sub">Module completion per student.</div></div></div>
+        <div class="card"><div class="table-wrap"><table>
+          <thead><tr><th>Student</th><th>Module 1</th><th>Module 2</th><th>Module 3</th><th>Complete</th><th>Last Activity</th></tr></thead>
+          <tbody id="progressTable"></tbody>
+        </table></div></div>
       </div>
 
       <!-- AT RISK -->
       <div class="page" id="page-atrisk">
-        <div class="page-header">
-          <div class="page-title">At-Risk Students</div>
-          <div class="page-sub">Students flagged for intervention based on inactivity or slow progress.</div>
-        </div>
+        <div class="page-header"><div><div class="page-title">At-Risk Students</div><div class="page-sub">Students flagged for intervention.</div></div></div>
         <div id="atriskList"></div>
       </div>
 
-      <!-- COHORT & DEADLINE -->
+      <!-- COHORT -->
       <div class="page" id="page-cohort">
-        <div class="page-header">
-          <div class="page-title">Cohort & Deadline</div>
-          <div class="page-sub">Manage the current cohort settings and submission deadline.</div>
-        </div>
+        <div class="page-header"><div><div class="page-title">Cohort & Deadline</div><div class="page-sub">Manage cohort settings and pass mark.</div></div></div>
         <div id="cohortView"></div>
       </div>
 
       <!-- ANNOUNCEMENTS -->
       <div class="page" id="page-announcements">
-        <div class="page-header">
-          <div class="page-title">Announcements</div>
-          <div class="page-sub">Post notices visible to all students on their dashboard.</div>
-        </div>
+        <div class="page-header"><div><div class="page-title">Announcements</div><div class="page-sub">Post notices for students.</div></div></div>
         <div class="card" style="margin-bottom:20px;">
           <div class="card-title">New Announcement</div>
-          <div class="form-group">
-            <label class="form-label">Title</label>
-            <input class="form-input" id="annTitle" placeholder="Announcement title"/>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Message</label>
-            <textarea class="form-textarea" id="annText" placeholder="Type your message here..."></textarea>
-          </div>
-          <div style="display:flex;gap:10px;align-items:center;">
-            <select class="form-select" id="annType" style="width:auto;">
-              <option value="info">ℹ️ Info</option>
-              <option value="warn">⚠️ Warning</option>
-              <option value="ok">✅ Good news</option>
+          <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="annTitle" placeholder="Announcement title"/></div>
+          <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" id="annText" placeholder="Message..."></textarea></div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <select class="form-input" id="annType" style="width:auto;padding:8px 12px;">
+              <option value="info">ℹ️ Info</option><option value="warn">⚠️ Warning</option><option value="ok">✅ Good news</option>
             </select>
             <button class="btn btn-primary" onclick="postAnnouncement()">Post Announcement</button>
           </div>
         </div>
-        <div class="card-title" style="margin-bottom:12px;">Posted Announcements</div>
+        <div class="card-title" style="margin-bottom:12px;">Posted</div>
         <div id="annList"></div>
       </div>
-
-    </div><!-- /main -->
-  </div><!-- /admin-wrap -->
-</div><!-- /adminShell -->
+    </div>
+  </div>
+</div>
 
 <script>
-// ─── ADMIN CREDENTIALS ───────────────────────────────────────────────────────
-var ADMIN_USERS = {
-  'dale': { password: 'dale', displayName: 'Dale', role: 'Administrator' },
-  'admin': { password: 'cma2026admin', displayName: 'Administrator', role: 'Administrator' }
-};
+const SUPA_URL = 'https://ltqwofagofmvufvqsuyj.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0cXdvZmFnb2ZtdnVmdnFzdXlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjgyMTgsImV4cCI6MjA5NzMwNDIxOH0.7EkluJspwopQxxQmL7AuYxx4XHgchpYR7tsajyoXHaI';
+const ADMIN_CREDS = {'dale':'dale','admin':'cma2026admin'};
+const ADMIN_NAMES = {'dale':'Dale','admin':'Administrator'};
+const MODULE_COUNT = 3;
 
-// ─── STUDENT REGISTRY (Phase A — hardcoded, replaced by Vercel DB in Phase B) ─
-var STUDENT_REGISTRY = {
-  'demo': { displayName: 'Demo Student', enrolled: '2026-06-01', cohort: 'Cohort 1' },
-  'student1': { displayName: 'Student One', enrolled: '2026-06-01', cohort: 'Cohort 1' },
-  'student2': { displayName: 'Student Two', enrolled: '2026-06-01', cohort: 'Cohort 1' }
-};
-
-// ─── MODULE DATA (mirrors student file — in Phase B both read from DB) ────────
-var MODULE_META = [
-  { num: 'Module 01', title: 'The Origin of Music', questionCount: 12 },
-  { num: 'Module 02', title: 'Medieval Times & Sacred Rhythm', questionCount: 12 },
-  { num: 'Module 03', title: 'Evolution of Musical Instruments', questionCount: 12 }
-];
+async function sb(table, method='GET', body=null, query='') {
+  const url = SUPA_URL+'/rest/v1/'+table+(query?'?'+query:'');
+  const opts = {method, headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':method==='POST'?'return=representation':''}};
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(url, opts);
+  const text = await res.text();
+  if (!res.ok) throw new Error(text);
+  return text ? JSON.parse(text) : [];
+}
 
 var currentAdmin = null;
 var currentPage = 'dashboard';
-var contentTabIdx = 0;
-var qbankTabIdx = 0;
+var appTabFilter = 'pending';
+var allApplications = [];
+var allStudents = [];
+var allProgress = [];
+var cohortSettings = {};
 
-// ─── STORAGE HELPERS ─────────────────────────────────────────────────────────
-function getCohort() {
-  try {
-    return JSON.parse(localStorage.getItem('cma_cohort') || 'null') || {
-      name: 'Cohort 1', startDate: '2026-06-01', deadline: '2026-07-13', notes: ''
-    };
-  } catch(e) { return {name:'Cohort 1',startDate:'2026-06-01',deadline:'2026-07-13',notes:''}; }
-}
-function saveCohort(c) { localStorage.setItem('cma_cohort', JSON.stringify(c)); }
-
-function getAnnouncements() {
-  try { return JSON.parse(localStorage.getItem('cma_announcements') || '[]'); } catch(e){ return []; }
-}
-function saveAnnouncements(a) { localStorage.setItem('cma_announcements', JSON.stringify(a)); }
-
-function getAllProgress() {
-  try { return JSON.parse(localStorage.getItem('cma_all_progress') || '{}'); } catch(e){ return {}; }
-}
-
-function getContentSettings() {
-  try {
-    return JSON.parse(localStorage.getItem('cma_content_settings') || 'null') || {
-      modules: [
-        { videoUrl: '', audioTracks: [], downloads: [] },
-        { videoUrl: '', audioTracks: [], downloads: [] },
-        { videoUrl: '', audioTracks: [], downloads: [] }
-      ]
-    };
-  } catch(e){ return {modules:[{videoUrl:'',audioTracks:[],downloads:[]},{videoUrl:'',audioTracks:[],downloads:[]},{videoUrl:'',audioTracks:[],downloads:[]}]}; }
-}
-function saveContentSettings(s) { localStorage.setItem('cma_content_settings', JSON.stringify(s)); }
-
-// ─── AUTH ─────────────────────────────────────────────────────────────────────
+// ── AUTH ─────────────────────────────────────────────────────────────────────
 function doAdminLogin() {
   var u = document.getElementById('adminUser').value.trim().toLowerCase();
   var p = document.getElementById('adminPass').value.trim();
   var err = document.getElementById('adminErr');
-  if (!u || !p) { showAdminErr('Please enter both fields.'); return; }
-  var user = ADMIN_USERS[u];
-  if (!user || user.password !== p) { showAdminErr('Incorrect credentials.'); return; }
+  if (!u || !p) { err.textContent='Please enter both fields.'; err.style.display='block'; return; }
+  if (!ADMIN_CREDS[u] || ADMIN_CREDS[u] !== p) { err.textContent='Incorrect credentials.'; err.style.display='block'; return; }
   currentAdmin = u;
-  document.getElementById('sidebarName').textContent = user.displayName;
-  document.getElementById('sidebarInitial').textContent = user.displayName.charAt(0).toUpperCase();
+  document.getElementById('sidebarName').textContent = ADMIN_NAMES[u];
+  document.getElementById('sidebarInitial').textContent = ADMIN_NAMES[u].charAt(0);
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('adminShell').style.display = 'block';
-  goPage('dashboard');
-}
-function showAdminErr(msg) {
-  var e = document.getElementById('adminErr');
-  e.textContent = msg; e.style.display = 'block';
+  loadAllData();
 }
 function adminLogout() {
   currentAdmin = null;
@@ -478,458 +310,321 @@ function adminLogout() {
   document.getElementById('adminErr').style.display = 'none';
 }
 
-// ─── NAVIGATION ───────────────────────────────────────────────────────────────
+// ── DATA LOAD ─────────────────────────────────────────────────────────────────
+async function loadAllData() {
+  try {
+    [allApplications, allStudents, allProgress] = await Promise.all([
+      sb('applications', 'GET', null, 'order=submitted_at.desc'),
+      sb('students', 'GET', null, 'order=created_at.desc&select=*'),
+      sb('progress', 'GET', null, 'select=*')
+    ]);
+    var cohortArr = await sb('cohort_settings', 'GET', null, 'limit=1');
+    cohortSettings = cohortArr[0] || {name:'Cohort 1',start_date:'2026-06-01',deadline:'2026-07-13',pass_mark:100};
+    updateBadges();
+    renderCurrentPage();
+  } catch(e) { showToast('Error loading data: '+e.message, 'err'); }
+}
+
+function updateBadges() {
+  var pending = allApplications.filter(a=>a.status==='pending').length;
+  var navApp = document.getElementById('navApplications');
+  navApp.innerHTML = '📋 Applications' + (pending>0?'<span class="nav-badge">'+pending+'</span>':'');
+  var atRisk = getAtRiskStudents().length;
+  var navAt = document.getElementById('navAtrisk');
+  navAt.innerHTML = '⚠️ At-Risk Students' + (atRisk>0?'<span class="nav-badge">'+atRisk+'</span>':'');
+  document.getElementById('pendingCount').textContent = pending > 0 ? '('+pending+')' : '';
+}
+
+function renderCurrentPage() {
+  if (currentPage==='dashboard') renderDashboard();
+  else if (currentPage==='applications') renderApplications();
+  else if (currentPage==='students') renderStudents();
+  else if (currentPage==='progress') renderProgress();
+  else if (currentPage==='atrisk') renderAtrisk();
+  else if (currentPage==='cohort') renderCohort();
+  else if (currentPage==='announcements') renderAnnouncements();
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
 function goPage(id) {
-  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-  document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
-  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
   currentPage = id;
-  // activate nav item
-  document.querySelectorAll('.nav-item').forEach(function(n){
-    if (n.getAttribute('onclick') && n.getAttribute('onclick').indexOf("'"+id+"'") !== -1) n.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{
+    if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
   });
-  // render page
-  if (id==='dashboard') renderDashboard();
-  else if (id==='students') renderStudents();
-  else if (id==='progress') renderProgress();
-  else if (id==='atrisk') renderAtrisk();
-  else if (id==='cohort') renderCohort();
-  else if (id==='announcements') renderAnnouncements();
-  else if (id==='content') renderContent();
-  else if (id==='qbank') renderQbank();
+  renderCurrentPage();
 }
 
-// ─── UTILITIES ────────────────────────────────────────────────────────────────
-function daysAgo(isoStr) {
-  if (!isoStr) return 999;
-  var d = new Date(isoStr);
-  return Math.floor((Date.now() - d.getTime()) / 86400000);
-}
-function fmtDate(isoStr) {
-  if (!isoStr) return '—';
-  var d = new Date(isoStr);
-  return d.toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
-}
-function fmtTime(isoStr) {
-  if (!isoStr) return '—';
-  var d = new Date(isoStr);
-  return d.toLocaleString('en-GB', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-}
-function daysUntil(dateStr) {
-  var d = new Date(dateStr);
-  return Math.ceil((d.getTime() - Date.now()) / 86400000);
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function fmtDate(s){if(!s)return'—';return new Date(s).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}
+function fmtTime(s){if(!s)return'—';return new Date(s).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}
+function daysUntil(s){return Math.ceil((new Date(s)-Date.now())/86400000);}
+function daysAgo(s){if(!s)return 999;return Math.floor((Date.now()-new Date(s))/86400000);}
+
+function getStudentProgress(studentId) {
+  return allProgress.filter(p=>p.student_id===studentId).map(p=>p.module_index);
 }
 
-function getStudentData() {
-  var allProgress = getAllProgress();
-  return Object.keys(STUDENT_REGISTRY).map(function(username) {
-    var reg = STUDENT_REGISTRY[username];
-    var prog = allProgress[username] || {};
-    var completed = prog.completed || [];
-    return {
-      username: username,
-      displayName: reg.displayName,
-      enrolled: reg.enrolled,
-      cohort: reg.cohort,
-      completed: completed,
-      lastActivity: prog.lastActivity || prog.lastLogin || null,
-      lastLogin: prog.lastLogin || null
-    };
+function getAtRiskStudents() {
+  var du = daysUntil(cohortSettings.deadline);
+  return allStudents.filter(s=>{
+    var comp = getStudentProgress(s.id).length;
+    var da = daysAgo(s.last_login);
+    return (da>=5)||(du<=7&&comp<MODULE_COUNT)||(du<=14&&comp===0);
   });
 }
 
-// ─── DASHBOARD ────────────────────────────────────────────────────────────────
+function waLink(number, message) {
+  var num = (number||'').replace(/\D/g,'');
+  if (!num.startsWith('234') && num.startsWith('0')) num = '234'+num.slice(1);
+  return 'https://wa.me/'+num+'?text='+encodeURIComponent(message);
+}
+
+// ── DASHBOARD ────────────────────────────────────────────────────────────────
 function renderDashboard() {
-  var cohort = getCohort();
-  var du = daysUntil(cohort.deadline);
-  document.getElementById('dashCohortLabel').textContent =
-    cohort.name + ' · Deadline: ' + fmtDate(cohort.deadline) + ' (' + (du > 0 ? du + ' days remaining' : 'Deadline passed') + ')';
-
-  var students = getStudentData();
-  var total = students.length;
-  var completed = students.filter(function(s){ return s.completed.length === MODULE_META.length; }).length;
-  var inProgress = students.filter(function(s){ return s.completed.length > 0 && s.completed.length < MODULE_META.length; }).length;
-  var notStarted = students.filter(function(s){ return s.completed.length === 0; }).length;
-  var atRisk = students.filter(function(s){ return isAtRisk(s); }).length;
-
+  var du = daysUntil(cohortSettings.deadline);
+  document.getElementById('dashSub').textContent = (cohortSettings.name||'Cohort 1')+' · Deadline: '+fmtDate(cohortSettings.deadline)+' ('+(du>0?du+' days remaining':'Deadline passed')+')';
+  var pending = allApplications.filter(a=>a.status==='pending').length;
+  var approved = allApplications.filter(a=>a.status==='approved').length;
+  var total = allStudents.length;
+  var complete = allStudents.filter(s=>getStudentProgress(s.id).length>=MODULE_COUNT).length;
+  var atRisk = getAtRiskStudents().length;
   document.getElementById('dashStats').innerHTML =
-    statCard(total, 'Total Students', '') +
-    statCard(completed, 'Course Complete', 'ok-card') +
-    statCard(inProgress, 'In Progress', '') +
-    statCard(notStarted, 'Not Started', notStarted > 0 ? 'danger-card' : '') +
-    statCard(atRisk, 'At Risk', atRisk > 0 ? 'danger-card' : 'ok-card');
+    stat(pending,'Pending Applications','warn-card')+stat(approved,'Approved','ok-card')+
+    stat(total,'Active Students','')+stat(complete,'Course Complete','ok-card')+stat(atRisk,'At Risk',atRisk>0?'danger-card':'ok-card');
+  document.getElementById('dashProgressList').innerHTML = allStudents.length===0
+    ? '<div style="font-size:13px;color:var(--dim);text-align:center;padding:24px 0;">No active students yet.</div>'
+    : allStudents.map(s=>{
+        var comp=getStudentProgress(s.id).length;
+        var pct=Math.round((comp/MODULE_COUNT)*100);
+        return '<div style="margin-bottom:14px;"><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:13px;font-weight:600;">'+s.first_name+' '+s.last_name+'</span><span style="font-size:12px;color:var(--muted);">'+pct+'%</span></div>'
+          +'<div class="prog-bar-bg"><div class="prog-bar" style="width:'+pct+'%;'+(pct===100?'background:var(--ok)':pct===0?'background:var(--border)':'')+'"></div></div>'
+          +'<div style="font-size:11px;color:var(--dim);margin-top:2px;">'+comp+'/'+MODULE_COUNT+' modules · Last login: '+fmtTime(s.last_login)+'</div></div>';
+      }).join('');
+  document.getElementById('dashActivity').innerHTML = allStudents.length===0
+    ? '<div style="font-size:13px;color:var(--dim);text-align:center;padding:24px 0;">No activity yet.</div>'
+    : allStudents.filter(s=>s.last_login).sort((a,b)=>new Date(b.last_login)-new Date(a.last_login)).slice(0,8)
+        .map(s=>'<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--surface);align-items:center;"><span>🔑</span><div><div style="font-size:13px;">'+s.first_name+' '+s.last_name+' logged in</div><div style="font-size:11px;color:var(--dim);">'+fmtTime(s.last_login)+'</div></div></div>').join('');
+}
+function stat(val,label,cls){return'<div class="stat-card '+cls+'"><div class="stat-val">'+val+'</div><div class="stat-label">'+label+'</div></div>';}
 
-  // update at-risk badge
-  var badge = document.getElementById('navAtrisk');
-  if (atRisk > 0) {
-    badge.innerHTML = '⚠️ At-Risk Students <span class="nav-badge">' + atRisk + '</span>';
-  }
-
-  document.getElementById('dashProgressList').innerHTML = students.map(function(s) {
-    var pct = Math.round((s.completed.length / MODULE_META.length) * 100);
-    return '<div style="margin-bottom:14px;">'
-      + '<div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:13px;font-weight:600;">' + s.displayName + '</span><span style="font-size:12px;color:var(--muted);">' + pct + '%</span></div>'
-      + '<div class="prog-bar-bg"><div class="prog-bar ' + (pct===100?'ok':pct>0?'':'dim') + '" style="width:' + pct + '%;' + (pct===100?'background:var(--ok)':pct===0?'background:var(--border)':'') + '"></div></div>'
-      + '<div style="font-size:11px;color:var(--dim);margin-top:3px;">' + s.completed.length + ' of ' + MODULE_META.length + ' modules · Last active: ' + (s.lastActivity ? fmtTime(s.lastActivity) : 'Not yet logged in') + '</div>'
-      + '</div>';
-  }).join('');
-
-  // Recent activity
-  var activities = [];
-  students.forEach(function(s) {
-    if (s.lastLogin) activities.push({ time: s.lastLogin, text: s.displayName + ' logged in', type: 'login' });
-    if (s.lastActivity && s.lastActivity !== s.lastLogin) activities.push({ time: s.lastActivity, text: s.displayName + ' completed module ' + s.completed.length, type: 'progress' });
-  });
-  activities.sort(function(a,b){ return new Date(b.time) - new Date(a.time); });
-  if (activities.length === 0) {
-    document.getElementById('dashActivity').innerHTML = '<div style="font-size:13px;color:var(--dim);text-align:center;padding:20px 0;">No activity yet. Students will appear here once they log in.</div>';
-  } else {
-    document.getElementById('dashActivity').innerHTML = activities.slice(0,8).map(function(a){
-      return '<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--surface);">'
-        + '<div style="font-size:16px;">' + (a.type==='login'?'🔑':'✅') + '</div>'
-        + '<div><div style="font-size:13px;color:var(--text);">' + a.text + '</div><div style="font-size:11px;color:var(--dim);">' + fmtTime(a.time) + '</div></div>'
-        + '</div>';
-    }).join('');
-  }
+// ── APPLICATIONS ──────────────────────────────────────────────────────────────
+function setAppTab(filter, el) {
+  appTabFilter = filter;
+  document.querySelectorAll('#page-applications .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderApplications();
 }
 
-function statCard(val, label, cls) {
-  return '<div class="stat-card ' + cls + '"><div class="stat-val">' + val + '</div><div class="stat-label">' + label + '</div></div>';
-}
-
-// ─── STUDENTS ─────────────────────────────────────────────────────────────────
-function renderStudents() {
-  var q = (document.getElementById('studentSearch')||{}).value || '';
-  var students = getStudentData().filter(function(s){
-    return !q || s.displayName.toLowerCase().indexOf(q.toLowerCase()) !== -1 || s.username.toLowerCase().indexOf(q.toLowerCase()) !== -1;
-  });
-  document.getElementById('studentsTable').innerHTML = students.map(function(s){
-    var pct = Math.round((s.completed.length / MODULE_META.length) * 100);
-    var risk = isAtRisk(s);
-    var statusPill = s.completed.length === MODULE_META.length
-      ? '<span class="pill pill-ok">✓ Complete</span>'
-      : risk ? '<span class="pill pill-danger">⚠ At Risk</span>'
-      : s.completed.length > 0 ? '<span class="pill pill-blue">In Progress</span>'
-      : '<span class="pill pill-dim">Not Started</span>';
-    return '<tr>'
-      + '<td><strong>' + s.displayName + '</strong></td>'
-      + '<td style="color:var(--muted);">@' + s.username + '</td>'
-      + '<td><div class="prog-bar-bg" style="min-width:80px;"><div class="prog-bar" style="width:' + pct + '%;' + (pct===100?'background:var(--ok)':pct===0?'background:var(--border)':'') + '"></div></div><span style="font-size:11px;color:var(--muted);margin-left:6px;">' + pct + '%</span></td>'
-      + '<td>' + s.completed.length + ' / ' + MODULE_META.length + '</td>'
-      + '<td style="color:var(--muted);">' + (s.lastActivity ? fmtTime(s.lastActivity) : s.lastLogin ? fmtTime(s.lastLogin) : '<em style="color:var(--dim)">Never</em>') + '</td>'
-      + '<td>' + statusPill + '</td>'
-      + '</tr>';
-  }).join('');
-}
-
-// ─── PROGRESS ─────────────────────────────────────────────────────────────────
-function renderProgress() {
-  var students = getStudentData();
-  document.getElementById('progressTable').innerHTML = students.map(function(s){
-    var mCells = MODULE_META.map(function(m, i){
-      var done = s.completed.indexOf(i) !== -1;
-      return '<td>' + (done ? '<span class="pill pill-ok">✓ Done</span>' : '<span class="pill pill-dim">Pending</span>') + '</td>';
-    }).join('');
-    var allDone = s.completed.length === MODULE_META.length;
-    return '<tr><td><strong>' + s.displayName + '</strong><br><span style="font-size:11px;color:var(--muted);">@' + s.username + '</span></td>'
-      + mCells
-      + '<td>' + (allDone ? '<span class="pill pill-ok">✓ Complete</span>' : '<span class="pill pill-dim">In progress</span>') + '</td>'
-      + '<td style="color:var(--muted);font-size:12px;">' + fmtTime(s.lastActivity || s.lastLogin) + '</td>'
-      + '</tr>';
-  }).join('');
-}
-
-// ─── AT RISK ──────────────────────────────────────────────────────────────────
-function isAtRisk(s) {
-  var cohort = getCohort();
-  var du = daysUntil(cohort.deadline);
-  var da = daysAgo(s.lastActivity || s.lastLogin);
-  // At risk if: not logged in for 5+ days, OR deadline <7 days and not complete, OR no progress with <14 days to deadline
-  return (da >= 5) || (du <= 7 && s.completed.length < MODULE_META.length) || (du <= 14 && s.completed.length === 0);
-}
-
-function renderAtrisk() {
-  var students = getStudentData().filter(isAtRisk);
-  var cohort = getCohort();
-  var du = daysUntil(cohort.deadline);
-  if (students.length === 0) {
-    document.getElementById('atriskList').innerHTML =
-      '<div class="alert alert-ok">✅ No students are currently flagged as at-risk. Everyone is on track!</div>';
+function renderApplications() {
+  var list = appTabFilter==='all' ? allApplications : allApplications.filter(a=>a.status===appTabFilter);
+  if (list.length===0) {
+    document.getElementById('appList').innerHTML = '<div class="alert alert-info">No '+appTabFilter+' applications.</div>';
     return;
   }
+  document.getElementById('appList').innerHTML = list.map(a => {
+    var wappNum = a.whatsapp || a.phone;
+    var acceptMsg = 'Dear '+a.first_name+', your application to the Catholic Music Academy has been approved! 🎉\n\nYou can now log in at: learn-cma.vercel.app/login\n\nUse your registered email and the password you created during application.\n\nWelcome to the Academy!';
+    var rejectMsg = 'Dear '+a.first_name+', thank you for your application to the Catholic Music Academy. After review, we are unable to approve your application at this time. Please contact us for more information.';
+    return '<div class="app-card '+a.status+'">'
+      +'<div class="app-card-header">'
+      +'<div><div class="app-name">'+a.first_name+' '+a.last_name+'</div><div class="app-email">'+a.email+'</div></div>'
+      +'<span class="pill '+(a.status==='pending'?'pill-warn':a.status==='approved'?'pill-ok':'pill-danger')+'">'+a.status+'</span>'
+      +'</div>'
+      +'<div class="app-meta">'
+      +'<div class="app-meta-item"><div class="app-meta-label">Programme</div><div class="app-meta-val">'+a.programme+'</div></div>'
+      +'<div class="app-meta-item"><div class="app-meta-label">State</div><div class="app-meta-val">'+(a.state||'—')+'</div></div>'
+      +'<div class="app-meta-item"><div class="app-meta-label">Phone</div><div class="app-meta-val">'+(a.phone||'—')+'</div></div>'
+      +'<div class="app-meta-item"><div class="app-meta-label">WhatsApp</div><div class="app-meta-val">'+(a.whatsapp||a.phone||'—')+'</div></div>'
+      +'<div class="app-meta-item"><div class="app-meta-label">Background</div><div class="app-meta-val">'+(a.background||'—')+'</div></div>'
+      +'<div class="app-meta-item"><div class="app-meta-label">Receipt</div><div class="app-meta-val">'+(a.receipt_name?'📎 '+a.receipt_name:'Not uploaded')+'</div></div>'
+      +'<div class="app-meta-item"><div class="app-meta-label">Applied</div><div class="app-meta-val">'+fmtDate(a.submitted_at)+'</div></div>'
+      +'<div class="app-meta-item"><div class="app-meta-label">Ref</div><div class="app-meta-val">'+a.ref+'</div></div>'
+      +'</div>'
+      +(a.motivation?'<div class="app-motivation"><strong style="font-size:11px;color:var(--muted);">MOTIVATION:</strong><br>'+a.motivation+'</div>':'')
+      +'<div class="app-actions">'
+      +(a.status==='pending'
+        ?'<button class="btn btn-ok" onclick="approveApp(\''+a.id+'\',\''+a.email+'\',\''+a.first_name+'\',\''+a.last_name+'\',\''+a.password_hash+'\',\''+a.phone+'\',\''+a.whatsapp+'\',\''+a.programme+'\',\''+a.state+'\')">✓ Approve</button>'
+        +'<button class="btn btn-danger" onclick="rejectApp(\''+a.id+'\')">✕ Reject</button>'
+        :'')
+      +(a.status==='approved'
+        ?'<button class="btn btn-danger" onclick="rejectApp(\''+a.id+'\')">Revoke</button>':'')
+      +(wappNum?'<a class="btn-whatsapp" href="'+waLink(wappNum, a.status==='approved'?acceptMsg:a.status==='rejected'?rejectMsg:'Hello '+a.first_name+', regarding your Catholic Music Academy application...')+'" target="_blank">💬 WhatsApp '+(a.status==='approved'?'Acceptance':'Message')+'</a>':'')
+      +'<span class="app-ref">'+fmtDate(a.submitted_at)+'</span>'
+      +'</div></div>';
+  }).join('');
+}
+
+async function approveApp(id, email, firstName, lastName, pwHash, phone, whatsapp, programme, state) {
+  if (!confirm('Approve this application and activate a student account for '+firstName+' '+lastName+'?')) return;
+  try {
+    // Update application status
+    await sb('applications', 'PATCH', {status:'approved', reviewed_at:new Date().toISOString(), reviewed_by:currentAdmin}, 'id=eq.'+id);
+    // Create student account
+    await sb('students', 'POST', {
+      application_id: id,
+      first_name: firstName,
+      last_name: lastName,
+      email: email,
+      password_hash: pwHash,
+      phone: phone,
+      whatsapp: whatsapp||phone,
+      programme: programme,
+      state: state,
+      status: 'active'
+    });
+    showToast('✓ Approved. Student account created for '+firstName+'.');
+    await loadAllData();
+  } catch(e) {
+    if (e.message.includes('duplicate') || e.message.includes('unique')) {
+      // Account might already exist — just update status
+      await sb('applications','PATCH',{status:'approved',reviewed_at:new Date().toISOString(),reviewed_by:currentAdmin},'id=eq.'+id);
+      showToast('Application approved. (Account already exists for this email.)','warn');
+      await loadAllData();
+    } else {
+      showToast('Error: '+e.message,'err');
+    }
+  }
+}
+
+async function rejectApp(id) {
+  if (!confirm('Reject this application?')) return;
+  try {
+    await sb('applications','PATCH',{status:'rejected',reviewed_at:new Date().toISOString(),reviewed_by:currentAdmin},'id=eq.'+id);
+    showToast('Application rejected.');
+    await loadAllData();
+  } catch(e) { showToast('Error: '+e.message,'err'); }
+}
+
+// ── STUDENTS ─────────────────────────────────────────────────────────────────
+function renderStudents() {
+  var q = (document.getElementById('studentSearch')||{}).value||'';
+  var list = allStudents.filter(s=>!q||[s.first_name,s.last_name,s.email].join(' ').toLowerCase().includes(q.toLowerCase()));
+  document.getElementById('studentsTable').innerHTML = list.map(s=>{
+    var comp=getStudentProgress(s.id).length;
+    var pct=Math.round((comp/MODULE_COUNT)*100);
+    var wappNum=s.whatsapp||s.phone;
+    var checkMsg='Hi '+s.first_name+', this is a follow-up from the Catholic Music Academy regarding your progress. Please log in to continue your studies: learn-cma.vercel.app/login';
+    return '<tr>'
+      +'<td><strong>'+s.first_name+' '+s.last_name+'</strong></td>'
+      +'<td style="color:var(--muted);">'+s.email+'</td>'
+      +'<td style="font-size:12px;color:var(--muted);">'+(s.programme||'—').replace('Course 0','C')+'</td>'
+      +'<td><div class="prog-bar-bg"><div class="prog-bar" style="width:'+pct+'%;'+(pct===100?'background:var(--ok)':pct===0?'background:var(--border)':'')+'"></div></div><span style="font-size:11px;color:var(--muted);margin-left:6px;">'+pct+'%</span></td>'
+      +'<td style="font-size:12px;color:var(--muted);">'+fmtTime(s.last_login)+'</td>'
+      +'<td>'+(wappNum?'<a class="btn-whatsapp" href="'+waLink(wappNum,checkMsg)+'" target="_blank" style="font-size:11px;padding:5px 10px;">💬</a>':'—')+'</td>'
+      +'</tr>';
+  }).join('');
+}
+
+// ── PROGRESS ─────────────────────────────────────────────────────────────────
+function renderProgress() {
+  document.getElementById('progressTable').innerHTML = allStudents.map(s=>{
+    var comp=getStudentProgress(s.id);
+    var cells=[0,1,2].map(i=>'<td>'+(comp.includes(i)?'<span class="pill pill-ok">✓ Done</span>':'<span class="pill pill-dim">Pending</span>')+'</td>').join('');
+    return '<tr><td><strong>'+s.first_name+' '+s.last_name+'</strong><br><span style="font-size:11px;color:var(--muted);">'+s.email+'</span></td>'
+      +cells+'<td>'+(comp.length>=MODULE_COUNT?'<span class="pill pill-ok">✓ Complete</span>':'<span class="pill pill-dim">In progress</span>')+'</td>'
+      +'<td style="font-size:12px;color:var(--muted);">'+fmtTime(s.last_login)+'</td></tr>';
+  }).join('');
+}
+
+// ── AT RISK ───────────────────────────────────────────────────────────────────
+function renderAtrisk() {
+  var atRisk = getAtRiskStudents();
+  var du = daysUntil(cohortSettings.deadline);
+  if (atRisk.length===0) { document.getElementById('atriskList').innerHTML='<div class="alert alert-ok">✅ No at-risk students.</div>'; return; }
   document.getElementById('atriskList').innerHTML =
-    '<div class="alert alert-warn">⚠️ ' + students.length + ' student(s) need your attention. Deadline is ' + fmtDate(cohort.deadline) + ' (' + du + ' days away).</div>'
-    + students.map(function(s){
-      var reasons = [];
-      var da = daysAgo(s.lastActivity || s.lastLogin);
-      if (da >= 5) reasons.push('No activity for ' + (da < 999 ? da + ' days' : 'unknown duration'));
-      if (du <= 7 && s.completed.length < MODULE_META.length) reasons.push('Deadline in ' + du + ' days — ' + (MODULE_META.length - s.completed.length) + ' module(s) remaining');
-      if (du <= 14 && s.completed.length === 0) reasons.push('Not started with deadline approaching');
-      var pct = Math.round((s.completed.length / MODULE_META.length) * 100);
+    '<div class="alert alert-warn">⚠️ '+atRisk.length+' student(s) flagged. Deadline: '+fmtDate(cohortSettings.deadline)+' ('+du+' days).</div>'
+    +atRisk.map(s=>{
+      var comp=getStudentProgress(s.id).length;
+      var pct=Math.round((comp/MODULE_COUNT)*100);
+      var da=daysAgo(s.last_login);
+      var reasons=[];
+      if(da>=5) reasons.push('No login for '+da+' days');
+      if(du<=7&&comp<MODULE_COUNT) reasons.push('Deadline in '+du+' days');
+      if(du<=14&&comp===0) reasons.push('Not started');
+      var wappNum=s.whatsapp||s.phone;
+      var nudgeMsg='Hi '+s.first_name+', just checking in from the Catholic Music Academy! 📚\n\nYou have '+(MODULE_COUNT-comp)+' module(s) remaining before the deadline on '+fmtDate(cohortSettings.deadline)+'.\n\nLog in now: learn-cma.vercel.app/login\n\nWe\'re rooting for you!';
       return '<div class="risk-card">'
-        + '<div class="risk-card-header"><div class="risk-name">' + s.displayName + ' <span style="font-size:12px;color:var(--muted);font-weight:400;">@' + s.username + '</span></div><span class="pill pill-danger">⚠ At Risk</span></div>'
-        + '<div class="risk-reason">' + reasons.join(' · ') + '</div>'
-        + '<div class="prog-bar-bg" style="margin-bottom:10px;"><div class="prog-bar" style="width:' + pct + '%;' + (pct===0?'background:var(--border)':'') + '"></div></div>'
-        + '<div class="risk-meta"><span>' + s.completed.length + '/' + MODULE_META.length + ' modules complete</span><span>Last seen: ' + (s.lastActivity ? fmtTime(s.lastActivity) : s.lastLogin ? fmtTime(s.lastLogin) : 'Never') + '</span></div>'
-        + '</div>';
+        +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap;">'
+        +'<div><div style="font-weight:700;font-size:15px;">'+s.first_name+' '+s.last_name+'</div><div style="font-size:12px;color:var(--muted);">'+s.email+'</div></div>'
+        +'<span class="pill pill-danger">⚠ At Risk</span></div>'
+        +'<div style="font-size:12px;color:var(--muted);margin-bottom:10px;">'+reasons.join(' · ')+'</div>'
+        +'<div class="prog-bar-bg" style="margin-bottom:10px;"><div class="prog-bar" style="width:'+pct+'%;background:'+(pct===0?'var(--border)':'')+'"></div></div>'
+        +'<div style="font-size:12px;color:var(--dim);margin-bottom:12px;">'+comp+'/'+MODULE_COUNT+' modules · Last login: '+fmtTime(s.last_login)+'</div>'
+        +(wappNum?'<a class="btn-whatsapp" href="'+waLink(wappNum,nudgeMsg)+'" target="_blank">💬 Send WhatsApp Nudge</a>':'')
+        +'</div>';
     }).join('');
 }
 
-// ─── COHORT ───────────────────────────────────────────────────────────────────
+// ── COHORT ────────────────────────────────────────────────────────────────────
 function renderCohort() {
-  var cohort = getCohort();
-  var students = getStudentData();
-  var du = daysUntil(cohort.deadline);
-  var completedCount = students.filter(function(s){ return s.completed.length === MODULE_META.length; }).length;
-
+  var du=daysUntil(cohortSettings.deadline);
   document.getElementById('cohortView').innerHTML =
     '<div class="cohort-card">'
-    + '<div class="cohort-name">' + cohort.name + '</div>'
-    + '<div class="cohort-dates">Started: ' + fmtDate(cohort.startDate) + ' &nbsp;·&nbsp; Deadline: ' + fmtDate(cohort.deadline) + '</div>'
-    + '<div class="cohort-stats">'
-    + '<div class="cohort-stat"><div class="cohort-stat-val">' + students.length + '</div><div class="cohort-stat-label">Students Enrolled</div></div>'
-    + '<div class="cohort-stat"><div class="cohort-stat-val">' + completedCount + '</div><div class="cohort-stat-label">Course Complete</div></div>'
-    + '<div class="cohort-stat"><div class="cohort-stat-val">' + (du > 0 ? du : 0) + '</div><div class="cohort-stat-label">Days Remaining</div></div>'
-    + '</div></div>'
-    + '<div class="deadline-countdown ' + (du > 7 ? 'ok' : '') + '">'
-    + '<div><div class="countdown-label">Days until deadline</div><div style="font-size:12px;color:var(--muted);">' + fmtDate(cohort.deadline) + '</div></div>'
-    + '<div class="countdown-val">' + (du > 0 ? du : 'Passed') + '</div>'
-    + '</div>'
-    + '<div class="card">'
-    + '<div class="card-title">Edit Cohort Settings</div>'
-    + '<div class="form-row">'
-    + '<div class="form-group"><label class="form-label">Cohort Name</label><input class="form-input" id="cohortName" value="' + cohort.name + '"/></div>'
-    + '<div class="form-group"><label class="form-label">Start Date</label><input class="form-input" id="cohortStart" type="date" value="' + cohort.startDate + '"/></div>'
-    + '</div>'
-    + '<div class="form-group"><label class="form-label">Submission Deadline</label><input class="form-input" id="cohortDeadline" type="date" value="' + cohort.deadline + '"/></div>'
-    + '<div class="form-group"><label class="form-label">Notes (optional)</label><textarea class="form-textarea" id="cohortNotes" style="min-height:60px;">' + (cohort.notes||'') + '</textarea></div>'
-    + '<button class="btn btn-primary" onclick="saveCohortSettings()">Save Cohort Settings</button>'
-    + '</div>';
+    +'<div class="cohort-name">'+(cohortSettings.name||'Cohort 1')+'</div>'
+    +'<div style="font-size:13px;opacity:0.7;">Deadline: '+fmtDate(cohortSettings.deadline)+'</div>'
+    +'<div class="cohort-stats">'
+    +'<div class="cohort-stat"><div class="cohort-stat-val">'+allStudents.length+'</div><div class="cohort-stat-label">Students</div></div>'
+    +'<div class="cohort-stat"><div class="cohort-stat-val">'+allStudents.filter(s=>getStudentProgress(s.id).length>=MODULE_COUNT).length+'</div><div class="cohort-stat-label">Complete</div></div>'
+    +'<div class="cohort-stat"><div class="cohort-stat-val">'+(du>0?du:0)+'</div><div class="cohort-stat-label">Days Left</div></div>'
+    +'</div></div>'
+    +'<div class="card">'
+    +'<div class="card-title">Edit Cohort Settings</div>'
+    +'<div class="form-row">'
+    +'<div class="form-group"><label class="form-label">Cohort Name</label><input class="form-input" id="cohortName" value="'+(cohortSettings.name||'')+'"/></div>'
+    +'<div class="form-group"><label class="form-label">Deadline</label><input class="form-input" id="cohortDeadline" type="date" value="'+(cohortSettings.deadline||'')+'"/></div>'
+    +'</div>'
+    +'<div class="form-group"><label class="form-label">Pass Mark (%)</label><input class="form-input" id="cohortPassMark" type="number" min="50" max="100" value="'+(cohortSettings.pass_mark||100)+'" style="max-width:120px;"/><div style="font-size:11px;color:var(--muted);margin-top:4px;">Set to 100 for 100% pass requirement, or lower (e.g. 75) for standard pass mark.</div></div>'
+    +'<button class="btn btn-primary" onclick="saveCohort()">Save Settings</button>'
+    +'</div>';
+}
+async function saveCohort() {
+  try {
+    var body = {name:document.getElementById('cohortName').value, deadline:document.getElementById('cohortDeadline').value, pass_mark:parseInt(document.getElementById('cohortPassMark').value)||100, updated_at:new Date().toISOString()};
+    await sb('cohort_settings','PATCH',body,'id=eq.'+cohortSettings.id);
+    showToast('Cohort settings saved.');
+    await loadAllData();
+  } catch(e){ showToast('Error: '+e.message,'err'); }
 }
 
-function saveCohortSettings() {
-  var c = {
-    name: document.getElementById('cohortName').value,
-    startDate: document.getElementById('cohortStart').value,
-    deadline: document.getElementById('cohortDeadline').value,
-    notes: document.getElementById('cohortNotes').value
-  };
-  saveCohort(c);
-  showToast('Cohort settings saved.');
-  renderCohort();
-  renderDashboard();
+// ── ANNOUNCEMENTS ─────────────────────────────────────────────────────────────
+async function renderAnnouncements() {
+  try {
+    var anns = await sb('announcements','GET',null,'order=created_at.desc');
+    document.getElementById('annList').innerHTML = anns.length===0
+      ? '<div style="font-size:13px;color:var(--dim);text-align:center;padding:24px 0;">No announcements posted yet.</div>'
+      : anns.map(a=>'<div class="ann-item"><div style="flex:1;"><div style="font-size:14px;font-weight:600;margin-bottom:3px;">'+a.title+'</div><div style="font-size:13px;color:var(--muted);">'+a.body+'</div><div style="font-size:11px;color:var(--dim);margin-top:5px;">'+fmtDate(a.created_at)+' · '+a.type+'</div></div><button class="ann-del" onclick="deleteAnn(\''+a.id+'\')">🗑</button></div>').join('');
+  } catch(e){ document.getElementById('annList').innerHTML='<div class="alert-warn">Error loading announcements.</div>'; }
+}
+async function postAnnouncement() {
+  var title=document.getElementById('annTitle').value.trim();
+  var body=document.getElementById('annText').value.trim();
+  var type=document.getElementById('annType').value;
+  if (!title||!body){alert('Please enter a title and message.');return;}
+  try {
+    await sb('announcements','POST',{title,body,type,created_by:currentAdmin});
+    document.getElementById('annTitle').value=''; document.getElementById('annText').value='';
+    showToast('Announcement posted.');
+    renderAnnouncements();
+  } catch(e){ showToast('Error: '+e.message,'err'); }
+}
+async function deleteAnn(id) {
+  if (!confirm('Delete this announcement?')) return;
+  try { await sb('announcements','DELETE',null,'id=eq.'+id); renderAnnouncements(); } catch(e){ showToast('Error','err'); }
 }
 
-// ─── ANNOUNCEMENTS ────────────────────────────────────────────────────────────
-function postAnnouncement() {
-  var title = document.getElementById('annTitle').value.trim();
-  var text = document.getElementById('annText').value.trim();
-  var type = document.getElementById('annType').value;
-  if (!title || !text) { alert('Please enter a title and message.'); return; }
-  var anns = getAnnouncements();
-  anns.unshift({ id: Date.now(), title: title, text: text, type: type, date: new Date().toISOString() });
-  saveAnnouncements(anns);
-  document.getElementById('annTitle').value = '';
-  document.getElementById('annText').value = '';
-  renderAnnouncements();
-  showToast('Announcement posted.');
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function showToast(msg, type='ok') {
+  var t=document.createElement('div');
+  var bg=type==='err'?'#DC2626':type==='warn'?'#F59E0B':'#16A34A';
+  t.style.cssText='position:fixed;bottom:24px;right:24px;background:'+bg+';color:white;padding:13px 22px;border-radius:11px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.2);max-width:320px;';
+  t.textContent=msg; document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity 0.3s';setTimeout(()=>t.remove(),300);},3000);
 }
 
-function deleteAnnouncement(id) {
-  var anns = getAnnouncements().filter(function(a){ return a.id !== id; });
-  saveAnnouncements(anns);
-  renderAnnouncements();
-}
-
-function renderAnnouncements() {
-  var anns = getAnnouncements();
-  var typeMap = { info: 'alert-info', warn: 'alert-warn', ok: 'alert-ok' };
-  if (anns.length === 0) {
-    document.getElementById('annList').innerHTML = '<div style="font-size:13px;color:var(--dim);text-align:center;padding:24px 0;">No announcements posted yet.</div>';
-    return;
-  }
-  document.getElementById('annList').innerHTML = anns.map(function(a){
-    return '<div class="ann-item">'
-      + '<div class="ann-body">'
-      + '<div class="ann-title">' + a.title + '</div>'
-      + '<div class="ann-text">' + a.text + '</div>'
-      + '<div class="ann-meta">Posted ' + fmtDate(a.date) + ' &nbsp;·&nbsp; ' + a.type + '</div>'
-      + '</div>'
-      + '<button class="ann-del" onclick="deleteAnnouncement(' + a.id + ')">🗑</button>'
-      + '</div>';
-  }).join('');
-}
-
-// ─── CONTENT MANAGER ─────────────────────────────────────────────────────────
-function renderContent() {
-  var settings = getContentSettings();
-  document.getElementById('contentModuleTabs').innerHTML = MODULE_META.map(function(m, i){
-    return '<div class="tab ' + (i===contentTabIdx?'active':'') + '" onclick="contentTabIdx=' + i + ';renderContent();">' + m.num + ': ' + m.title + '</div>';
-  }).join('');
-
-  var m = settings.modules[contentTabIdx];
-  var mod = MODULE_META[contentTabIdx];
-
-  document.getElementById('contentEditor').innerHTML =
-    '<div class="card">'
-    + '<div class="form-section">'
-    + '<div class="form-section-title">🎬 Video Lesson</div>'
-    + '<div class="form-group">'
-    + '<label class="form-label">YouTube Embed URL</label>'
-    + '<input class="form-input" id="ce_video" value="' + (m.videoUrl||'') + '" placeholder="https://www.youtube.com/embed/VIDEO_ID"/>'
-    + '<div class="form-hint">Use the embed URL format. Find it: YouTube → Share → Embed → copy the src URL.</div>'
-    + '</div>'
-    + '</div>'
-    + '<div class="form-section">'
-    + '<div class="form-section-title">🎵 Audio Tracks</div>'
-    + '<div id="audioTrackList">' + renderAudioTrackList(m.audioTracks||[]) + '</div>'
-    + '<button class="btn btn-ghost" style="margin-top:10px;" onclick="addAudioTrack()">+ Add Audio Track</button>'
-    + '</div>'
-    + '<div class="form-section">'
-    + '<div class="form-section-title">📥 Downloads (PDFs &amp; Sheet Music)</div>'
-    + '<div id="downloadList">' + renderDownloadList(m.downloads||[]) + '</div>'
-    + '<button class="btn btn-ghost" style="margin-top:10px;" onclick="addDownload()">+ Add Download</button>'
-    + '</div>'
-    + '<button class="btn btn-primary" onclick="saveContentTab()">Save ' + mod.num + ' Content</button>'
-    + '</div>';
-}
-
-function renderAudioTrackList(tracks) {
-  if (!tracks.length) return '<div style="font-size:13px;color:var(--dim);padding:8px 0;">No audio tracks added yet.</div>';
-  return tracks.map(function(t, i){
-    return '<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;">'
-      + '<div style="flex:1;display:grid;grid-template-columns:1fr 1fr 80px;gap:8px;">'
-      + '<input class="form-input" value="' + t.name + '" placeholder="Track name" id="at_name_' + i + '" style="padding:9px 12px;"/>'
-      + '<input class="form-input" value="' + t.url + '" placeholder="File URL or path" id="at_url_' + i + '" style="padding:9px 12px;"/>'
-      + '<input class="form-input" value="' + (t.duration||'') + '" placeholder="3:24" id="at_dur_' + i + '" style="padding:9px 12px;"/>'
-      + '</div>'
-      + '<button class="btn btn-danger" onclick="removeAudioTrack(' + i + ')">✕</button>'
-      + '</div>';
-  }).join('');
-}
-
-function renderDownloadList(downloads) {
-  if (!downloads.length) return '<div style="font-size:13px;color:var(--dim);padding:8px 0;">No downloads added yet.</div>';
-  return downloads.map(function(d, i){
-    return '<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;">'
-      + '<div style="flex:1;display:grid;grid-template-columns:1fr 1fr 80px 60px;gap:8px;">'
-      + '<input class="form-input" value="' + d.name + '" placeholder="File name" id="dl_name_' + i + '" style="padding:9px 12px;"/>'
-      + '<input class="form-input" value="' + d.url + '" placeholder="URL or path" id="dl_url_' + i + '" style="padding:9px 12px;"/>'
-      + '<select class="form-select" id="dl_type_' + i + '" style="padding:9px 10px;"><option value="pdf"' + (d.type==='pdf'?' selected':'') + '>PDF</option><option value="music"' + (d.type==='music'?' selected':'') + '>Music</option></select>'
-      + '<input class="form-input" value="' + (d.size||'') + '" placeholder="2 MB" id="dl_size_' + i + '" style="padding:9px 12px;"/>'
-      + '</div>'
-      + '<button class="btn btn-danger" onclick="removeDownload(' + i + ')">✕</button>'
-      + '</div>';
-  }).join('');
-}
-
-function saveContentTab() {
-  var settings = getContentSettings();
-  var m = settings.modules[contentTabIdx];
-
-  m.videoUrl = document.getElementById('ce_video').value.trim();
-
-  // read audio tracks
-  var atCount = document.querySelectorAll('[id^="at_name_"]').length;
-  m.audioTracks = [];
-  for (var i = 0; i < atCount; i++) {
-    var name = (document.getElementById('at_name_' + i)||{}).value || '';
-    var url = (document.getElementById('at_url_' + i)||{}).value || '';
-    var dur = (document.getElementById('at_dur_' + i)||{}).value || '';
-    if (name || url) m.audioTracks.push({ name: name, url: url, duration: dur });
-  }
-
-  // read downloads
-  var dlCount = document.querySelectorAll('[id^="dl_name_"]').length;
-  m.downloads = [];
-  for (var j = 0; j < dlCount; j++) {
-    var dname = (document.getElementById('dl_name_' + j)||{}).value || '';
-    var durl = (document.getElementById('dl_url_' + j)||{}).value || '';
-    var dtype = (document.getElementById('dl_type_' + j)||{}).value || 'pdf';
-    var dsize = (document.getElementById('dl_size_' + j)||{}).value || '';
-    if (dname || durl) m.downloads.push({ name: dname, url: durl, type: dtype, size: dsize });
-  }
-
-  saveContentSettings(settings);
-  showToast('Content saved for Module ' + (contentTabIdx + 1) + '.');
-}
-
-function addAudioTrack() {
-  var settings = getContentSettings();
-  settings.modules[contentTabIdx].audioTracks.push({ name: '', url: '', duration: '' });
-  saveContentSettings(settings);
-  renderContent();
-}
-
-function removeAudioTrack(idx) {
-  saveContentTab();
-  var settings = getContentSettings();
-  settings.modules[contentTabIdx].audioTracks.splice(idx, 1);
-  saveContentSettings(settings);
-  renderContent();
-}
-
-function addDownload() {
-  var settings = getContentSettings();
-  settings.modules[contentTabIdx].downloads.push({ name: '', url: '', type: 'pdf', size: '' });
-  saveContentSettings(settings);
-  renderContent();
-}
-
-function removeDownload(idx) {
-  saveContentTab();
-  var settings = getContentSettings();
-  settings.modules[contentTabIdx].downloads.splice(idx, 1);
-  saveContentSettings(settings);
-  renderContent();
-}
-
-// ─── QUESTION BANK ────────────────────────────────────────────────────────────
-function renderQbank() {
-  // Module tabs
-  document.getElementById('qbankModTabs').innerHTML = MODULE_META.map(function(m, i){
-    return '<div class="tab ' + (i===qbankTabIdx?'active':'') + '" onclick="qbankTabIdx=' + i + ';renderQbank();">' + m.num + '</div>';
-  }).join('');
-
-  // Questions are embedded in the student file; here we show them read-only with counts
-  // In Phase B, these will be editable and stored in DB
-  var QUESTION_POOLS = [
-    {count:12, sample:['Where did music begin?','What is the Hurrian Hymn No. 6?','Who was Pythagoras?','How old are the oldest instruments?','What drove early humans to make music?','Who was Confucius in music?','What are pentatonic scales?','What did Plato say about music?','What was the sammuri?','Who was the goddess Hathor?','What is the origin of the voice in music?','What connects choral music to worship?']},
-    {count:12, sample:['What is Gregorian Chant?','Who was Pope Gregory I?','What is monophony?','Who was Guido d\'Arezzo?','What are solmisation syllables?','What is polyphony?','Who were Leonin and Perotin?','What is the Magnus Liber Organi?','What did Pope John XXII criticise?','When did the medieval period begin?','What are neumes?','Where did polyphony develop?']},
-    {count:12, sample:['What are the four instrument families?','What are chordophones?','What are aerophones?','What are membranophones?','What are idiophones?','What is the pipe organ?','Who was Ctesibius?','What is the hydraulis?','Who called the organ "King of Instruments"?','What is inculturation?','What is the udu drum?','What is the ekwe?']}
-  ];
-
-  var pool = QUESTION_POOLS[qbankTabIdx];
-  var mod = MODULE_META[qbankTabIdx];
-
-  document.getElementById('qbankContent').innerHTML =
-    '<div class="alert alert-info">📌 <strong>' + pool.count + ' questions</strong> in this pool for ' + mod.title + '. 4 are shown randomly per student attempt — students never see the same set twice.</div>'
-    + '<div class="card" style="margin-bottom:16px;">'
-    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">'
-    + '<div><div class="card-title" style="margin-bottom:0;">Question Pool</div><div style="font-size:12px;color:var(--muted);margin-top:4px;">' + pool.count + ' questions · 4 shown per attempt</div></div>'
-    + '<span class="pill pill-ok">✓ Minimum met</span>'
-    + '</div>'
-    + pool.sample.map(function(q, i){
-      return '<div class="q-bank-item">'
-        + '<div class="q-bank-q">' + (i+1) + '. ' + q + '</div>'
-        + '<div style="font-size:11px;color:var(--muted);">4 options · 1 correct answer</div>'
-        + '</div>';
-    }).join('')
-    + '</div>'
-    + '<div class="alert alert-warn">✏️ To edit questions in Phase A, update the MODULES array in <code>login.html</code>. In Phase B, questions will be fully editable here and stored in the database.</div>';
-}
-
-// ─── TOAST ────────────────────────────────────────────────────────────────────
-function showToast(msg) {
-  var t = document.createElement('div');
-  t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--text);color:white;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;animation:fadeIn 0.2s ease;';
-  t.textContent = '✓ ' + msg;
-  document.body.appendChild(t);
-  setTimeout(function(){ t.remove(); }, 2500);
-}
-
-// Init
-(function(){ document.getElementById('adminUser').focus(); })();
+(function(){document.getElementById('adminUser').focus();})();
 </script>
 </body>
 </html>
