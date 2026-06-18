@@ -277,14 +277,8 @@ body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;
       <div class="course-card-cta"><div class="course-card-cta-text">Continue Course →</div></div>
     </div>
     <div class="dash-section-label" style="margin-top:40px;">Other Courses Available</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Complete your current course to unlock the following programmes.</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;">
-      <div class="other-course-card"><div class="other-course-lock">🔒</div><div class="other-course-num">Course 02</div><div class="other-course-title">Liturgical Music Theology</div><div class="other-course-desc">The theological foundations of sacred music in Catholic worship.</div><div class="other-course-tag">4 Modules · ~5 hrs</div></div>
-      <div class="other-course-card"><div class="other-course-lock">🔒</div><div class="other-course-num">Course 03</div><div class="other-course-title">Choral Leadership</div><div class="other-course-desc">Skills to lead, coordinate, and inspire a choir.</div><div class="other-course-tag">5 Modules · ~6 hrs</div></div>
-      <div class="other-course-card"><div class="other-course-lock">🔒</div><div class="other-course-num">Course 04</div><div class="other-course-title">The Choirmaster's Craft</div><div class="other-course-desc">Voice training, score reading, liturgical planning, and administration.</div><div class="other-course-tag">4 Modules · ~5 hrs</div></div>
-      <div class="other-course-card"><div class="other-course-lock">🔒</div><div class="other-course-num">Course 05</div><div class="other-course-title">Sacred Music Composition</div><div class="other-course-desc">Compose original hymns and Mass settings.</div><div class="other-course-tag">6 Modules · ~8 hrs</div></div>
-      <div class="other-course-card"><div class="other-course-lock">🔒</div><div class="other-course-num">Course 06</div><div class="other-course-title">Voice &amp; Instrument Proficiency</div><div class="other-course-desc">Vocal production and instrumental accompaniment for liturgical settings.</div><div class="other-course-tag">4 Modules · ~5 hrs</div></div>
-    </div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Complete your current course and speak to your coordinator to enrol in any of the following programmes.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;" id="otherCoursesList"></div>
   </div>
 </div>
 
@@ -548,6 +542,22 @@ var MODULES = []; // set after login based on student's enrolled course
 var CURRENT_COURSE = null;
 
 // ── AUTH ──────────────────────────────────────────────────────────────────────
+function renderOtherCourses() {
+  var container = document.getElementById('otherCoursesList');
+  if (!container || !CURRENT_COURSE) return;
+  var enrolledId = CURRENT_COURSE.id;
+  var others = ALL_COURSES.filter(function(c) { return c.id !== enrolledId; });
+  container.innerHTML = others.map(function(c) {
+    return '<div class="other-course-card">'
+      + '<div class="other-course-lock">🔒</div>'
+      + '<div class="other-course-num">' + c.code + '</div>'
+      + '<div class="other-course-title">' + c.title + '</div>'
+      + '<div class="other-course-desc">' + c.desc + '</div>'
+      + '<div class="other-course-tag">' + c.moduleCount + ' Modules · ' + c.duration + '</div>'
+      + '</div>';
+  }).join('');
+}
+
 async function doLogin() {
   var emailEl = document.getElementById('loginEmail');
   var passEl  = document.getElementById('loginPass');
@@ -620,6 +630,7 @@ async function doLogin() {
       ' &nbsp;·&nbsp; ✍ Assessment per module &nbsp;·&nbsp; 🎓 Final exam (in-person)', true);
 
     history.replaceState({ screen: 'dash' }, '', '#dash');
+    renderOtherCourses();
     showScreen('screen-dash');
 
   } catch(e) {
