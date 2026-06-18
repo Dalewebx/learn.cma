@@ -114,6 +114,24 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px
 .ns-text{font-size:13px;color:var(--text);line-height:1.55;}
 .strength-bar-bg{height:4px;background:var(--border);border-radius:4px;margin-top:6px;overflow:hidden;}
 .strength-bar{height:100%;width:0%;border-radius:4px;transition:all 0.3s;}
+/* Searchable country dropdown */
+.country-dropdown{position:relative;}
+.country-display{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 15px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:border-color 0.2s;user-select:none;}
+.country-display.open{border-color:var(--navy);box-shadow:0 0 0 3px rgba(13,27,62,0.07);border-radius:10px 10px 0 0;}
+.country-display.invalid{border-color:var(--danger);}
+.country-display-text{color:var(--dim);}
+.country-display-text.selected{color:var(--text);}
+.country-caret{font-size:10px;color:var(--muted);transition:transform 0.2s;flex-shrink:0;}
+.country-display.open .country-caret{transform:rotate(180deg);}
+.country-panel{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);border:1.5px solid var(--navy);border-top:none;border-radius:0 0 10px 10px;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,0.1);overflow:hidden;}
+.country-panel.open{display:block;}
+.country-search-wrap{padding:10px 12px;border-bottom:1px solid var(--border);}
+.country-search{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;}
+.country-search:focus{border-color:var(--navy);}
+.country-list{max-height:220px;overflow-y:auto;padding:4px 0;}
+.country-option{padding:10px 15px;font-size:13px;color:var(--text);cursor:pointer;transition:background 0.12s;}
+.country-option:hover,.country-option.focused{background:var(--navy-pale);}
+.country-none{padding:10px 15px;font-size:13px;color:var(--muted);text-align:center;}
 @media(max-width:600px){
   nav{padding:0 16px;}
   .nav-sub{display:none;}
@@ -224,9 +242,19 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px
       </div>
       <div class="field">
         <label class="field-label">Country <span class="req">*</span></label>
-        <select class="field-select" id="country" onchange="onCountryChange()">
-          <option value="">Select country...</option>
-        </select>
+        <div class="country-dropdown" id="countryDropdown">
+          <div class="country-display" id="countryDisplay" onclick="toggleCountryDropdown()" tabindex="0" onkeydown="countryKeydown(event)">
+            <span class="country-display-text" id="countryDisplayText">Select country...</span>
+            <span class="country-caret">▼</span>
+          </div>
+          <div class="country-panel" id="countryPanel">
+            <div class="country-search-wrap">
+              <input class="country-search" id="countrySearch" type="text" placeholder="Search country..." oninput="filterCountries()" autocomplete="off" onkeydown="countrySearchKeydown(event)"/>
+            </div>
+            <div class="country-list" id="countryList"></div>
+          </div>
+        </div>
+        <input type="hidden" id="country"/>
         <div class="field-err" id="err-country">Please select your country.</div>
       </div>
       <div class="field" id="stateField">
@@ -241,6 +269,26 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px
         <select class="field-select" id="lga">
           <option value="">Select LGA...</option>
         </select>
+      </div>
+      <div class="field">
+        <label class="field-label">Security Question <span class="req">*</span></label>
+        <select class="field-select" id="securityQuestion">
+          <option value="">Choose a question...</option>
+          <option value="What is the name of the church where you were baptised?">What is the name of the church where you were baptised?</option>
+          <option value="What is the name of your primary school?">What is the name of your primary school?</option>
+          <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+          <option value="What was the name of your first choir or music group?">What was the name of your first choir or music group?</option>
+          <option value="What is the name of the town where you grew up?">What is the name of the town where you grew up?</option>
+          <option value="What is the middle name of your oldest sibling?">What is the middle name of your oldest sibling?</option>
+        </select>
+        <div class="field-hint">Used to verify your identity if you forget your password.</div>
+        <div class="field-err" id="err-securityQuestion">Please select a security question.</div>
+      </div>
+      <div class="field">
+        <label class="field-label">Security Answer <span class="req">*</span></label>
+        <input class="field-input" id="securityAnswer" type="text" placeholder="Your answer (not case sensitive)"/>
+        <div class="field-hint">Keep this answer consistent — you will need it to reset your password.</div>
+        <div class="field-err" id="err-securityAnswer">Please enter your answer.</div>
       </div>
     </div>
     <button class="btn btn-primary" onclick="goStep(2)">Continue →</button>
@@ -474,7 +522,8 @@ function validateStep(n) {
   }
   if (n===1) {
     req('firstName','err-firstName'); req('lastName','err-lastName');
-    req('phone','err-phone'); req('securityQuestion','err-securityQuestion'); req('securityAnswer','err-securityAnswer'); req('country','err-country'); req('state','err-state');
+    req('phone','err-phone'); req('country','err-country'); req('state','err-state');
+    req('securityQuestion','err-securityQuestion'); req('securityAnswer','err-securityAnswer');
     var em = document.getElementById('email').value.trim();
     var emErr = document.getElementById('err-email');
     if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) {
@@ -650,38 +699,115 @@ var COUNTRIES = [
   {code:'ZM', name:'Zambia'},{code:'ZW', name:'Zimbabwe'}
 ];
 
+// Searchable country dropdown
+var countryDropdownOpen = false;
+var filteredCountries = [];
+var focusedIndex = -1;
+
+function renderCountryList(countries) {
+  var list = document.getElementById('countryList');
+  if (!countries.length) {
+    list.innerHTML = '<div class="country-none">No countries found</div>';
+    return;
+  }
+  list.innerHTML = countries.map(function(c, i) {
+    return '<div class="country-option" data-name="'+c.name+'" data-index="'+i+'" onclick="selectCountry(\''+c.name.replace(/'/g,"\\'")+'\')">' + c.name + '</div>';
+  }).join('');
+  focusedIndex = -1;
+}
+
+function toggleCountryDropdown() {
+  countryDropdownOpen = !countryDropdownOpen;
+  var display = document.getElementById('countryDisplay');
+  var panel = document.getElementById('countryPanel');
+  var search = document.getElementById('countrySearch');
+  display.classList.toggle('open', countryDropdownOpen);
+  panel.classList.toggle('open', countryDropdownOpen);
+  if (countryDropdownOpen) {
+    search.value = '';
+    filteredCountries = COUNTRIES.slice();
+    renderCountryList(filteredCountries);
+    setTimeout(function(){ search.focus(); }, 40);
+  }
+}
+
+function filterCountries() {
+  var q = document.getElementById('countrySearch').value.toLowerCase();
+  filteredCountries = COUNTRIES.filter(function(c){ return c.name.toLowerCase().indexOf(q) !== -1; });
+  renderCountryList(filteredCountries);
+}
+
+function selectCountry(name) {
+  document.getElementById('country').value = name;
+  var displayText = document.getElementById('countryDisplayText');
+  displayText.textContent = name;
+  displayText.classList.add('selected');
+  var display = document.getElementById('countryDisplay');
+  display.classList.remove('open', 'invalid');
+  document.getElementById('countryPanel').classList.remove('open');
+  document.getElementById('err-country').style.display = 'none';
+  countryDropdownOpen = false;
+  // Find country code and trigger state population
+  var found = COUNTRIES.find(function(c){ return c.name === name; });
+  onCountryChange();
+}
+
+function countryKeydown(e) {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCountryDropdown(); }
+  if (e.key === 'Escape') { closeCountryDropdown(); }
+}
+
+function countrySearchKeydown(e) {
+  var opts = document.querySelectorAll('#countryList .country-option');
+  if (e.key === 'ArrowDown') {
+    e.preventDefault(); focusedIndex = Math.min(focusedIndex+1, opts.length-1);
+    opts.forEach(function(o,i){ o.classList.toggle('focused', i===focusedIndex); });
+    if (opts[focusedIndex]) opts[focusedIndex].scrollIntoView({block:'nearest'});
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault(); focusedIndex = Math.max(focusedIndex-1, 0);
+    opts.forEach(function(o,i){ o.classList.toggle('focused', i===focusedIndex); });
+    if (opts[focusedIndex]) opts[focusedIndex].scrollIntoView({block:'nearest'});
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (focusedIndex >= 0 && opts[focusedIndex]) { selectCountry(opts[focusedIndex].dataset.name); }
+    else if (filteredCountries.length === 1) { selectCountry(filteredCountries[0].name); }
+  } else if (e.key === 'Escape') { closeCountryDropdown(); }
+}
+
+function closeCountryDropdown() {
+  countryDropdownOpen = false;
+  document.getElementById('countryDisplay').classList.remove('open');
+  document.getElementById('countryPanel').classList.remove('open');
+}
+
+// Close on click outside
+document.addEventListener('click', function(e) {
+  if (!document.getElementById('countryDropdown').contains(e.target)) closeCountryDropdown();
+});
+
 var detectedCountry = null;
 
-// Auto-detect country via IP on page load
 async function detectLocation() {
   try {
     var res = await fetch('https://ipapi.co/json/');
     var data = await res.json();
     detectedCountry = data.country_code;
     var detectedState = data.region;
-    populateCountries(detectedCountry);
-    if (detectedCountry === 'NG') {
-      onCountryChange(detectedState);
-    } else {
-      onCountryChange();
+    var found = COUNTRIES.find(function(c){ return c.code === detectedCountry; });
+    if (found) {
+      document.getElementById('country').value = found.name;
+      var displayText = document.getElementById('countryDisplayText');
+      displayText.textContent = found.name;
+      displayText.classList.add('selected');
+      if (detectedCountry === 'NG') onCountryChange(detectedState);
+      else onCountryChange();
     }
   } catch(e) {
-    populateCountries(null);
+    // silently fail — user selects manually
   }
 }
 
-function populateCountries(detectedCode) {
-  var sel = document.getElementById('country');
-  sel.innerHTML = '<option value="">Select country...</option>';
-  // Nigeria always first since that's the primary audience
-  COUNTRIES.forEach(function(c) {
-    var opt = document.createElement('option');
-    opt.value = c.name;
-    opt.textContent = c.name + (c.code === detectedCode ? ' 📍' : '');
-    if (c.code === detectedCode) opt.selected = true;
-    sel.appendChild(opt);
-  });
-}
+function populateCountries() {} // no-op, replaced by custom dropdown
 
 function onCountryChange(autoState) {
   var country = document.getElementById('country').value;
