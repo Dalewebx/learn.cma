@@ -603,6 +603,12 @@ tr:hover td{background:var(--surface);cursor:pointer;}
   <div id="cohortView"></div>
 </div>
 
+<!-- STUDENT FEEDBACK -->
+<div class="page" id="page-feedback">
+  <div class="page-header"><div><div class="page-title">Student Feedback</div><div class="page-sub">Messages and flags submitted by students from the portal.</div></div></div>
+  <div id="feedbackList"><div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Loading feedback...</div></div>
+</div>
+
 <!-- DEV TOOLS -->
 <div class="page" id="page-devtools">
   <div class="page-header"><div><div class="page-title">Developer Tools</div><div class="page-sub">Clear test data before going live. Irreversible.</div></div></div>
@@ -728,7 +734,7 @@ function goPage(id) {
   document.querySelectorAll('.nav-item').forEach(n=>{
     if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
   });
-  var renders={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics};
+  var renders={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback};
   if(id==='courses'){
     cmState.selectedModule=null;
     renderCourses();
@@ -767,7 +773,7 @@ function updateBadges() {
   if(bell) bell.textContent=total>0?total+' alerts':'';
 }
 function renderCurrentPage() {
-  var r={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics};
+  var r={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback};
   if(currentPage==='courses') renderCourses();
   else if(r[currentPage]) r[currentPage]();
 }
@@ -1064,22 +1070,63 @@ function renderProgress() {
 
 
 function renderAnalytics() {
-  var html=MODULE_NAMES.map((name,i)=>{
-    var modAtts=allAttempts.filter(a=>a.module_index===i);
-    if(!modAtts.length) return '<div class="analytics-module"><div class="analytics-module-title">Module '+(i+1)+': '+name+'</div><div style="font-size:13px;color:var(--dim);">No attempts yet.</div></div>';
-    var total=modAtts.length;
-    var passes=modAtts.filter(a=>a.passed).length;
-    var fails=total-passes;
-    var avgScore=Math.round(modAtts.reduce((sum,a)=>sum+((a.score/a.total)*100),0)/total);
-    var passRate=Math.round((passes/total)*100);
+  if (!allAttempts.length) {
+    document.getElementById('analyticsContent').innerHTML='<div class="alert alert-info">No assessment data yet.</div>';
+    return;
+  }
+  // Group attempts by module_index
+  var byMod = {};
+  allAttempts.forEach(function(a) {
+    var k = a.module_index;
+    if (!byMod[k]) byMod[k] = [];
+    byMod[k].push(a);
+  });
+  // Get module titles from cmCourses
+  var modTitles = {};
+  cmCourses.forEach(function(c){
+    (c.modules||[]).forEach(function(m,i){ modTitles[i] = m.title || ('Module '+(i+1)); });
+  });
+
+  var html = Object.keys(byMod).sort(function(a,b){return a-b;}).map(function(idx) {
+    var modAtts = byMod[idx];
+    var total = modAtts.length;
+    var passes = modAtts.filter(function(a){return a.passed;}).length;
+    var fails = total - passes;
+    var avgScore = Math.round(modAtts.reduce(function(s,a){return s+((a.score/a.total)*100);},0)/total);
+    var passRate = Math.round((passes/total)*100);
+    // First-attempt pass rate
+    var studentFirstAttempts = {};
+    modAtts.slice().sort(function(a,b){return new Date(a.attempted_at)-new Date(b.attempted_at);}).forEach(function(a){
+      if (!studentFirstAttempts[a.student_id]) studentFirstAttempts[a.student_id] = a;
+    });
+    var firstAttempts = Object.values(studentFirstAttempts);
+    var firstPassRate = firstAttempts.length ? Math.round(firstAttempts.filter(function(a){return a.passed;}).length/firstAttempts.length*100) : 0;
+    // Avg attempts per student
+    var studentCounts = {};
+    modAtts.forEach(function(a){ studentCounts[a.student_id] = (studentCounts[a.student_id]||0)+1; });
+    var avgAttempts = Object.keys(studentCounts).length ? (Object.values(studentCounts).reduce(function(s,v){return s+v;},0)/Object.keys(studentCounts).length).toFixed(1) : '—';
+
+    // Question-level: need to check answers stored — if not available show note
+    var name = modTitles[idx] || ('Module '+(parseInt(idx)+1));
     return '<div class="analytics-module">'
-      +'<div class="analytics-module-title">Module '+(i+1)+': '+name+'</div>'
-      +'<div class="analytics-row"><div class="analytics-label">Average Score</div><div class="analytics-bar-bg"><div class="analytics-bar" style="width:'+avgScore+'%;background:'+(avgScore>=70?'var(--ok)':avgScore>=50?'var(--gold)':'var(--danger)')+'"></div></div><div class="analytics-val">'+avgScore+'%</div></div>'
+      +'<div class="analytics-module-title">'+name+'</div>'
+      +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:14px;">'
+      +'<div style="background:var(--surface);border-radius:8px;padding:10px;text-align:center;"><div style="font-family:\'DM Serif Display\',serif;font-size:26px;color:var(--navy);">'+total+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Total Attempts</div></div>'
+      +'<div style="background:var(--ok-light);border-radius:8px;padding:10px;text-align:center;"><div style="font-family:\'DM Serif Display\',serif;font-size:26px;color:var(--ok);">'+passRate+'%</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Pass Rate</div></div>'
+      +'<div style="background:var(--navy-light);border-radius:8px;padding:10px;text-align:center;"><div style="font-family:\'DM Serif Display\',serif;font-size:26px;color:var(--navy);">'+firstPassRate+'%</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">1st Attempt Pass</div></div>'
+      +'<div style="background:var(--surface);border-radius:8px;padding:10px;text-align:center;"><div style="font-family:\'DM Serif Display\',serif;font-size:26px;color:var(--navy);">'+avgAttempts+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Avg Attempts</div></div>'
+      +'<div style="background:var(--surface);border-radius:8px;padding:10px;text-align:center;"><div style="font-family:\'DM Serif Display\',serif;font-size:26px;color:var(--navy);">'+avgScore+'%</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Avg Score</div></div>'
+      +'</div>'
       +'<div class="analytics-row"><div class="analytics-label">Pass Rate</div><div class="analytics-bar-bg"><div class="analytics-bar" style="width:'+passRate+'%;background:'+(passRate>=70?'var(--ok)':passRate>=50?'var(--gold)':'var(--danger)')+'"></div></div><div class="analytics-val">'+passRate+'%</div></div>'
-      +'<div style="display:flex;gap:16px;margin-top:10px;font-size:12px;color:var(--muted);">'
-      +'<span>'+total+' total attempts</span><span class="pill pill-ok">'+passes+' passes</span><span class="pill pill-danger">'+fails+' failures</span></div></div>';
+      +'<div class="analytics-row"><div class="analytics-label">Avg Score</div><div class="analytics-bar-bg"><div class="analytics-bar" style="width:'+avgScore+'%;background:'+(avgScore>=70?'var(--ok)':avgScore>=50?'var(--gold)':'var(--danger)')+'"></div></div><div class="analytics-val">'+avgScore+'%</div></div>'
+      +'<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--muted);">'
+      +'<span class="pill pill-ok">'+passes+' passes</span>'
+      +'<span class="pill pill-danger">'+fails+' fails</span>'
+      +'<span class="pill pill-dim">'+Object.keys(studentCounts).length+' students</span>'
+      +(fails>passes?'<span class="pill pill-warn">⚠ High failure — review content</span>':'')
+      +'</div></div>';
   }).join('');
-  document.getElementById('analyticsContent').innerHTML=html||'<div class="alert alert-info">No assessment data yet.</div>';
+  document.getElementById('analyticsContent').innerHTML = html;
 }
 
 // ── AT RISK ───────────────────────────────────────────────────────────────────
@@ -1113,9 +1160,9 @@ function renderAtrisk() {
 
 // ── COURSES & MODULES (Dynamic) ───────────────────────────────────────────────
 // All course/module/content data lives in Supabase table: course_content
-// Schema: { id, course_id(text), course_title, course_color, course_order, module_index(int),
-//           module_title, video_url, audio_tracks(json), downloads(json),
-//           reading_html, questions(json), published(bool), updated_at }
+// Schema: { id, course_id, course_title, course_color, course_order, module_index,
+//           module_title, module_topic, video_url, audio_tracks(json), downloads(json),
+//           reading_html, questions(json), pass_mark(int), max_attempts(int), published(bool), updated_at }
 // We load all rows once and work from memory.
 
 var cmCourses = [];   // [{id, title, color, order, modules:[{title,questions,published}]}]
@@ -1125,7 +1172,9 @@ var cmState = {
   selectedModule: null,
   questions: [],
   published: false,
-  contentMode: 'type'
+  contentMode: 'type',
+  passMark: 100,
+  maxAttempts: 0
 };
 
 // Colour palette for courses
@@ -1268,6 +1317,8 @@ function selectCMModule(courseId, modIdx) {
   try { cmState.questions = JSON.parse(typeof row.questions==='string'?row.questions:'[]'); } catch(e){ cmState.questions=[]; }
   if (!cmState.questions.length) cmState.questions = [{q:'',opts:['','','',''],ans:0}];
   cmState.contentMode = 'type';
+  cmState.passMark = row.pass_mark || 100;
+  cmState.maxAttempts = row.max_attempts || 0;
   renderCMSidebar();
   renderCMEditor(courseId, modIdx, key, row);
 }
@@ -1497,6 +1548,9 @@ async function saveCMModule(key) {
   if (qErrors.length) { showToast('Complete all question fields first','warn'); return; }
 
   var videoUrl = (document.getElementById('cm_video')||{}).value||'';
+  var moduleTopic = (document.getElementById('cm_topic')||{}).value||'';
+  var passMark = parseInt((document.getElementById('cm_passMark')||{}).value)||100;
+  var maxAttempts = parseInt((document.getElementById('cm_maxAttempts')||{}).value)||0;
   var audioTracks = collectAudioTracks();
   var downloads = collectDownloads();
 
@@ -1507,11 +1561,14 @@ async function saveCMModule(key) {
     course_order: c.order||0,
     module_index: modIdx,
     module_title: m.title,
+    module_topic: moduleTopic,
     video_url: videoUrl,
     audio_tracks: JSON.stringify(audioTracks),
     downloads: JSON.stringify(downloads),
     reading_html: html,
     questions: JSON.stringify(cmState.questions),
+    pass_mark: passMark,
+    max_attempts: maxAttempts,
     published: cmState.published,
     updated_at: new Date().toISOString()
   };
