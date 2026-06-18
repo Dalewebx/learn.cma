@@ -689,7 +689,7 @@ function renderCourse() {
   if (!MODULES || MODULES.length === 0) {
     document.getElementById('progressFill').style.width = '0%';
     document.getElementById('progressText').textContent = 'Content coming soon';
-    document.getElementById('modulesList').innerHTML = '<div style="text-align:center;padding:48px 24px;color:var(--muted);"><div style="font-size:40px;margin-bottom:16px;">📚</div><div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:8px;">Content Coming Soon</div><div style="font-size:14px;line-height:1.65;">The academy is preparing content for <strong>'+((CURRENT_COURSE&&CURRENT_COURSE.title)||'this course')+'</strong>.<br>Check back soon or contact your coordinator.</div></div>';
+    document.getElementById('modulesList').innerHTML = '<div style="text-align:center;padding:48px 24px;color:var(--muted);"><div style="font-size:40px;margin-bottom:16px;">📚</div><div style="font-size:22px;font-weight:600;color:var(--text);margin-bottom:8px;font-family:serif;">Content Coming Soon</div><div style="font-size:14px;line-height:1.65;">The academy is preparing content for <strong>' + ((CURRENT_COURSE && CURRENT_COURSE.title) || 'this course') + '</strong>.<br>Check back soon or contact your coordinator.</div></div>';
     return;
   }
   var pct = Math.round((completedModules.length / MODULES.length) * 100);
