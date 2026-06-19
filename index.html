@@ -36,6 +36,9 @@ img{max-width:100%;display:block;}
 .btn-gold-outline{background:transparent;border:1.5px solid var(--gold);color:var(--gold-dark);font-size:13px;padding:10px 20px;font-weight:600;}
 .btn-gold-outline:hover{background:var(--gold);color:var(--navy);}
 
+.mob-contact{display:none;}
+@media(max-width:768px){.mob-contact{display:flex;}}
+
 /* ── NAV ── */
 nav{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:300;}
 .nav-inner{max-width:1160px;margin:0 auto;padding:0 24px;display:flex;align-items:center;height:64px;gap:16px;}
@@ -253,14 +256,14 @@ footer{background:var(--navy);padding:48px 24px 28px;}
 .footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:32px;}
 @media(min-width:768px){.footer-grid{grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;}}
 .footer-brand-name{font-family:"DM Serif Display",serif;font-size:16px;color:white;margin-bottom:4px;}
-.footer-brand-sub{font-size:10px;color:rgba(255,255,255,0.25);margin-bottom:12px;line-height:1.5;}
-.footer-desc{font-size:12px;color:rgba(255,255,255,0.32);line-height:1.7;}
-.footer-col-title{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:12px;}
+.footer-brand-sub{font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:12px;line-height:1.5;}
+.footer-desc{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.7;}
+.footer-col-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:12px;}
 .footer-links{display:flex;flex-direction:column;gap:8px;}
-.footer-link{font-size:12px;color:rgba(255,255,255,0.42);text-decoration:none;transition:color 0.15s;}
+.footer-link{font-size:13px;color:rgba(255,255,255,0.72);text-decoration:none;transition:color 0.15s;}
 .footer-link:hover{color:var(--gold);}
-.footer-bottom{padding-top:22px;border-top:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
-.footer-copy,.footer-credit{font-size:11px;color:rgba(255,255,255,0.18);}
+.footer-bottom{padding-top:22px;border-top:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.footer-copy,.footer-credit{font-size:11px;color:rgba(255,255,255,0.45);}
 
 /* ════════════════════════════════════════════
    MOBILE FIRST — iPhone 13 (390px) primary
@@ -278,8 +281,13 @@ footer{background:var(--navy);padding:48px 24px 28px;}
   /* NAV */
   .nav-inner{height:56px;padding:0 16px;}
   .logo-name{font-size:13px;}
-  .nav-acts .btn-outline{font-size:11px;padding:7px 10px;border-radius:7px;} /* compact Log In */
+  .nav-acts .btn-outline{font-size:12px;padding:8px 12px;border-radius:8px;font-weight:800;border-width:2px;color:var(--navy);border-color:var(--navy);} /* bold Log In */
   .nav-acts .btn-gold{font-size:11px;padding:7px 12px;border-radius:7px;} /* compact Apply Now */
+
+  /* MOBILE CONTACT BAR */
+  .mob-contact{display:flex;align-items:center;justify-content:center;gap:20px;background:var(--navy-mid);padding:10px 20px;flex-wrap:wrap;}
+  .mob-contact-item{display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,0.7);text-decoration:none;font-weight:500;}
+  .mob-contact-item span{color:var(--gold);}
 
   /* HERO */
   .hero{min-height:auto;padding-bottom:0;}
@@ -299,6 +307,13 @@ footer{background:var(--navy);padding:48px 24px 28px;}
   /* TRUST BAR — horizontal scroll pill style */
   .trust-inner{padding:0 16px;gap:0;}
   .trust-item{padding:13px 16px 13px 0;font-size:11px;}
+
+  /* GLOBAL TEXT SIZE FLOOR on mobile */
+  p,.sec-sub,.tl-desc,.why-desc,.exp-desc,.footer-desc{font-size:14px!important;line-height:1.7;}
+  .footer-link{font-size:14px!important;}
+  .footer-col-title{font-size:11px!important;}
+  .footer-brand-sub{font-size:12px!important;}
+  .footer-copy,.footer-credit{font-size:12px!important;}
 
   /* SECTION padding */
   .sec{padding:56px 20px;}
@@ -442,6 +457,12 @@ footer{background:var(--navy);padding:48px 24px 28px;}
     </div>
   </div>
 </nav>
+
+<!-- MOBILE CONTACT BAR (hidden on desktop via CSS) -->
+<div class="mob-contact" id="mobContact">
+  <a class="mob-contact-item" href="mailto:info@catholicmusicacademy.org" id="mobEmail"><span>&#128231;</span> <span id="mobEmailText">info@catholicmusicacademy.org</span></a>
+  <span class="mob-contact-item"><span>&#128205;</span> <span id="mobLocation">Catholic Diocese of Warri, Ozoro</span></span>
+</div>
 
 <!-- SECTION 1: HERO -->
 <section class="hero">
@@ -888,14 +909,17 @@ footer{background:var(--navy);padding:48px 24px 28px;}
     var ss = {};
     (ssRows||[]).forEach(function(r){ ss[r.key]=r.value; });
 
-    // Contact dropdown
+    // Contact dropdown + mobile bar
+    var mobEmailEl=document.getElementById('mobEmailText');
+    var mobLocEl=document.getElementById('mobLocation');
+    var mobEmailLink=document.getElementById('mobEmail');
     var cdE=document.getElementById('cdEmail');
     var cdW=document.getElementById('cdWhatsApp');
     var cdL=document.getElementById('cdLocation');
     var fE=document.getElementById('footerEmail');
-    if(cdE && ss['contact_email']){ cdE.textContent=ss['contact_email']; if(fE){fE.href='mailto:'+ss['contact_email'];fE.textContent=ss['contact_email'];}}
+    if(cdE && ss['contact_email']){ cdE.textContent=ss['contact_email']; if(fE){fE.href='mailto:'+ss['contact_email'];fE.textContent=ss['contact_email'];} if(mobEmailEl){mobEmailEl.textContent=ss['contact_email'];} if(mobEmailLink){mobEmailLink.href='mailto:'+ss['contact_email'];}}
     if(cdW && ss['contact_whatsapp']){ cdW.textContent=ss['contact_whatsapp']; }
-    if(cdL && ss['contact_location']){ cdL.textContent=ss['contact_location']; }
+    if(cdL && ss['contact_location']){ cdL.textContent=ss['contact_location']; if(mobLocEl){mobLocEl.textContent=ss['contact_location'];}}
 
     // Hero mockup
     var mkn=document.getElementById('mkCourseName');
