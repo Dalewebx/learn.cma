@@ -627,6 +627,18 @@ async function submitApplication() {
     [1,2,3,4].forEach(function(i){ document.getElementById('step'+i).style.display='none'; });
     document.getElementById('stepSuccess').style.display = 'block';
     window.scrollTo({top:0,behavior:'smooth'});
+
+    // Send confirmation email — fire and forget, don't block success screen
+    fetch('/api/application-received', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: v('email'),
+        firstName: v('firstName'),
+        programme: selectedProg,
+        ref: ref
+      })
+    }).catch(function(e){ console.warn('Confirmation email failed:', e); });
   } catch(e) {
     btn.disabled = false;
     btn.textContent = 'Submit Application →';
