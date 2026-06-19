@@ -664,6 +664,29 @@ tr:hover td{background:var(--surface);cursor:pointer;}
     </div>
 
   </div>
+
+  <!-- CONTACT DROPDOWN PANEL -->
+  <div class="card" style="margin-top:20px;">
+    <div class="form-section-title" style="margin-bottom:6px;">&#128222; Contact Dropdown</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">These values appear in the Contact dropdown in the top navigation of the homepage — on both desktop (hover) and mobile (tap). Update here and save.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;" class="ss-grid">
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" id="ss_contact_email" placeholder="info@catholicmusicacademy.org"/>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">WhatsApp / Phone</label>
+        <input class="form-input" id="ss_contact_whatsapp" placeholder="+234 801 234 5678"/>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Location</label>
+        <input class="form-input" id="ss_contact_location" placeholder="Catholic Diocese of Warri, Ozoro"/>
+      </div>
+    </div>
+    <div id="ss_contact_msg" style="display:none;background:var(--ok-light);border:1px solid #86EFAC;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--ok);margin-top:12px;"></div>
+    <button class="btn btn-primary" style="margin-top:14px;" onclick="saveSiteSettings('contact')">Save Contact Info</button>
+  </div>
+
 </div>
 
 <!-- DEV TOOLS -->
