@@ -814,23 +814,42 @@ function logout() {
 async function loadProgress() {
   if (!currentStudent) return;
   try {
-    var courseId = CURRENT_COURSE ? CURRENT_COURSE.id : 1;
-    var rows = await sbGet('progress', 'student_id=eq.'+currentStudent.id+'&course_id=eq.'+courseId+'&select=module_index');
-    completedModules = rows.map(r => r.module_index);
+    // Fetch ALL progress for this student regardless of course_id
+    // This handles course_id format changes across deployments
+    var rows = await sbGet('progress', 'student_id=eq.'+currentStudent.id+'&select=module_index,course_id');
+    // Filter by current course if we have a course id, otherwise take all
+    var courseId = CURRENT_COURSE ? CURRENT_COURSE.id : null;
+    if (courseId && rows.some(function(r){ return r.course_id === courseId; })) {
+      completedModules = rows.filter(function(r){ return r.course_id === courseId; }).map(function(r){ return r.module_index; });
+    } else {
+      // Fallback: use all rows (handles old numeric course_id = 1 records too)
+      completedModules = rows.map(function(r){ return r.module_index; });
+    }
+    // Update session to reflect DB state
+    saveSession(currentStudent, CURRENT_COURSE, completedModules);
   } catch(e) { completedModules = []; }
 }
 
 async function saveProgress(modIndex) {
   if (!currentStudent) return;
   try {
-    await sbPost('progress', {
-      student_id: currentStudent.id,
-      course_id: CURRENT_COURSE ? CURRENT_COURSE.id : 1,
-      module_index: modIndex
-    });
-    // Update session with new completion state
+    var courseId = CURRENT_COURSE ? CURRENT_COURSE.id : 'unknown';
+    // Check if already saved (prevent duplicate)
+    var existing = await sbGet('progress','student_id=eq.'+currentStudent.id+'&course_id=eq.'+encodeURIComponent(courseId)+'&module_index=eq.'+modIndex+'&select=id');
+    if (!existing || !existing.length) {
+      await sbPost('progress', {
+        student_id: currentStudent.id,
+        course_id: courseId,
+        module_index: modIndex,
+        completed_at: new Date().toISOString()
+      });
+    }
+    // Always update session after saving
     saveSession(currentStudent, CURRENT_COURSE, completedModules);
-  } catch(e) { /* ignore duplicate unique constraint */ }
+  } catch(e) {
+    // Still save to session even if DB fails
+    saveSession(currentStudent, CURRENT_COURSE, completedModules);
+  }
 }
 
 async function saveAttempt(modIndex, score, total, passed) {
@@ -882,7 +901,13 @@ async function loadAnnouncements() {
     banner.style.display = 'block';
   } catch(e){}
 }
-function goCourse() { renderCourse(); history.pushState({screen:'course'},'','#course'); showScreen('screen-course'); }
+async function goCourse() {
+  // Always re-fetch progress from DB so module states are current after refresh
+  await loadProgress().catch(function(){});
+  renderCourse();
+  history.pushState({screen:'course'},'','#course');
+  showScreen('screen-course');
+}
 
 // ── COURSE ────────────────────────────────────────────────────────────────────
 function renderCourse() {
@@ -1298,23 +1323,42 @@ function showFeedbackModal() {
 }
 
 async function submitFeedback() {
-  var type = (document.getElementById('fbType')||{}).value||'general';
-  var message = ((document.getElementById('fbMessage')||{}).value||'').trim();
+  var typeEl = document.getElementById('fbType');
+  var msgEl = document.getElementById('fbMessage');
+  var type = typeEl ? typeEl.value : 'general';
+  var message = msgEl ? msgEl.value.trim() : '';
   if (!message) { alert('Please enter a message.'); return; }
-  var msg = document.getElementById('fbMsg');
+  var statusEl = document.getElementById('fbMsg');
+  var btn = document.querySelector('#feedbackModal .btn-primary');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
   try {
-    await sbPost('student_feedback', {
+    var payload = {
       student_id: currentStudent ? currentStudent.id : null,
       module_index: currentMod,
       type: type,
       message: message,
       submitted_at: new Date().toISOString(),
       resolved: false
+    };
+    var res = await fetch(SUPA_URL+'/rest/v1/student_feedback', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer '+SUPA_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(payload)
     });
-    if (msg) { msg.textContent = '✓ Feedback sent. Thank you!'; msg.style.display = 'block'; }
+    if (!res.ok) {
+      var errText = await res.text();
+      throw new Error(errText);
+    }
+    if (statusEl) { statusEl.style.color='var(--ok)'; statusEl.style.background='var(--ok-light)'; statusEl.textContent='✓ Feedback sent. Thank you!'; statusEl.style.display='block'; }
     setTimeout(function(){ var m=document.getElementById('feedbackModal'); if(m) m.remove(); }, 2000);
   } catch(e) {
-    if (msg) { msg.textContent = 'Could not send. Please try again.'; msg.style.color='var(--danger)'; msg.style.background='var(--danger-light)'; msg.style.display='block'; }
+    if (statusEl) { statusEl.style.color='var(--danger)'; statusEl.style.background='#FEE2E2'; statusEl.textContent='Error: '+(e.message||'Could not send. Create the student_feedback table in Supabase.'); statusEl.style.display='block'; }
+    if (btn) { btn.disabled = false; btn.textContent = 'Send →'; }
   }
 }
 
