@@ -2116,34 +2116,31 @@ async function renderGrading() {
         +'<div style="margin-bottom:14px;">'
         +'<div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Email to Student (editable)</div>'
         +'<input class="form-input" id="gemail-subj-'+r.id+'" value="Your Assessment Result — Catholic Music Academy" style="margin-bottom:8px;"/>'
-        +'<textarea class="form-textarea" id="gemail-body-'+r.id+'" style="min-height:160px;font-size:12px;line-height:1.7;">Dear '+studentName.split(' ')[0]+',
-
-Your assessment for Module '+(r.module_index+1)+' has been reviewed by your instructor.
-
-Result: [PASS/FAIL]
-Score: [X] / [Total]
-
-[Comments]
-
-Log in to continue your studies:
-https://learn.catholicmusicacademy.net
-
-God bless,
-Catholic Music Academy
-Catholic Diocese of Warri</textarea>'
+        +'<textarea class="form-textarea" id="gemail-body-'+r.id+'" style="min-height:160px;font-size:12px;line-height:1.7;">Dear '+studentName.split(' ')[0]+',\n\nYour assessment for Module '+(r.module_index+1)+' has been reviewed by your instructor.\n\nResult: [PASS/FAIL]\nScore: [X] / [Total]\n\n[Comments]\n\nLog in to continue your studies:\nhttps://learn.catholicmusicacademy.net\n\nGod bless,\nCatholic Music Academy\nCatholic Diocese of Warri</textarea>'
         +'</div>'
 
         // Action buttons
-        +'<div style="display:flex;gap:10px;flex-wrap:wrap;">'
-        +'<button class="btn btn-primary" onclick="gradeSubmission(''+r.id+'','pass','+r.mcq_score+','+r.mcq_total+','+totalWrittenMarks+',''+studentEmail+'',''+studentPhone+'',''+studentName+'','+r.module_index+',''+r.student_id+'',''+r.course_id+'')" style="background:var(--ok);">✓ Pass Assessment</button>'
-        +'<button class="btn btn-danger" onclick="gradeSubmission(''+r.id+'','fail','+r.mcq_score+','+r.mcq_total+','+totalWrittenMarks+',''+studentEmail+'',''+studentPhone+'',''+studentName+'','+r.module_index+',''+r.student_id+'',''+r.course_id+'')" style="background:var(--danger);">✗ Fail Assessment</button>'
-        +(studentPhone?'<button class="btn btn-wa" onclick="openWhatsApp(''+r.id+'',''+studentPhone+'',''+studentName+'','+r.module_index+')" style="font-size:13px;">💬 WhatsApp</button>':'')
+        +'<div style="display:flex;gap:10px;flex-wrap:wrap;" id="gbtn-'+r.id+'">'
+        +'<button class="btn btn-primary" style="background:var(--ok);" onclick="doGrade(this);" data-id="'+r.id+'" data-result="pass" data-mcq="'+r.mcq_score+'" data-mcqt="'+r.mcq_total+'" data-wt="'+totalWrittenMarks+'" data-email="'+studentEmail+'" data-phone="'+studentPhone+'" data-name="'+studentName+'" data-mod="'+r.module_index+'" data-sid="'+r.student_id+'" data-cid="'+r.course_id+'">✓ Pass Assessment</button>'
+        +'<button class="btn btn-danger" style="background:var(--danger);" onclick="doGrade(this);" data-id="'+r.id+'" data-result="fail" data-mcq="'+r.mcq_score+'" data-mcqt="'+r.mcq_total+'" data-wt="'+totalWrittenMarks+'" data-email="'+studentEmail+'" data-phone="'+studentPhone+'" data-name="'+studentName+'" data-mod="'+r.module_index+'" data-sid="'+r.student_id+'" data-cid="'+r.course_id+'">✗ Fail Assessment</button>'
+        +(studentPhone?'<button class="btn btn-wa" style="font-size:13px;" onclick="doWhatsApp(this);" data-id="'+r.id+'" data-phone="'+studentPhone+'" data-name="'+studentName+'" data-mod="'+r.module_index+'">💬 WhatsApp</button>':'')
         +'</div>'
         +'</div>';
     }).join('');
   } catch(e) {
     el.innerHTML = '<div class="alert alert-warn">Could not load grading queue. Make sure the assessment_submissions table exists in Supabase.</div>';
   }
+}
+
+
+function doGrade(btn) {
+  var d = btn.dataset;
+  gradeSubmission(d.id, d.result, parseInt(d.mcq)||0, parseInt(d.mcqt)||0, parseInt(d.wt)||0,
+    d.email, d.phone, d.name, parseInt(d.mod)||0, d.sid, d.cid);
+}
+function doWhatsApp(btn) {
+  var d = btn.dataset;
+  openWhatsApp(d.id, d.phone, d.name, parseInt(d.mod)||0);
 }
 
 function openWhatsApp(subId, phone, name, modIdx) {
