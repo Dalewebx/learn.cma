@@ -1884,6 +1884,14 @@ async function renderSiteSettings() {
     }).join('');
   }
 
+  // Populate contact fields
+  var cEmail = document.getElementById('ss_contact_email');
+  var cWa = document.getElementById('ss_contact_whatsapp');
+  var cLoc = document.getElementById('ss_contact_location');
+  if(cEmail) cEmail.value = SS_CACHE['contact_email'] || 'info@catholicmusicacademy.org';
+  if(cWa) cWa.value = SS_CACHE['contact_whatsapp'] || '';
+  if(cLoc) cLoc.value = SS_CACHE['contact_location'] || 'Ozoro, Delta State, Nigeria';
+
   // Populate portal card fields
   var pUrl = document.getElementById('ss_p_url');
   if(pUrl) pUrl.value = SS_CACHE['mockup_portal_url'] || 'learn.catholicmusicacademy.org';
@@ -1920,6 +1928,10 @@ async function saveSiteSettings(panel) {
       pairs.push({key:'mockup_hero_mod'+i+'_title', value:(document.getElementById('ss_hm'+i+'_title')||{}).value||''});
       pairs.push({key:'mockup_hero_mod'+i+'_status', value:(document.getElementById('ss_hm'+i+'_status')||{}).value||'lock'});
     });
+  } else if (panel === 'contact') {
+    pairs.push({key:'contact_email', value:(document.getElementById('ss_contact_email')||{}).value||''});
+    pairs.push({key:'contact_whatsapp', value:(document.getElementById('ss_contact_whatsapp')||{}).value||''});
+    pairs.push({key:'contact_location', value:(document.getElementById('ss_contact_location')||{}).value||''});
   } else {
     pairs.push({key:'mockup_portal_url', value:(document.getElementById('ss_p_url')||{}).value||''});
     SS_PORTAL_MODULE_DEFAULTS.forEach(function(_,i){
