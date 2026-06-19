@@ -1468,11 +1468,35 @@ function renderCMEditor(courseId, modIdx, key, row) {
     +'<div class="rte-area" id="cm_rte" contenteditable="true">'+(content||'<p>Start typing module reading content here...</p>')+'</div>'
     +'<div style="font-size:11px;color:var(--muted);margin-top:6px;">Use H2 for section headings. Students read exactly what you type here.</div></div>'
 
-    // SECTION 4: Question Bank
-    +'<div class="me-section"><div class="me-section-title">📝 04 — Question Bank <span style="font-size:10px;font-weight:400;color:var(--muted);letter-spacing:0;text-transform:none;">· 4 shown per attempt (random)</span></div>'
+    // SECTION 4: Assessment
+    +'<div class="me-section"><div class="me-section-title">📝 04 — Assessment</div>'
+    +'<div style="background:var(--surface);border-radius:10px;padding:14px;margin-bottom:14px;">'
+    +'<div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Assessment Type</div>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">'
+    +(function(){
+      var types=[['mcq','MCQ Only (Auto-graded)'],['mixed','Mixed (MCQ + Written)'],['written','Written Only (Manual grade)']];
+      return types.map(function(t){
+        var sel=(row.assessment_type||'mcq')===t[0];
+        return '<label style="display:flex;align-items:center;gap:6px;padding:8px 12px;border:1.5px solid '+(sel?'var(--navy)':'var(--border)')+';border-radius:8px;cursor:pointer;background:'+(sel?'var(--navy-pale)':'white')+';font-size:12px;font-weight:600;">'
+          +'<input type="radio" name="asmType" value="'+t[0]+'" '+(sel?'checked':'')+' onchange="cmState.assessmentType=this.value;renderCMQuestions();" style="accent-color:var(--navy);"/>'+t[1]+'</label>';
+      }).join('');
+    })()
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'
+    +'<div class="form-group" style="margin-bottom:0;"><label class="form-label">Pass Mark (%)</label>'
+    +'<input class="form-input" id="cm_passMark" type="number" min="1" max="100" value="'+(row.pass_mark||100)+'" style="padding:8px 11px;"/>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:3px;">Applies to combined MCQ + Written score</div></div>'
+    +'<div class="form-group" style="margin-bottom:0;"><label class="form-label">Max Attempts</label>'
+    +'<input class="form-input" id="cm_maxAttempts" type="number" min="0" value="'+(row.max_attempts||0)+'" style="padding:8px 11px;"/>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:3px;">0 = unlimited</div></div>'
+    +'</div></div>'
     +'<div id="cm_qList"></div>'
-    +'<button class="btn btn-ghost btn-sm" style="width:100%;margin-top:6px;" onclick="addCMQuestion()">+ Add Question</button>'
-    +'<div style="font-size:11px;color:var(--muted);margin-top:6px;">Build up to 10 questions. 4 are picked randomly each attempt. Correct answer is never revealed on fail.</div>'
+    +'<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">'
+    +'<button class="btn btn-ghost btn-sm" onclick="addCMQuestion(\'mcq\')">+ MCQ</button>'
+    +'<button class="btn btn-ghost btn-sm" onclick="addCMQuestion(\'short\')">+ Short Answer</button>'
+    +'<button class="btn btn-ghost btn-sm" onclick="addCMQuestion(\'essay\')">+ Essay</button>'
+    +'</div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:8px;">MCQ = auto-graded. Short Answer and Essay go to the Grading Queue for manual review.</div>'
     +'<div id="cmSaveMsg" style="display:none;background:var(--ok-light);border:1px solid #86EFAC;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--ok);margin-top:12px;"></div></div>'
 
     // SECTION 5: Downloads
