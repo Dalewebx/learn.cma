@@ -589,7 +589,7 @@ tr:hover td{background:var(--surface);cursor:pointer;}
     <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" id="annText" placeholder="Message..."></textarea></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
       <select class="form-select" id="annType" style="width:auto;padding:8px 12px;"><option value="info">ℹ️ Info</option><option value="warn">⚠️ Warning</option><option value="ok">✅ Good news</option></select>
-      <select class="form-select" id="annTarget" style="width:auto;padding:8px 12px;"><option value="all">All Students</option><option value="Course 01">Course 01</option><option value="Course 02">Course 02</option><option value="Course 03">Course 03</option><option value="Course 04">Course 04</option><option value="Course 05">Course 05</option><option value="Course 06">Course 06</option></select>
+      <select class="form-select" id="annTarget" style="width:auto;padding:8px 12px;"><option value="all">All Students</option></select>
       <button class="btn btn-primary" onclick="postAnnouncement()">Post</button>
     </div>
   </div>
@@ -601,6 +601,12 @@ tr:hover td{background:var(--surface);cursor:pointer;}
 <div class="page" id="page-cohort">
   <div class="page-header"><div><div class="page-title">Cohort & Deadline</div><div class="page-sub">Manage cohort settings and pass mark.</div></div></div>
   <div id="cohortView"></div>
+</div>
+
+<!-- STUDENT FEEDBACK -->
+<div class="page" id="page-feedback">
+  <div class="page-header"><div><div class="page-title">Student Feedback</div><div class="page-sub">Messages and flags submitted by students from the portal.</div></div></div>
+  <div id="feedbackList"><div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Loading feedback...</div></div>
 </div>
 
 <!-- DEV TOOLS -->
@@ -624,9 +630,9 @@ const SUPA_URL = 'https://ltqwofagofmvufvqsuyj.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0cXdvZmFnb2ZtdnVmdnFzdXlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjgyMTgsImV4cCI6MjA5NzMwNDIxOH0.7EkluJspwopQxxQmL7AuYxx4XHgchpYR7tsajyoXHaI';
 const ADMIN_CREDS = {"dale":"dale","admin":"cma2026admin"};
 const ADMIN_NAMES = {"dale":"Dale","admin":"Administrator"};
-const MODULE_COUNT = 3;
-const MODULE_NAMES = ['The Origin of Music','Medieval Times & Sacred Rhythm','Evolution of Musical Instruments'];
-const COURSE_NAMES = ['Theory of Ancient Music','Liturgical Music Theology','Choral Leadership','The Choirmaster\'s Craft','Sacred Music Composition','Voice & Instrument Proficiency'];
+var MODULE_COUNT = 3; // updated dynamically from DB after loadCourseContent
+var MODULE_NAMES = ['Module 1','Module 2','Module 3']; // updated dynamically
+var COURSE_NAMES = []; // updated dynamically
 
 // ── SUPABASE ────────────────────────────────────────────────────────────────
 async function sb(table, method='GET', body=null, query='') {
@@ -728,7 +734,7 @@ function goPage(id) {
   document.querySelectorAll('.nav-item').forEach(n=>{
     if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
   });
-  var renders={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics};
+  var renders={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback};
   if(id==='courses'){
     cmState.selectedModule=null;
     renderCourses();
@@ -747,8 +753,16 @@ async function loadAllData() {
     ]);
     allApplications=apps; allStudents=studs; allProgress=prog; allAttempts=atts;
     cohortSettings=coh[0]||{name:'Cohort 1',deadline:'2026-07-13',pass_mark:100};
-    // Load course content
+    // Load course content and update dynamic module/course counts
     await loadCourseContent();
+    // Rebuild MODULE_COUNT, MODULE_NAMES, COURSE_NAMES from loaded cmCourses
+    if (cmCourses.length) {
+      // For progress %, use the max module count across all courses (or first course)
+      var allMods = cmCourses[0] ? (cmCourses[0].modules||[]) : [];
+      MODULE_COUNT = allMods.length || MODULE_COUNT;
+      MODULE_NAMES = allMods.map(function(m,i){ return m.title || ('Module '+(i+1)); });
+      COURSE_NAMES = cmCourses.map(function(c){ return c.title; });
+    }
     updateBadges();
     renderCurrentPage();
   } catch(e) { showToast('Error loading data: '+e.message,'err'); }
@@ -767,7 +781,7 @@ function updateBadges() {
   if(bell) bell.textContent=total>0?total+' alerts':'';
 }
 function renderCurrentPage() {
-  var r={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics};
+  var r={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback};
   if(currentPage==='courses') renderCourses();
   else if(r[currentPage]) r[currentPage]();
 }
@@ -1064,22 +1078,63 @@ function renderProgress() {
 
 
 function renderAnalytics() {
-  var html=MODULE_NAMES.map((name,i)=>{
-    var modAtts=allAttempts.filter(a=>a.module_index===i);
-    if(!modAtts.length) return '<div class="analytics-module"><div class="analytics-module-title">Module '+(i+1)+': '+name+'</div><div style="font-size:13px;color:var(--dim);">No attempts yet.</div></div>';
-    var total=modAtts.length;
-    var passes=modAtts.filter(a=>a.passed).length;
-    var fails=total-passes;
-    var avgScore=Math.round(modAtts.reduce((sum,a)=>sum+((a.score/a.total)*100),0)/total);
-    var passRate=Math.round((passes/total)*100);
+  if (!allAttempts.length) {
+    document.getElementById('analyticsContent').innerHTML='<div class="alert alert-info">No assessment data yet.</div>';
+    return;
+  }
+  // Group attempts by module_index
+  var byMod = {};
+  allAttempts.forEach(function(a) {
+    var k = a.module_index;
+    if (!byMod[k]) byMod[k] = [];
+    byMod[k].push(a);
+  });
+  // Get module titles from cmCourses
+  var modTitles = {};
+  cmCourses.forEach(function(c){
+    (c.modules||[]).forEach(function(m,i){ modTitles[i] = m.title || ('Module '+(i+1)); });
+  });
+
+  var html = Object.keys(byMod).sort(function(a,b){return a-b;}).map(function(idx) {
+    var modAtts = byMod[idx];
+    var total = modAtts.length;
+    var passes = modAtts.filter(function(a){return a.passed;}).length;
+    var fails = total - passes;
+    var avgScore = Math.round(modAtts.reduce(function(s,a){return s+((a.score/a.total)*100);},0)/total);
+    var passRate = Math.round((passes/total)*100);
+    // First-attempt pass rate
+    var studentFirstAttempts = {};
+    modAtts.slice().sort(function(a,b){return new Date(a.attempted_at)-new Date(b.attempted_at);}).forEach(function(a){
+      if (!studentFirstAttempts[a.student_id]) studentFirstAttempts[a.student_id] = a;
+    });
+    var firstAttempts = Object.values(studentFirstAttempts);
+    var firstPassRate = firstAttempts.length ? Math.round(firstAttempts.filter(function(a){return a.passed;}).length/firstAttempts.length*100) : 0;
+    // Avg attempts per student
+    var studentCounts = {};
+    modAtts.forEach(function(a){ studentCounts[a.student_id] = (studentCounts[a.student_id]||0)+1; });
+    var avgAttempts = Object.keys(studentCounts).length ? (Object.values(studentCounts).reduce(function(s,v){return s+v;},0)/Object.keys(studentCounts).length).toFixed(1) : '—';
+
+    // Question-level: need to check answers stored — if not available show note
+    var name = modTitles[idx] || ('Module '+(parseInt(idx)+1));
     return '<div class="analytics-module">'
-      +'<div class="analytics-module-title">Module '+(i+1)+': '+name+'</div>'
-      +'<div class="analytics-row"><div class="analytics-label">Average Score</div><div class="analytics-bar-bg"><div class="analytics-bar" style="width:'+avgScore+'%;background:'+(avgScore>=70?'var(--ok)':avgScore>=50?'var(--gold)':'var(--danger)')+'"></div></div><div class="analytics-val">'+avgScore+'%</div></div>'
+      +'<div class="analytics-module-title">'+name+'</div>'
+      +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:14px;">'
+      +'<div style="background:var(--surface);border-radius:8px;padding:10px;text-align:center;"><div style="font-family:\'DM Serif Display\',serif;font-size:26px;color:var(--navy);">'+total+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Total Attempts</div></div>'
+      +'<div style="background:var(--ok-light);border-radius:8px;padding:10px;text-align:center;"><div style="font-family:\'DM Serif Display\',serif;font-size:26px;color:var(--ok);">'+passRate+'%</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Pass Rate</div></div>'
+      +'<div style="background:var(--navy-light);border-radius:8px;padding:10px;text-align:center;"><div style="font-family:\'DM Serif Display\',serif;font-size:26px;color:var(--navy);">'+firstPassRate+'%</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">1st Attempt Pass</div></div>'
+      +'<div style="background:var(--surface);border-radius:8px;padding:10px;text-align:center;"><div style="font-family:\'DM Serif Display\',serif;font-size:26px;color:var(--navy);">'+avgAttempts+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Avg Attempts</div></div>'
+      +'<div style="background:var(--surface);border-radius:8px;padding:10px;text-align:center;"><div style="font-family:\'DM Serif Display\',serif;font-size:26px;color:var(--navy);">'+avgScore+'%</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Avg Score</div></div>'
+      +'</div>'
       +'<div class="analytics-row"><div class="analytics-label">Pass Rate</div><div class="analytics-bar-bg"><div class="analytics-bar" style="width:'+passRate+'%;background:'+(passRate>=70?'var(--ok)':passRate>=50?'var(--gold)':'var(--danger)')+'"></div></div><div class="analytics-val">'+passRate+'%</div></div>'
-      +'<div style="display:flex;gap:16px;margin-top:10px;font-size:12px;color:var(--muted);">'
-      +'<span>'+total+' total attempts</span><span class="pill pill-ok">'+passes+' passes</span><span class="pill pill-danger">'+fails+' failures</span></div></div>';
+      +'<div class="analytics-row"><div class="analytics-label">Avg Score</div><div class="analytics-bar-bg"><div class="analytics-bar" style="width:'+avgScore+'%;background:'+(avgScore>=70?'var(--ok)':avgScore>=50?'var(--gold)':'var(--danger)')+'"></div></div><div class="analytics-val">'+avgScore+'%</div></div>'
+      +'<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--muted);">'
+      +'<span class="pill pill-ok">'+passes+' passes</span>'
+      +'<span class="pill pill-danger">'+fails+' fails</span>'
+      +'<span class="pill pill-dim">'+Object.keys(studentCounts).length+' students</span>'
+      +(fails>passes?'<span class="pill pill-warn">⚠ High failure — review content</span>':'')
+      +'</div></div>';
   }).join('');
-  document.getElementById('analyticsContent').innerHTML=html||'<div class="alert alert-info">No assessment data yet.</div>';
+  document.getElementById('analyticsContent').innerHTML = html;
 }
 
 // ── AT RISK ───────────────────────────────────────────────────────────────────
@@ -1113,9 +1168,9 @@ function renderAtrisk() {
 
 // ── COURSES & MODULES (Dynamic) ───────────────────────────────────────────────
 // All course/module/content data lives in Supabase table: course_content
-// Schema: { id, course_id(text), course_title, course_color, course_order, module_index(int),
-//           module_title, video_url, audio_tracks(json), downloads(json),
-//           reading_html, questions(json), published(bool), updated_at }
+// Schema: { id, course_id, course_title, course_color, course_order, module_index,
+//           module_title, module_topic, video_url, audio_tracks(json), downloads(json),
+//           reading_html, questions(json), pass_mark(int), max_attempts(int), published(bool), updated_at }
 // We load all rows once and work from memory.
 
 var cmCourses = [];   // [{id, title, color, order, modules:[{title,questions,published}]}]
@@ -1125,7 +1180,9 @@ var cmState = {
   selectedModule: null,
   questions: [],
   published: false,
-  contentMode: 'type'
+  contentMode: 'type',
+  passMark: 100,
+  maxAttempts: 0
 };
 
 // Colour palette for courses
@@ -1268,6 +1325,8 @@ function selectCMModule(courseId, modIdx) {
   try { cmState.questions = JSON.parse(typeof row.questions==='string'?row.questions:'[]'); } catch(e){ cmState.questions=[]; }
   if (!cmState.questions.length) cmState.questions = [{q:'',opts:['','','',''],ans:0}];
   cmState.contentMode = 'type';
+  cmState.passMark = row.pass_mark || 100;
+  cmState.maxAttempts = row.max_attempts || 0;
   renderCMSidebar();
   renderCMEditor(courseId, modIdx, key, row);
 }
@@ -1497,6 +1556,9 @@ async function saveCMModule(key) {
   if (qErrors.length) { showToast('Complete all question fields first','warn'); return; }
 
   var videoUrl = (document.getElementById('cm_video')||{}).value||'';
+  var moduleTopic = (document.getElementById('cm_topic')||{}).value||'';
+  var passMark = parseInt((document.getElementById('cm_passMark')||{}).value)||100;
+  var maxAttempts = parseInt((document.getElementById('cm_maxAttempts')||{}).value)||0;
   var audioTracks = collectAudioTracks();
   var downloads = collectDownloads();
 
@@ -1507,11 +1569,14 @@ async function saveCMModule(key) {
     course_order: c.order||0,
     module_index: modIdx,
     module_title: m.title,
+    module_topic: moduleTopic,
     video_url: videoUrl,
     audio_tracks: JSON.stringify(audioTracks),
     downloads: JSON.stringify(downloads),
     reading_html: html,
     questions: JSON.stringify(cmState.questions),
+    pass_mark: passMark,
+    max_attempts: maxAttempts,
     published: cmState.published,
     updated_at: new Date().toISOString()
   };
@@ -1662,6 +1727,12 @@ async function saveCohort() {
 
 // ── ANNOUNCEMENTS ─────────────────────────────────────────────────────────────
 async function renderAnnouncements() {
+  // Rebuild annTarget options from live courses
+  var sel = document.getElementById('annTarget');
+  if (sel) {
+    sel.innerHTML = '<option value="all">All Students</option>'
+      + cmCourses.map(function(c){ return '<option value="'+c.title+'">'+c.title+'</option>'; }).join('');
+  }
   try {
     var anns=await sb('announcements','GET',null,'order=created_at.desc');
     if(!anns.length) {
@@ -1702,6 +1773,42 @@ async function clearApplications(){if(!confirm('Delete ALL applications?'))retur
 async function clearStudents(){if(!confirm('Delete ALL students and progress?'))return;try{await sb('progress','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');await sb('assessment_attempts','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000').catch(()=>{});await sb('students','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');showToast('Students cleared.');await loadAllData();}catch(e){showToast('Error: '+e.message,'err');}}
 async function clearProgress(){if(!confirm('Clear all progress?'))return;try{await sb('progress','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');showToast('Progress cleared.');await loadAllData();}catch(e){showToast('Error: '+e.message,'err');}}
 async function clearEverything(){if(!confirm('Delete EVERYTHING?'))return;if(!confirm('Absolutely sure?'))return;var c=prompt('Type DELETE to confirm:');if(c!=='DELETE'){showToast('Cancelled','warn');return;}try{await sb('progress','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');await sb('assessment_attempts','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000').catch(()=>{});await sb('students','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');await sb('applications','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');showToast('Everything cleared.');await loadAllData();}catch(e){showToast('Error: '+e.message,'err');}}
+
+
+// ── STUDENT FEEDBACK ─────────────────────────────────────────────────────────
+async function renderFeedback() {
+  var el = document.getElementById('feedbackList');
+  if (!el) return;
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Loading...</div>';
+  try {
+    var rows = await sb('student_feedback','GET',null,'order=submitted_at.desc');
+    if (!rows.length) { el.innerHTML='<div class="alert alert-info">No feedback submitted yet. Students can send feedback from within any module.</div>'; return; }
+    var typeColors = {question:'pill-blue',issue:'pill-danger',suggestion:'pill-gold',compliment:'pill-ok'};
+    el.innerHTML = rows.map(function(r) {
+      var s = allStudents.find(function(st){return st.id===r.student_id;});
+      var name = s ? s.first_name+' '+s.last_name : 'Student';
+      var wn = s ? (s.whatsapp||s.phone) : '';
+      var pill = '<span class="pill '+(typeColors[r.type]||'pill-dim')+'">'+(r.type||'general')+'</span>';
+      var resolved = r.resolved ? '<span class="pill pill-ok" style="margin-left:6px;">Resolved</span>' : '';
+      return '<div class="card" style="margin-bottom:10px;opacity:'+(r.resolved?0.6:1)+';">'
+        +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">'
+        +'<div><div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;">'+name+'</div>'
+        +'<div style="font-size:11px;color:var(--muted);">'+fmtDateTime(r.submitted_at)+' · Module '+(r.module_index!==null&&r.module_index!==undefined?r.module_index+1:'—')+'</div></div>'
+        +'<div>'+pill+resolved+'</div></div>'
+        +'<div style="font-size:14px;color:var(--text);margin-top:10px;line-height:1.6;padding:12px;background:var(--surface);border-radius:8px;">'+r.message+'</div>'
+        +'<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">'
+        +(wn?'<a class="btn btn-wa" href="'+waLink(wn,'Re your CMA feedback: '+r.message)+'" target="_blank" style="font-size:12px;padding:6px 12px;">💬 Reply via WhatsApp</a>':'')
+        +(!r.resolved?'<button class="btn btn-ghost" style="font-size:12px;padding:6px 12px;" onclick="markFeedbackRead(\''+r.id+'\')">✓ Mark Resolved</button>':'')
+        +'</div></div>';
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<div class="alert alert-warn">Could not load feedback. Run this SQL in Supabase first:<br><code style="font-size:11px;display:block;margin-top:8px;padding:8px;background:var(--surface);border-radius:6px;">create table student_feedback (id uuid default gen_random_uuid() primary key, student_id uuid, module_index int, type text, message text, submitted_at timestamptz default now(), resolved bool default false, resolved_at timestamptz);</code></div>';
+  }
+}
+async function markFeedbackRead(id) {
+  try { await sb('student_feedback','PATCH',{resolved:true,resolved_at:new Date().toISOString()},'id=eq.'+id); renderFeedback(); showToast('Marked as resolved.'); }
+  catch(e){ showToast('Error: '+e.message,'err'); }
+}
 
 // ── TOAST ─────────────────────────────────────────────────────────────────────
 function showToast(msg,type='ok'){
