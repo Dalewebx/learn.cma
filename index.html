@@ -3,392 +3,801 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Catholic Music Academy — Excellence in Sacred Arts</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDxwYXRoIGQ9Ik03IDQgTDI1IDQgTDI1IDIyIFExNiAyOCA3IDIyIFoiIGZpbGw9IiMxQTJFNkMiLz4KICA8cGF0aCBkPSJNNyA0IEwyNSA0IEwyNSAyMiBRMTYgMjggNyAyMiBaIiBmaWxsPSJub25lIiBzdHJva2U9IiNDOUE4NEMiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxyZWN0IHg9IjE0LjUiIHk9IjciIHdpZHRoPSIzIiBoZWlnaHQ9IjEyIiByeD0iMSIgZmlsbD0iI0M5QTg0QyIvPgogIDxyZWN0IHg9IjkiIHk9IjExIiB3aWR0aD0iMTQiIGhlaWdodD0iMyIgcng9IjEiIGZpbGw9IiNDOUE4NEMiLz4KICA8bGluZSB4MT0iMTAiIHkxPSIyMCIgeDI9IjIyIiB5Mj0iMjAiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIwLjgiIG9wYWNpdHk9IjAuNyIvPgogIDxsaW5lIHgxPSIxMCIgeTE9IjIyLjUiIHgyPSIyMiIgeTI9IjIyLjUiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIwLjgiIG9wYWNpdHk9IjAuNyIvPgo8L3N2Zz4="/>
+<meta name="description" content="Earn a recognised music qualification online. Catholic Music Academy, approved by the Delta State Ministry of Higher Education. Certificate of Competence and National Diploma in Music."/>
+<meta property="og:title" content="Catholic Music Academy Online — Earn a Recognised Music Qualification"/>
+<meta property="og:description" content="Structured video lessons, assessments, and a certification pathway. Study from anywhere."/>
+<title>Catholic Music Academy Online — Study. Progress. Get Certified.</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDxwYXRoIGQ9Ik03IDQgTDI1IDQgTDI1IDIyIFExNiAyOCA3IDIyIFoiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8cmVjdCB4PSIxNC41IiB5PSI3IiB3aWR0aD0iMyIgaGVpZ2h0PSIxMCIgcng9IjEiIGZpbGw9IiNDOUE4NEMiLz4KICA8cmVjdCB4PSI5IiB5PSIxMSIgd2lkdGg9IjE0IiBoZWlnaHQ9IjIuNSIgcng9IjEiIGZpbGw9IiNDOUE4NEMiLz4KPC9zdmc+"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --navy:#0D1B3E;--navy-mid:#1A2E6C;--navy-light:#EEF2FF;--navy-pale:#F4F6FF;
-  --gold:#C9A84C;--gold-light:#F5E6C0;--gold-dark:#9A7A2E;
-  --cream:#FAFAF7;--white:#FFFFFF;
-  --text:#0F172A;--muted:#64748B;--dim:#94A3B8;--border:#E2E8F0;
-  --ok:#16A34A;--ok-light:#DCFCE7;
+  --navy:#0D1B3E;--navy-mid:#1A2E6C;--navy-pale:#F0F3FF;
+  --gold:#C9A84C;--gold-light:#FBF3DF;--gold-dark:#9A7A2E;
+  --white:#FFFFFF;--gray:#F7F7F5;--gray2:#F0F0EC;
+  --text:#0F172A;--muted:#64748B;--dim:#94A3B8;--border:#E4E8EF;
+  --ok:#16A34A;--ok-bg:#F0FDF4;
 }
 html{scroll-behavior:smooth;}
-body{background:var(--white);color:var(--text);font-family:"DM Sans",sans-serif;min-height:100vh;overflow-x:hidden;}
+body{background:var(--white);color:var(--text);font-family:"DM Sans",sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+a,button{-webkit-tap-highlight-color:transparent;}
+img{max-width:100%;display:block;}
 
-/* NAV */
-nav{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200;padding:0 40px;}
-.nav-inner{display:flex;align-items:center;justify-content:space-between;height:68px;max-width:1200px;margin:0 auto;gap:20px;}
-.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
-.nav-logo-text{line-height:1.2;}
-.nav-logo-name{font-family:"DM Serif Display",serif;font-size:17px;color:var(--navy);display:block;}
-.nav-logo-sub{font-size:10px;color:var(--muted);letter-spacing:0.5px;}
-.nav-actions{display:flex;align-items:center;gap:10px;}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:none;border-radius:9px;font-family:"DM Sans",sans-serif;font-weight:600;cursor:pointer;transition:all 0.18s;text-decoration:none;white-space:nowrap;}
-.btn-nav{background:none;border:1.5px solid var(--border);color:var(--muted);padding:9px 18px;font-size:13px;}
-.btn-nav:hover{border-color:var(--navy);color:var(--navy);}
-.btn-gold{background:var(--gold);color:var(--navy);padding:10px 22px;font-size:13px;}
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:10px;font-family:"DM Sans",sans-serif;font-weight:700;cursor:pointer;transition:all 0.18s;text-decoration:none;white-space:nowrap;}
+.btn-gold{background:var(--gold);color:var(--navy);font-size:15px;padding:14px 28px;}
 .btn-gold:hover{background:var(--gold-dark);color:white;}
-.btn-navy{background:var(--navy);color:white;padding:10px 22px;font-size:13px;}
+.btn-navy{background:var(--navy);color:white;font-size:15px;padding:14px 28px;}
 .btn-navy:hover{background:var(--navy-mid);}
-.btn-lg{padding:15px 30px;font-size:15px;border-radius:11px;}
-.btn-outline-white{background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.22);color:white;padding:14px 26px;font-size:14px;border-radius:10px;}
-.btn-outline-white:hover{background:rgba(255,255,255,0.16);}
+.btn-outline-white{background:transparent;border:1.5px solid rgba(255,255,255,0.3);color:white;font-size:14px;padding:13px 24px;}
+.btn-outline-white:hover{border-color:white;background:rgba(255,255,255,0.07);}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--muted);font-size:13px;padding:10px 20px;font-weight:600;}
+.btn-outline:hover{border-color:var(--navy);color:var(--navy);}
+.btn-gold-outline{background:transparent;border:1.5px solid var(--gold);color:var(--gold-dark);font-size:13px;padding:10px 20px;font-weight:600;}
+.btn-gold-outline:hover{background:var(--gold);color:var(--navy);}
 
-/* HERO */
-.hero{background:var(--navy);min-height:90vh;display:flex;align-items:center;position:relative;overflow:hidden;}
-.hero-glow{position:absolute;top:-200px;right:-200px;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.09),transparent 70%);pointer-events:none;}
-.hero-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;}
-.hero-inner{max-width:1200px;margin:0 auto;padding:80px 40px;display:grid;grid-template-columns:1fr 440px;gap:64px;align-items:center;position:relative;z-index:1;width:100%;}
-.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(201,168,76,0.14);border:1px solid rgba(201,168,76,0.28);border-radius:20px;padding:6px 15px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-light);margin-bottom:22px;}
-.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
-.hero-title{font-family:"DM Serif Display",serif;font-size:clamp(38px,5vw,66px);color:white;line-height:1.0;margin-bottom:10px;}
+/* ── NAV ── */
+nav{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:300;}
+.nav-inner{max-width:1160px;margin:0 auto;padding:0 24px;display:flex;align-items:center;height:64px;gap:16px;}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;margin-right:auto;}
+.logo-icon{width:36px;height:36px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.logo-text{line-height:1.25;}
+.logo-name{font-family:"DM Serif Display",serif;font-size:14px;color:var(--navy);display:block;}
+.logo-sub{font-size:9px;color:var(--muted);letter-spacing:0.3px;display:none;}
+@media(min-width:480px){.logo-sub{display:block;}}
+.nav-links{display:none;align-items:center;gap:2px;}
+@media(min-width:860px){.nav-links{display:flex;}}
+.nl{font-size:13px;color:var(--muted);text-decoration:none;padding:7px 12px;border-radius:8px;font-weight:500;transition:all 0.14s;background:none;border:none;font-family:"DM Sans",sans-serif;cursor:pointer;}
+.nl:hover{color:var(--navy);background:var(--navy-pale);}
+/* Contact dropdown */
+.cw{position:relative;}
+.cd{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(-4px);background:white;border:1px solid var(--border);border-radius:13px;padding:16px 20px;width:248px;box-shadow:0 12px 40px rgba(0,0,0,0.1);opacity:0;pointer-events:none;transition:all 0.16s;z-index:400;}
+.cw:hover .cd,.cw:focus-within .cd{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0);}
+.cd-hd{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:11px;}
+.cd-row{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid var(--border);}
+.cd-row:last-child{border-bottom:none;padding-bottom:0;}
+.cd-lbl{font-size:10px;color:var(--muted);}
+.cd-val{font-size:12px;font-weight:600;color:var(--navy);}
+.nav-acts{display:flex;align-items:center;gap:8px;flex-shrink:0;}
 
-.hero-motto{font-size:13px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gold);opacity:0.8;margin-bottom:20px;}
-.hero-divider{width:48px;height:2px;background:var(--gold);opacity:0.5;margin:20px 0;}
-.hero-sub{font-size:16px;color:rgba(255,255,255,0.65);line-height:1.78;font-weight:300;max-width:500px;margin-bottom:34px;}
-.hero-actions{display:flex;gap:12px;flex-wrap:wrap;}
-.hero-stats{display:flex;gap:36px;margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.09);flex-wrap:wrap;}
-.hero-stat-num{font-family:"DM Serif Display",serif;font-size:30px;color:var(--gold);line-height:1;}
-.hero-stat-label{font-size:11px;color:rgba(255,255,255,0.45);margin-top:4px;}
+/* ── HERO ── */
+.hero{background:var(--navy);min-height:100svh;display:flex;align-items:center;position:relative;overflow:hidden;}
+.hero-parallax{position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=1600&q=80&auto=format&fit=crop');background-size:cover;background-position:center;background-attachment:fixed;opacity:0.18;z-index:0;}
+.hero-noise{position:absolute;inset:0;opacity:0.018;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:140px;pointer-events:none;}
+.hero-glow{position:absolute;top:-20%;right:-10%;width:min(700px,120vw);height:min(700px,120vw);border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.06),transparent 65%);pointer-events:none;}
+.hero-glow2{position:absolute;bottom:-30%;left:-5%;width:min(500px,80vw);height:min(500px,80vw);border-radius:50%;background:radial-gradient(circle,rgba(26,46,108,0.6),transparent 65%);pointer-events:none;}
+.hero-inner{max-width:1160px;margin:0 auto;padding:96px 24px 80px;width:100%;position:relative;z-index:1;display:grid;grid-template-columns:1fr;gap:48px;align-items:center;}
+@media(min-width:900px){.hero-inner{grid-template-columns:1fr 1fr;gap:64px;padding:120px 40px 100px;}}
 
-/* HERO MOCKUP CARD */
-.hero-card{background:rgba(255,255,255,0.06);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:6px;}
-.hero-card-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);padding:12px 14px 8px;}
-.portal-preview{background:var(--white);border-radius:14px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.45);}
-.pp-bar{background:var(--navy);padding:10px 14px;display:flex;align-items:center;gap:8px;}
-.pp-dot{width:9px;height:9px;border-radius:50%;}
-.pp-url{flex:1;background:rgba(255,255,255,0.1);border-radius:5px;padding:4px 10px;font-size:9px;color:rgba(255,255,255,0.5);font-family:monospace;}
-.pp-body{padding:18px;}
-.pp-greeting{font-size:10px;color:var(--muted);margin-bottom:3px;}
-.pp-name{font-family:"DM Serif Display",serif;font-size:20px;color:var(--navy);margin-bottom:4px;}
-.pp-course{font-size:10px;color:var(--gold-dark);font-weight:600;letter-spacing:0.5px;margin-bottom:14px;}
-.pp-progress-lbl{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;display:flex;justify-content:space-between;}
-.pp-prog-bg{height:5px;background:var(--border);border-radius:5px;overflow:hidden;margin-bottom:14px;}
-.pp-prog-fill{height:100%;background:linear-gradient(90deg,var(--navy-mid),var(--gold));border-radius:5px;width:33%;}
-.pp-mod{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;margin-bottom:5px;}
-.pp-mod.done{background:var(--ok-light);}
-.pp-mod.active{background:var(--navy-pale);border:1px solid var(--navy-light);}
-.pp-mod.locked{background:var(--cream);opacity:0.6;}
-.pp-mod-num{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
-.pp-mod-num.done{background:var(--ok);color:white;}
-.pp-mod-num.active{background:var(--navy);color:white;}
-.pp-mod-num.locked{background:var(--dim);color:white;}
-.pp-mod-title{font-size:11px;font-weight:500;color:var(--text);flex:1;}
-.pp-mod-badge{font-size:9px;font-weight:700;}
-.pp-mod-badge.done{color:var(--ok);}
-.pp-mod-badge.active{color:var(--navy);}
-.pp-mod-badge.locked{color:var(--dim);}
-.pp-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
-.pp-next-btn{background:var(--gold);color:var(--navy);border:none;border-radius:7px;padding:7px 14px;font-size:10px;font-weight:700;cursor:default;}
-.pp-last-seen{font-size:9px;color:var(--dim);}
+/* Hero left */
+.hero-tag{display:inline-flex;align-items:center;gap:7px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:20px;padding:5px 14px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:24px;}
+.hero-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.hero-title{font-family:"DM Serif Display",serif;font-size:clamp(36px,6vw,64px);color:white;line-height:1.0;margin-bottom:22px;letter-spacing:-0.5px;}
+.hero-title em{font-style:italic;color:var(--gold);}
+.hero-list{list-style:none;margin-bottom:36px;}
+.hero-list li{font-size:15px;color:rgba(255,255,255,0.65);padding:5px 0;display:flex;align-items:center;gap:9px;font-weight:300;}
+.hero-list li::before{content:"";width:4px;height:4px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+.hero-acts{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px;}
+.hero-checks{display:flex;flex-wrap:wrap;gap:16px;}
+.hero-check{font-size:12px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:6px;font-weight:500;}
+.hero-check::before{content:"✓";color:var(--gold);font-weight:700;}
 
-/* FEATURES STRIP */
-.features-strip{background:var(--cream);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:0 40px;}
-.features-inner{max-width:1100px;margin:0 auto;display:flex;align-items:stretch;flex-wrap:wrap;}
-.feature-item{display:flex;align-items:center;gap:9px;padding:18px 28px;font-size:13px;font-weight:600;color:var(--muted);border-right:1px solid var(--border);flex:1;min-width:140px;}
-.feature-item:last-child{border-right:none;}
-.feature-check{width:20px;height:20px;background:var(--ok-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ok);flex-shrink:0;font-weight:700;}
+/* Hero right — dashboard mockup */
+.mockup{background:white;border-radius:20px;box-shadow:0 32px 80px rgba(0,0,0,0.35),0 0 0 1px rgba(255,255,255,0.08);overflow:hidden;}
+.mk-topbar{background:var(--navy);padding:12px 18px;display:flex;align-items:center;gap:10px;}
+.mk-dots{display:flex;gap:5px;}
+.mk-dot{width:9px;height:9px;border-radius:50%;}
+.mk-title-bar{flex:1;text-align:center;font-size:11px;color:rgba(255,255,255,0.5);font-weight:600;letter-spacing:0.5px;}
+.mk-body{padding:20px;}
+.mk-course-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.mk-course-name{font-family:"DM Serif Display",serif;font-size:17px;color:var(--navy);margin-bottom:14px;}
+.mk-prog-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.mk-prog-label{font-size:11px;color:var(--muted);font-weight:600;}
+.mk-prog-num{font-size:11px;font-weight:700;color:var(--navy);}
+.mk-prog-bar{height:6px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:16px;}
+.mk-prog-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--navy),var(--gold));width:78%;transition:width 1s ease;}
+.mk-mod-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.mk-mod-list{margin-bottom:16px;}
+.mk-mod-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;margin-bottom:4px;font-size:12px;}
+.mk-mod-item.done{background:var(--ok-bg);color:var(--ok);}
+.mk-mod-item.done::before{content:"✓";font-weight:700;font-size:11px;}
+.mk-mod-item.active{background:var(--navy-pale);color:var(--navy);font-weight:600;}
+.mk-mod-item.active::before{content:"▶";font-size:9px;color:var(--gold);}
+.mk-mod-item.lock{color:var(--dim);}
+.mk-mod-item.lock::before{content:"🔒";font-size:10px;}
+.mk-next{background:var(--gold-light);border-radius:10px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;}
+.mk-next-label{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:2px;}
+.mk-next-name{font-size:12px;font-weight:700;color:var(--navy);}
+.mk-next-btn{background:var(--gold);color:var(--navy);border:none;border-radius:7px;padding:7px 13px;font-size:11px;font-weight:700;cursor:pointer;font-family:"DM Sans",sans-serif;}
 
-/* HOW IT WORKS */
-.how-section{padding:0;background:var(--navy);position:relative;overflow:hidden;}
-.how-staff-bg{position:absolute;inset:0;pointer-events:none;opacity:0.06;}
-.section-inner{max-width:1100px;margin:0 auto;}
-.section-eyebrow{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
-.section-eyebrow::before{content:"";width:28px;height:2px;background:var(--gold-dark);flex-shrink:0;}
-.section-title{font-family:"DM Serif Display",serif;font-size:clamp(30px,4vw,48px);color:var(--text);line-height:1.1;margin-bottom:16px;}
-.section-sub{font-size:15px;color:var(--muted);line-height:1.78;max-width:540px;font-weight:300;}
-.how-inner{max-width:1100px;margin:0 auto;padding:88px 40px;}
-.how-header{text-align:center;max-width:560px;margin:0 auto 64px;}
-.how-header .section-eyebrow{justify-content:center;color:var(--gold);opacity:0.8;}
-.how-header .section-eyebrow::before{background:var(--gold);}
-.how-header .section-title{color:white;}
-.how-header .section-sub{color:rgba(255,255,255,0.55);max-width:100%;}
-.how-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative;}
-.how-card{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 20px;position:relative;}
-.how-step-circle{width:88px;height:88px;border-radius:50%;background:rgba(255,255,255,0.04);border:1.5px solid rgba(201,168,76,0.25);display:flex;align-items:center;justify-content:center;margin-bottom:22px;position:relative;z-index:1;transition:all 0.25s;flex-shrink:0;}
-.how-card:hover .how-step-circle{background:rgba(201,168,76,0.12);border-color:var(--gold);}
-.how-step-num{font-family:"DM Serif Display",serif;font-size:28px;color:var(--gold);line-height:1;}
-.how-icon{font-size:0;display:none;}
-.how-title{font-family:"DM Serif Display",serif;font-size:17px;color:white;margin-bottom:10px;line-height:1.25;}
-.how-desc{font-size:12.5px;color:rgba(255,255,255,0.48);line-height:1.7;}
-@media(max-width:900px){
-  .how-grid{grid-template-columns:1fr 1fr;gap:28px;}
-  .how-grid::before{display:none;}
-  .how-section{padding:0;}
-  .how-inner{padding:56px 24px;}
+/* ── TRUST BAR ── */
+.trust{background:var(--gray);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.trust-inner{max-width:1160px;margin:0 auto;padding:0 24px;display:flex;align-items:stretch;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.trust-item{display:flex;align-items:center;gap:8px;padding:18px 28px 18px 0;font-size:12px;font-weight:700;color:var(--navy);white-space:nowrap;border-right:1px solid var(--border);flex-shrink:0;}
+.trust-item:last-child{border-right:none;}
+.trust-item span{color:var(--gold);font-size:15px;}
+
+
+/* PARALLAX BREAK */
+.parallax-break{position:relative;min-height:340px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.parallax-break-img{position:absolute;inset:-40px;background-image:url('https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=1600&q=80&auto=format&fit=crop');background-size:cover;background-position:center;background-attachment:fixed;z-index:0;}
+.parallax-break-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(13,27,62,0.88) 0%,rgba(13,27,62,0.72) 100%);z-index:1;}
+.parallax-break-content{position:relative;z-index:2;text-align:center;padding:48px 24px;max-width:640px;}
+.pb-quote{font-family:"DM Serif Display",serif;font-size:clamp(22px,4vw,36px);color:white;line-height:1.3;margin-bottom:16px;font-style:italic;}
+.pb-sub{font-size:13px;color:rgba(255,255,255,0.45);letter-spacing:1px;text-transform:uppercase;}
+
+/* ── SHARED SECTION ── */
+.sec{padding:80px 24px;}
+@media(min-width:768px){.sec{padding:96px 40px;}}
+.sec-inner{max-width:1160px;margin:0 auto;}
+.label{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.label::before{content:"";width:18px;height:2px;background:var(--gold-dark);}
+.sec-title{font-family:"DM Serif Display",serif;font-size:clamp(28px,4.5vw,44px);color:var(--navy);line-height:1.05;margin-bottom:14px;}
+.sec-sub{font-size:15px;color:var(--muted);line-height:1.75;font-weight:300;max-width:520px;}
+
+/* ── HOW IT WORKS ── */
+.how-sec{background:var(--white);}
+.how-hd{max-width:560px;margin-bottom:60px;}
+.timeline{position:relative;}
+.timeline::before{content:"";position:absolute;left:22px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--gold),var(--border));z-index:0;}
+@media(min-width:680px){.timeline::before{left:50%;transform:translateX(-50%);}}
+.tl-step{display:flex;gap:24px;margin-bottom:40px;position:relative;z-index:1;}
+.tl-step:last-child{margin-bottom:0;}
+@media(min-width:680px){
+  .tl-step{justify-content:flex-end;padding-right:calc(50% + 36px);}
+  .tl-step:nth-child(even){flex-direction:row-reverse;justify-content:flex-end;padding-right:0;padding-left:calc(50% + 36px);}
 }
-@media(max-width:560px){
-  .how-grid{grid-template-columns:1fr;}
-}
+.tl-num{width:44px;height:44px;border-radius:50%;background:var(--navy);color:white;display:flex;align-items:center;justify-content:center;font-family:"DM Serif Display",serif;font-size:16px;flex-shrink:0;position:relative;z-index:2;border:3px solid white;box-shadow:0 0 0 2px var(--navy);}
+.tl-content{background:var(--gray);border-radius:14px;padding:20px 22px;flex:1;max-width:380px;}
+@media(min-width:680px){.tl-content{max-width:340px;}}
+.tl-title{font-family:"DM Serif Display",serif;font-size:18px;color:var(--navy);margin-bottom:6px;}
+.tl-desc{font-size:13px;color:var(--muted);line-height:1.65;}
 
-/* PROGRAMMES */
-.programmes-section{padding:96px 40px;background:var(--cream);}
-.programmes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:52px;}
-.programme-card{background:var(--white);border:1.5px solid var(--border);border-radius:18px;overflow:hidden;transition:all 0.2s;}
-.programme-card:hover{border-color:var(--navy);box-shadow:0 8px 32px rgba(13,27,62,0.12);transform:translateY(-3px);}
-.prog-card-top{height:5px;background:linear-gradient(90deg,var(--navy),var(--gold));}
-.prog-card-body{padding:24px;}
-.prog-num{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:10px;}
-.prog-title{font-family:"DM Serif Display",serif;font-size:21px;color:var(--text);margin-bottom:10px;line-height:1.25;}
-.prog-desc{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:18px;}
-.prog-tags{display:flex;gap:6px;flex-wrap:wrap;padding-top:14px;border-top:1px solid var(--border);}
-.prog-tag{background:var(--navy-light);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--navy-mid);font-weight:500;}
+/* ── WHY CMA ── */
+.why-sec{background:var(--gray);}
+.why-grid{display:grid;grid-template-columns:1fr;gap:20px;margin-top:48px;}
+@media(min-width:600px){.why-grid{grid-template-columns:1fr 1fr 1fr;}}
+.why-card{background:var(--white);border:1.5px solid var(--border);border-radius:18px;padding:36px 28px;transition:all 0.2s;}
+.why-card:hover{border-color:var(--navy);transform:translateY(-3px);box-shadow:0 8px 28px rgba(13,27,62,0.09);}
+.why-icon{font-size:36px;margin-bottom:20px;}
+.why-title{font-family:"DM Serif Display",serif;font-size:22px;color:var(--navy);margin-bottom:10px;}
+.why-desc{font-size:14px;color:var(--muted);line-height:1.7;}
 
-/* CONTACT */
-.contact-section{padding:96px 40px;}
-.contact-inner{max-width:680px;margin:0 auto;text-align:center;}
-.contact-icon{font-size:40px;margin-bottom:20px;}
-.contact-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:32px 0 24px;}
-.contact-card{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:22px;transition:border-color 0.2s;}
-.contact-card:hover{border-color:var(--navy);}
-.contact-card-icon{font-size:22px;margin-bottom:8px;}
-.contact-card-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
-.contact-card-val{font-size:14px;font-weight:600;color:var(--navy);}
-.contact-note{font-size:13px;color:var(--dim);line-height:1.65;}
+/* ── PROGRAMMES ── */
+.prog-sec{background:var(--white);}
+.prog-hd{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:44px;flex-wrap:wrap;}
+.prog-grid{display:grid;grid-template-columns:1fr;gap:20px;}
+@media(min-width:580px){.prog-grid{grid-template-columns:1fr 1fr;}}
+@media(min-width:900px){.prog-grid{grid-template-columns:repeat(3,1fr);}}
+.prog-card{border:1.5px solid var(--border);border-radius:18px;overflow:hidden;background:var(--white);transition:all 0.2s;}
+.prog-card:hover{border-color:var(--navy);box-shadow:0 6px 24px rgba(13,27,62,0.09);transform:translateY(-2px);}
+.prog-band{height:4px;}
+.prog-body{padding:24px;}
+.prog-num{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:8px;}
+.prog-name{font-family:"DM Serif Display",serif;font-size:20px;color:var(--navy);margin-bottom:8px;line-height:1.2;}
+.prog-desc{font-size:12px;color:var(--muted);line-height:1.65;margin-bottom:18px;min-height:40px;}
+.prog-meta{display:flex;flex-direction:column;gap:5px;padding:14px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:16px;}
+.prog-meta-row{display:flex;gap:8px;font-size:11px;color:var(--muted);}
+.prog-meta-key{font-weight:700;color:var(--text);min-width:80px;}
+.prog-foot{display:flex;align-items:center;justify-content:space-between;}
+.prog-tag{font-size:11px;font-weight:600;color:var(--muted);background:var(--gray);border-radius:20px;padding:3px 10px;}
+.prog-link{font-size:12px;font-weight:700;color:var(--navy);text-decoration:none;display:flex;align-items:center;gap:4px;transition:gap 0.15s;}
+.prog-link:hover{gap:8px;}
+.prog-empty{text-align:center;padding:48px;color:var(--muted);font-size:14px;grid-column:1/-1;}
 
-/* FOOTER */
-footer{background:var(--navy);padding:56px 40px 28px;}
-.footer-inner{max-width:1100px;margin:0 auto;}
-.footer-top{display:flex;align-items:flex-start;justify-content:space-between;gap:32px;margin-bottom:40px;flex-wrap:wrap;}
-.footer-brand-name{font-family:"DM Serif Display",serif;font-size:20px;color:white;margin-bottom:4px;}
-.footer-brand-sub{font-size:12px;color:rgba(255,255,255,0.38);line-height:1.65;max-width:260px;margin-top:6px;}
-.footer-motto{font-size:11px;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-top:8px;opacity:0.8;}
-.footer-links-col{display:flex;flex-direction:column;gap:10px;}
-.footer-col-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
-.footer-link{font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;transition:color 0.15s;}
-.footer-link:hover{color:white;}
-.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
-.footer-copy{font-size:12px;color:rgba(255,255,255,0.28);}
-.footer-dev{font-size:12px;color:rgba(255,255,255,0.28);}
-.footer-dev span{color:var(--gold);}
+/* ── INSIDE THE PORTAL ── */
+.portal-sec{background:var(--gray);}
+.portal-grid{display:grid;grid-template-columns:1fr;gap:40px;align-items:center;margin-top:52px;}
+@media(min-width:860px){.portal-grid{grid-template-columns:1fr 1fr;gap:64px;}}
+.portal-mockup{background:white;border-radius:18px;border:1.5px solid var(--border);box-shadow:0 12px 48px rgba(13,27,62,0.1);overflow:hidden;}
+.pm-topbar{background:var(--navy);padding:10px 16px;display:flex;align-items:center;gap:10px;}
+.pm-dots{display:flex;gap:5px;}
+.pm-dot{width:8px;height:8px;border-radius:50%;}
+.pm-url{flex:1;text-align:center;font-size:10px;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.06);border-radius:5px;padding:3px 10px;}
+.pm-body{padding:18px;}
+.pm-mod-card{background:var(--gray);border-radius:10px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;}
+.pm-mod-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.pm-mod-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:2px;}
+.pm-mod-meta{font-size:10px;color:var(--muted);}
+.pm-mod-badge{margin-left:auto;font-size:10px;font-weight:700;border-radius:20px;padding:3px 9px;}
+.pm-mod-badge.done{background:var(--ok-bg);color:var(--ok);}
+.pm-mod-badge.active{background:var(--navy-pale);color:var(--navy);}
+.pm-mod-badge.lock{background:var(--gray2);color:var(--dim);}
+.portal-features{display:flex;flex-direction:column;gap:24px;}
+.pf-item{display:flex;align-items:flex-start;gap:16px;}
+.pf-icon{width:44px;height:44px;border-radius:12px;background:var(--navy-pale);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.pf-title{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.pf-desc{font-size:13px;color:var(--muted);line-height:1.6;}
 
-@media(max-width:900px){
-  .hero-inner{grid-template-columns:1fr;gap:36px;padding:52px 24px;}
-  nav{padding:0 18px;}
-  .nav-logo-sub{display:none;}
-  .programmes-section,.contact-section{padding:56px 24px;}
-  .contact-cards{grid-template-columns:1fr;}
-  footer{padding:44px 24px 24px;}
-}
-@media(max-width:560px){
-  .hero-card{display:none;}
-  .features-inner{flex-direction:column;}
-  .feature-item{border-right:none;border-bottom:1px solid var(--border);padding:14px 0;}
-  .feature-item:last-child{border-bottom:none;}
-  .footer-top{flex-direction:column;gap:28px;}
+/* ── STUDENT EXPERIENCE ── */
+.exp-sec{background:var(--navy);padding:80px 24px;}
+@media(min-width:768px){.exp-sec{padding:96px 40px;}}
+.exp-sec .label{color:rgba(201,168,76,0.7);}
+.exp-sec .label::before{background:rgba(201,168,76,0.7);}
+.exp-sec .sec-title{color:white;}
+.exp-grid{display:grid;grid-template-columns:1fr;gap:20px;margin-top:48px;}
+@media(min-width:600px){.exp-grid{grid-template-columns:repeat(3,1fr);}}
+.exp-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:32px 28px;}
+.exp-icon{font-size:32px;margin-bottom:18px;}
+.exp-title{font-family:"DM Serif Display",serif;font-size:20px;color:white;margin-bottom:10px;}
+.exp-desc{font-size:13px;color:rgba(255,255,255,0.45);line-height:1.7;}
+
+/* ── ACCREDITATION ── */
+.accred-sec{background:var(--white);}
+.accred-box{background:linear-gradient(135deg,var(--navy) 0%,#0F2455 100%);border-radius:24px;padding:52px 40px;display:grid;grid-template-columns:1fr;gap:28px;align-items:center;max-width:860px;margin:0 auto;}
+@media(min-width:600px){.accred-box{grid-template-columns:80px 1fr;gap:40px;padding:52px 52px;}}
+.accred-seal{width:80px;height:80px;border-radius:50%;background:rgba(201,168,76,0.1);border:2px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;font-size:34px;flex-shrink:0;margin:0 auto;}
+@media(min-width:600px){.accred-seal{margin:0;}}
+.accred-tag{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.accred-title{font-family:"DM Serif Display",serif;font-size:clamp(20px,3vw,28px);color:white;line-height:1.25;margin-bottom:12px;}
+.accred-desc{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:18px;}
+.accred-pills{display:flex;flex-wrap:wrap;gap:8px;}
+.pill{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.22);border-radius:20px;padding:5px 13px;font-size:11px;font-weight:600;color:var(--gold);}
+
+/* ── CTA ── */
+.cta-sec{background:var(--gold-light);border-top:1px solid #E8D48A;padding:80px 24px;text-align:center;}
+.cta-title{font-family:"DM Serif Display",serif;font-size:clamp(28px,5vw,48px);color:var(--navy);margin-bottom:14px;}
+.cta-sub{font-size:16px;color:var(--gold-dark);margin-bottom:36px;font-weight:300;}
+.cta-acts{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+
+/* ── FOOTER ── */
+footer{background:var(--navy);padding:48px 24px 28px;}
+.footer-inner{max-width:1160px;margin:0 auto;}
+.footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:32px;}
+@media(min-width:768px){.footer-grid{grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;}}
+.footer-brand-name{font-family:"DM Serif Display",serif;font-size:16px;color:white;margin-bottom:4px;}
+.footer-brand-sub{font-size:10px;color:rgba(255,255,255,0.25);margin-bottom:12px;line-height:1.5;}
+.footer-desc{font-size:12px;color:rgba(255,255,255,0.32);line-height:1.7;}
+.footer-col-title{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:12px;}
+.footer-links{display:flex;flex-direction:column;gap:8px;}
+.footer-link{font-size:12px;color:rgba(255,255,255,0.42);text-decoration:none;transition:color 0.15s;}
+.footer-link:hover{color:var(--gold);}
+.footer-bottom{padding-top:22px;border-top:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.footer-copy,.footer-credit{font-size:11px;color:rgba(255,255,255,0.18);}
+
+@media(max-width:768px){
+  .hero-parallax,.parallax-break-img{background-attachment:scroll;}
 }
 </style>
 </head>
-<body><nav>
+<body>
+
+<!-- NAV -->
+<nav>
   <div class="nav-inner">
-    <a class="nav-logo" href="index.html">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="42" height="42" aria-hidden="true" style="flex-shrink:0;">
-  <rect width="48" height="48" rx="10" fill="#0D1B3E"/>
-  <path d="M24 5 L41 5 L41 32 Q24 43 7 32 L7 5 Z" fill="#1A2E6C"/>
-  <path d="M24 7 L39 7 L39 31 Q24 41 9 31 L9 7 Z" fill="none" stroke="#C9A84C" stroke-width="1.2"/>
-  <rect x="22" y="10" width="4" height="16" rx="1.2" fill="#C9A84C"/>
-  <rect x="14" y="16" width="20" height="4" rx="1.2" fill="#C9A84C"/>
-  <line x1="16" y1="32" x2="32" y2="32" stroke="#C9A84C" stroke-width="0.9" opacity="0.7"/>
-  <line x1="16" y1="35" x2="32" y2="35" stroke="#C9A84C" stroke-width="0.9" opacity="0.7"/>
-  <ellipse cx="20" cy="32" rx="2.5" ry="1.8" fill="#C9A84C" opacity="0.85"/>
-  <ellipse cx="28" cy="32" rx="2.5" ry="1.8" fill="#C9A84C" opacity="0.85"/>
-</svg>
-      <div class="nav-logo-text">
-        <span class="nav-logo-name">Catholic Music Academy</span>
-        <span class="nav-logo-sub">Excellence in Sacred Arts</span>
+    <a class="logo" href="index.html">
+      <div class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20">
+          <path d="M7 4 L25 4 L25 22 Q16 28 7 22 Z" fill="none" stroke="#C9A84C" stroke-width="1.2"/>
+          <rect x="14.5" y="7" width="3" height="10" rx="1" fill="#C9A84C"/>
+          <rect x="9" y="11" width="14" height="2.5" rx="1" fill="#C9A84C"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <span class="logo-name">Catholic Music Academy</span>
+        <span class="logo-sub">Excellence in Sacred Arts</span>
       </div>
     </a>
-    <div class="nav-actions">
-      <a class="btn btn-nav" href="apply.html">Apply</a>
-      <a class="btn btn-gold" href="login.html">Student Portal</a>
+    <div class="nav-links">
+      <a class="nl" href="#how">How It Works</a>
+      <a class="nl" href="#programmes">Programmes</a>
+      <a class="nl" href="#portal">Inside the Portal</a>
+      <div class="cw">
+        <button class="nl">Contact &#9662;</button>
+        <div class="cd">
+          <div class="cd-hd">Get in touch</div>
+          <div class="cd-row"><div><div class="cd-lbl">Email</div><div class="cd-val">info@catholicmusicacademy.org</div></div></div>
+          <div class="cd-row"><div><div class="cd-lbl">WhatsApp</div><div class="cd-val">Contact the Academy</div></div></div>
+          <div class="cd-row"><div><div class="cd-lbl">Location</div><div class="cd-val">Ozoro, Delta State, Nigeria</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-acts">
+      <a class="btn btn-outline" href="login.html">Log In</a>
+      <a class="btn btn-gold" href="apply.html">Apply Now</a>
     </div>
   </div>
-</nav><section class="hero">
+</nav>
+
+<!-- SECTION 1: HERO -->
+<section class="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-parallax"></div>
   <div class="hero-glow"></div>
-  <div class="hero-grid-bg"></div>
+  <div class="hero-glow2"></div>
   <div class="hero-inner">
+
+    <!-- Left -->
     <div>
-      <div class="hero-badge"><span class="hero-badge-dot"></span>Catholic Music Academy · Online Learning Portal</div>
-      <h1 class="hero-title">Excellence in<br>Sacred Arts</h1>
-      <div class="hero-divider"></div>
-      <p class="hero-sub">Access your courses, track your progress, complete assessments, and continue your studies — from anywhere.</p>
-      <div class="hero-actions">
-        <a class="btn btn-gold btn-lg" href="login.html">Student Portal →</a>
-        <a class="btn btn-outline-white btn-lg" href="apply.html">Apply for a Programme</a>
+      <div class="hero-tag"><span class="hero-dot"></span>Now Enrolling, Cohort 2026</div>
+      <h1 class="hero-title">Earn a recognised<br>music <em>qualification</em><br>from anywhere.</h1>
+      <ul class="hero-list">
+        <li>Structured video lessons</li>
+        <li>Audio demonstrations and listening exercises</li>
+        <li>Continuous module assessments</li>
+        <li>National certification pathway</li>
+      </ul>
+      <div class="hero-acts">
+        <a class="btn btn-gold" href="apply.html" style="font-size:15px;padding:14px 28px;">Apply Now</a>
+        <a class="btn btn-outline-white" href="#programmes">View Programmes</a>
       </div>
-      <div class="hero-stats">
-        <div><div class="hero-stat-num">100%</div><div class="hero-stat-label">Online Access</div></div>
-        <div><div class="hero-stat-num">∞</div><div class="hero-stat-label">Learn from Anywhere</div></div>
+      <div class="hero-checks">
+        <span class="hero-check">Study Anywhere</span>
+        <span class="hero-check">Ministry Approved</span>
+        <span class="hero-check">Self-Paced Learning</span>
       </div>
     </div>
-    <div class="hero-card">
-      <div class="hero-card-label">Student Portal Preview</div>
-      <div class="portal-preview">
-        <div class="pp-bar">
-          <div class="pp-dot" style="background:#FF5F57;"></div>
-          <div class="pp-dot" style="background:#FFBD2E;margin-left:4px;"></div>
-          <div class="pp-dot" style="background:#28CA41;margin-left:4px;"></div>
-          <div class="pp-url">learn.catholicmusicacademy.org</div>
+
+    <!-- Right: Dashboard Mockup -->
+    <div class="mockup">
+      <div class="mk-topbar">
+        <div class="mk-dots">
+          <div class="mk-dot" style="background:#FF5F57;"></div>
+          <div class="mk-dot" style="background:#FEBC2E;"></div>
+          <div class="mk-dot" style="background:#28C840;"></div>
         </div>
-        <div class="pp-body">
-          <div class="pp-greeting">Student Dashboard</div>
-          <div class="pp-name">Welcome back, Chidinma.</div>
-          <div class="pp-course">COURSE 01 — THEORY OF ANCIENT MUSIC</div>
-          <div class="pp-progress-lbl"><span>Your Progress</span><span>33%</span></div>
-          <div class="pp-prog-bg"><div class="pp-prog-fill"></div></div>
-          <div class="pp-mod done">
-            <div class="pp-mod-num done">✓</div>
-            <div class="pp-mod-title">The Origin of Music</div>
-            <div class="pp-mod-badge done">Complete</div>
+        <div class="mk-title-bar">CMA Student Portal</div>
+      </div>
+      <div class="mk-body">
+        <div class="mk-course-label">Currently Enrolled</div>
+        <div class="mk-course-name" id="mkCourseName">Liturgical Music Foundations</div>
+        <div class="mk-prog-row">
+          <span class="mk-prog-label">Course Progress</span>
+          <span class="mk-prog-num" id="mkProgNum">78%</span>
+        </div>
+        <div class="mk-prog-bar"><div class="mk-prog-fill" id="mkProgFill" style="width:78%"></div></div>
+        <div class="mk-mod-label">Module Progress</div>
+        <div class="mk-mod-list" id="mkModList">
+          <div class="mk-mod-item done">Sacred Music History</div>
+          <div class="mk-mod-item done">Gregorian Chant Fundamentals</div>
+          <div class="mk-mod-item done">Choir Direction Basics</div>
+          <div class="mk-mod-item active">Liturgical Calendar and Music</div>
+          <div class="mk-mod-item lock">Sacred Polyphony</div>
+          <div class="mk-mod-item lock">Final Assessment</div>
+        </div>
+        <div class="mk-next">
+          <div>
+            <div class="mk-next-label">Up Next</div>
+            <div class="mk-next-name" id="mkNextName">Module 4 Quiz</div>
           </div>
-          <div class="pp-mod active">
-            <div class="pp-mod-num active">2</div>
-            <div class="pp-mod-title">Medieval Times & Sacred Rhythm</div>
-            <div class="pp-mod-badge active">▶ Open</div>
-          </div>
-          <div class="pp-mod locked">
-            <div class="pp-mod-num locked">3</div>
-            <div class="pp-mod-title">Evolution of Musical Instruments</div>
-            <div class="pp-mod-badge locked">🔒 Locked</div>
-          </div>
-          <div class="pp-footer">
-            <div class="pp-last-seen">Last active: Today, 10:42am</div>
-            <button class="pp-next-btn">Continue →</button>
-          </div>
+          <button class="mk-next-btn">Start &#8594;</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SECTION 2: TRUST BAR -->
+<div class="trust">
+  <div class="trust-inner">
+    <div class="trust-item"><span>&#127963;</span>Approved by Delta State Ministry of Higher Education</div>
+    <div class="trust-item"><span>&#127891;</span>Certificate of Competence</div>
+    <div class="trust-item"><span>&#127881;</span>National Diploma Pathway</div>
+    <div class="trust-item"><span>&#128218;</span>Online + Physical Examination Model</div>
+  </div>
+</div>
+
+<!-- SECTION 3: HOW IT WORKS -->
+<section class="sec how-sec" id="how">
+  <div class="sec-inner">
+    <div class="how-hd">
+      <div class="label">Your Learning Journey</div>
+      <h2 class="sec-title">How it works</h2>
+      <p class="sec-sub">Six clear steps from application to certification. Structured, tracked, and supported every step of the way.</p>
+    </div>
+    <div class="timeline">
+      <div class="tl-step">
+        <div class="tl-num">1</div>
+        <div class="tl-content">
+          <div class="tl-title">Apply</div>
+          <div class="tl-desc">Submit your application with your musical background and programme choice. No entry exam required.</div>
+        </div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-num">2</div>
+        <div class="tl-content">
+          <div class="tl-title">Get Approved</div>
+          <div class="tl-desc">The Academy reviews your registration, verifies your application, and sets up your student account.</div>
+        </div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-num">3</div>
+        <div class="tl-content">
+          <div class="tl-title">Access Your Courses</div>
+          <div class="tl-desc">Receive your login credentials and gain immediate access to your personalised learning portal.</div>
+        </div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-num">4</div>
+        <div class="tl-content">
+          <div class="tl-title">Study Your Modules</div>
+          <div class="tl-desc">Watch video lessons, listen to audio demonstrations, complete readings, and download supporting materials.</div>
+        </div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-num">5</div>
+        <div class="tl-content">
+          <div class="tl-title">Pass Assessments</div>
+          <div class="tl-desc">Each module ends with an assessment. Pass to unlock the next. Questions are drawn randomly from a question bank.</div>
+        </div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-num">6</div>
+        <div class="tl-content">
+          <div class="tl-title">Get Certified</div>
+          <div class="tl-desc">Complete all online modules, sit your in-person final examination, and receive your Certificate of Competence or National Diploma in Music.</div>
         </div>
       </div>
     </div>
   </div>
-</section><div class="features-strip">
-  <div class="features-inner">
-    <div class="feature-item"><span class="feature-check">✓</span>Structured Courses</div>
-    <div class="feature-item"><span class="feature-check">✓</span>Video Lessons</div>
-    <div class="feature-item"><span class="feature-check">✓</span>Audio Resources</div>
-    <div class="feature-item"><span class="feature-check">✓</span>Assessments</div>
-    <div class="feature-item"><span class="feature-check">✓</span>Progress Tracking</div>
-    <div class="feature-item"><span class="feature-check">✓</span>Learn from Anywhere</div>
-  </div>
-</div><section class="how-section">
-  <div class="how-inner">
-    <div class="how-header">
-      <div class="section-eyebrow">Your Learning Journey</div>
-      <h2 class="section-title">How the Academy works</h2>
-      <p class="section-sub">A structured path from application to certification, built around your studies in sacred music.</p>
-    </div>
-    <div class="how-grid">
-      <div class="how-card">
-        <div class="how-step-circle"><div class="how-step-num">I</div></div>
-        <div class="how-title">Apply</div>
-        <div class="how-desc">Submit your application with your musical background and programme of interest. The Academy reviews enrolments on a cohort basis.</div>
+</section>
+
+<!-- SECTION 4: WHY CMA -->
+<section class="sec why-sec">
+  <div class="sec-inner">
+    <div class="label">Why CMA Online</div>
+    <h2 class="sec-title">Built for how you actually learn</h2>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon">&#127758;</div>
+        <div class="why-title">Learn Anywhere</div>
+        <div class="why-desc">Study from any location at any time. All you need is a phone or computer and an internet connection. No commute. No fixed schedule.</div>
       </div>
-      <div class="how-card">
-        <div class="how-step-circle"><div class="how-step-num">II</div></div>
-        <div class="how-title">Get Access</div>
-        <div class="how-desc">Once approved, you receive your login credentials and are enrolled in your chosen course. Your cohort deadline is set.</div>
+      <div class="why-card">
+        <div class="why-icon">&#128202;</div>
+        <div class="why-title">Structured Learning</div>
+        <div class="why-desc">Modules unlock progressively as you complete each stage. Content is sequenced so each lesson builds on the last, the way serious music education should work.</div>
       </div>
-      <div class="how-card">
-        <div class="how-step-circle"><div class="how-step-num">III</div></div>
-        <div class="how-title">Learn</div>
-        <div class="how-desc">Work through modules in order. Each module contains video lessons, audio examples, lesson notes, and downloadable resources.</div>
-      </div>
-      <div class="how-card">
-        <div class="how-step-circle"><div class="how-step-num">IV</div></div>
-        <div class="how-title">Assess</div>
-        <div class="how-desc">Complete a module assessment after each lesson. Questions are drawn randomly from a question bank — meet the pass mark to advance.</div>
-      </div>
-      <div class="how-card">
-        <div class="how-step-circle"><div class="how-step-num">V</div></div>
-        <div class="how-title">Certify</div>
-        <div class="how-desc">After completing all online modules, sit your final in-person examination. Pass and receive your Catholic Music Academy certificate.</div>
+      <div class="why-card">
+        <div class="why-icon">&#128200;</div>
+        <div class="why-title">Track Your Progress</div>
+        <div class="why-desc">Every lesson completed and every assessment passed is recorded. Your dashboard shows exactly where you are and what comes next.</div>
       </div>
     </div>
   </div>
-</section><section class="programmes-section">
-  <div class="section-inner">
-    <div class="section-eyebrow">Programmes Offered</div>
-    <h2 class="section-title">Current Programmes</h2>
-    <p class="section-sub">Apply for the programme that matches your interests and experience level.</p>
-    <div class="programmes-grid" id="programmesGrid">
-      <div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--muted);font-size:14px;">Loading programmes...</div>
-    </div>
-    <script>
-    (async function(){
-      var SUPA_URL='https://ltqwofagofmvufvqsuyj.supabase.co';
-      var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0cXdvZmFnb2ZtdnVmdnFzdXlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjgyMTgsImV4cCI6MjA5NzMwNDIxOH0.7EkluJspwopQxxQmL7AuYxx4XHgchpYR7tsajyoXHaI';
-      var grid=document.getElementById('programmesGrid');
-      try{
-        var res=await fetch(SUPA_URL+'/rest/v1/course_content?order=course_order.asc,module_index.asc',
-          {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
-        var rows=await res.json();
-        // Deduplicate by course_id, preserve order
-        var seen={},courses=[];
-        rows.forEach(function(r){
-          if(!seen[r.course_id]){
-            seen[r.course_id]={id:r.course_id,title:r.course_title,color:r.course_color||'#0D1B3E',order:r.course_order,count:0};
-            courses.push(seen[r.course_id]);
-          }
-          seen[r.course_id].count++;
-        });
-        if(!courses.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--muted);font-size:14px;">No programmes available yet. Check back soon.</div>';return;}
-        grid.innerHTML=courses.map(function(c,i){
-          return '<div class="programme-card"><div class="prog-card-top" style="background:'+c.color+';"></div>'
-            +'<div class="prog-card-body">'
-            +'<div class="prog-num">'+c.title+'</div>'
-            +'<div class="prog-tags"><span class="prog-tag">'+c.count+' Module'+(c.count!==1?'s':'')+'</span></div>'
-            +'</div></div>';
-        }).join('');
-      }catch(e){
-        grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--muted);font-size:14px;">Programmes loading — please try again shortly.</div>';
-      }
-    })();
-    </script>
+</section>
+
+
+<!-- PARALLAX BREAK -->
+<div class="parallax-break">
+  <div class="parallax-break-img"></div>
+  <div class="parallax-break-overlay"></div>
+  <div class="parallax-break-content">
+    <div class="pb-quote">Study. Progress. Get Certified.</div>
+    <div class="pb-sub">Catholic Music Academy Online, Diocese of Warri</div>
   </div>
-</section><section class="contact-section">
-  <div class="contact-inner">
-    <div class="contact-icon">✉️</div>
-    <h2 class="section-title" style="text-align:center;">Need assistance?</h2>
-    <p class="section-sub" style="margin:12px auto 0;text-align:center;">Contact the Academy for help with your application, login access, or any queries.</p>
-    <div class="contact-cards">
-      <div class="contact-card"><div class="contact-card-icon">📧</div><div class="contact-card-label">Email</div><div class="contact-card-val">info@catholicmusicacademy.org</div></div>
-      <div class="contact-card"><div class="contact-card-icon">📞</div><div class="contact-card-label">Phone / WhatsApp</div><div class="contact-card-val">Contact the Academy</div></div>
+</div>
+
+<!-- SECTION 5: PROGRAMMES -->
+<section class="sec prog-sec" id="programmes">
+  <div class="sec-inner">
+    <div class="prog-hd">
+      <div>
+        <div class="label">Current Programmes</div>
+        <h2 class="sec-title">Choose your path</h2>
+        <p class="sec-sub">Each programme is a structured series of online modules leading to a recognised qualification.</p>
+      </div>
+      <a class="btn btn-navy" href="apply.html">Apply for a Programme</a>
     </div>
-    <p class="contact-note">The Academy is an institution of the Catholic Diocese of Warri, with its main campus in Ozoro, Delta State, Nigeria.<br>Response times are typically within 24 working hours.</p>
+    <div class="prog-grid" id="progGrid">
+      <div class="prog-empty">Loading programmes...</div>
+    </div>
   </div>
-</section><footer>
+</section>
+
+<!-- SECTION 6: INSIDE THE PORTAL -->
+<section class="sec portal-sec" id="portal">
+  <div class="sec-inner">
+    <div class="label">Inside the Student Portal</div>
+    <h2 class="sec-title">See what you are getting into</h2>
+    <p class="sec-sub">A complete online learning environment built specifically for music education at the Catholic Music Academy.</p>
+    <div class="portal-grid">
+
+      <!-- Left: portal mockup -->
+      <div class="portal-mockup">
+        <div class="pm-topbar">
+          <div class="pm-dots">
+            <div class="pm-dot" style="background:#FF5F57;"></div>
+            <div class="pm-dot" style="background:#FEBC2E;"></div>
+            <div class="pm-dot" style="background:#28C840;"></div>
+          </div>
+          <div class="pm-url" id="pmUrl">learn.catholicmusicacademy.org</div>
+        </div>
+        <div class="pm-body" id="pmModList">
+          <div class="pm-mod-card">
+            <div class="pm-mod-icon" style="background:#EEF2FF;">&#127916;</div>
+            <div><div class="pm-mod-title">Sacred Music History</div><div class="pm-mod-meta">Video lesson, 24 min</div></div>
+            <div class="pm-mod-badge done">Complete</div>
+          </div>
+          <div class="pm-mod-card">
+            <div class="pm-mod-icon" style="background:#F0FDF4;">&#127925;</div>
+            <div><div class="pm-mod-title">Gregorian Chant</div><div class="pm-mod-meta">Audio, reading, assessment</div></div>
+            <div class="pm-mod-badge done">Complete</div>
+          </div>
+          <div class="pm-mod-card" style="border:1.5px solid #C9A84C;background:white;">
+            <div class="pm-mod-icon" style="background:#FBF3DF;">&#128221;</div>
+            <div><div class="pm-mod-title">Choir Direction</div><div class="pm-mod-meta">In progress, 2 of 4 sections</div></div>
+            <div class="pm-mod-badge active">Active</div>
+          </div>
+          <div class="pm-mod-card">
+            <div class="pm-mod-icon" style="background:#F7F7F5;">&#128274;</div>
+            <div><div class="pm-mod-title">Liturgical Calendar</div><div class="pm-mod-meta">Unlocks after Module 3</div></div>
+            <div class="pm-mod-badge lock">Locked</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: feature list -->
+      <div class="portal-features">
+        <div class="pf-item">
+          <div class="pf-icon">&#127916;</div>
+          <div>
+            <div class="pf-title">Video Lessons</div>
+            <div class="pf-desc">Embedded lecture videos for every module. Watch at your own pace, as many times as you need.</div>
+          </div>
+        </div>
+        <div class="pf-item">
+          <div class="pf-icon">&#127925;</div>
+          <div>
+            <div class="pf-title">Audio Demonstrations</div>
+            <div class="pf-desc">Listening exercises and audio tracks to develop your ear and support your practical learning.</div>
+          </div>
+        </div>
+        <div class="pf-item">
+          <div class="pf-icon">&#128221;</div>
+          <div>
+            <div class="pf-title">Module Assessments</div>
+            <div class="pf-desc">Each module ends with a randomised assessment. Must pass to proceed. No shortcuts.</div>
+          </div>
+        </div>
+        <div class="pf-item">
+          <div class="pf-icon">&#128200;</div>
+          <div>
+            <div class="pf-title">Progress Tracking</div>
+            <div class="pf-desc">Your dashboard records every lesson and every pass. You always know exactly where you stand.</div>
+          </div>
+        </div>
+        <div class="pf-item">
+          <div class="pf-icon">&#128229;</div>
+          <div>
+            <div class="pf-title">Learning Resources</div>
+            <div class="pf-desc">Downloadable PDFs, sheet music, and handouts available for every module where applicable.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 7: STUDENT EXPERIENCE -->
+<section class="exp-sec">
+  <div class="sec-inner" style="max-width:1160px;margin:0 auto;">
+    <div class="label">The Student Experience</div>
+    <h2 class="sec-title" style="color:white;">Designed around your life</h2>
+    <div class="exp-grid">
+      <div class="exp-card">
+        <div class="exp-icon">&#9203;</div>
+        <div class="exp-title">Learn at Your Pace</div>
+        <div class="exp-desc">No fixed class times. No waiting for others. Move through modules when it suits you, within your cohort deadline.</div>
+      </div>
+      <div class="exp-card">
+        <div class="exp-icon">&#128241;</div>
+        <div class="exp-title">Access on Any Device</div>
+        <div class="exp-desc">The portal works on your phone, tablet, or computer. Your progress syncs automatically across sessions.</div>
+      </div>
+      <div class="exp-card">
+        <div class="exp-icon">&#128336;</div>
+        <div class="exp-title">Continue Where You Stopped</div>
+        <div class="exp-desc">Your session is saved. Come back the next day and pick up exactly where you left off, no re-login friction.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 8: ACCREDITATION -->
+<section class="sec accred-sec">
+  <div class="sec-inner">
+    <div class="label" style="justify-content:center;margin-bottom:32px;">Official Accreditation</div>
+    <div class="accred-box">
+      <div class="accred-seal">&#127963;</div>
+      <div>
+        <div class="accred-tag">Recognised Learning Pathway</div>
+        <div class="accred-title">Approved by the Delta State Ministry of Higher Education</div>
+        <div class="accred-desc">The Catholic Music Academy is approved to award the Certificate of Competence and National Diploma (ND) in Music, in affiliation with Film and Broadcast Academy, Ozoro. Your qualification is nationally recognised.</div>
+        <div class="accred-pills">
+          <span class="pill">Certificate of Competence</span>
+          <span class="pill">National Diploma (ND) in Music</span>
+          <span class="pill">Film and Broadcast Academy, Ozoro</span>
+          <span class="pill">Delta State Ministry of Higher Education</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 9: CTA -->
+<section class="cta-sec">
+  <div style="max-width:560px;margin:0 auto;">
+    <h2 class="cta-title">Begin your music education journey</h2>
+    <p class="cta-sub">Applications are now open for Cohort 2026.</p>
+    <div class="cta-acts">
+      <a class="btn btn-navy" href="apply.html" style="font-size:15px;padding:14px 32px;">Apply Now</a>
+      <a class="btn btn-gold-outline" href="login.html" style="font-size:14px;padding:13px 26px;">Already enrolled? Log In</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
   <div class="footer-inner">
-    <div class="footer-top">
-      <div>
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="42" height="42" aria-hidden="true" style="flex-shrink:0;">
-  <rect width="48" height="48" rx="10" fill="#0D1B3E"/>
-  <path d="M24 5 L41 5 L41 32 Q24 43 7 32 L7 5 Z" fill="#1A2E6C"/>
-  <path d="M24 7 L39 7 L39 31 Q24 41 9 31 L9 7 Z" fill="none" stroke="#C9A84C" stroke-width="1.2"/>
-  <rect x="22" y="10" width="4" height="16" rx="1.2" fill="#C9A84C"/>
-  <rect x="14" y="16" width="20" height="4" rx="1.2" fill="#C9A84C"/>
-  <line x1="16" y1="32" x2="32" y2="32" stroke="#C9A84C" stroke-width="0.9" opacity="0.7"/>
-  <line x1="16" y1="35" x2="32" y2="35" stroke="#C9A84C" stroke-width="0.9" opacity="0.7"/>
-  <ellipse cx="20" cy="32" rx="2.5" ry="1.8" fill="#C9A84C" opacity="0.85"/>
-  <ellipse cx="28" cy="32" rx="2.5" ry="1.8" fill="#C9A84C" opacity="0.85"/>
-</svg><div><div class="footer-brand-name">Catholic Music Academy</div><div class="footer-motto">Excellence in Sacred Arts</div></div></div>
-        <div class="footer-brand-sub">An institution of the Catholic Diocese of Warri · Ozoro, Delta State, Nigeria.</div>
+    <div class="footer-grid">
+      <div style="grid-column:span 2;">
+        <div class="footer-brand-name">Catholic Music Academy Online</div>
+        <div class="footer-brand-sub">Diocese of Warri, Excellence in Sacred Arts, Ozoro, Delta State, Nigeria</div>
+        <div class="footer-desc">Structured, accessible music education, sacred and general, delivered online and nationally recognised.</div>
       </div>
       <div>
-        <div class="footer-col-title">Portal</div>
-        <div class="footer-links-col">
+        <div class="footer-col-title">Platform</div>
+        <div class="footer-links">
+          <a class="footer-link" href="#how">How It Works</a>
+          <a class="footer-link" href="#programmes">Programmes</a>
+          <a class="footer-link" href="#portal">Inside the Portal</a>
+          <a class="footer-link" href="apply.html">Apply Now</a>
           <a class="footer-link" href="login.html">Student Login</a>
-          <a class="footer-link" href="apply.html">Apply for a Programme</a>
-          <a class="footer-link" href="forgot-password.html">Reset Password</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Support</div>
+        <div class="footer-links">
+          <a class="footer-link" href="login.html">Forgot Password</a>
+          <a class="footer-link" href="mailto:info@catholicmusicacademy.org">Email Support</a>
         </div>
       </div>
     </div>
     <div class="footer-bottom">
-      <div class="footer-copy">© 2026 Catholic Music Academy, Diocese of Warri. All rights reserved.</div>
-      <div class="footer-dev">Developed by <span>DaleX</span></div>
+      <div class="footer-copy">&#169; 2026 Catholic Music Academy, Diocese of Warri. All rights reserved.</div>
+      <div class="footer-credit">Online Learning Portal, Built by DaleX</div>
     </div>
   </div>
 </footer>
+
+<script>
+(async function(){
+  var SUPA_URL = 'https://ltqwofagofmvufvqsuyj.supabase.co';
+  var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0cXdvZmFnb2ZtdnVmdnFzdXlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjgyMTgsImV4cCI6MjA5NzMwNDIxOH0.7EkluJspwopQxxQmL7AuYxx4XHgchpYR7tsajyoXHaI';
+
+  try {
+    var res = await fetch(SUPA_URL + '/rest/v1/course_content?order=course_order.asc,module_index.asc',
+      { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } });
+    var rows = await res.json();
+
+    // Build unique courses
+    var seen = {}, courses = [];
+    rows.forEach(function(r) {
+      if (!seen[r.course_id]) {
+        seen[r.course_id] = { id: r.course_id, title: r.course_title, color: r.course_color || '#0D1B3E', count: 0 };
+        courses.push(seen[r.course_id]);
+      }
+      seen[r.course_id].count++;
+    });
+
+    // Update hero mockup course name
+    var mkn = document.getElementById('mkCourseName');
+    if (mkn && courses.length) mkn.textContent = courses[0].title;
+
+    // Programmes grid
+    var grid = document.getElementById('progGrid');
+    if (!grid) return;
+    if (!courses.length) {
+      grid.innerHTML = '<div class="prog-empty">No programmes published yet. Check back soon.</div>';
+      return;
+    }
+
+    var META = [
+      { duration: 'Self-paced', mode: 'Online + In-person exam', cert: 'Certificate of Competence' },
+      { duration: 'Self-paced', mode: 'Online + In-person exam', cert: 'Certificate of Competence' },
+      { duration: 'Self-paced', mode: 'Online + In-person exam', cert: 'National Diploma (ND) in Music' }
+    ];
+
+    grid.innerHTML = courses.map(function(c, i) {
+      var m = META[i] || META[0];
+      return '<div class="prog-card">'
+        + '<div class="prog-band" style="background:' + c.color + '"></div>'
+        + '<div class="prog-body">'
+        + '<div class="prog-num">Programme ' + String(i + 1).padStart(2, '0') + '</div>'
+        + '<div class="prog-name">' + c.title + '</div>'
+        + '<div class="prog-desc">A structured programme in music delivered online by the Catholic Music Academy, Diocese of Warri.</div>'
+        + '<div class="prog-meta">'
+        + '<div class="prog-meta-row"><span class="prog-meta-key">Duration</span>' + m.duration + '</div>'
+        + '<div class="prog-meta-row"><span class="prog-meta-key">Delivery</span>' + m.mode + '</div>'
+        + '<div class="prog-meta-row"><span class="prog-meta-key">Certification</span>' + m.cert + '</div>'
+        + '</div>'
+        + '<div class="prog-foot">'
+        + '<span class="prog-tag">' + c.count + ' Module' + (c.count !== 1 ? 's' : '') + '</span>'
+        + '<a class="prog-link" href="apply.html">Apply &#8594;</a>'
+        + '</div></div></div>';
+    }).join('');
+
+  } catch(e) {
+    var grid = document.getElementById('progGrid');
+    if (grid) grid.innerHTML = '<div class="prog-empty">Programmes loading. Please refresh shortly.</div>';
+  }
+
+  // ── SITE SETTINGS: populate both mockups from admin ──
+  var SS_ICONS_HERO = ['&#127916;','&#127925;','&#128221;','&#127926;','&#127881;','&#127891;'];
+  var SS_ICONS_PORTAL = ['&#127916;','&#127925;','&#128221;','&#128274;'];
+  var SS_PORTAL_BG = ['#EEF2FF','#F0FDF4','#FBF3DF','#F7F7F5'];
+
+  function ssStatusIcon(s){ return s==='done'?'&#9989;':s==='active'?'&#127381;':s==='lock'?'&#128274;':''; }
+  function ssStatusClass(s){ return s==='done'?'done':s==='active'?'active':'lock'; }
+  function ssStatusLabel(s){ return s==='done'?'Complete':s==='active'?'Active':'Locked'; }
+  function ssActiveBorder(s){ return s==='active'?'border:1.5px solid #C9A84C;background:white;':''; }
+
+  try {
+    var ssRes = await fetch(SUPA_URL+'/rest/v1/site_settings?key=like.mockup_*&select=key,value',
+      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    var ssRows = await ssRes.json();
+    var ss = {};
+    (ssRows||[]).forEach(function(r){ ss[r.key]=r.value; });
+
+    // Hero mockup
+    var mkn=document.getElementById('mkCourseName');
+    var mkp=document.getElementById('mkProgNum');
+    var mkf=document.getElementById('mkProgFill');
+    var mknx=document.getElementById('mkNextName');
+    var mkml=document.getElementById('mkModList');
+
+    if(mkn && ss['mockup_hero_course']) mkn.textContent = ss['mockup_hero_course'];
+    var pct = parseInt(ss['mockup_hero_progress'])||78;
+    if(mkp) mkp.textContent = pct+'%';
+    if(mkf) mkf.style.width = pct+'%';
+    if(mknx && ss['mockup_hero_next']) mknx.textContent = ss['mockup_hero_next'];
+
+    // Hero module rows
+    var heroMods = [];
+    for(var i=0;i<6;i++){
+      var t=ss['mockup_hero_mod'+i+'_title'];
+      var st=ss['mockup_hero_mod'+i+'_status'];
+      if(t||st) heroMods.push({title:t||'Module '+(i+1),status:st||'lock'});
+    }
+    if(heroMods.length && mkml){
+      mkml.innerHTML = heroMods.filter(function(m){return m.status!=='hidden';}).map(function(m,i){
+        return '<div class="mk-mod-item '+ssStatusClass(m.status)+'">'+m.title+'</div>';
+      }).join('');
+    }
+
+    // Portal URL
+    var pmUrl=document.getElementById('pmUrl');
+    if(pmUrl && ss['mockup_portal_url']) pmUrl.textContent = ss['mockup_portal_url'];
+
+    // Portal module rows
+    var portalMods = [];
+    for(var j=0;j<4;j++){
+      var pt=ss['mockup_portal_mod'+j+'_title'];
+      var pm=ss['mockup_portal_mod'+j+'_meta'];
+      var ps=ss['mockup_portal_mod'+j+'_status'];
+      if(pt||pm||ps) portalMods.push({title:pt||'Module '+(j+1),meta:pm||'',status:ps||'lock'});
+    }
+    if(portalMods.length){
+      var pmList=document.getElementById('pmModList');
+      if(pmList){
+        pmList.innerHTML = portalMods.filter(function(m){return m.status!=='hidden';}).map(function(m,j){
+          return '<div class="pm-mod-card" style="'+ssActiveBorder(m.status)+'">'
+            +'<div class="pm-mod-icon" style="background:'+SS_PORTAL_BG[j%SS_PORTAL_BG.length]+'">'+(SS_ICONS_PORTAL[j%SS_ICONS_PORTAL.length])+'</div>'
+            +'<div><div class="pm-mod-title">'+m.title+'</div><div class="pm-mod-meta">'+m.meta+'</div></div>'
+            +'<div class="pm-mod-badge '+ssStatusClass(m.status)+'">'+ssStatusLabel(m.status)+'</div>'
+            +'</div>';
+        }).join('');
+      }
+    }
+  } catch(ssE) {
+    // Silently fail — placeholders already in HTML
+  }
+
+})();
+</script>
 </body>
 </html>
