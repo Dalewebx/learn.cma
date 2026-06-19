@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<meta name="description" content="Earn a recognised music qualification online. Catholic Music Academy, approved by the Delta State Ministry of Higher Education. Certificate of Competence and National Diploma in Music."/>
-<meta property="og:title" content="Catholic Music Academy Online — Earn a Recognised Music Qualification"/>
+<meta name="description" content="Earn a recognised music qualification online. Music Academy, Catholic Diocese of Warri, approved by the Delta State Ministry of Higher Education. Certificate of Competence and National Diploma in Music."/>
+<meta property="og:title" content="Music Academy, Catholic Diocese of Warri — Earn a Recognised Music Qualification"/>
 <meta property="og:description" content="Structured video lessons, assessments, and a certification pathway. Study from anywhere."/>
-<title>Catholic Music Academy Online — Study. Progress. Get Certified.</title>
+<title>Music Academy, Catholic Diocese of Warri — Study. Progress. Get Certified.</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDxwYXRoIGQ9Ik03IDQgTDI1IDQgTDI1IDIyIFExNiAyOCA3IDIyIFoiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0M5QTg0QyIgc3Ryb2tlLXdpZHRoPSIxLjIiLz4KICA8cmVjdCB4PSIxNC41IiB5PSI3IiB3aWR0aD0iMyIgaGVpZ2h0PSIxMCIgcng9IjEiIGZpbGw9IiNDOUE4NEMiLz4KICA8cmVjdCB4PSI5IiB5PSIxMSIgd2lkdGg9IjE0IiBoZWlnaHQ9IjIuNSIgcng9IjEiIGZpbGw9IiNDOUE4NEMiLz4KPC9zdmc+"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet"/>
 <style>
@@ -46,7 +46,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);position:stick
 .logo-sub{font-size:9px;color:var(--muted);letter-spacing:0.3px;display:none;}
 @media(min-width:480px){.logo-sub{display:block;}}
 .nav-links{display:none;align-items:center;gap:2px;}
-@media(min-width:860px){.nav-links{display:flex;}}
+@media(min-width:768px){.nav-links{display:flex;}}
 .nl{font-size:13px;color:var(--muted);text-decoration:none;padding:7px 12px;border-radius:8px;font-weight:500;transition:all 0.14s;background:none;border:none;font-family:"DM Sans",sans-serif;cursor:pointer;}
 .nl:hover{color:var(--navy);background:var(--navy-pale);}
 /* Contact dropdown */
@@ -112,12 +112,18 @@ nav{background:var(--white);border-bottom:1px solid var(--border);position:stick
 .mk-next-btn{background:var(--gold);color:var(--navy);border:none;border-radius:7px;padding:7px 13px;font-size:11px;font-weight:700;cursor:pointer;font-family:"DM Sans",sans-serif;}
 
 /* ── TRUST BAR ── */
-.trust{background:var(--gray);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.trust{background:var(--gray);border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;}
 .trust-inner{max-width:1160px;margin:0 auto;padding:0 24px;display:flex;align-items:stretch;overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .trust-item{display:flex;align-items:center;gap:8px;padding:18px 28px 18px 0;font-size:12px;font-weight:700;color:var(--navy);white-space:nowrap;border-right:1px solid var(--border);flex-shrink:0;}
 .trust-item:last-child{border-right:none;}
 .trust-item span{color:var(--gold);font-size:15px;}
 
+
+/* TRUST SCROLL FADE */
+.trust-fade{position:absolute;top:0;right:0;bottom:0;width:56px;background:linear-gradient(to right,transparent,var(--gray));pointer-events:none;z-index:2;}
+.trust-hint{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--muted);font-weight:600;letter-spacing:0.5px;white-space:nowrap;animation:nudge 2s ease-in-out infinite;z-index:3;}
+@keyframes nudge{0%,100%{transform:translateY(-50%) translateX(0)}50%{transform:translateY(-50%) translateX(4px)}}
+@media(min-width:900px){.trust-fade,.trust-hint{display:none;}}
 
 /* PARALLAX BREAK */
 .parallax-break{position:relative;min-height:340px;display:flex;align-items:center;justify-content:center;overflow:hidden;width:100%;max-width:100%;}
@@ -272,6 +278,8 @@ footer{background:var(--navy);padding:48px 24px 28px;}
   /* NAV */
   .nav-inner{height:56px;padding:0 16px;}
   .logo-name{font-size:13px;}
+  .nav-acts .btn-outline{font-size:11px;padding:7px 10px;border-radius:7px;} /* compact Log In */
+  .nav-acts .btn-gold{font-size:11px;padding:7px 12px;border-radius:7px;} /* compact Apply Now */
 
   /* HERO */
   .hero{min-height:auto;padding-bottom:0;}
@@ -356,7 +364,13 @@ footer{background:var(--navy);padding:48px 24px 28px;}
   .footer-grid{grid-template-columns:1fr;gap:24px;}
   .footer-grid > div:first-child{grid-column:auto;}
 
-  /* PARALLAX BREAK */
+  /* TRUST SCROLL FADE */
+.trust-fade{position:absolute;top:0;right:0;bottom:0;width:56px;background:linear-gradient(to right,transparent,var(--gray));pointer-events:none;z-index:2;}
+.trust-hint{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--muted);font-weight:600;letter-spacing:0.5px;white-space:nowrap;animation:nudge 2s ease-in-out infinite;z-index:3;}
+@keyframes nudge{0%,100%{transform:translateY(-50%) translateX(0)}50%{transform:translateY(-50%) translateX(4px)}}
+@media(min-width:900px){.trust-fade,.trust-hint{display:none;}}
+
+/* PARALLAX BREAK */
   .parallax-break{min-height:220px;}
   .pb-quote{font-size:20px;}
 }
@@ -418,7 +432,7 @@ footer{background:var(--navy);padding:48px 24px 28px;}
           <div class="cd-hd">Get in touch</div>
           <div class="cd-row"><div><div class="cd-lbl">Email</div><div class="cd-val" id="cdEmail">info@catholicmusicacademy.org</div></div></div>
           <div class="cd-row"><div><div class="cd-lbl">WhatsApp</div><div class="cd-val" id="cdWhatsApp">Contact the Academy</div></div></div>
-          <div class="cd-row"><div><div class="cd-lbl">Location</div><div class="cd-val" id="cdLocation">Ozoro, Delta State, Nigeria</div></div></div>
+          <div class="cd-row"><div><div class="cd-lbl">Location</div><div class="cd-val" id="cdLocation">Catholic Diocese of Warri, Ozoro, Delta State</div></div></div>
         </div>
       </div>
     </div>
@@ -439,7 +453,7 @@ footer{background:var(--navy);padding:48px 24px 28px;}
 
     <!-- Left -->
     <div>
-      <div class="hero-tag"><span class="hero-dot"></span>Now Enrolling, Cohort 2026</div>
+      <div class="hero-tag"><span class="hero-dot"></span>CMA Online Portal</div>
       <h1 class="hero-title">Earn a recognised<br>music <em>qualification</em><br>from anywhere.</h1>
       <ul class="hero-list">
         <li>Structured video lessons</li>
@@ -500,6 +514,8 @@ footer{background:var(--navy);padding:48px 24px 28px;}
 
 <!-- SECTION 2: TRUST BAR -->
 <div class="trust">
+  <div class="trust-fade"></div>
+  <div class="trust-hint">scroll ›</div>
   <div class="trust-inner">
     <div class="trust-item"><span>&#127963;</span>Approved by Delta State Ministry of Higher Education</div>
     <div class="trust-item"><span>&#127891;</span>Certificate of Competence</div>
@@ -595,7 +611,7 @@ footer{background:var(--navy);padding:48px 24px 28px;}
   <div class="parallax-break-overlay"></div>
   <div class="parallax-break-content">
     <div class="pb-quote">Study. Progress. Get Certified.</div>
-    <div class="pb-sub">Catholic Music Academy Online, Diocese of Warri</div>
+    <div class="pb-sub">Music Academy, Catholic Diocese of Warri</div>
   </div>
 </div>
 
@@ -735,7 +751,7 @@ footer{background:var(--navy);padding:48px 24px 28px;}
       <div>
         <div class="accred-tag">Recognised Learning Pathway</div>
         <div class="accred-title">Approved by the Delta State Ministry of Higher Education</div>
-        <div class="accred-desc">The Catholic Music Academy is approved to award the Certificate of Competence and National Diploma (ND) in Music, in affiliation with Film and Broadcast Academy, Ozoro. Your qualification is nationally recognised.</div>
+        <div class="accred-desc">The Music Academy, Catholic Diocese of Warri, is approved to award the Certificate of Competence and National Diploma (ND) in Music, in affiliation with Film and Broadcast Academy, Ozoro. Your qualification is nationally recognised.</div>
         <div class="accred-pills">
           <span class="pill">Certificate of Competence</span>
           <span class="pill">National Diploma (ND) in Music</span>
@@ -751,7 +767,7 @@ footer{background:var(--navy);padding:48px 24px 28px;}
 <section class="cta-sec">
   <div style="max-width:560px;margin:0 auto;">
     <h2 class="cta-title">Begin your music education journey</h2>
-    <p class="cta-sub">Applications are now open for Cohort 2026.</p>
+    <p class="cta-sub">Applications are open. Catholic Diocese of Warri.</p>
     <div class="cta-acts">
       <a class="btn btn-navy" href="apply.html" style="font-size:15px;padding:14px 32px;">Apply Now</a>
       <a class="btn btn-gold-outline" href="login.html" style="font-size:14px;padding:13px 26px;">Already enrolled? Log In</a>
@@ -765,7 +781,7 @@ footer{background:var(--navy);padding:48px 24px 28px;}
     <div class="footer-grid">
       <div style="grid-column:span 2;">
         <div class="footer-brand-name">Catholic Music Academy Online</div>
-        <div class="footer-brand-sub">Diocese of Warri, Excellence in Sacred Arts, Ozoro, Delta State, Nigeria</div>
+        <div class="footer-brand-sub">Catholic Diocese of Warri, Excellence in Sacred Arts, Ozoro, Delta State, Nigeria</div>
         <div class="footer-desc">Structured, accessible music education, sacred and general, delivered online and nationally recognised.</div>
       </div>
       <div>
@@ -787,8 +803,8 @@ footer{background:var(--navy);padding:48px 24px 28px;}
       </div>
     </div>
     <div class="footer-bottom">
-      <div class="footer-copy">&#169; 2026 Catholic Music Academy, Diocese of Warri. All rights reserved.</div>
-      <div class="footer-credit">Online Learning Portal, Built by DaleX</div>
+      <div class="footer-copy">&#169; 2026 Music Academy, Catholic Diocese of Warri. All rights reserved.</div>
+      <div class="footer-credit">CMA Online Learning Portal, Built by DaleX</div>
     </div>
   </div>
 </footer>
@@ -838,7 +854,7 @@ footer{background:var(--navy);padding:48px 24px 28px;}
         + '<div class="prog-body">'
         + '<div class="prog-num">Programme ' + String(i + 1).padStart(2, '0') + '</div>'
         + '<div class="prog-name">' + c.title + '</div>'
-        + '<div class="prog-desc">A structured programme in music delivered online by the Catholic Music Academy, Diocese of Warri.</div>'
+        + '<div class="prog-desc">A structured programme in music delivered online by the Music Academy, Catholic Diocese of Warri.</div>'
         + '<div class="prog-meta">'
         + '<div class="prog-meta-row"><span class="prog-meta-key">Duration</span>' + m.duration + '</div>'
         + '<div class="prog-meta-row"><span class="prog-meta-key">Delivery</span>' + m.mode + '</div>'
