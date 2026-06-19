@@ -4,284 +4,224 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Apply — Catholic Music Academy</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTUiIGZpbGw9IndoaXRlIiBzdHJva2U9IiMxQTJFNkMiIHN0cm9rZS13aWR0aD0iMiIvPgogIDxjaXJjbGUgY3g9IjE2IiBjeT0iMTYiIHI9IjEyIiBmaWxsPSIjZjhmNmYwIiBzdHJva2U9IiMxQTJFNkMiIHN0cm9rZS13aWR0aD0iMC44Ii8+CiAgPGcgc3Ryb2tlPSIjMUEyRTZDIiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zIj4KICAgIDxsaW5lIHgxPSI4IiB5MT0iMTAiIHgyPSIyNCIgeTI9IjEwIi8+CiAgICA8bGluZSB4MT0iOCIgeTE9IjEyIiB4Mj0iMjQiIHkyPSIxMiIvPgogICAgPGxpbmUgeDE9IjgiIHkxPSIxNCIgeDI9IjI0IiB5Mj0iMTQiLz4KICAgIDxsaW5lIHgxPSI4IiB5MT0iMTYiIHgyPSIyNCIgeTI9IjE2Ii8+CiAgICA8bGluZSB4MT0iOCIgeTE9IjE4IiB4Mj0iMjQiIHkyPSIxOCIvPgogIDwvZz4KICA8dGV4dCB4PSI4IiB5PSIyMCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjMUEyRTZDIj7wnYSePC90ZXh0PgogIDxlbGxpcHNlIGN4PSIyMCIgY3k9IjkiIHJ4PSIzIiByeT0iMy41IiBmaWxsPSIjZjVkNWIwIi8+CiAgPHBhdGggZD0iTTE2IDEzIFExOCAxMiAyMCAxMiBRMjIgMTIgMjQgMTMgTDI1IDIyIEwxNSAyMiBaIiBmaWxsPSIjMUEyRTZDIi8+CiAgPHBhdGggZD0iTTEwIDIwIFExNiAyNCAyMiAyMCBMMjIgMjYgUTE2IDMwIDEwIDI2IFoiIGZpbGw9IiMxQTJFNkMiLz4KICA8dGV4dCB4PSIxNCIgeT0iMjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzZXJpZiIgZm9udC1zaXplPSIzLjUiIGZpbGw9IiNDOUE4NEMiPkV4Y2VsbGVuY2U8L3RleHQ+Cjwvc3ZnPg=="/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --navy:#0D1B3E;--navy-mid:#1A2E6C;--navy-light:#EEF2FF;--navy-pale:#F4F6FF;
-  --blue:#1A2E6C;--blue-mid:#2B47A8;--blue-light:#EEF2FF;--blue-pale:#F4F6FF;
-  --gold:#C9A84C;--gold-light:#F5E6C0;--gold-dark:#9A7A2E;
-  --amber:#C9A84C;--amber-light:#F5E6C0;--amber-dark:#9A7A2E;
-  --cream:#FAFAF7;
-  --text:#0F172A;--muted:#64748B;--dim:#94A3B8;--border:#E2E8F0;
-  --surface:#FAFAF7;--white:#FFFFFF;--ok:#16A34A;--ok-light:#DCFCE7;
+  --navy:#0D1B3E;--navy-mid:#1A2E6C;--navy-pale:#F0F3FF;
+  --gold:#C9A84C;--gold-light:#FBF3DF;--gold-dark:#9A7A2E;
+  --white:#FFFFFF;--surface:#F7F7F5;--border:#E2E8F0;
+  --text:#0F172A;--muted:#64748B;--dim:#94A3B8;
+  --ok:#16A34A;--ok-light:#DCFCE7;--ok-bg:#F0FDF4;
   --danger:#DC2626;--danger-light:#FEE2E2;
 }
 html{scroll-behavior:smooth;}
-body{background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
-nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:100;}
-.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.nav-icon{width:36px;height:36px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--white);flex-shrink:0;}
-.nav-name{font-family:'DM Serif Display',serif;font-size:17px;color:var(--blue);}
-.nav-sub{font-size:10px;color:var(--muted);letter-spacing:0.4px;margin-top:1px;}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:all 0.18s;text-decoration:none;}
-.btn-outline{background:none;border:1.5px solid var(--border);color:var(--text);padding:9px 20px;font-size:13px;}
-.btn-outline:hover{border-color:var(--blue);color:var(--blue);}
-.btn-primary{background:var(--navy);color:var(--white);padding:14px 32px;font-size:15px;border-radius:11px;width:100%;}
-.btn-primary:hover{background:var(--navy-mid);}
-.btn-primary:disabled{opacity:0.45;cursor:not-allowed;}
-.page-head{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);padding:56px 32px 52px;text-align:center;}
-.page-head-eyebrow{font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:12px;}
-.page-head-title{font-family:'DM Serif Display',serif;font-size:clamp(30px,5vw,48px);color:var(--white);margin-bottom:10px;line-height:1.1;}
-.page-head-sub{font-size:15px;color:rgba(255,255,255,0.68);line-height:1.65;max-width:480px;margin:0 auto;}
-.apply-body{max-width:760px;margin:0 auto;padding:40px 24px 64px;}
-.steps{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:36px;flex-wrap:wrap;gap:4px;}
-.step{display:flex;align-items:center;gap:8px;}
-.step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;transition:all 0.2s;}
-.step-num.active{background:var(--navy);color:var(--white);}
-.step-num.done{background:var(--ok);color:var(--white);}
-.step-num.pending{background:var(--border);color:var(--muted);}
-.step-label{font-size:12px;font-weight:600;color:var(--muted);}
-.step-label.active{color:var(--navy);}
-.step-label.done{color:var(--ok);}
-.step-connector{width:32px;height:2px;background:var(--border);margin:0 4px;flex-shrink:0;transition:background 0.3s;}
-.step-connector.done{background:var(--ok);}
-.card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:20px;}
-.card-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:6px;}
-.card-sub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.55;}
-.field{margin-bottom:18px;}
-.field-label{font-size:12px;font-weight:700;color:var(--text);display:block;margin-bottom:6px;}
-.field-label .req{color:var(--danger);}
-.field-input,.field-select,.field-textarea{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 15px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;background:var(--white);}
-.field-input:focus,.field-select:focus,.field-textarea:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(13,27,62,0.07);}
-.field-input::placeholder,.field-textarea::placeholder{color:var(--dim);}
-.field-textarea{min-height:90px;resize:vertical;}
-.field-hint{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.5;}
-.field-err{font-size:11px;color:var(--danger);margin-top:4px;display:none;}
-.field-input.invalid,.field-select.invalid,.field-textarea.invalid{border-color:var(--danger);}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+body{background:var(--surface);color:var(--text);font-family:"DM Sans",sans-serif;min-height:100vh;}
+
+/* NAV */
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo-icon{width:34px;height:34px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.nav-logo-name{font-family:"DM Serif Display",serif;font-size:15px;color:var(--navy);}
+.nav-back{font-size:13px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:5px;font-weight:500;}
+.nav-back:hover{color:var(--navy);}
+
+/* LAYOUT */
+.apply-wrap{max-width:600px;margin:0 auto;padding:40px 20px 80px;}
+
+/* PROGRESS */
+.progress-wrap{display:flex;align-items:center;margin-bottom:36px;}
+.step-item{display:flex;align-items:center;gap:8px;flex:1;}
+.step-item:last-child{flex:0;}
+.step-circle{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--muted);flex-shrink:0;transition:all 0.2s;}
+.step-circle.active{border-color:var(--navy);background:var(--navy);color:white;}
+.step-circle.done{border-color:var(--ok);background:var(--ok);color:white;}
+.step-name{font-size:11px;font-weight:600;color:var(--dim);white-space:nowrap;}
+.step-name.active{color:var(--navy);}
+.step-name.done{color:var(--ok);}
+.step-line{flex:1;height:2px;background:var(--border);margin:0 8px;border-radius:2px;transition:background 0.3s;}
+.step-line.done{background:var(--ok);}
+
+/* CARD */
+.card{background:var(--white);border-radius:16px;border:1px solid var(--border);padding:28px 24px;margin-bottom:16px;}
+.card-title{font-family:"DM Serif Display",serif;font-size:22px;color:var(--navy);margin-bottom:4px;}
+.card-sub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6;}
+
+/* FORM */
+.field-group{margin-bottom:16px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:480px){.field-row{grid-template-columns:1fr;}}
+.field-label{font-size:12px;font-weight:700;color:var(--text);display:block;margin-bottom:5px;letter-spacing:0.2px;}
+.req{color:var(--danger);}
+.field-input,.field-select,.field-textarea{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:13px 15px;font-size:14px;font-family:"DM Sans",sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;background:var(--white);}
+.field-input:focus,.field-select:focus,.field-textarea:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(13,27,62,0.06);}
+.field-input::placeholder{color:var(--dim);}
+.field-input.invalid,.field-select.invalid{border-color:var(--danger);}
+.field-err{display:none;font-size:11px;color:var(--danger);margin-top:4px;}
+
+/* PASSWORD */
 .pass-wrap{position:relative;}
-.pass-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:4px;}
-.prog-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.prog-option{border:1.5px solid var(--border);border-radius:11px;padding:14px 16px;cursor:pointer;transition:all 0.15s;position:relative;}
-.prog-option:hover{border-color:var(--blue-mid);}
+.pass-toggle{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:4px;}
+.strength-bar-bg{height:3px;background:var(--border);border-radius:2px;margin-top:6px;overflow:hidden;}
+.strength-bar{height:100%;width:0;border-radius:2px;transition:all 0.3s;}
+.strength-label{font-size:11px;color:var(--muted);margin-top:4px;}
+
+/* ACCOUNT RECOVERY ACCORDION */
+.recovery-toggle{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;margin-bottom:0;user-select:none;transition:border-color 0.2s;}
+.recovery-toggle:hover{border-color:var(--navy);}
+.recovery-toggle-left{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--navy);}
+.recovery-toggle-icon{font-size:16px;}
+.recovery-toggle-arrow{font-size:11px;color:var(--muted);transition:transform 0.2s;}
+.recovery-toggle.open .recovery-toggle-arrow{transform:rotate(180deg);}
+.recovery-body{display:none;padding:16px;background:var(--surface);border:1.5px solid var(--border);border-top:none;border-radius:0 0 10px 10px;margin-bottom:0;}
+.recovery-body.open{display:block;}
+.recovery-note{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;padding:10px 12px;background:var(--gold-light);border-radius:8px;}
+
+/* PROGRAMMES */
+.prog-grid{display:grid;grid-template-columns:1fr;gap:10px;}
+.prog-option{border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:12px;}
+.prog-option:hover{border-color:var(--navy);}
 .prog-option.selected{border-color:var(--navy);background:var(--navy-pale);}
-.prog-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:var(--white);float:right;transition:all 0.15s;}
-.prog-option.selected .prog-check{background:var(--navy);border-color:var(--navy);}
-.prog-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;padding-right:24px;}
-.prog-meta{font-size:11px;color:var(--muted);}
-.bg-opts{display:flex;flex-direction:column;gap:8px;}
-.bg-opt{display:flex;align-items:center;gap:10px;padding:11px 15px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.15s;}
-.bg-opt:hover{border-color:var(--blue-mid);}
+.prog-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent;flex-shrink:0;transition:all 0.15s;}
+.prog-option.selected .prog-check{background:var(--navy);border-color:var(--navy);color:white;}
+.prog-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.prog-title{font-size:14px;font-weight:600;color:var(--text);}
+
+/* BACKGROUND OPTIONS */
+.bg-options{display:flex;flex-direction:column;gap:8px;}
+.bg-opt{border:1.5px solid var(--border);border-radius:10px;padding:13px 14px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:10px;}
+.bg-opt:hover{border-color:var(--navy);}
 .bg-opt.selected{border-color:var(--navy);background:var(--navy-pale);}
-.bg-radio{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.bg-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
 .bg-opt.selected .bg-radio{border-color:var(--navy);background:var(--navy);}
 .bg-radio-dot{width:6px;height:6px;border-radius:50%;background:white;display:none;}
 .bg-opt.selected .bg-radio-dot{display:block;}
-.bg-opt-text{font-size:13px;color:var(--text);}
-.payment-box{background:var(--navy-pale);border:1.5px solid var(--navy-light);border-radius:14px;padding:22px 24px;margin-bottom:20px;}
-.payment-box-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:6px;}
-.payment-detail{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);}
-.payment-detail:last-of-type{border-bottom:none;}
-.payment-detail-label{font-size:12px;color:var(--muted);}
-.payment-detail-val{font-size:13px;font-weight:700;color:var(--text);}
-.payment-detail-val.highlight{color:var(--gold-dark);font-size:15px;font-weight:700;}
-.upload-box{border:2px dashed var(--border);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--surface);}
-.upload-box:hover,.upload-box.over{border-color:var(--blue);background:var(--blue-pale);}
-.upload-box.has-file{border-color:var(--ok);background:var(--ok-light);border-style:solid;}
-.upload-icon{font-size:32px;margin-bottom:10px;}
-.upload-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.bg-text{font-size:13px;color:var(--text);}
+
+/* PAYMENT SECTION */
+.payment-box{background:var(--gold-light);border:1.5px solid #E8D48A;border-radius:12px;padding:18px 20px;margin-bottom:20px;}
+.payment-box-title{font-size:12px;font-weight:700;color:var(--gold-dark);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:12px;}
+.payment-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(201,168,76,0.2);}
+.payment-row:last-child{border-bottom:none;}
+.payment-key{font-size:12px;color:var(--gold-dark);}
+.payment-val{font-size:13px;font-weight:700;color:var(--navy);}
+
+/* UPLOAD */
+.upload-box{border:2px dashed var(--border);border-radius:12px;padding:32px 20px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.upload-box:hover,.upload-box.over{border-color:var(--navy);background:var(--navy-pale);}
+.upload-box.has-file{border-color:var(--ok);border-style:solid;background:var(--ok-bg);}
+.upload-icon{font-size:28px;margin-bottom:8px;}
+.upload-title{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:4px;}
 .upload-sub{font-size:12px;color:var(--muted);}
-.upload-file-name{font-size:13px;font-weight:600;color:var(--ok);margin-top:8px;}
-#fileInput{display:none;}
-.alert{border-radius:10px;padding:14px 18px;font-size:13px;margin-bottom:20px;display:flex;align-items:flex-start;gap:10px;line-height:1.55;}
-.alert-info{background:var(--blue-light);color:var(--blue);border:1px solid #C7D2FE;}
-.alert-warn{background:var(--amber-light);color:var(--amber-dark);border:1px solid #FDE68A;}
-.review-row{display:flex;gap:16px;padding:10px 0;border-bottom:1px solid var(--surface);flex-wrap:wrap;}
-.review-label{font-size:12px;font-weight:700;color:var(--muted);width:140px;flex-shrink:0;padding-top:1px;}
-.review-val{font-size:13px;color:var(--text);flex:1;line-height:1.55;}
-.success-wrap{text-align:center;padding:32px 16px;}
-.success-icon{font-size:64px;margin-bottom:20px;}
-.success-title{font-family:'DM Serif Display',serif;font-size:36px;color:var(--text);margin-bottom:10px;}
-.success-sub{font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:20px;max-width:460px;margin-left:auto;margin-right:auto;}
-.success-ref{display:inline-block;background:var(--blue-pale);border:1px solid var(--border);border-radius:10px;padding:10px 20px;font-size:14px;font-weight:700;color:var(--blue);margin-bottom:24px;letter-spacing:0.5px;}
-.next-steps{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:24px 28px;text-align:left;margin-bottom:24px;}
-.next-steps-title{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
-.ns-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--surface);}
-.ns-item:last-child{border-bottom:none;}
-.ns-num{width:24px;height:24px;border-radius:50%;background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
-.ns-text{font-size:13px;color:var(--text);line-height:1.55;}
-.strength-bar-bg{height:4px;background:var(--border);border-radius:4px;margin-top:6px;overflow:hidden;}
-.strength-bar{height:100%;width:0%;border-radius:4px;transition:all 0.3s;}
-/* Searchable country dropdown */
-.country-dropdown{position:relative;}
-.country-display{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 15px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:border-color 0.2s;user-select:none;}
-.country-display.open{border-color:var(--navy);box-shadow:0 0 0 3px rgba(13,27,62,0.07);border-radius:10px 10px 0 0;}
-.country-display.invalid{border-color:var(--danger);}
-.country-display-text{color:var(--dim);}
-.country-display-text.selected{color:var(--text);}
-.country-caret{font-size:10px;color:var(--muted);transition:transform 0.2s;flex-shrink:0;}
-.country-display.open .country-caret{transform:rotate(180deg);}
-.country-panel{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);border:1.5px solid var(--navy);border-top:none;border-radius:0 0 10px 10px;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,0.1);overflow:hidden;}
-.country-panel.open{display:block;}
-.country-search-wrap{padding:10px 12px;border-bottom:1px solid var(--border);}
-.country-search{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;}
-.country-search:focus{border-color:var(--navy);}
-.country-list{max-height:220px;overflow-y:auto;padding:4px 0;}
-.country-option{padding:10px 15px;font-size:13px;color:var(--text);cursor:pointer;transition:background 0.12s;}
-.country-option:hover,.country-option.focused{background:var(--navy-pale);}
-.country-none{padding:10px 15px;font-size:13px;color:var(--muted);text-align:center;}
-@media(max-width:600px){
-  nav{padding:0 16px;}
-  .nav-sub{display:none;}
-  .page-head{padding:44px 20px 40px;}
-  .apply-body{padding:28px 16px 56px;}
-  .card{padding:22px;}
-  .field-row{grid-template-columns:1fr;}
-  .prog-grid{grid-template-columns:1fr;}
-  .step-label{display:none;}
-}
+.upload-filename{font-size:12px;color:var(--ok);font-weight:600;margin-top:6px;}
+
+/* REVIEW */
+.review-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.review-row:last-child{border-bottom:none;}
+.review-label{font-size:12px;font-weight:700;color:var(--muted);width:130px;flex-shrink:0;padding-top:1px;}
+.review-val{font-size:13px;color:var(--text);flex:1;}
+
+/* ACTIONS */
+.actions{display:flex;gap:10px;margin-top:6px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:10px;font-family:"DM Sans",sans-serif;font-weight:700;cursor:pointer;transition:all 0.18s;text-decoration:none;font-size:14px;padding:13px 24px;}
+.btn-primary{background:var(--navy);color:white;flex:2;}
+.btn-primary:hover{background:var(--navy-mid);}
+.btn-primary:disabled{opacity:0.6;cursor:not-allowed;}
+.btn-secondary{background:none;border:1.5px solid var(--border);color:var(--muted);flex:1;}
+.btn-secondary:hover{border-color:var(--navy);color:var(--navy);}
+
+/* SUCCESS */
+.success-card{background:var(--white);border-radius:16px;border:1px solid var(--border);padding:48px 32px;text-align:center;display:none;}
+.success-icon{font-size:48px;margin-bottom:16px;}
+.success-title{font-family:"DM Serif Display",serif;font-size:28px;color:var(--navy);margin-bottom:10px;}
+.success-sub{font-size:14px;color:var(--muted);line-height:1.7;max-width:380px;margin:0 auto 24px;}
 </style>
 </head>
 <body>
-<nav style="background:var(--white);border-bottom:1px solid var(--border);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:100;">
-  <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="42" height="42" style="flex-shrink:0;" aria-label="Catholic Music Academy">
-  <!-- Outer circle ring -->
-  <circle cx="60" cy="60" r="58" fill="white" stroke="#1A2E6C" stroke-width="3"/>
-  <circle cx="60" cy="60" r="52" fill="white" stroke="#1A2E6C" stroke-width="1"/>
 
-  <!-- Outer ring text paths -->
-  <path id="topArc" d="M 14,60 A 46,46 0 1,1 106,60" fill="none"/>
-  <path id="botArc" d="M 18,62 A 42,42 0 0,0 102,62" fill="none"/>
-  <text font-family="Georgia,serif" font-size="8.5" font-weight="700" fill="#1A2E6C" letter-spacing="2.8">
-    <textPath href="#topArc" startOffset="8%">MUSIC ACADEMY</textPath>
-  </text>
-  <text font-family="Georgia,serif" font-size="7.5" font-weight="700" fill="#1A2E6C" letter-spacing="1.8">
-    <textPath href="#botArc" startOffset="5%">CATHOLIC DIOCESE OF WARRI</textPath>
-  </text>
-
-  <!-- Inner circle -->
-  <circle cx="60" cy="52" r="32" fill="#f8f6f0" stroke="#1A2E6C" stroke-width="1.2"/>
-
-  <!-- Musical staff lines in upper portion -->
-  <g opacity="0.35" stroke="#1A2E6C" stroke-width="0.7">
-    <line x1="36" y1="36" x2="84" y2="36"/>
-    <line x1="36" y1="39" x2="84" y2="39"/>
-    <line x1="36" y1="42" x2="84" y2="42"/>
-    <line x1="36" y1="45" x2="84" y2="45"/>
-    <line x1="36" y1="48" x2="84" y2="48"/>
-  </g>
-
-  <!-- Treble clef -->
-  <text x="36" y="52" font-family="Georgia,serif" font-size="22" fill="#1A2E6C" opacity="0.8">𝄞</text>
-
-  <!-- Central figure: stylised Saint Cecilia (simplified woman with robe) -->
-  <!-- Head -->
-  <ellipse cx="68" cy="34" rx="6" ry="7" fill="#f5d5b0" stroke="#c4956a" stroke-width="0.5"/>
-  <!-- Hair -->
-  <path d="M62 32 Q64 26 68 27 Q72 26 74 32" fill="#8B6914" stroke="none"/>
-  <!-- Robe/body -->
-  <path d="M60 41 Q62 38 68 37 Q74 38 76 41 L78 62 L58 62 Z" fill="#1A2E6C"/>
-  <!-- Robe folds -->
-  <path d="M63 41 L62 62 M73 41 L74 62" stroke="#C9A84C" stroke-width="0.6" opacity="0.5"/>
-  <!-- Hands with instrument suggestion -->
-  <path d="M58 48 Q56 50 57 54 Q58 52 60 51" fill="#f5d5b0" stroke="#c4956a" stroke-width="0.3"/>
-  <path d="M78 48 Q80 50 79 54 Q78 52 76 51" fill="#f5d5b0" stroke="#c4956a" stroke-width="0.3"/>
-  <!-- Simple pipe organ suggestion -->
-  <rect x="72" y="44" width="2" height="10" rx="1" fill="#C9A84C" opacity="0.7"/>
-  <rect x="75" y="46" width="2" height="8" rx="1" fill="#C9A84C" opacity="0.7"/>
-  <rect x="78" y="48" width="2" height="6" rx="1" fill="#C9A84C" opacity="0.7"/>
-
-  <!-- Chevron/wing decorations on sides -->
-  <path d="M4 58 L14 52 L14 68 Z" fill="#1A2E6C"/>
-  <path d="M116 58 L106 52 L106 68 Z" fill="#1A2E6C"/>
-  <path d="M2 60 L12 58 L14 60 L12 62 Z" fill="#C9A84C"/>
-  <path d="M118 60 L108 58 L106 60 L108 62 Z" fill="#C9A84C"/>
-
-  <!-- Bottom banner -->
-  <path d="M24 76 Q60 85 96 76 L96 88 Q60 97 24 88 Z" fill="#1A2E6C"/>
-  <text x="60" y="85" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" font-style="italic" fill="#C9A84C" letter-spacing="0.5">Excellence In Sacred Arts</text>
-
-  <!-- Gold star decorations on banner sides -->
-  <text x="18" y="85" font-size="7" fill="#C9A84C">✦</text>
-  <text x="96" y="85" font-size="7" fill="#C9A84C">✦</text>
-</svg>
-    <div>
-      <div style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);">Catholic Music Academy</div>
-      <div style="font-size:10px;color:var(--muted);letter-spacing:0.4px;">Excellence in Sacred Arts</div>
+<nav>
+  <a class="nav-logo" href="index.html">
+    <div class="nav-logo-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20">
+        <path d="M7 4 L25 4 L25 22 Q16 28 7 22 Z" fill="none" stroke="#C9A84C" stroke-width="1.2"/>
+        <rect x="14.5" y="7" width="3" height="10" rx="1" fill="#C9A84C"/>
+        <rect x="9" y="11" width="14" height="2.5" rx="1" fill="#C9A84C"/>
+      </svg>
     </div>
+    <span class="nav-logo-name">Catholic Music Academy</span>
   </a>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <a href="index.html" style="font-size:12px;color:var(--muted);text-decoration:none;">← Home</a>
-    <a href="login.html" style="background:var(--navy);color:white;border:none;border-radius:9px;padding:9px 18px;font-size:13px;font-weight:600;text-decoration:none;">Student Login</a>
-  </div>
+  <a class="nav-back" href="index.html">&#8592; Back</a>
 </nav>
 
-<div class="page-head">
-  <div class="page-head-eyebrow">Admissions</div>
-  <div class="page-head-title">Apply for a Programme</div>
-  <div class="page-head-sub">Complete this form to apply. The Academy will review your application and contact you within 1–2 working days.</div>
-</div>
+<div class="apply-wrap">
 
-<div class="apply-body">
-  <div class="steps" id="stepsEl">
-    <div class="step"><div class="step-num active" id="sn1">1</div><div class="step-label active" id="sl1">Personal Info</div></div>
-    <div class="step-connector" id="sc1"></div>
-    <div class="step"><div class="step-num pending" id="sn2">2</div><div class="step-label" id="sl2">Programme</div></div>
-    <div class="step-connector" id="sc2"></div>
-    <div class="step"><div class="step-num pending" id="sn3">3</div><div class="step-label" id="sl3">Background</div></div>
-    <div class="step-connector" id="sc3"></div>
-    <div class="step"><div class="step-num pending" id="sn4">4</div><div class="step-label" id="sl4">Review & Submit</div></div>
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="step-item">
+      <div class="step-circle active" id="sc1">1</div>
+      <span class="step-name active" id="sn1">Your Details</span>
+    </div>
+    <div class="step-line" id="sl1"></div>
+    <div class="step-item">
+      <div class="step-circle pending" id="sc2">2</div>
+      <span class="step-name" id="sn2">Programme</span>
+    </div>
+    <div class="step-line" id="sl2"></div>
+    <div class="step-item">
+      <div class="step-circle pending" id="sc3">3</div>
+      <span class="step-name" id="sn3">Background</span>
+    </div>
+    <div class="step-line" id="sl3"></div>
+    <div class="step-item">
+      <div class="step-circle pending" id="sc4">4</div>
+      <span class="step-name" id="sn4">Review</span>
+    </div>
   </div>
 
-  <!-- STEP 1: PERSONAL + PASSWORD -->
+  <!-- STEP 1: YOUR DETAILS -->
   <div id="step1">
     <div class="card">
-      <div class="card-title">Personal Information</div>
-      <div class="card-sub">These details will be used to set up your student account if your application is approved.</div>
+      <div class="card-title">Your Details</div>
+      <div class="card-sub">Create your student account. You will use your email and password to log in to the portal.</div>
+
       <div class="field-row">
-        <div class="field">
+        <div class="field-group">
           <label class="field-label">First Name <span class="req">*</span></label>
           <input class="field-input" id="firstName" type="text" placeholder="e.g. Chidinma"/>
-          <div class="field-err" id="err-firstName">Required.</div>
+          <div class="field-err" id="err-firstName">First name is required.</div>
         </div>
-        <div class="field">
+        <div class="field-group">
           <label class="field-label">Last Name <span class="req">*</span></label>
           <input class="field-input" id="lastName" type="text" placeholder="e.g. Okafor"/>
-          <div class="field-err" id="err-lastName">Required.</div>
+          <div class="field-err" id="err-lastName">Last name is required.</div>
         </div>
       </div>
-      <div class="field">
+
+      <div class="field-group">
         <label class="field-label">Email Address <span class="req">*</span></label>
         <input class="field-input" id="email" type="email" placeholder="yourname@example.com"/>
-        <div class="field-hint">This will be your login email once your account is activated.</div>
         <div class="field-err" id="err-email">Please enter a valid email address.</div>
       </div>
-      <div class="field-row">
-        <div class="field">
-          <label class="field-label">Phone Number <span class="req">*</span></label>
-          <input class="field-input" id="phone" type="tel" placeholder="e.g. 08012345678"/>
-          <div class="field-err" id="err-phone">Required.</div>
-        </div>
-        <div class="field">
-          <label class="field-label">WhatsApp Number</label>
-          <input class="field-input" id="whatsapp" type="tel" placeholder="If different from phone"/>
-        </div>
+
+      <div class="field-group">
+        <label class="field-label">Phone / WhatsApp <span class="req">*</span></label>
+        <input class="field-input" id="phone" type="tel" placeholder="e.g. 08012345678"/>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">We may use this to reach you on WhatsApp about your application.</div>
+        <div class="field-err" id="err-phone">Phone number is required.</div>
       </div>
+
       <div class="field-row">
-        <div class="field">
+        <div class="field-group">
           <label class="field-label">Password <span class="req">*</span></label>
           <div class="pass-wrap">
             <input class="field-input" id="password" type="password" placeholder="Choose a password" oninput="checkStrength()"/>
             <button class="pass-toggle" type="button" onclick="togglePass('password',this)">👁</button>
           </div>
           <div class="strength-bar-bg"><div class="strength-bar" id="strengthBar"></div></div>
-          <div class="field-hint" id="strengthLabel">At least 8 characters</div>
+          <div class="strength-label" id="strengthLabel">At least 8 characters</div>
           <div class="field-err" id="err-password">Password must be at least 8 characters.</div>
         </div>
-        <div class="field">
+        <div class="field-group">
           <label class="field-label">Confirm Password <span class="req">*</span></label>
           <div class="pass-wrap">
             <input class="field-input" id="passwordConfirm" type="password" placeholder="Repeat your password"/>
@@ -290,154 +230,118 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px
           <div class="field-err" id="err-passwordConfirm">Passwords do not match.</div>
         </div>
       </div>
-      <div class="field">
-        <label class="field-label">Country <span class="req">*</span></label>
-        <div class="country-dropdown" id="countryDropdown">
-          <div class="country-display" id="countryDisplay" onclick="toggleCountryDropdown()" tabindex="0" onkeydown="countryKeydown(event)">
-            <span class="country-display-text" id="countryDisplayText">Select country...</span>
-            <span class="country-caret">▼</span>
-          </div>
-          <div class="country-panel" id="countryPanel">
-            <div class="country-search-wrap">
-              <input class="country-search" id="countrySearch" type="text" placeholder="Search country..." oninput="filterCountries()" autocomplete="off" onkeydown="countrySearchKeydown(event)"/>
+
+      <!-- ACCOUNT RECOVERY ACCORDION -->
+      <div class="field-group" style="margin-top:8px;">
+        <div class="recovery-toggle" id="recoveryToggle" onclick="toggleRecovery()">
+          <div class="recovery-toggle-left">
+            <span class="recovery-toggle-icon">🔐</span>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--navy);">Account Recovery</div>
+              <div style="font-size:11px;color:var(--muted);font-weight:400;">Required — used if you forget your password</div>
             </div>
-            <div class="country-list" id="countryList"></div>
+          </div>
+          <span class="recovery-toggle-arrow">&#9660;</span>
+        </div>
+        <div class="recovery-body" id="recoveryBody">
+          <div class="recovery-note">If you ever forget your password, we will use this to verify your identity and reset it. Choose a question and answer that only you know.</div>
+          <div class="field-group">
+            <label class="field-label">Security Question <span class="req">*</span></label>
+            <select class="field-select" id="securityQuestion">
+              <option value="">Select a question...</option>
+              <option>What is the name of the first church you attended?</option>
+              <option>What was the name of your first choir or music group?</option>
+              <option>What is your mother's maiden name?</option>
+              <option>What city were you born in?</option>
+              <option>What is the name of your primary school?</option>
+              <option>What was the name of your childhood best friend?</option>
+            </select>
+            <div class="field-err" id="err-securityQuestion">Please select a security question.</div>
+          </div>
+          <div class="field-group" style="margin-bottom:0;">
+            <label class="field-label">Your Answer <span class="req">*</span></label>
+            <input class="field-input" id="securityAnswer" type="text" placeholder="Your answer (not case-sensitive)"/>
+            <div class="field-err" id="err-securityAnswer">Please provide an answer.</div>
           </div>
         </div>
-        <input type="hidden" id="country"/>
-        <div class="field-err" id="err-country">Please select your country.</div>
-      </div>
-      <div class="field" id="stateField">
-        <label class="field-label" id="stateLabel">State / Region <span class="req">*</span></label>
-        <select class="field-select" id="state" onchange="onStateChange()">
-          <option value="">Select state / region...</option>
-        </select>
-        <div class="field-err" id="err-state">Please select your state or region.</div>
-      </div>
-      <div class="field" id="lgaField" style="display:none;">
-        <label class="field-label">Local Government Area (optional)</label>
-        <select class="field-select" id="lga">
-          <option value="">Select LGA...</option>
-        </select>
-      </div>
-      <div class="field">
-        <label class="field-label">Security Question <span class="req">*</span></label>
-        <select class="field-select" id="securityQuestion">
-          <option value="">Choose a question...</option>
-          <option value="What is the name of the church where you were baptised?">What is the name of the church where you were baptised?</option>
-          <option value="What is the name of your primary school?">What is the name of your primary school?</option>
-          <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
-          <option value="What was the name of your first choir or music group?">What was the name of your first choir or music group?</option>
-          <option value="What is the name of the town where you grew up?">What is the name of the town where you grew up?</option>
-          <option value="What is the middle name of your oldest sibling?">What is the middle name of your oldest sibling?</option>
-        </select>
-        <div class="field-hint">Used to verify your identity if you forget your password.</div>
-        <div class="field-err" id="err-securityQuestion">Please select a security question.</div>
-      </div>
-      <div class="field">
-        <label class="field-label">Security Answer <span class="req">*</span></label>
-        <input class="field-input" id="securityAnswer" type="text" placeholder="Your answer (not case sensitive)"/>
-        <div class="field-hint">Keep this answer consistent — you will need it to reset your password.</div>
-        <div class="field-err" id="err-securityAnswer">Please enter your answer.</div>
       </div>
     </div>
-    <button class="btn btn-primary" onclick="goStep(2)">Continue →</button>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="goStep(2)">Continue &#8594;</button>
+    </div>
   </div>
 
   <!-- STEP 2: PROGRAMME -->
   <div id="step2" style="display:none;">
     <div class="card">
-      <div class="card-title">Programme of Interest</div>
-      <div class="card-sub">Select the course you would like to enrol in.</div>
+      <div class="card-title">Choose Your Programme</div>
+      <div class="card-sub">Select the course you would like to enrol in. Each programme leads to a nationally recognised qualification.</div>
       <div class="prog-grid" id="progGrid">
-        <div style="text-align:center;padding:24px;color:var(--muted);font-size:13px;">Loading available courses...</div>
+        <div style="font-size:13px;color:var(--muted);">Loading programmes...</div>
       </div>
-      <div class="field-err" id="err-prog" style="margin-top:8px;">Please select a programme.</div>
+      <div class="field-err" id="err-prog" style="margin-top:10px;">Please select a programme.</div>
     </div>
-    <div style="display:flex;gap:10px;">
-      <button class="btn btn-outline" style="flex:1;" onclick="goStep(1)">← Back</button>
-      <button class="btn btn-primary" style="flex:2;" onclick="goStep(3)">Continue →</button>
+    <div class="actions">
+      <button class="btn btn-secondary" onclick="goStep(1)">&#8592; Back</button>
+      <button class="btn btn-primary" onclick="goStep(3)">Continue &#8594;</button>
     </div>
   </div>
 
   <!-- STEP 3: BACKGROUND + PAYMENT -->
   <div id="step3" style="display:none;">
     <div class="card">
-      <div class="card-title">Musical Background</div>
-      <div class="card-sub">Help us understand your current level.</div>
-      <div class="field">
-        <label class="field-label">Musical experience <span class="req">*</span></label>
-        <div class="bg-opts">
-          <div class="bg-opt selected" onclick="selectBg(this,'No formal training — I sing but have not studied music formally')">
-            <div class="bg-radio"><div class="bg-radio-dot"></div></div>
-            <div class="bg-opt-text">No formal training — I sing but have not studied music formally</div>
-          </div>
-          <div class="bg-opt" onclick="selectBg(this,'Basic training — I have attended music workshops or classes')">
-            <div class="bg-radio"><div class="bg-radio-dot"></div></div>
-            <div class="bg-opt-text">Basic training — I have attended music workshops or classes</div>
-          </div>
-          <div class="bg-opt" onclick="selectBg(this,'Intermediate — I read notation and have sung or led in a formal choir')">
-            <div class="bg-radio"><div class="bg-radio-dot"></div></div>
-            <div class="bg-opt-text">Intermediate — I read notation and have sung or led in a formal choir</div>
-          </div>
-          <div class="bg-opt" onclick="selectBg(this,'Advanced — I have formal qualifications or extensive professional experience')">
-            <div class="bg-radio"><div class="bg-radio-dot"></div></div>
-            <div class="bg-opt-text">Advanced — I have formal qualifications or extensive professional experience</div>
-          </div>
+      <div class="card-title">Your Music Background</div>
+      <div class="card-sub">This helps the Academy understand your starting point. All levels are welcome.</div>
+      <div class="bg-options" id="bgOptions">
+        <div class="bg-opt selected" onclick="selectBg(this,'No formal training — I sing but have not studied music formally')">
+          <div class="bg-radio"><div class="bg-radio-dot"></div></div>
+          <div class="bg-text">No formal training — I sing but have not studied music formally</div>
         </div>
-        <div class="field-err" id="err-bg">Please select your background.</div>
+        <div class="bg-opt" onclick="selectBg(this,'Basic training — I have attended music workshops or classes')">
+          <div class="bg-radio"><div class="bg-radio-dot"></div></div>
+          <div class="bg-text">Basic training — I have attended music workshops or classes</div>
+        </div>
+        <div class="bg-opt" onclick="selectBg(this,'Intermediate — I read notation and have sung or led in a formal choir')">
+          <div class="bg-radio"><div class="bg-radio-dot"></div></div>
+          <div class="bg-text">Intermediate — I read notation and have sung or led in a formal choir</div>
+        </div>
+        <div class="bg-opt" onclick="selectBg(this,'Advanced — I am a trained musician or music director')">
+          <div class="bg-radio"><div class="bg-radio-dot"></div></div>
+          <div class="bg-text">Advanced — I am a trained musician or music director</div>
+        </div>
       </div>
-      <div class="field">
-        <label class="field-label">Current role (optional)</label>
-        <input class="field-input" id="role" type="text" placeholder="e.g. Choir member, Choirmaster, Music Director"/>
-      </div>
-
+      <div class="field-err" id="err-bg" style="margin-top:8px;">Please select your music background.</div>
     </div>
 
-    <!-- PAYMENT -->
-    <div class="card">
-      <div class="card-title">Payment</div>
-      <div class="card-sub">Make payment before submitting your application. Upload your proof of payment below.</div>
+    <div class="card" style="margin-top:0;">
+      <div class="card-title">Payment Receipt</div>
+      <div class="card-sub">Make payment to the Academy account below, then upload your receipt. Your application will be reviewed after payment is confirmed.</div>
+
       <div class="payment-box">
-        <div class="payment-box-title">💳 Payment Details</div>
-        <div class="payment-detail">
-          <div class="payment-detail-label">Bank</div>
-          <div class="payment-detail-val">— (To be confirmed by Academy)</div>
-        </div>
-        <div class="payment-detail">
-          <div class="payment-detail-label">Account Name</div>
-          <div class="payment-detail-val">— (To be confirmed by Academy)</div>
-        </div>
-        <div class="payment-detail">
-          <div class="payment-detail-label">Account Number</div>
-          <div class="payment-detail-val">— (To be confirmed by Academy)</div>
-        </div>
-        <div class="payment-detail">
-          <div class="payment-detail-label">Amount Per Course</div>
-          <div class="payment-detail-val highlight">₦5,000</div>
-        </div>
-        <div class="payment-detail">
-          <div class="payment-detail-label">Reference</div>
-          <div class="payment-detail-val">Your full name</div>
-        </div>
+        <div class="payment-box-title">Bank Details</div>
+        <div class="payment-row"><span class="payment-key">Bank</span><span class="payment-val">First Bank of Nigeria</span></div>
+        <div class="payment-row"><span class="payment-key">Account Name</span><span class="payment-val">Catholic Music Academy</span></div>
+        <div class="payment-row"><span class="payment-key">Account Number</span><span class="payment-val">3155067093</span></div>
+        <div class="payment-row"><span class="payment-key">Amount</span><span class="payment-val">As advised by the Academy</span></div>
       </div>
-      <div class="alert alert-warn">⚠️ Use your full name as the payment reference so your payment can be matched to this application.</div>
-      <div class="field" style="margin-bottom:0;">
-        <label class="field-label">Upload proof of payment <span class="req">*</span></label>
-        <div class="upload-box" id="uploadBox" onclick="document.getElementById('fileInput').click()" ondragover="uploadDragOver(event)" ondrop="uploadDrop(event)" ondragleave="uploadDragLeave(event)">
-          <div class="upload-icon">📄</div>
-          <div class="upload-title">Upload receipt</div>
-          <div class="upload-sub">Click to browse or drag and drop · PDF, JPG, PNG · Max 5MB</div>
-          <div class="upload-file-name" id="uploadFileName"></div>
-        </div>
-        <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(this)"/>
-        <div class="field-err" id="err-receipt">Please upload your proof of payment.</div>
+
+      <div class="upload-box" id="uploadBox"
+        ondragover="uploadDragOver(event)" ondragleave="uploadDragLeave()" ondrop="uploadDrop(event)"
+        onclick="document.getElementById('receiptInput').click()">
+        <div class="upload-icon">📎</div>
+        <div class="upload-title">Upload Payment Receipt</div>
+        <div class="upload-sub">Tap to select or drag and drop your receipt here</div>
+        <div class="upload-sub" style="margin-top:4px;">JPG, PNG or PDF accepted</div>
+        <div class="upload-filename" id="uploadFileName"></div>
       </div>
+      <input type="file" id="receiptInput" style="display:none;" accept="image/*,.pdf" onchange="handleFileSelect(this)"/>
+      <div class="field-err" id="err-receipt" style="margin-top:8px;">Please upload your payment receipt.</div>
     </div>
 
-    <div style="display:flex;gap:10px;">
-      <button class="btn btn-outline" style="flex:1;" onclick="goStep(2)">← Back</button>
-      <button class="btn btn-primary" style="flex:2;" onclick="goStep(4)">Review Application →</button>
+    <div class="actions">
+      <button class="btn btn-secondary" onclick="goStep(2)">&#8592; Back</button>
+      <button class="btn btn-primary" onclick="goStep(4)">Review Application &#8594;</button>
     </div>
   </div>
 
@@ -445,37 +349,23 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px
   <div id="step4" style="display:none;">
     <div class="card">
       <div class="card-title">Review Your Application</div>
-      <div class="card-sub">Confirm all details are correct before submitting.</div>
+      <div class="card-sub">Please confirm everything is correct before submitting.</div>
       <div id="reviewContent"></div>
     </div>
-    <div class="alert alert-warn">⚠️ By submitting you confirm that all information is accurate and your payment has been made.</div>
-    <div id="submitErr"></div>
-    <div style="display:flex;gap:10px;">
-      <button class="btn btn-outline" style="flex:1;" onclick="goStep(3)">← Edit</button>
-      <button class="btn btn-primary" id="submitBtn" style="flex:2;" onclick="submitApplication()">Submit Application →</button>
+    <div class="actions">
+      <button class="btn btn-secondary" onclick="goStep(3)">&#8592; Edit</button>
+      <button class="btn btn-primary" id="submitBtn" onclick="submitApplication()">Submit Application &#8594;</button>
     </div>
   </div>
 
   <!-- SUCCESS -->
-  <div id="stepSuccess" style="display:none;">
-    <div class="card">
-      <div class="success-wrap">
-        <div class="success-icon">✅</div>
-        <div class="success-title">Application Submitted</div>
-        <div class="success-sub">Your application has been received. The Academy will review it and contact you via WhatsApp or email within 1–2 working days.</div>
-        <div class="success-ref" id="successRef">REF: CMA-000000</div>
-        <div class="next-steps">
-          <div class="next-steps-title">What happens next</div>
-          <div class="ns-item"><div class="ns-num">1</div><div class="ns-text"><strong>Review (1–2 working days)</strong> — The Academy verifies your payment and reviews your application.</div></div>
-          <div class="ns-item"><div class="ns-num">2</div><div class="ns-text"><strong>Notification</strong> — You'll receive a WhatsApp or email message confirming acceptance.</div></div>
-          <div class="ns-item"><div class="ns-num">3</div><div class="ns-text"><strong>Account activated</strong> — Your account goes live. Log in with the email and password you registered with.</div></div>
-          <div class="ns-item"><div class="ns-num">4</div><div class="ns-text"><strong>Begin learning</strong> — Access your course and start your first module.</div></div>
-        </div>
-        <a class="btn btn-outline" href="index.html" style="display:inline-flex;width:auto;padding:12px 24px;margin-right:10px;">← Back to Home</a>
-        <a class="btn btn-primary" href="login.html" style="display:inline-flex;width:auto;padding:12px 24px;">Go to Login</a>
-      </div>
-    </div>
+  <div class="success-card" id="stepSuccess">
+    <div class="success-icon">&#127881;</div>
+    <div class="success-title">Application Submitted</div>
+    <div class="success-sub">Thank you. The Academy will review your application and payment receipt and get in touch with you via WhatsApp or email within a few working days.</div>
+    <a class="btn btn-primary" href="login.html" style="display:inline-flex;margin:0 auto;">Go to Student Portal &#8594;</a>
   </div>
+
 </div>
 
 <script>
@@ -485,12 +375,7 @@ const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 async function sbPost(table, body) {
   const res = await fetch(SUPA_URL + '/rest/v1/' + table, {
     method: 'POST',
-    headers: {
-      'apikey': SUPA_KEY,
-      'Authorization': 'Bearer ' + SUPA_KEY,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=representation'
-    },
+    headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
     body: JSON.stringify(body)
   });
   if (!res.ok) throw new Error(await res.text());
@@ -508,151 +393,165 @@ var currentStep = 1;
 var selectedProg = '';
 var selectedBg = 'No formal training — I sing but have not studied music formally';
 var selectedFile = null;
+var recoveryOpen = false;
 
-// ── LOAD COURSES DYNAMICALLY FROM SUPABASE ────────────────────────────────────
-async function loadCoursesForApply() {
-  var grid = document.getElementById('progGrid');
-  if (!grid) return;
-  try {
-    var res = await fetch(
-      SUPA_URL + '/rest/v1/course_content?order=course_order.asc,module_index.asc',
-      { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
-    );
-    if (!res.ok) throw new Error('fetch failed');
-    var rows = await res.json();
-    // Deduplicate by course_id — one card per unique course
-    var seen = {};
-    var courses = [];
-    rows.forEach(function(r) {
-      if (!seen[r.course_id]) {
-        seen[r.course_id] = true;
-        courses.push({ id: r.course_id, title: r.course_title, color: r.course_color || '#0D1B3E', order: r.course_order });
-      }
-    });
-    if (!courses.length) throw new Error('no courses');
-    grid.innerHTML = courses.map(function(c, i) {
-      // Value stored in applications.programme = course title e.g. "Course 01: Theory of Ancient Music"
-      var val = c.title;
-      var isFirst = i === 0;
-      if (isFirst) selectedProg = val;
-      return '<div class="prog-option'+(isFirst?' selected':'')+'" onclick="selectProg(this,\''+val.replace(/'/g,"\\'")+'\')">'
-        + '<div class="prog-check">✓</div>'
-        + '<div style="width:10px;height:10px;border-radius:50%;background:'+c.color+';margin-bottom:4px;"></div>'
-        + '<div class="prog-title">'+val+'</div>'
-        + '</div>';
-    }).join('');
-  } catch(e) {
-    // Fallback: show a text input so they can still apply
-    grid.innerHTML = '<div style="width:100%;">'
-      + '<p style="font-size:13px;color:var(--muted);margin-bottom:10px;">Could not load live courses. Please type your programme below.</p>'
-      + '<input class="field-input" id="progTextInput" placeholder="e.g. Theory of Ancient Music" oninput="selectedProg=this.value" style="width:100%;"/>'
-      + '</div>';
-  }
+// ── ACCOUNT RECOVERY TOGGLE ──
+function toggleRecovery() {
+  recoveryOpen = !recoveryOpen;
+  var toggle = document.getElementById('recoveryToggle');
+  var body = document.getElementById('recoveryBody');
+  toggle.classList.toggle('open', recoveryOpen);
+  body.classList.toggle('open', recoveryOpen);
 }
 
+// ── STEP NAVIGATION ──
 function goStep(n) {
   if (n > currentStep && !validateStep(currentStep)) return;
   currentStep = n;
-  [1,2,3,4].forEach(i => document.getElementById('step'+i).style.display = i===n?'block':'none');
+  [1,2,3,4].forEach(function(i) {
+    document.getElementById('step'+i).style.display = i===n ? 'block' : 'none';
+  });
   document.getElementById('stepSuccess').style.display = 'none';
-  updateStepUI(n);
+  updateProgress(n);
   if (n===2) loadCoursesForApply();
   if (n===4) buildReview();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function updateStepUI(n) {
-  [1,2,3,4].forEach(i => {
-    var num = document.getElementById('sn'+i);
-    var lbl = document.getElementById('sl'+i);
-    var con = document.getElementById('sc'+i);
-    if (!num) return;
-    num.className = 'step-num ' + (i<n?'done':i===n?'active':'pending');
-    num.textContent = i<n?'✓':i;
-    lbl.className = 'step-label' + (i<n?' done':i===n?' active':'');
-    if (con) con.className = 'step-connector'+(i<n?' done':'');
+function updateProgress(n) {
+  [1,2,3,4].forEach(function(i) {
+    var circle = document.getElementById('sc'+i);
+    var name = document.getElementById('sn'+i);
+    var line = document.getElementById('sl'+i);
+    if (!circle) return;
+    if (i < n) {
+      circle.className = 'step-circle done'; circle.textContent = '✓';
+      name.className = 'step-name done';
+      if (line) line.className = 'step-line done';
+    } else if (i === n) {
+      circle.className = 'step-circle active'; circle.textContent = i;
+      name.className = 'step-name active';
+    } else {
+      circle.className = 'step-circle pending'; circle.textContent = i;
+      name.className = 'step-name';
+    }
   });
 }
 
+// ── VALIDATION ──
 function validateStep(n) {
   var ok = true;
-  function req(id, errId) {
+  function req(id, errId, msg) {
     var el = document.getElementById(id);
     var val = el ? el.value.trim() : '';
     var err = document.getElementById(errId);
-    if (!val) { if(err) err.style.display='block'; if(el) el.classList.add('invalid'); ok=false; }
+    if (!val) { if(err){err.style.display='block';err.textContent=msg||'This field is required.';} if(el) el.classList.add('invalid'); ok=false; }
     else { if(err) err.style.display='none'; if(el) el.classList.remove('invalid'); }
   }
   if (n===1) {
-    req('firstName','err-firstName'); req('lastName','err-lastName');
-    req('phone','err-phone');
-    req('securityQuestion','err-securityQuestion');
-    req('securityAnswer','err-securityAnswer');
-    var cEl = document.getElementById('country');
-    var cErr = document.getElementById('err-country');
-    if (!cEl || !cEl.value) {
-      if (cErr) cErr.style.display='block';
-      if (cEl) cEl.classList.add('invalid');
-      ok = false;
-    } else {
-      if (cErr) cErr.style.display='none';
-      if (cEl) cEl.classList.remove('invalid');
-    }
-    var sf = document.getElementById('stateField');
-    if (sf && sf.style.display !== 'none') { req('state','err-state'); }
-    var em = document.getElementById('email').value.trim();
+    req('firstName','err-firstName','First name is required.');
+    req('lastName','err-lastName','Last name is required.');
+    req('phone','err-phone','Phone number is required.');
+    // Email
+    var em = (document.getElementById('email')||{}).value||'';
     var emErr = document.getElementById('err-email');
-    if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) {
-      emErr.style.display='block'; document.getElementById('email').classList.add('invalid'); ok=false;
-    } else { emErr.style.display='none'; document.getElementById('email').classList.remove('invalid'); }
-    var pw = document.getElementById('password').value;
-    var pc = document.getElementById('passwordConfirm').value;
+    if (!em.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.trim())) {
+      if(emErr) emErr.style.display='block';
+      (document.getElementById('email')||{}).classList && document.getElementById('email').classList.add('invalid');
+      ok=false;
+    } else { if(emErr) emErr.style.display='none'; document.getElementById('email').classList.remove('invalid'); }
+    // Password
+    var pw = (document.getElementById('password')||{}).value||'';
+    var pc = (document.getElementById('passwordConfirm')||{}).value||'';
     if (pw.length < 8) { document.getElementById('err-password').style.display='block'; document.getElementById('password').classList.add('invalid'); ok=false; }
     else { document.getElementById('err-password').style.display='none'; document.getElementById('password').classList.remove('invalid'); }
     if (pw !== pc || !pc) { document.getElementById('err-passwordConfirm').style.display='block'; document.getElementById('passwordConfirm').classList.add('invalid'); ok=false; }
     else { document.getElementById('err-passwordConfirm').style.display='none'; document.getElementById('passwordConfirm').classList.remove('invalid'); }
+    // Security Q&A — auto open recovery section if invalid
+    var sq = (document.getElementById('securityQuestion')||{}).value||'';
+    var sa = (document.getElementById('securityAnswer')||{}).value||'';
+    if (!sq) { document.getElementById('err-securityQuestion').style.display='block'; if(!recoveryOpen) toggleRecovery(); ok=false; }
+    else document.getElementById('err-securityQuestion').style.display='none';
+    if (!sa.trim()) { document.getElementById('err-securityAnswer').style.display='block'; if(!recoveryOpen) toggleRecovery(); ok=false; }
+    else document.getElementById('err-securityAnswer').style.display='none';
   }
   if (n===2) {
     if (!selectedProg) { document.getElementById('err-prog').style.display='block'; ok=false; }
-    else { document.getElementById('err-prog').style.display='none'; }
+    else document.getElementById('err-prog').style.display='none';
   }
   if (n===3) {
     if (!selectedBg) { document.getElementById('err-bg').style.display='block'; ok=false; }
-    else { document.getElementById('err-bg').style.display='none'; }
+    else document.getElementById('err-bg').style.display='none';
     if (!selectedFile) { document.getElementById('err-receipt').style.display='block'; ok=false; }
-    else { document.getElementById('err-receipt').style.display='none'; }
+    else document.getElementById('err-receipt').style.display='none';
   }
   return ok;
 }
 
-function selectProg(el, val) {
-  document.querySelectorAll('.prog-option').forEach(p => p.classList.remove('selected'));
-  el.classList.add('selected'); selectedProg = val;
-  document.getElementById('err-prog').style.display='none';
-}
-function selectBg(el, val) {
-  document.querySelectorAll('.bg-opt').forEach(b => b.classList.remove('selected'));
-  el.classList.add('selected'); selectedBg = val;
-  document.getElementById('err-bg').style.display='none';
+// ── PROGRAMME LOADER ──
+async function loadCoursesForApply() {
+  var grid = document.getElementById('progGrid');
+  if (!grid) return;
+  try {
+    var res = await fetch(SUPA_URL + '/rest/v1/course_content?order=course_order.asc,module_index.asc',
+      { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } });
+    if (!res.ok) throw new Error('fetch failed');
+    var rows = await res.json();
+    var seen = {}, courses = [];
+    rows.forEach(function(r) {
+      if (!seen[r.course_id]) {
+        seen[r.course_id] = true;
+        courses.push({ id: r.course_id, title: r.course_title, color: r.course_color || '#0D1B3E' });
+      }
+    });
+    if (!courses.length) throw new Error('no courses');
+    if (!selectedProg) selectedProg = courses[0].title;
+    grid.innerHTML = courses.map(function(c, i) {
+      var val = c.title;
+      return '<div class="prog-option'+(i===0?' selected':'')+'" onclick="selectProg(this,\''+val.replace(/'/g,"\\'")+'\',\''+c.color+'\')">'
+        +'<div class="prog-check">&#10003;</div>'
+        +'<div class="prog-dot" style="background:'+c.color+'"></div>'
+        +'<div class="prog-title">'+val+'</div>'
+        +'</div>';
+    }).join('');
+  } catch(e) {
+    grid.innerHTML = '<div class="field-group"><label class="field-label">Programme</label>'
+      +'<input class="field-input" placeholder="Type your programme of interest" oninput="selectedProg=this.value"/></div>';
+  }
 }
 
+function selectProg(el, val) {
+  document.querySelectorAll('.prog-option').forEach(function(p){ p.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedProg = val;
+  document.getElementById('err-prog').style.display = 'none';
+}
+
+function selectBg(el, val) {
+  document.querySelectorAll('.bg-opt').forEach(function(b){ b.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedBg = val;
+  document.getElementById('err-bg').style.display = 'none';
+}
+
+// ── PASSWORD ──
 function checkStrength() {
   var p = document.getElementById('password').value;
   var score = [p.length>=8, /[A-Z]/.test(p), /[0-9]/.test(p), /[^A-Za-z0-9]/.test(p)].filter(Boolean).length;
   var colors = ['','#DC2626','#F59E0B','#F59E0B','#16A34A'];
   var labels = ['At least 8 characters','Weak — add numbers or symbols','Fair','Good','Strong ✓'];
   var bar = document.getElementById('strengthBar');
-  bar.style.width = (score*25)+'%'; bar.style.background = colors[score]||'';
-  document.getElementById('strengthLabel').textContent = labels[score]||'';
-  document.getElementById('strengthLabel').style.color = colors[score]||'var(--muted)';
+  if (bar) { bar.style.width=(score*25)+'%'; bar.style.background=colors[score]||''; }
+  var lbl = document.getElementById('strengthLabel');
+  if (lbl) { lbl.textContent=labels[score]||''; lbl.style.color=colors[score]||'var(--muted)'; }
 }
-
 function togglePass(id, btn) {
   var el = document.getElementById(id);
   el.type = el.type==='password'?'text':'password';
   btn.textContent = el.type==='password'?'👁':'🙈';
 }
 
+// ── FILE UPLOAD ──
 function handleFileSelect(input) {
   if (input.files && input.files[0]) { selectedFile = input.files[0]; showFileSelected(selectedFile.name); }
 }
@@ -666,294 +565,36 @@ function showFileSelected(name) {
   var box = document.getElementById('uploadBox');
   box.classList.add('has-file');
   box.querySelector('.upload-icon').textContent = '📎';
-  box.querySelector('.upload-title').textContent = 'File attached';
+  box.querySelector('.upload-title').textContent = 'Receipt attached';
   document.getElementById('uploadFileName').textContent = name;
-  document.getElementById('err-receipt').style.display='none';
+  document.getElementById('err-receipt').style.display = 'none';
 }
 
-function v(id) { return document.getElementById(id) ? document.getElementById(id).value.trim() : ''; }
-
+// ── REVIEW ──
+function v(id) { var el=document.getElementById(id); return el?el.value.trim():''; }
 function buildReview() {
   var rows = [
     ['Full Name', v('firstName')+' '+v('lastName')],
     ['Email', v('email')],
-    ['Phone', v('phone')],
-    ['WhatsApp', v('whatsapp')||'—'],
-    ['Security Question', v('securityQuestion')],
-    ['State / Region', v('state')],
-    ['LGA', v('lga') || '—'],
+    ['Phone / WhatsApp', v('phone')],
     ['Programme', selectedProg],
-    ['Musical Background', selectedBg],
-    ['Current Role', v('role')||'—'],
-
+    ['Music Background', selectedBg],
+    ['Security Question', v('securityQuestion')],
     ['Payment Receipt', selectedFile ? selectedFile.name : 'Not uploaded']
   ];
-  document.getElementById('reviewContent').innerHTML = rows.map(([l,val]) =>
-    '<div class="review-row"><div class="review-label">'+l+'</div><div class="review-val">'+val+'</div></div>'
-  ).join('');
-}
-
-// ── LOCATION DATA & LOGIC ────────────────────────────────────────────────────
-
-var NIGERIA_STATES = [
-  'Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Benue','Borno',
-  'Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','Gombe','Imo','Jigawa',
-  'Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger',
-  'Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe',
-  'Zamfara','Abuja (FCT)'
-];
-
-var NIGERIA_LGAS = {
-  'Delta':['Aniocha North','Aniocha South','Bomadi','Burutu','Ethiope East','Ethiope West','Ika North East','Ika South','Isoko North','Isoko South','Ndokwa East','Ndokwa West','Okpe','Oshimili North','Oshimili South','Patani','Sapele','Udu','Ughelli North','Ughelli South','Ukwuani','Uvwie','Warri North','Warri South','Warri South West'],
-  'Edo':['Akoko-Edo','Egor','Esan Central','Esan North East','Esan South East','Esan West','Etsako Central','Etsako East','Etsako West','Igueben','Ikpoba-Okha','Orhionmwon','Oredo','Ovia North East','Ovia South West','Owan East','Owan West','Uhunmwonde'],
-  'Anambra':['Aguata','Anambra East','Anambra West','Anaocha','Awka North','Awka South','Ayamelum','Dunukofia','Ekwusigo','Idemili North','Idemili South','Ihiala','Njikoka','Nnewi North','Nnewi South','Ogbaru','Onitsha North','Onitsha South','Orumba North','Orumba South','Oyi'],
-  'Rivers':['Abua/Odual','Ahoada East','Ahoada West','Akuku-Toru','Andoni','Asari-Toru','Bonny','Degema','Eleme','Emohua','Etche','Gokana','Ikwerre','Khana','Obio/Akpor','Ogba/Egbema/Ndoni','Ogu/Bolo','Okrika','Omuma','Opobo/Nkoro','Oyigbo','Port Harcourt','Tai'],
-  'Lagos':['Agege','Ajeromi-Ifelodun','Alimosho','Amuwo-Odofin','Apapa','Badagry','Epe','Eti-Osa','Ibeju-Lekki','Ifako-Ijaiye','Ikeja','Ikorodu','Kosofe','Lagos Island','Lagos Mainland','Mushin','Ojo','Oshodi-Isolo','Shomolu','Surulere']
-};
-
-// Common countries sorted alphabetically, Nigeria always first
-var COUNTRIES = [
-  {code:'NG', name:'Nigeria'},
-  {code:'AF', name:'Afghanistan'},{code:'AL', name:'Albania'},{code:'DZ', name:'Algeria'},
-  {code:'AD', name:'Andorra'},{code:'AO', name:'Angola'},{code:'AG', name:'Antigua and Barbuda'},
-  {code:'AR', name:'Argentina'},{code:'AM', name:'Armenia'},{code:'AU', name:'Australia'},
-  {code:'AT', name:'Austria'},{code:'AZ', name:'Azerbaijan'},{code:'BS', name:'Bahamas'},
-  {code:'BH', name:'Bahrain'},{code:'BD', name:'Bangladesh'},{code:'BB', name:'Barbados'},
-  {code:'BY', name:'Belarus'},{code:'BE', name:'Belgium'},{code:'BZ', name:'Belize'},
-  {code:'BJ', name:'Benin'},{code:'BT', name:'Bhutan'},{code:'BO', name:'Bolivia'},
-  {code:'BA', name:'Bosnia and Herzegovina'},{code:'BW', name:'Botswana'},{code:'BR', name:'Brazil'},
-  {code:'BN', name:'Brunei'},{code:'BG', name:'Bulgaria'},{code:'BF', name:'Burkina Faso'},
-  {code:'BI', name:'Burundi'},{code:'CV', name:'Cabo Verde'},{code:'KH', name:'Cambodia'},
-  {code:'CM', name:'Cameroon'},{code:'CA', name:'Canada'},{code:'CF', name:'Central African Republic'},
-  {code:'TD', name:'Chad'},{code:'CL', name:'Chile'},{code:'CN', name:'China'},
-  {code:'CO', name:'Colombia'},{code:'KM', name:'Comoros'},{code:'CD', name:'Congo (DRC)'},
-  {code:'CG', name:'Congo (Republic)'},{code:'CR', name:'Costa Rica'},{code:'CI', name:'Côte d Ivoire'},
-  {code:'HR', name:'Croatia'},{code:'CU', name:'Cuba'},{code:'CY', name:'Cyprus'},
-  {code:'CZ', name:'Czech Republic'},{code:'DK', name:'Denmark'},{code:'DJ', name:'Djibouti'},
-  {code:'DO', name:'Dominican Republic'},{code:'EC', name:'Ecuador'},{code:'EG', name:'Egypt'},
-  {code:'SV', name:'El Salvador'},{code:'GQ', name:'Equatorial Guinea'},{code:'ER', name:'Eritrea'},
-  {code:'EE', name:'Estonia'},{code:'SZ', name:'Eswatini'},{code:'ET', name:'Ethiopia'},
-  {code:'FJ', name:'Fiji'},{code:'FI', name:'Finland'},{code:'FR', name:'France'},
-  {code:'GA', name:'Gabon'},{code:'GM', name:'Gambia'},{code:'GE', name:'Georgia'},
-  {code:'DE', name:'Germany'},{code:'GH', name:'Ghana'},{code:'GR', name:'Greece'},
-  {code:'GT', name:'Guatemala'},{code:'GN', name:'Guinea'},{code:'GW', name:'Guinea-Bissau'},
-  {code:'GY', name:'Guyana'},{code:'HT', name:'Haiti'},{code:'HN', name:'Honduras'},
-  {code:'HU', name:'Hungary'},{code:'IS', name:'Iceland'},{code:'IN', name:'India'},
-  {code:'ID', name:'Indonesia'},{code:'IR', name:'Iran'},{code:'IQ', name:'Iraq'},
-  {code:'IE', name:'Ireland'},{code:'IL', name:'Israel'},{code:'IT', name:'Italy'},
-  {code:'JM', name:'Jamaica'},{code:'JP', name:'Japan'},{code:'JO', name:'Jordan'},
-  {code:'KZ', name:'Kazakhstan'},{code:'KE', name:'Kenya'},{code:'KW', name:'Kuwait'},
-  {code:'KG', name:'Kyrgyzstan'},{code:'LA', name:'Laos'},{code:'LV', name:'Latvia'},
-  {code:'LB', name:'Lebanon'},{code:'LS', name:'Lesotho'},{code:'LR', name:'Liberia'},
-  {code:'LY', name:'Libya'},{code:'LI', name:'Liechtenstein'},{code:'LT', name:'Lithuania'},
-  {code:'LU', name:'Luxembourg'},{code:'MG', name:'Madagascar'},{code:'MW', name:'Malawi'},
-  {code:'MY', name:'Malaysia'},{code:'MV', name:'Maldives'},{code:'ML', name:'Mali'},
-  {code:'MT', name:'Malta'},{code:'MR', name:'Mauritania'},{code:'MU', name:'Mauritius'},
-  {code:'MX', name:'Mexico'},{code:'MD', name:'Moldova'},{code:'MC', name:'Monaco'},
-  {code:'MN', name:'Mongolia'},{code:'ME', name:'Montenegro'},{code:'MA', name:'Morocco'},
-  {code:'MZ', name:'Mozambique'},{code:'MM', name:'Myanmar'},{code:'NA', name:'Namibia'},
-  {code:'NP', name:'Nepal'},{code:'NL', name:'Netherlands'},{code:'NZ', name:'New Zealand'},
-  {code:'NI', name:'Nicaragua'},{code:'NE', name:'Niger'},{code:'NO', name:'Norway'},
-  {code:'OM', name:'Oman'},{code:'PK', name:'Pakistan'},{code:'PA', name:'Panama'},
-  {code:'PG', name:'Papua New Guinea'},{code:'PY', name:'Paraguay'},{code:'PE', name:'Peru'},
-  {code:'PH', name:'Philippines'},{code:'PL', name:'Poland'},{code:'PT', name:'Portugal'},
-  {code:'QA', name:'Qatar'},{code:'RO', name:'Romania'},{code:'RU', name:'Russia'},
-  {code:'RW', name:'Rwanda'},{code:'SA', name:'Saudi Arabia'},{code:'SN', name:'Senegal'},
-  {code:'RS', name:'Serbia'},{code:'SL', name:'Sierra Leone'},{code:'SG', name:'Singapore'},
-  {code:'SK', name:'Slovakia'},{code:'SI', name:'Slovenia'},{code:'SO', name:'Somalia'},
-  {code:'ZA', name:'South Africa'},{code:'SS', name:'South Sudan'},{code:'ES', name:'Spain'},
-  {code:'LK', name:'Sri Lanka'},{code:'SD', name:'Sudan'},{code:'SR', name:'Suriname'},
-  {code:'SE', name:'Sweden'},{code:'CH', name:'Switzerland'},{code:'SY', name:'Syria'},
-  {code:'TW', name:'Taiwan'},{code:'TJ', name:'Tajikistan'},{code:'TZ', name:'Tanzania'},
-  {code:'TH', name:'Thailand'},{code:'TL', name:'Timor-Leste'},{code:'TG', name:'Togo'},
-  {code:'TT', name:'Trinidad and Tobago'},{code:'TN', name:'Tunisia'},{code:'TR', name:'Turkey'},
-  {code:'TM', name:'Turkmenistan'},{code:'UG', name:'Uganda'},{code:'UA', name:'Ukraine'},
-  {code:'AE', name:'United Arab Emirates'},{code:'GB', name:'United Kingdom'},
-  {code:'US', name:'United States'},{code:'UY', name:'Uruguay'},{code:'UZ', name:'Uzbekistan'},
-  {code:'VE', name:'Venezuela'},{code:'VN', name:'Vietnam'},{code:'YE', name:'Yemen'},
-  {code:'ZM', name:'Zambia'},{code:'ZW', name:'Zimbabwe'}
-];
-
-// Searchable country dropdown
-var countryDropdownOpen = false;
-var filteredCountries = [];
-var focusedIndex = -1;
-
-function renderCountryList(countries) {
-  var list = document.getElementById('countryList');
-  if (!countries.length) {
-    list.innerHTML = '<div class="country-none">No countries found</div>';
-    return;
-  }
-  list.innerHTML = countries.map(function(c, i) {
-    return '<div class="country-option" data-name="'+c.name+'" data-index="'+i+'" onclick="selectCountry(\''+c.name.replace(/'/g,"\\'")+'\')">' + c.name + '</div>';
+  document.getElementById('reviewContent').innerHTML = rows.map(function(r){
+    return '<div class="review-row"><div class="review-label">'+r[0]+'</div><div class="review-val">'+r[1]+'</div></div>';
   }).join('');
-  focusedIndex = -1;
 }
 
-function toggleCountryDropdown() {
-  countryDropdownOpen = !countryDropdownOpen;
-  var display = document.getElementById('countryDisplay');
-  var panel = document.getElementById('countryPanel');
-  var search = document.getElementById('countrySearch');
-  display.classList.toggle('open', countryDropdownOpen);
-  panel.classList.toggle('open', countryDropdownOpen);
-  if (countryDropdownOpen) {
-    search.value = '';
-    filteredCountries = COUNTRIES.slice();
-    renderCountryList(filteredCountries);
-    setTimeout(function(){ search.focus(); }, 40);
-  }
-}
-
-function filterCountries() {
-  var q = document.getElementById('countrySearch').value.toLowerCase();
-  filteredCountries = COUNTRIES.filter(function(c){ return c.name.toLowerCase().indexOf(q) !== -1; });
-  renderCountryList(filteredCountries);
-}
-
-function selectCountry(name) {
-  document.getElementById('country').value = name;
-  var displayText = document.getElementById('countryDisplayText');
-  displayText.textContent = name;
-  displayText.classList.add('selected');
-  var display = document.getElementById('countryDisplay');
-  display.classList.remove('open', 'invalid');
-  document.getElementById('countryPanel').classList.remove('open');
-  document.getElementById('err-country').style.display = 'none';
-  countryDropdownOpen = false;
-  // Find country code and trigger state population
-  var found = COUNTRIES.find(function(c){ return c.name === name; });
-  onCountryChange();
-}
-
-function countryKeydown(e) {
-  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCountryDropdown(); }
-  if (e.key === 'Escape') { closeCountryDropdown(); }
-}
-
-function countrySearchKeydown(e) {
-  var opts = document.querySelectorAll('#countryList .country-option');
-  if (e.key === 'ArrowDown') {
-    e.preventDefault(); focusedIndex = Math.min(focusedIndex+1, opts.length-1);
-    opts.forEach(function(o,i){ o.classList.toggle('focused', i===focusedIndex); });
-    if (opts[focusedIndex]) opts[focusedIndex].scrollIntoView({block:'nearest'});
-  } else if (e.key === 'ArrowUp') {
-    e.preventDefault(); focusedIndex = Math.max(focusedIndex-1, 0);
-    opts.forEach(function(o,i){ o.classList.toggle('focused', i===focusedIndex); });
-    if (opts[focusedIndex]) opts[focusedIndex].scrollIntoView({block:'nearest'});
-  } else if (e.key === 'Enter') {
-    e.preventDefault();
-    if (focusedIndex >= 0 && opts[focusedIndex]) { selectCountry(opts[focusedIndex].dataset.name); }
-    else if (filteredCountries.length === 1) { selectCountry(filteredCountries[0].name); }
-  } else if (e.key === 'Escape') { closeCountryDropdown(); }
-}
-
-function closeCountryDropdown() {
-  countryDropdownOpen = false;
-  document.getElementById('countryDisplay').classList.remove('open');
-  document.getElementById('countryPanel').classList.remove('open');
-}
-
-// Close on click outside
-document.addEventListener('click', function(e) {
-  if (!document.getElementById('countryDropdown').contains(e.target)) closeCountryDropdown();
-});
-
-var detectedCountry = null;
-
-async function detectLocation() {
-  try {
-    var res = await fetch('https://ipapi.co/json/');
-    var data = await res.json();
-    detectedCountry = data.country_code;
-    var detectedState = data.region;
-    var found = COUNTRIES.find(function(c){ return c.code === detectedCountry; });
-    if (found) {
-      document.getElementById('country').value = found.name;
-      var displayText = document.getElementById('countryDisplayText');
-      displayText.textContent = found.name;
-      displayText.classList.add('selected');
-      if (detectedCountry === 'NG') onCountryChange(detectedState);
-      else onCountryChange();
-    }
-  } catch(e) {
-    // silently fail — user selects manually
-  }
-}
-
-function populateCountries() {} // no-op, replaced by custom dropdown
-
-function onCountryChange(autoState) {
-  var country = document.getElementById('country').value;
-  var stateField = document.getElementById('stateField');
-  var lgaField = document.getElementById('lgaField');
-  var stateSel = document.getElementById('state');
-  var lgaSel = document.getElementById('lga');
-  var stateLabel = document.getElementById('stateLabel');
-  stateSel.innerHTML = '<option value="">Select state / region...</option>';
-  lgaSel.innerHTML = '<option value="">Select LGA...</option>';
-  lgaField.style.display = 'none';
-  if (!country) { stateField.style.display = 'none'; return; }
-  stateField.style.display = 'block';
-  if (country === 'Nigeria') {
-    stateLabel.innerHTML = 'State <span class="req">*</span>';
-    NIGERIA_STATES.forEach(function(s) {
-      var opt = document.createElement('option');
-      opt.value = s;
-      opt.textContent = s + (s === autoState ? ' 📍' : '');
-      if (s === autoState) opt.selected = true;
-      stateSel.appendChild(opt);
-    });
-    if (autoState) onStateChange();
-  } else {
-    stateLabel.innerHTML = 'State / Region <span class="req">*</span>';
-    var opt = document.createElement('option');
-    opt.value = 'Not applicable'; opt.textContent = 'Not applicable / prefer not to say';
-    stateSel.appendChild(opt);
-  }
-}
-
-function onStateChange() {
-  var state = document.getElementById('state').value;
-  var lgaField = document.getElementById('lgaField');
-  var lgaSel = document.getElementById('lga');
-  lgaSel.innerHTML = '<option value="">Select LGA...</option>';
-  if (NIGERIA_LGAS[state]) {
-    lgaField.style.display = 'block';
-    NIGERIA_LGAS[state].forEach(function(lga) {
-      var opt = document.createElement('option');
-      opt.value = lga; opt.textContent = lga;
-      lgaSel.appendChild(opt);
-    });
-  } else {
-    lgaField.style.display = 'none';
-  }
-}
-
-// Populate countries synchronously first so dropdown is ready immediately
-(function(){
-  var sel = document.getElementById("country");
-  if (sel && sel.options.length <= 1 && typeof COUNTRIES !== "undefined") {
-    COUNTRIES.forEach(function(c){
-      var opt = document.createElement("option");
-      opt.value = c.name; opt.textContent = c.name;
-      sel.appendChild(opt);
-    });
-  }
-})();
-detectLocation();
-
+// ── SUBMIT ──
 async function submitApplication() {
   var btn = document.getElementById('submitBtn');
-  btn.disabled = true; btn.textContent = 'Uploading receipt...';
+  btn.disabled = true; btn.textContent = 'Submitting...';
   try {
     var ref = 'CMA-' + Date.now().toString().slice(-6);
     var pwHash = await hashPassword(document.getElementById('password').value);
-    var ansHash = await hashPassword((document.getElementById('securityAnswer').value||'').toLowerCase().trim());
-    var wapp = v('whatsapp') || v('phone');
-
-    // Upload receipt to Supabase Storage
+    var ansHash = await hashPassword((v('securityAnswer')).toLowerCase().trim());
     var receiptPath = null;
     if (selectedFile) {
       btn.textContent = 'Uploading receipt...';
@@ -961,20 +602,11 @@ async function submitApplication() {
       receiptPath = ref + '_receipt.' + ext;
       var uploadRes = await fetch(SUPA_URL + '/storage/v1/object/receipts/' + receiptPath, {
         method: 'POST',
-        headers: {
-          'apikey': SUPA_KEY,
-          'Authorization': 'Bearer ' + SUPA_KEY,
-          'Content-Type': selectedFile.type || 'application/octet-stream',
-          'x-upsert': 'true'
-        },
+        headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': selectedFile.type || 'application/octet-stream', 'x-upsert': 'true' },
         body: selectedFile
       });
-      if (!uploadRes.ok) {
-        var errText = await uploadRes.text();
-        throw new Error('Receipt upload failed: ' + errText);
-      }
+      if (!uploadRes.ok) throw new Error('Receipt upload failed: ' + await uploadRes.text());
     }
-
     btn.textContent = 'Submitting application...';
     await sbPost('applications', {
       ref: ref,
@@ -982,99 +614,25 @@ async function submitApplication() {
       last_name: v('lastName'),
       email: v('email'),
       phone: v('phone'),
-      whatsapp: wapp,
+      whatsapp: v('phone'),
       security_question: v('securityQuestion'),
       security_answer_hash: ansHash,
-      country: (document.getElementById('country')||{}).value || null,
-      state: v('state'),
-      lga: v('lga') || null,
       programme: selectedProg,
       background: selectedBg,
-      role_in_parish: v('role'),
-
       receipt_name: selectedFile ? selectedFile.name : null,
       receipt_path: receiptPath,
       password_hash: pwHash,
       status: 'pending'
     });
-
-    [1,2,3,4].forEach(i => document.getElementById('step'+i).style.display='none');
-    document.getElementById('stepSuccess').style.display='block';
-    document.getElementById('successRef').textContent = 'REF: ' + ref;
-    document.getElementById('stepsEl').style.display='none';
+    [1,2,3,4].forEach(function(i){ document.getElementById('step'+i).style.display='none'; });
+    document.getElementById('stepSuccess').style.display = 'block';
     window.scrollTo({top:0,behavior:'smooth'});
   } catch(e) {
-    btn.disabled = false; btn.textContent = 'Submit Application →';
-    document.getElementById('submitErr').innerHTML = '<div class="alert" style="background:var(--danger-light);color:var(--danger);border:1px solid #FECACA;margin-bottom:12px;">⚠️ Submission failed: ' + e.message + '. Please try again.</div>';
+    btn.disabled = false;
+    btn.textContent = 'Submit Application →';
+    alert('Error: ' + e.message);
   }
 }
 </script>
-<footer style="background:var(--navy);padding:32px 40px;text-align:center;">
-  <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="42" height="42" style="flex-shrink:0;" aria-label="Catholic Music Academy">
-  <!-- Outer circle ring -->
-  <circle cx="60" cy="60" r="58" fill="white" stroke="#1A2E6C" stroke-width="3"/>
-  <circle cx="60" cy="60" r="52" fill="white" stroke="#1A2E6C" stroke-width="1"/>
-
-  <!-- Outer ring text paths -->
-  <path id="topArc" d="M 14,60 A 46,46 0 1,1 106,60" fill="none"/>
-  <path id="botArc" d="M 18,62 A 42,42 0 0,0 102,62" fill="none"/>
-  <text font-family="Georgia,serif" font-size="8.5" font-weight="700" fill="#1A2E6C" letter-spacing="2.8">
-    <textPath href="#topArc" startOffset="8%">MUSIC ACADEMY</textPath>
-  </text>
-  <text font-family="Georgia,serif" font-size="7.5" font-weight="700" fill="#1A2E6C" letter-spacing="1.8">
-    <textPath href="#botArc" startOffset="5%">CATHOLIC DIOCESE OF WARRI</textPath>
-  </text>
-
-  <!-- Inner circle -->
-  <circle cx="60" cy="52" r="32" fill="#f8f6f0" stroke="#1A2E6C" stroke-width="1.2"/>
-
-  <!-- Musical staff lines in upper portion -->
-  <g opacity="0.35" stroke="#1A2E6C" stroke-width="0.7">
-    <line x1="36" y1="36" x2="84" y2="36"/>
-    <line x1="36" y1="39" x2="84" y2="39"/>
-    <line x1="36" y1="42" x2="84" y2="42"/>
-    <line x1="36" y1="45" x2="84" y2="45"/>
-    <line x1="36" y1="48" x2="84" y2="48"/>
-  </g>
-
-  <!-- Treble clef -->
-  <text x="36" y="52" font-family="Georgia,serif" font-size="22" fill="#1A2E6C" opacity="0.8">𝄞</text>
-
-  <!-- Central figure: stylised Saint Cecilia (simplified woman with robe) -->
-  <!-- Head -->
-  <ellipse cx="68" cy="34" rx="6" ry="7" fill="#f5d5b0" stroke="#c4956a" stroke-width="0.5"/>
-  <!-- Hair -->
-  <path d="M62 32 Q64 26 68 27 Q72 26 74 32" fill="#8B6914" stroke="none"/>
-  <!-- Robe/body -->
-  <path d="M60 41 Q62 38 68 37 Q74 38 76 41 L78 62 L58 62 Z" fill="#1A2E6C"/>
-  <!-- Robe folds -->
-  <path d="M63 41 L62 62 M73 41 L74 62" stroke="#C9A84C" stroke-width="0.6" opacity="0.5"/>
-  <!-- Hands with instrument suggestion -->
-  <path d="M58 48 Q56 50 57 54 Q58 52 60 51" fill="#f5d5b0" stroke="#c4956a" stroke-width="0.3"/>
-  <path d="M78 48 Q80 50 79 54 Q78 52 76 51" fill="#f5d5b0" stroke="#c4956a" stroke-width="0.3"/>
-  <!-- Simple pipe organ suggestion -->
-  <rect x="72" y="44" width="2" height="10" rx="1" fill="#C9A84C" opacity="0.7"/>
-  <rect x="75" y="46" width="2" height="8" rx="1" fill="#C9A84C" opacity="0.7"/>
-  <rect x="78" y="48" width="2" height="6" rx="1" fill="#C9A84C" opacity="0.7"/>
-
-  <!-- Chevron/wing decorations on sides -->
-  <path d="M4 58 L14 52 L14 68 Z" fill="#1A2E6C"/>
-  <path d="M116 58 L106 52 L106 68 Z" fill="#1A2E6C"/>
-  <path d="M2 60 L12 58 L14 60 L12 62 Z" fill="#C9A84C"/>
-  <path d="M118 60 L108 58 L106 60 L108 62 Z" fill="#C9A84C"/>
-
-  <!-- Bottom banner -->
-  <path d="M24 76 Q60 85 96 76 L96 88 Q60 97 24 88 Z" fill="#1A2E6C"/>
-  <text x="60" y="85" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" font-style="italic" fill="#C9A84C" letter-spacing="0.5">Excellence In Sacred Arts</text>
-
-  <!-- Gold star decorations on banner sides -->
-  <text x="18" y="85" font-size="7" fill="#C9A84C">✦</text>
-  <text x="96" y="85" font-size="7" fill="#C9A84C">✦</text>
-</svg>
-    <div style="text-align:left;"><div style="font-family:'DM Serif Display',serif;font-size:18px;color:white;">Catholic Music Academy</div><div style="font-size:10px;color:#C9A84C;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;">Excellence in Sacred Arts</div></div>
-  </div>
-  <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:10px;">Catholic Diocese of Warri · Ozoro, Delta State, Nigeria</div>
-  <div style="font-size:11px;color:rgba(255,255,255,0.22);margin-top:8px;">Developed by <span style="color:#C9A84C;">DaleX</span></div>
-</footer>
 </body>
 </html>
