@@ -256,9 +256,134 @@ footer{background:var(--navy);padding:48px 24px 28px;}
 .footer-bottom{padding-top:22px;border-top:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
 .footer-copy,.footer-credit{font-size:11px;color:rgba(255,255,255,0.18);}
 
+/* ════════════════════════════════════════════
+   MOBILE FIRST — iPhone 13 (390px) primary
+   All desktop CSS untouched above.
+   ════════════════════════════════════════════ */
 @media(max-width:768px){
+
+  /* Parallax: disable fixed on mobile (iOS bug) */
   .hero-parallax,.parallax-break-img{background-attachment:scroll;}
+
+  /* NAV */
+  .nav-inner{height:56px;padding:0 16px;}
+  .logo-name{font-size:13px;}
+
+  /* HERO */
+  .hero{min-height:auto;padding-bottom:0;}
+  .hero-inner{padding:72px 20px 48px;gap:32px;}
+  .hero-title{font-size:38px;letter-spacing:-0.5px;line-height:0.95;}
+  .hero-list li{font-size:14px;}
+  .hero-acts{gap:10px;}
+  .hero-acts .btn{font-size:14px;padding:13px 20px;flex:1;justify-content:center;}
+  .hero-checks{gap:12px;}
+
+  /* HERO MOCKUP — compact on mobile */
+  .mockup{border-radius:14px;}
+  .mk-body{padding:14px;}
+  .mk-mod-list .mk-mod-item:nth-child(n+5){display:none;} /* show max 4 rows */
+  .mk-next{padding:10px 12px;}
+
+  /* TRUST BAR — horizontal scroll pill style */
+  .trust-inner{padding:0 16px;gap:0;}
+  .trust-item{padding:13px 16px 13px 0;font-size:11px;}
+
+  /* SECTION padding */
+  .sec{padding:56px 20px;}
+  .exp-sec{padding:56px 20px;}
+  .cta-sec{padding:56px 20px;}
+
+  /* HOW IT WORKS — 2-col layout on mobile */
+  .how-hd{margin-bottom:40px;}
+  .timeline::before{left:20px;}
+  .tl-step{gap:14px;margin-bottom:28px;}
+  .tl-num{width:40px;height:40px;font-size:14px;flex-shrink:0;}
+  .tl-content{padding:14px 16px;border-radius:12px;}
+  .tl-title{font-size:16px;margin-bottom:4px;}
+  .tl-desc{font-size:12px;line-height:1.6;}
+
+  /* WHY CMA — horizontal cards on mobile */
+  .why-grid{margin-top:32px;gap:14px;}
+  .why-card{padding:18px 16px;display:flex;align-items:flex-start;gap:14px;border-radius:14px;}
+  .why-icon{font-size:26px;margin-bottom:0;flex-shrink:0;margin-top:2px;}
+  .why-title{font-size:17px;margin-bottom:4px;}
+  .why-desc{font-size:13px;}
+
+  /* PROGRAMMES — compact cards */
+  .prog-hd{margin-bottom:28px;}
+  .prog-hd .btn{width:100%;justify-content:center;}
+  .prog-body{padding:18px;}
+  .prog-desc{display:none;} /* hide description on mobile — cards too tall */
+  .prog-meta{padding:10px 0;margin-bottom:12px;}
+  .prog-meta-row{font-size:10px;}
+  .prog-name{font-size:17px;}
+
+  /* PORTAL SECTION */
+  .portal-grid{margin-top:32px;gap:28px;}
+  /* Features: 2-column icon grid on mobile */
+  .portal-features{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .pf-item{flex-direction:column;align-items:flex-start;gap:8px;}
+  .pf-icon{width:38px;height:38px;font-size:17px;border-radius:10px;}
+  .pf-title{font-size:13px;margin-bottom:2px;}
+  .pf-desc{font-size:11px;line-height:1.5;}
+
+  /* EXPERIENCE — tighter cards */
+  .exp-grid{margin-top:32px;gap:14px;}
+  .exp-card{padding:22px 18px;border-radius:14px;}
+  .exp-icon{font-size:26px;margin-bottom:12px;}
+  .exp-title{font-size:17px;margin-bottom:6px;}
+  .exp-desc{font-size:12px;}
+
+  /* ACCREDITATION */
+  .accred-box{padding:32px 24px;border-radius:18px;}
+  .accred-seal{width:64px;height:64px;font-size:26px;}
+  .accred-title{font-size:20px;}
+  .accred-desc{font-size:12px;}
+  .accred-pills{gap:6px;}
+  .pill{font-size:10px;padding:4px 10px;}
+
+  /* CTA */
+  .cta-title{font-size:28px;}
+  .cta-sub{font-size:14px;margin-bottom:28px;}
+  .cta-acts{flex-direction:column;align-items:center;}
+  .cta-acts .btn{width:100%;max-width:320px;justify-content:center;}
+
+  /* FOOTER */
+  .footer-grid{grid-template-columns:1fr;gap:24px;}
+  .footer-grid > div:first-child{grid-column:auto;}
+
+  /* PARALLAX BREAK */
+  .parallax-break{min-height:220px;}
+  .pb-quote{font-size:20px;}
 }
+
+/* Scroll animation base states */
+.tl-step,.why-card,.exp-card,.prog-card,.pf-item{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity 0.5s ease,transform 0.5s ease;
+}
+.tl-step.visible,.why-card.visible,.exp-card.visible,.prog-card.visible,.pf-item.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+/* Stagger delays */
+.tl-step:nth-child(1){transition-delay:0ms;}
+.tl-step:nth-child(2){transition-delay:80ms;}
+.tl-step:nth-child(3){transition-delay:160ms;}
+.tl-step:nth-child(4){transition-delay:240ms;}
+.tl-step:nth-child(5){transition-delay:320ms;}
+.tl-step:nth-child(6){transition-delay:400ms;}
+.why-card:nth-child(1){transition-delay:0ms;}
+.why-card:nth-child(2){transition-delay:100ms;}
+.why-card:nth-child(3){transition-delay:200ms;}
+.exp-card:nth-child(1){transition-delay:0ms;}
+.exp-card:nth-child(2){transition-delay:100ms;}
+.exp-card:nth-child(3){transition-delay:200ms;}
+.prog-card:nth-child(1){transition-delay:0ms;}
+.prog-card:nth-child(2){transition-delay:80ms;}
+.prog-card:nth-child(3){transition-delay:160ms;}
+
 </style>
 </head>
 <body>
@@ -287,9 +412,9 @@ footer{background:var(--navy);padding:48px 24px 28px;}
         <button class="nl">Contact &#9662;</button>
         <div class="cd">
           <div class="cd-hd">Get in touch</div>
-          <div class="cd-row"><div><div class="cd-lbl">Email</div><div class="cd-val">info@catholicmusicacademy.org</div></div></div>
-          <div class="cd-row"><div><div class="cd-lbl">WhatsApp</div><div class="cd-val">Contact the Academy</div></div></div>
-          <div class="cd-row"><div><div class="cd-lbl">Location</div><div class="cd-val">Ozoro, Delta State, Nigeria</div></div></div>
+          <div class="cd-row"><div><div class="cd-lbl">Email</div><div class="cd-val" id="cdEmail">info@catholicmusicacademy.org</div></div></div>
+          <div class="cd-row"><div><div class="cd-lbl">WhatsApp</div><div class="cd-val" id="cdWhatsApp">Contact the Academy</div></div></div>
+          <div class="cd-row"><div><div class="cd-lbl">Location</div><div class="cd-val" id="cdLocation">Ozoro, Delta State, Nigeria</div></div></div>
         </div>
       </div>
     </div>
@@ -653,7 +778,7 @@ footer{background:var(--navy);padding:48px 24px 28px;}
         <div class="footer-col-title">Support</div>
         <div class="footer-links">
           <a class="footer-link" href="login.html">Forgot Password</a>
-          <a class="footer-link" href="mailto:info@catholicmusicacademy.org">Email Support</a>
+          <a class="footer-link" id="footerEmail" href="mailto:info@catholicmusicacademy.org">Email Support</a>
         </div>
       </div>
     </div>
@@ -743,6 +868,15 @@ footer{background:var(--navy);padding:48px 24px 28px;}
     var ss = {};
     (ssRows||[]).forEach(function(r){ ss[r.key]=r.value; });
 
+    // Contact dropdown
+    var cdE=document.getElementById('cdEmail');
+    var cdW=document.getElementById('cdWhatsApp');
+    var cdL=document.getElementById('cdLocation');
+    var fE=document.getElementById('footerEmail');
+    if(cdE && ss['contact_email']){ cdE.textContent=ss['contact_email']; if(fE){fE.href='mailto:'+ss['contact_email'];fE.textContent=ss['contact_email'];}}
+    if(cdW && ss['contact_whatsapp']){ cdW.textContent=ss['contact_whatsapp']; }
+    if(cdL && ss['contact_location']){ cdL.textContent=ss['contact_location']; }
+
     // Hero mockup
     var mkn=document.getElementById('mkCourseName');
     var mkp=document.getElementById('mkProgNum');
@@ -795,6 +929,24 @@ footer{background:var(--navy);padding:48px 24px 28px;}
     }
   } catch(ssE) {
     // Silently fail — placeholders already in HTML
+  }
+
+
+  // ── SCROLL ENTRANCE ANIMATIONS ──
+  var animEls = document.querySelectorAll('.tl-step,.why-card,.exp-card,.prog-card,.pf-item');
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    animEls.forEach(function(el) { observer.observe(el); });
+  } else {
+    // Fallback: just show everything
+    animEls.forEach(function(el) { el.classList.add('visible'); });
   }
 
 })();
