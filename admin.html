@@ -479,7 +479,8 @@ tr:hover td{background:var(--surface);cursor:pointer;}
   <div class="nav-item" onclick="goPage('atrisk')" id="navAtrisk">⚠️ At-Risk Students</div>
   <div class="sb-section">Communication</div>
   <div class="nav-item" onclick="goPage('announcements')">📢 Announcements</div>
-  <div class="nav-item" onclick="goPage('feedback')">💬 Student Feedback</div>
+  <div class="nav-item" onclick="goPage('grading')" id="navGrading">📋 Grading Queue</div>
+    <div class="nav-item" onclick="goPage('feedback')">💬 Student Feedback</div>
   <div class="sb-section">Settings</div>
   <div class="nav-item" onclick="goPage('cohort')">📅 Cohort & Deadline</div>
   <div class="nav-item" onclick="goPage('sitesettings')">🌐 Site Settings</div>
@@ -604,6 +605,16 @@ tr:hover td{background:var(--surface);cursor:pointer;}
 <div class="page" id="page-cohort">
   <div class="page-header"><div><div class="page-title">Cohort & Deadline</div><div class="page-sub">Manage cohort settings and pass mark.</div></div></div>
   <div id="cohortView"></div>
+</div>
+
+
+<!-- GRADING QUEUE -->
+<div class="page" id="page-grading">
+  <div class="page-header">
+    <div><div class="page-title">Grading Queue</div><div class="page-sub">Review and grade student written responses. MCQ scores are already calculated.</div></div>
+    <button class="btn btn-ghost" onclick="renderGrading()">&#8635; Refresh</button>
+  </div>
+  <div id="gradingList"><div style="text-align:center;padding:40px;color:var(--muted);">Loading...</div></div>
 </div>
 
 <!-- STUDENT FEEDBACK -->
@@ -814,7 +825,7 @@ function goPage(id) {
   document.querySelectorAll('.nav-item').forEach(n=>{
     if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
   });
-  var renders={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings};
+  var renders={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings,'grading':renderGrading};
   if(id==='courses'){
     cmState.selectedModule=null;
     renderCourses();
@@ -861,7 +872,7 @@ function updateBadges() {
   if(bell) bell.textContent=total>0?total+' alerts':'';
 }
 function renderCurrentPage() {
-  var r={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings};
+  var r={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings,'grading':renderGrading};
   if(currentPage==='courses') renderCourses();
   else if(r[currentPage]) r[currentPage]();
 }
@@ -1402,10 +1413,11 @@ function selectCMModule(courseId, modIdx) {
   var row = cmContent[key] || {};
   cmState.published = row.published || false;
   try { cmState.questions = JSON.parse(typeof row.questions==='string'?row.questions:'[]'); } catch(e){ cmState.questions=[]; }
-  if (!cmState.questions.length) cmState.questions = [{q:'',opts:['','','',''],ans:0}];
+  if (!cmState.questions.length) cmState.questions = [{type:'mcq',q:'',opts:['','','',''],ans:0,marks:1}];
   cmState.contentMode = 'type';
   cmState.passMark = row.pass_mark || 100;
   cmState.maxAttempts = row.max_attempts || 0;
+  cmState.assessmentType = row.assessment_type || 'mcq';
   renderCMSidebar();
   renderCMEditor(courseId, modIdx, key, row);
 }
@@ -1561,35 +1573,63 @@ function removeCMDownload(i) {
 
 // ── QUESTION BUILDER ──────────────────────────────────────────────────────────
 var LETTERS = ['A','B','C','D'];
+var Q_TYPE_LABELS = {mcq:'MCQ',short:'Short Answer',essay:'Essay'};
+var Q_TYPE_COLORS = {mcq:'var(--navy-light)',short:'var(--gold-light)',essay:'#F0FDF4'};
+
 function renderCMQuestions() {
   var el = document.getElementById('cm_qList');
   if (!el) return;
   el.innerHTML = cmState.questions.map(function(q,i){ return buildCMQBlock(q,i); }).join('');
-  cmState.questions.forEach(function(_,i){ highlightCMCorrect(i); });
+  cmState.questions.forEach(function(q,i){ if(q.type==='mcq'||!q.type) highlightCMCorrect(i); });
 }
+
 function buildCMQBlock(q,i) {
-  return '<div class="q-block" id="qb-'+i+'">'
-    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">'
-    +'<div class="q-block-num">Question '+(i+1)+'</div>'
-    +(cmState.questions.length>1?'<button class="btn btn-ghost btn-xs" onclick="removeCMQuestion('+i+')" style="color:var(--danger);padding:3px 8px;">Remove</button>':'')
+  var type = q.type || 'mcq';
+  var typeColor = Q_TYPE_COLORS[type] || Q_TYPE_COLORS.mcq;
+  var typeLabel = Q_TYPE_LABELS[type] || 'MCQ';
+  var header = '<div class="q-block" id="qb-'+i+'" style="border-top:3px solid '+(type==='mcq'?'var(--navy)':type==='short'?'var(--gold)':'var(--ok)')+';">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
+    +'<div style="display:flex;align-items:center;gap:8px;">'
+    +'<div class="q-block-num" style="margin-bottom:0;">Q'+(i+1)+'</div>'
+    +'<span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;background:'+typeColor+';color:'+(type==='mcq'?'var(--navy)':type==='short'?'var(--gold-dark)':'var(--ok)')+';">'+typeLabel+'</span>'
     +'</div>'
-    +'<input class="q-text-input" placeholder="Question text..." value="'+escQ(q.q)+'" oninput="cmState.questions['+i+'].q=this.value" id="qt-'+i+'"/>'
-    +'<div class="q-opts-grid">'
-    +LETTERS.map(function(l,oi){
-      return '<div class="q-opt-wrap"><span class="q-opt-label">'+l+'</span>'
-        +'<input class="q-opt-input'+(q.ans===oi?' is-correct':'')+'" id="qo-'+i+'-'+oi+'"'
-        +' placeholder="Option '+l+'..." value="'+escQ(q.opts[oi]||'')+'"'
-        +' oninput="cmState.questions['+i+'].opts['+oi+']=this.value"'
-        +' onfocus="highlightCMCorrect('+i+')" /></div>';
-    }).join('')
-    +'</div>'
-    +'<div class="q-correct-row">'
-    +'<span class="q-correct-label">Correct:</span>'
-    +'<select class="q-correct-select" onchange="setCMCorrect('+i+',this.value)" id="qans-'+i+'">'
-    +LETTERS.map(function(l,oi){ return '<option value="'+oi+'"'+(q.ans===oi?' selected':'')+'>Option '+l+'</option>'; }).join('')
-    +'</select>'
-    +'</div></div>';
+    +'<div style="display:flex;align-items:center;gap:8px;">'
+    +'<input type="number" min="1" max="100" placeholder="Marks" value="'+(q.marks||1)+'" oninput="cmState.questions['+i+'].marks=parseInt(this.value)||1" style="width:70px;border:1.5px solid var(--border);border-radius:6px;padding:4px 8px;font-size:12px;font-family:DM Sans,sans-serif;">'
+    +'<span style="font-size:11px;color:var(--muted);">marks</span>'
+    +(cmState.questions.length>1?'<button class="btn btn-ghost btn-xs" onclick="removeCMQuestion('+i+')" style="color:var(--danger);">Remove</button>':'')
+    +'</div></div>'
+    +'<input class="q-text-input" placeholder="Question text..." value="'+escQ(q.q)+'" oninput="cmState.questions['+i+'].q=this.value" id="qt-'+i+'"/>';
+
+  if (type === 'mcq') {
+    return header
+      +'<div class="q-opts-grid">'
+      +LETTERS.map(function(l,oi){
+        return '<div class="q-opt-wrap"><span class="q-opt-label">'+l+'</span>'
+          +'<input class="q-opt-input'+(q.ans===oi?' is-correct':'')+'" id="qo-'+i+'-'+oi+'"'
+          +' placeholder="Option '+l+'..." value="'+escQ((q.opts||[])[oi]||'')+'"'
+          +' oninput="cmState.questions['+i+'].opts['+(oi)+']=this.value"'
+          +' onfocus="highlightCMCorrect('+i+')" /></div>';
+      }).join('')
+      +'</div>'
+      +'<div class="q-correct-row"><span class="q-correct-label">Correct:</span>'
+      +'<select class="q-correct-select" onchange="setCMCorrect('+i+',this.value)" id="qans-'+i+'">'
+      +LETTERS.map(function(l,oi){ return '<option value="'+oi+'"'+(q.ans===oi?' selected':'')+'>Option '+l+'</option>'; }).join('')
+      +'</select></div></div>';
+  } else if (type === 'short') {
+    return header
+      +'<div style="background:var(--gold-light);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--gold-dark);margin-top:6px;">Student will type a short response (1-3 sentences). You grade this manually in the Grading Queue.</div>'
+      +'<div class="form-group" style="margin-top:10px;margin-bottom:0;"><label class="form-label" style="font-size:11px;">Marking Guide (visible to admin only)</label>'
+      +'<input class="q-text-input" placeholder="e.g. Must mention: Gregorian origins, modal scales, liturgical context..." value="'+escQ(q.guide||'')+'" oninput="cmState.questions['+i+'].guide=this.value"/></div>'
+      +'</div>';
+  } else {
+    return header
+      +'<div style="background:#F0FDF4;border-radius:8px;padding:10px 12px;font-size:12px;color:var(--ok);margin-top:6px;">Student will write an extended response. You grade this manually in the Grading Queue.</div>'
+      +'<div class="form-group" style="margin-top:10px;margin-bottom:0;"><label class="form-label" style="font-size:11px;">Marking Guide (visible to admin only)</label>'
+      +'<textarea class="q-text-input" placeholder="Describe what a full-marks answer should cover..." oninput="cmState.questions['+i+'].guide=this.value" style="min-height:70px;resize:vertical;">'+escQ(q.guide||'')+'</textarea></div>'
+      +'</div>';
+  }
 }
+
 function escQ(s){return (s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
 function setCMCorrect(i,val){
   cmState.questions[i].ans=parseInt(val);
@@ -1597,15 +1637,18 @@ function setCMCorrect(i,val){
 }
 function highlightCMCorrect(i){
   var q=cmState.questions[i];
-  if(!q) return;
+  if(!q||q.type!=='mcq') return;
   [0,1,2,3].forEach(function(oi){
     var el=document.getElementById('qo-'+i+'-'+oi);
     if(el) el.classList.toggle('is-correct', oi===q.ans);
   });
 }
-function addCMQuestion(){
-  if(cmState.questions.length>=10){showToast('Max 10 questions per module','warn');return;}
-  cmState.questions.push({q:'',opts:['','','',''],ans:0});
+function addCMQuestion(type){
+  type = type || 'mcq';
+  if(cmState.questions.length>=15){showToast('Max 15 questions per module','warn');return;}
+  if(type==='mcq') cmState.questions.push({type:'mcq',q:'',opts:['','','',''],ans:0,marks:1});
+  else if(type==='short') cmState.questions.push({type:'short',q:'',guide:'',marks:10});
+  else cmState.questions.push({type:'essay',q:'',guide:'',marks:20});
   renderCMQuestions();
   var el=document.getElementById('cm_qList');
   if(el&&el.lastElementChild) el.lastElementChild.scrollIntoView({behavior:'smooth',block:'start'});
@@ -1631,8 +1674,16 @@ async function saveCMModule(key) {
     showToast('Add reading content before saving','warn'); return;
   }
 
-  var qErrors = cmState.questions.filter(function(q){return !q.q.trim()||q.opts.some(function(o){return !o.trim();});});
+  // Validate only MCQ questions need options filled
+  var qErrors = cmState.questions.filter(function(q){
+    if(!q.q.trim()) return true;
+    if((q.type||'mcq')==='mcq') return q.opts.some(function(o){return !o.trim();});
+    return false;
+  });
   if (qErrors.length) { showToast('Complete all question fields first','warn'); return; }
+  var assessmentType = cmState.assessmentType || 'mcq';
+  var asmTypeRadio = document.querySelector('input[name="asmType"]:checked');
+  if (asmTypeRadio) assessmentType = asmTypeRadio.value;
 
   var videoUrl = (document.getElementById('cm_video')||{}).value||'';
   var moduleTopic = (document.getElementById('cm_topic')||{}).value||'';
@@ -1654,6 +1705,7 @@ async function saveCMModule(key) {
     downloads: JSON.stringify(downloads),
     reading_html: html,
     questions: JSON.stringify(cmState.questions),
+    assessment_type: assessmentType,
     pass_mark: passMark,
     max_attempts: maxAttempts,
     published: cmState.published,
@@ -1986,6 +2038,196 @@ async function saveSiteSettings(panel) {
   } catch(e) {
     var msg = document.getElementById(msgId);
     if(msg){ msg.textContent='Error: '+e.message+'. Make sure the site_settings table exists in Supabase.'; msg.style.background='#FEE2E2'; msg.style.color='var(--danger)'; msg.style.display='block'; }
+  }
+}
+
+
+// ── GRADING QUEUE ────────────────────────────────────────────────────────────
+async function renderGrading() {
+  var el = document.getElementById('gradingList');
+  if (!el) return;
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);">Loading...</div>';
+  try {
+    var rows = await sb('assessment_submissions','GET',null,'status=eq.pending&order=submitted_at.asc');
+    // Update badge
+    var badge = document.getElementById('navGrading');
+    if (badge && rows.length) badge.innerHTML = '📋 Grading Queue <span class="badge badge-danger">'+rows.length+'</span>';
+
+    if (!rows.length) {
+      el.innerHTML = '<div class="alert alert-info">No pending assessments to grade. All caught up.</div>';
+      return;
+    }
+    el.innerHTML = rows.map(function(r) {
+      var s = allStudents.find(function(st){ return st.id === r.student_id; });
+      var studentName = s ? s.first_name+' '+s.last_name : 'Unknown Student';
+      var studentEmail = s ? s.email : '';
+      var studentPhone = s ? (s.whatsapp||s.phone||'') : '';
+      var written = [];
+      try { written = JSON.parse(typeof r.written_responses==='string'?r.written_responses:'[]'); } catch(e){}
+      var totalWrittenMarks = written.reduce(function(sum,w){ return sum+(w.marks||0); },0);
+
+      return '<div class="card" style="margin-bottom:16px;" id="gq-'+r.id+'">'
+        // Header
+        +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;">'
+        +'<div>'
+        +'<div style="font-family:DM Serif Display,serif;font-size:18px;color:var(--navy);margin-bottom:2px;">'+studentName+'</div>'
+        +'<div style="font-size:12px;color:var(--muted);">'+studentEmail+' · Submitted '+fmtDateTime(r.submitted_at)+'</div>'
+        +'<div style="font-size:12px;color:var(--muted);">Module '+(r.module_index+1)+' · Course: '+(r.course_id||'—')+'</div>'
+        +'</div>'
+        +'<span class="pill pill-warn">Pending Review</span>'
+        +'</div>'
+
+        // MCQ Result
+        +(r.mcq_total > 0 ? '<div style="background:var(--navy-pale);border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:14px;">'
+        +'<div style="font-size:22px;font-family:DM Serif Display,serif;color:var(--navy);">'+r.mcq_score+'/'+r.mcq_total+'</div>'
+        +'<div><div style="font-size:12px;font-weight:700;color:var(--navy);">Section A — MCQ</div>'
+        +'<div style="font-size:11px;color:var(--muted);">Auto-graded</div></div></div>' : '')
+
+        // Written responses
+        +(written.length ? '<div style="margin-bottom:14px;">'
+        +'<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Section B — Written Responses</div>'
+        +written.map(function(w,wi) {
+          return '<div style="border:1.5px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;">'
+            +'<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px;">Q'+(wi+1)+': '+escQ(w.question)+'</div>'
+            +(w.guide?'<div style="font-size:11px;color:var(--gold-dark);background:var(--gold-light);border-radius:6px;padding:6px 10px;margin-bottom:8px;"><strong>Marking guide:</strong> '+escQ(w.guide)+'</div>':'')
+            +'<div style="font-size:13px;color:var(--text);background:var(--surface);border-radius:8px;padding:10px 12px;line-height:1.65;margin-bottom:10px;white-space:pre-wrap;">'+escQ(w.response||'(No response)')+'</div>'
+            +'<div style="display:flex;align-items:center;gap:8px;">'
+            +'<label style="font-size:12px;font-weight:600;color:var(--muted);">Score:</label>'
+            +'<input type="number" min="0" max="'+w.marks+'" placeholder="0" id="wscore-'+r.id+'-'+wi+'" style="width:70px;border:1.5px solid var(--border);border-radius:7px;padding:6px 10px;font-size:13px;font-family:DM Sans,sans-serif;"/>'
+            +'<span style="font-size:12px;color:var(--muted);">/ '+w.marks+' marks</span>'
+            +'</div>'
+            +'</div>';
+        }).join('')
+        +'</div>' : '')
+
+        // Comments + score summary
+        +'<div style="background:var(--surface);border-radius:10px;padding:14px;margin-bottom:14px;">'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">'
+        +'<div><div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">MCQ Score</div>'
+        +'<div style="font-size:18px;font-weight:700;color:var(--navy);">'+(r.mcq_score||0)+' / '+(r.mcq_total||0)+'</div></div>'
+        +'<div><div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">Written Score</div>'
+        +'<div style="font-size:18px;font-weight:700;color:var(--navy);" id="wtotal-'+r.id+'">— / '+totalWrittenMarks+'</div></div>'
+        +'</div>'
+        +'<label class="form-label">Instructor Comments (sent to student)</label>'
+        +'<textarea class="form-textarea" id="gcomment-'+r.id+'" placeholder="e.g. Good understanding of Gregorian Chant. Expand on the modal system in future." style="min-height:80px;"></textarea>'
+        +'</div>'
+
+        // Email template
+        +'<div style="margin-bottom:14px;">'
+        +'<div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Email to Student (editable)</div>'
+        +'<input class="form-input" id="gemail-subj-'+r.id+'" value="Your Assessment Result — Catholic Music Academy" style="margin-bottom:8px;"/>'
+        +'<textarea class="form-textarea" id="gemail-body-'+r.id+'" style="min-height:160px;font-size:12px;line-height:1.7;">Dear '+studentName.split(' ')[0]+',
+
+Your assessment for Module '+(r.module_index+1)+' has been reviewed by your instructor.
+
+Result: [PASS/FAIL]
+Score: [X] / [Total]
+
+[Comments]
+
+Log in to continue your studies:
+https://learn.catholicmusicacademy.net
+
+God bless,
+Catholic Music Academy
+Catholic Diocese of Warri</textarea>'
+        +'</div>'
+
+        // Action buttons
+        +'<div style="display:flex;gap:10px;flex-wrap:wrap;">'
+        +'<button class="btn btn-primary" onclick="gradeSubmission(''+r.id+'','pass','+r.mcq_score+','+r.mcq_total+','+totalWrittenMarks+',''+studentEmail+'',''+studentPhone+'',''+studentName+'','+r.module_index+',''+r.student_id+'',''+r.course_id+'')" style="background:var(--ok);">✓ Pass Assessment</button>'
+        +'<button class="btn btn-danger" onclick="gradeSubmission(''+r.id+'','fail','+r.mcq_score+','+r.mcq_total+','+totalWrittenMarks+',''+studentEmail+'',''+studentPhone+'',''+studentName+'','+r.module_index+',''+r.student_id+'',''+r.course_id+'')" style="background:var(--danger);">✗ Fail Assessment</button>'
+        +(studentPhone?'<button class="btn btn-wa" onclick="openWhatsApp(''+r.id+'',''+studentPhone+'',''+studentName+'','+r.module_index+')" style="font-size:13px;">💬 WhatsApp</button>':'')
+        +'</div>'
+        +'</div>';
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<div class="alert alert-warn">Could not load grading queue. Make sure the assessment_submissions table exists in Supabase.</div>';
+  }
+}
+
+function openWhatsApp(subId, phone, name, modIdx) {
+  var comment = (document.getElementById('gcomment-'+subId)||{}).value||'';
+  var msg = 'Dear '+name+', your assessment for Module '+(modIdx+1)+' has been reviewed. '+(comment?'Comments: '+comment+'. ':'')+' Log in to check your result: https://learn.catholicmusicacademy.net';
+  window.open(waLink(phone, msg), '_blank');
+}
+
+async function gradeSubmission(id, result, mcqScore, mcqTotal, writtenTotal, email, phone, name, modIdx, studentId, courseId) {
+  // Collect written scores
+  var writtenScore = 0;
+  var wi = 0;
+  while (document.getElementById('wscore-'+id+'-'+wi)) {
+    writtenScore += parseInt((document.getElementById('wscore-'+id+'-'+wi)||{}).value||0);
+    wi++;
+  }
+  var combinedScore = mcqScore + writtenScore;
+  var combinedTotal = mcqTotal + writtenTotal;
+  var comment = (document.getElementById('gcomment-'+id)||{}).value||'';
+  var emailSubj = (document.getElementById('gemail-subj-'+id)||{}).value||'Your Assessment Result';
+  var emailBody = (document.getElementById('gemail-body-'+id)||{}).value||'';
+
+  // Update email template with actual scores
+  var resultWord = result === 'pass' ? 'PASSED' : 'NOT YET PASSED';
+  emailBody = emailBody.replace('[PASS/FAIL]', resultWord)
+    .replace('[X]', combinedScore)
+    .replace('[Total]', combinedTotal)
+    .replace('[Comments]', comment || '');
+
+  try {
+    // Update submission record
+    await sb('assessment_submissions','PATCH',{
+      status: result,
+      written_score: writtenScore,
+      combined_score: combinedScore,
+      combined_total: combinedTotal,
+      admin_comments: comment,
+      graded_at: new Date().toISOString(),
+      graded_by: currentAdmin || 'admin'
+    },'id=eq.'+id);
+
+    // If passed — save progress so module unlocks
+    if (result === 'pass') {
+      try {
+        var existing = await sb('progress','GET',null,'student_id=eq.'+studentId+'&course_id=eq.'+courseId+'&module_index=eq.'+modIdx+'&select=id');
+        if (!existing || !existing.length) {
+          await sb('progress','POST',{student_id:studentId,course_id:courseId,module_index:modIdx,completed_at:new Date().toISOString()});
+        }
+      } catch(pe){}
+    }
+
+    // Send email via Vercel function
+    if (email) {
+      try {
+        await fetch('/api/grade-notify', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({
+            to: email,
+            subject: emailSubj,
+            body: emailBody,
+            studentName: name,
+            result: result,
+            score: combinedScore,
+            total: combinedTotal,
+            moduleIndex: modIdx,
+            comments: comment
+          })
+        });
+      } catch(emailErr){ console.warn('Email send failed:', emailErr); }
+    }
+
+    showToast(name + ' marked as ' + result.toUpperCase() + '. ' + (result==='pass'?'Module unlocked.':''));
+    // Remove from queue UI
+    var card = document.getElementById('gq-'+id);
+    if (card) {
+      card.style.opacity = '0.4';
+      card.style.pointerEvents = 'none';
+      var badge = card.querySelector('.pill-warn');
+      if (badge) { badge.textContent = result==='pass'?'✓ Passed':'✗ Failed'; badge.className='pill '+(result==='pass'?'pill-ok':'pill-danger'); }
+    }
+    setTimeout(function(){ renderGrading(); }, 1500);
+  } catch(e) {
+    showToast('Error grading: '+e.message, 'err');
   }
 }
 
