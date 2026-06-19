@@ -1044,7 +1044,7 @@ function openMod(i) {
   var rt = document.getElementById('readTimer');
   rt.className = 'read-timer';
   document.getElementById('timerMsg').textContent = 'Reading timer active';
-  document.getElementById('timerSub').textContent = 'Read through the full lesson. The assessment unlocks when you\'ve read the content and scrolled to the end.';
+  document.getElementById('timerSub').textContent = 'Read through the full lesson. The assessment unlocks when you have read the content and scrolled to the end.';
   document.getElementById('timerBar').style.cssText = 'width:0%;transition:none;';
   showScreen('screen-module');
   startReadTimer(); setupScrollCheck();
@@ -1184,46 +1184,17 @@ function retryModFull() {
   var tm = document.getElementById('timerMsg');
   if (tm) tm.textContent='Reading timer active';
   var ts = document.getElementById('timerSub');
-  if (ts) ts.textContent="Read through the full lesson. The assessment unlocks when you\'ve read the content and scrolled to the end.";
+  if (ts) ts.textContent='Read through the full lesson. The assessment unlocks when you have read the content and scrolled to the end.';
   document.getElementById('quizResult').innerHTML='';
   document.getElementById('quizResult').classList.remove('show');
   document.getElementById('modActions').innerHTML='';
   lockQuiz();
   // Scroll to top of module content
-  window.scrollTo({top:0,behavior:\'smooth\'});
+  window.scrollTo({top:0,behavior:'smooth'});
   // Re-start gates
   startReadTimer();
   setupScrollCheck();
   return; // original function body follows — skip it
-}
-function retryModFull_orig() {
-  // Full re-read: reset everything as if just arriving on the module
-  answers = {}; submitted = false;
-  timerDone = false; scrollDone = false;
-  if (timerInterval) clearInterval(timerInterval);
-  // Pick fresh random questions
-  var pool = [...MODULES[currentMod].pool];
-  shownQuestions = [];
-  var count = Math.min(SHOW_COUNT, pool.length);
-  while (shownQuestions.length < count && pool.length) {
-    shownQuestions.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]);
-  }
-  // Reset quiz to locked state
-  lockQuiz();
-  document.getElementById('quizResult').innerHTML = '';
-  document.getElementById('quizResult').classList.remove('show');
-  document.getElementById('modActions').innerHTML = '';
-  // Reset timer UI
-  var rt = document.getElementById('readTimer');
-  rt.className = 'read-timer';
-  document.getElementById('timerMsg').textContent = 'Reading timer active';
-  document.getElementById('timerSub').textContent = 'Read through the full lesson. The assessment unlocks when you have read the content and scrolled to the end.';
-  document.getElementById('timerBar').style.cssText = 'width:0%;transition:none;';
-  // Scroll back to top of lesson
-  document.getElementById('modContent').scrollIntoView({behavior:'smooth', block:'start'});
-  // Restart timer and scroll gate
-  startReadTimer();
-  setupScrollCheck();
 }
 
 function showComplete() {
@@ -1326,11 +1297,11 @@ function showFeedbackModal() {
   modal.id = 'feedbackModal';
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
   modal.innerHTML = '<div style="background:white;border-radius:16px;padding:28px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,0.2);">'
-    +'<div style="font-family:\'DM Serif Display\',serif;font-size:20px;color:var(--text);margin-bottom:4px;">Send Feedback</div>'
+    +'<div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);margin-bottom:4px;">Send Feedback</div>'
     +'<div style="font-size:13px;color:var(--muted);margin-bottom:18px;">Module: '+m.title+'</div>'
     +'<div style="margin-bottom:12px;">'
     +'<label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:5px;">Type</label>'
-    +'<select id="fbType" style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:13px;font-family:\'DM Sans\',sans-serif;outline:none;">'
+    +'<select id="fbType" style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;">'
     +'<option value="question">❓ Question about content</option>'
     +'<option value="issue">⚠️ Problem / technical issue</option>'
     +'<option value="suggestion">💡 Suggestion</option>'
@@ -1338,7 +1309,7 @@ function showFeedbackModal() {
     +'</select></div>'
     +'<div style="margin-bottom:16px;">'
     +'<label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:5px;">Message</label>'
-    +'<textarea id="fbMessage" placeholder="Type your message here..." style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:13px;font-family:\'DM Sans\',sans-serif;outline:none;min-height:100px;resize:vertical;"></textarea>'
+    +'<textarea id="fbMessage" placeholder="Type your message here..." style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;min-height:100px;resize:vertical;"></textarea>'
     +'</div>'
     +'<div id="fbMsg" style="display:none;font-size:13px;color:var(--ok);background:var(--ok-light);border-radius:8px;padding:9px 13px;margin-bottom:10px;"></div>'
     +'<div style="display:flex;gap:8px;">'
@@ -1400,20 +1371,20 @@ function generateCertificate() {
   var win = window.open('','_blank','width=900,height=640');
   win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"/>'
     +'<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet"/>'
-    +'<style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#f8f6f0;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:\'DM Sans\',sans-serif;padding:24px;}'
+    +'<style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#f8f6f0;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'DM Sans',sans-serif;padding:24px;}'
     +'.cert{background:white;width:820px;padding:56px 64px;border:3px solid #0D1B3E;border-radius:4px;position:relative;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.12);}'
     +'.cert::before{content:"";position:absolute;inset:10px;border:1px solid #C9A84C;border-radius:2px;pointer-events:none;}'
     +'.eyebrow{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#9A7A2E;margin-bottom:24px;}'
-    +'.academy{font-family:\'DM Serif Display\',serif;font-size:28px;color:#0D1B3E;margin-bottom:4px;}'
+    +'.academy{font-family:'DM Serif Display',serif;font-size:28px;color:#0D1B3E;margin-bottom:4px;}'
     +'.diocese{font-size:13px;color:#64748B;margin-bottom:40px;}'
     +'.awarded{font-size:14px;color:#64748B;margin-bottom:12px;}'
-    +'.student-name{font-family:\'DM Serif Display\',serif;font-size:48px;color:#0D1B3E;border-bottom:2px solid #C9A84C;padding-bottom:8px;display:inline-block;margin-bottom:20px;line-height:1.15;}'
+    +'.student-name{font-family:'DM Serif Display',serif;font-size:48px;color:#0D1B3E;border-bottom:2px solid #C9A84C;padding-bottom:8px;display:inline-block;margin-bottom:20px;line-height:1.15;}'
     +'.completion{font-size:14px;color:#64748B;margin-bottom:8px;}'
-    +'.course-name{font-family:\'DM Serif Display\',serif;font-size:24px;color:#0D1B3E;margin-bottom:32px;}'
+    +'.course-name{font-family:'DM Serif Display',serif;font-size:24px;color:#0D1B3E;margin-bottom:32px;}'
     +'.seal{font-size:56px;margin:16px 0;}'
     +'.date-row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:40px;padding-top:24px;border-top:1px solid #E2E8F0;}'
     +'.sig-block{text-align:left;}'
-    +'.sig-name{font-family:\'DM Serif Display\',serif;font-size:16px;color:#0D1B3E;border-bottom:1px solid #0D1B3E;padding-bottom:4px;margin-bottom:4px;}'
+    +'.sig-name{font-family:'DM Serif Display',serif;font-size:16px;color:#0D1B3E;border-bottom:1px solid #0D1B3E;padding-bottom:4px;margin-bottom:4px;}'
     +'.sig-label{font-size:11px;color:#94A3B8;letter-spacing:0.5px;}'
     +'.cert-id{font-size:10px;color:#CBD5E1;margin-top:20px;letter-spacing:1px;}'
     +'@media print{body{background:white;padding:0;}.cert{box-shadow:none;border:3px solid #0D1B3E;}}'
