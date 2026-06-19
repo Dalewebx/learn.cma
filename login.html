@@ -554,6 +554,7 @@ var currentStudent = null;
 var completedModules = [];
 var currentMod = 0;
 var shownQuestions = [];
+var writtenAnswers = {}; // qi -> response text for short/essay
 var answers = {};
 var submitted = false;
 var timerDone = false;
@@ -664,7 +665,8 @@ async function loadCourseAndModulesFromDB(programmeStr) {
         content: r.reading_html || '<p>Content coming soon.</p>',
         pool: questions,
         passMark: r.pass_mark || 100,
-        maxAttempts: r.max_attempts || 0
+        maxAttempts: r.max_attempts || 0,
+        assessmentType: r.assessment_type || 'mcq'
       };
     });
 
@@ -982,13 +984,20 @@ function openMod(i) {
       }
     }).catch(function(){});
   }
-  var pool = [...m.pool];
+  var pool = [...(m.pool||[])];
+  // Separate MCQ from written questions
+  var mcqPool = pool.filter(function(q){ return (q.type||'mcq')==='mcq'; });
+  var writtenQs = pool.filter(function(q){ return q.type==='short'||q.type==='essay'; });
   shownQuestions = [];
-  var count = Math.min(SHOW_COUNT, pool.length);
-  while (shownQuestions.length < count && pool.length) {
-    var idx = Math.floor(Math.random()*pool.length);
-    shownQuestions.push(pool.splice(idx,1)[0]);
+  // Pick random MCQ subset
+  var count = Math.min(SHOW_COUNT, mcqPool.length);
+  var mcqCopy = [...mcqPool];
+  while (shownQuestions.length < count && mcqCopy.length) {
+    var idx = Math.floor(Math.random()*mcqCopy.length);
+    shownQuestions.push(mcqCopy.splice(idx,1)[0]);
   }
+  // Always include all written questions
+  writtenQs.forEach(function(q){ shownQuestions.push(q); });
   document.getElementById('modBreadcrumb').textContent = m.title;
   var bc = document.getElementById('modBreadcrumbCourse');
   if (bc) bc.textContent = CURRENT_COURSE ? CURRENT_COURSE.title : 'Course';
@@ -1098,72 +1107,200 @@ function lockQuiz() {
 }
 
 function renderQuiz() {
-  document.getElementById('quizBody').innerHTML = shownQuestions.map((q,qi) =>
-    '<div class="q-item"><div class="q-text">'+(qi+1)+'. '+q.q+'</div><div class="q-options">'
-    +q.opts.map((opt,oi) => '<div class="q-opt" id="qo-'+qi+'-'+oi+'" onclick="pick('+qi+','+oi+')">'
-      +'<div class="q-radio"><div class="q-radio-dot"></div></div>'+opt+'</div>').join('')
-    +'</div></div>'
-  ).join('');
+  var m = MODULES[currentMod] || {};
+  var asmType = m.assessmentType || 'mcq';
+  var mcqQs = shownQuestions.filter(function(q){ return (q.type||'mcq')==='mcq'; });
+  var writtenQs = shownQuestions.filter(function(q){ return q.type==='short'||q.type==='essay'; });
+  writtenAnswers = {};
+
+  var html = '';
+
+  // Section A: MCQ
+  if (mcqQs.length) {
+    html += '<div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--navy);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--navy-light);">Section A — Multiple Choice</div>';
+    html += shownQuestions.filter(function(q){return (q.type||'mcq')==='mcq';}).map(function(q,qi) {
+      return '<div class="q-item"><div class="q-text">'+(qi+1)+'. '+q.q+'</div><div class="q-options">'
+        +q.opts.map(function(opt,oi){
+          return '<div class="q-opt" id="qo-'+qi+'-'+oi+'" onclick="pick('+qi+','+oi+')">'
+            +'<div class="q-radio"><div class="q-radio-dot"></div></div>'+opt+'</div>';
+        }).join('')
+        +'</div></div>';
+    }).join('');
+  }
+
+  // Section B: Written
+  if (writtenQs.length) {
+    var mcqCount = mcqQs.length;
+    html += '<div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-dark);margin-top:24px;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--gold-light);">Section B — Written Response</div>';
+    html += writtenQs.map(function(q,wi) {
+      var origIdx = shownQuestions.indexOf(q);
+      var isEssay = q.type === 'essay';
+      return '<div class="q-item">'
+        +'<div class="q-text">'+(mcqCount+wi+1)+'. '+q.q+'</div>'
+        +'<div style="font-size:12px;color:var(--muted);margin-bottom:10px;">'+(isEssay?'Write a detailed response. Your instructor will review and grade this.':'Write a brief response (1-3 sentences). Your instructor will review this.')+'</div>'
+        +(isEssay
+          ?'<textarea id="wa-'+origIdx+'" oninput="writtenAnswers['+origIdx+']=this.value" placeholder="Write your response here..." style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;font-family:DM Sans,sans-serif;min-height:160px;outline:none;resize:vertical;line-height:1.7;transition:border-color 0.2s;" onfocus="this.style.borderColor=\'var(--navy)\'" onblur="this.style.borderColor=\'var(--border)\'"></textarea>'
+          :'<input id="wa-'+origIdx+'" oninput="writtenAnswers['+origIdx+']=this.value" type="text" placeholder="Your answer..." style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;font-family:DM Sans,sans-serif;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor=\'var(--navy)\'" onblur="this.style.borderColor=\'var(--border)\'"/>'
+        )
+        +'</div>';
+    }).join('');
+  }
+
+  document.getElementById('quizBody').innerHTML = html;
 }
 
 function pick(qi, oi) {
   if (submitted) return;
   answers[qi] = oi;
-  shownQuestions[qi].opts.forEach((_,idx) => document.getElementById('qo-'+qi+'-'+idx).classList.remove('sel'));
-  document.getElementById('qo-'+qi+'-'+oi).classList.add('sel');
+  shownQuestions.filter(function(q){return (q.type||'mcq')==='mcq';}).forEach(function(q,i){
+    if(i!==qi) return;
+    shownQuestions[qi] && shownQuestions[qi].opts && shownQuestions[qi].opts.forEach(function(_,idx){
+      var el = document.getElementById('qo-'+qi+'-'+idx);
+      if(el) el.classList.remove('sel');
+    });
+  });
+  // Simpler: just remove sel from all options of this question
+  [0,1,2,3].forEach(function(idx){
+    var el = document.getElementById('qo-'+qi+'-'+idx);
+    if(el) el.classList.remove('sel');
+  });
+  var chosen = document.getElementById('qo-'+qi+'-'+oi);
+  if(chosen) chosen.classList.add('sel');
 }
 
 async function submitQuiz() {
-  if (Object.keys(answers).length < shownQuestions.length) { alert('Please answer all '+shownQuestions.length+' questions.'); return; }
+  var m = MODULES[currentMod] || {};
+  var asmType = m.assessmentType || 'mcq';
+  var mcqQs = shownQuestions.filter(function(q){ return (q.type||'mcq')==='mcq'; });
+  var writtenQs = shownQuestions.filter(function(q){ return q.type==='short'||q.type==='essay'; });
+
+  // Validate MCQ answers
+  var mcqAnswered = mcqQs.every(function(q,qi){ return answers[qi] !== undefined; });
+  if (!mcqAnswered && mcqQs.length) { alert('Please answer all multiple choice questions.'); return; }
+
+  // Validate written answers
+  var writtenAnswered = writtenQs.every(function(q) {
+    var origIdx = shownQuestions.indexOf(q);
+    return writtenAnswers[origIdx] && writtenAnswers[origIdx].trim().length > 0;
+  });
+  if (!writtenAnswered && writtenQs.length) { alert('Please answer all written questions.'); return; }
+
   submitted = true;
-  var score = shownQuestions.filter((q,qi) => answers[qi]===q.ans).length;
-  var passCount = Math.ceil(shownQuestions.length * PASS_MARK / 100);
   currentAttemptCount++;
-  var passed = score >= passCount;
-  if (passed) {
-    // PASS: show correct answers, unlock next module
-    shownQuestions.forEach(function(q,qi) {
-      q.opts.forEach(function(_,oi) {
-        var el = document.getElementById('qo-'+qi+'-'+oi);
-        el.classList.add('disabled');
-        if (oi===q.ans) el.classList.add('correct');
-        else el.classList.remove('sel');
-      });
+
+  // Grade MCQ
+  var mcqScore = mcqQs.filter(function(q,qi){ return answers[qi]===q.ans; }).length;
+  var mcqTotal = mcqQs.reduce(function(s,q){ return s+(q.marks||1); }, 0);
+
+  // Written questions total marks
+  var writtenTotal = writtenQs.reduce(function(s,q){ return s+(q.marks||10); }, 0);
+
+  var hasWritten = writtenQs.length > 0;
+  var resultEl = document.getElementById('quizResult');
+
+  if (hasWritten) {
+    // MIXED or WRITTEN ONLY: submit to DB, show pending state
+    var writtenResponses = writtenQs.map(function(q) {
+      var origIdx = shownQuestions.indexOf(q);
+      return {
+        question: q.q,
+        type: q.type,
+        response: writtenAnswers[origIdx] || '',
+        marks: q.marks || (q.type==='essay'?20:10),
+        guide: q.guide || ''
+      };
     });
-    var resultEl = document.getElementById('quizResult');
-    resultEl.innerHTML = '<div class="qr-score">'+score+'/'+shownQuestions.length+'</div>'
-      +'<div class="qr-label">Questions correct</div>'
-      +'<div class="qr-msg pass">✓ Excellent. This module is now complete.</div>';
-    resultEl.classList.add('show');
-    if (!completedModules.includes(currentMod)) {
-      completedModules.push(currentMod);
-      await saveProgress(currentMod);
+
+    try {
+      // Save assessment_attempt first
+      await saveAttempt(currentMod, mcqScore, mcqTotal, false); // not auto-passed
+
+      // Post to assessment_submissions
+      var courseId = CURRENT_COURSE ? CURRENT_COURSE.id : 'unknown';
+      var res = await fetch(SUPA_URL + '/rest/v1/assessment_submissions', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPA_KEY,
+          'Authorization': 'Bearer ' + SUPA_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          student_id: currentStudent.id,
+          module_index: currentMod,
+          course_id: courseId,
+          mcq_score: mcqScore,
+          mcq_total: mcqTotal,
+          written_responses: JSON.stringify(writtenResponses),
+          written_total: writtenTotal,
+          combined_total: mcqTotal + writtenTotal,
+          pass_mark: PASS_MARK,
+          status: 'pending',
+          submitted_at: new Date().toISOString()
+        })
+      });
+
+      // Show split result
+      resultEl.innerHTML = '<div class="qr-score">'+mcqScore+'/'+mcqQs.length+'</div>'
+        +'<div class="qr-label">Section A — MCQ Score</div>'
+        +'<div style="margin-top:14px;background:var(--gold-light);border:1.5px solid #E8D48A;border-radius:12px;padding:16px 18px;text-align:left;">'
+        +'<div style="font-size:13px;font-weight:700;color:var(--gold-dark);margin-bottom:4px;">Section B — Pending Instructor Review</div>'
+        +'<div style="font-size:13px;color:var(--gold-dark);line-height:1.65;">Your written response has been submitted. Your instructor will review and grade it. You will be notified by email and WhatsApp once marked.</div>'
+        +'</div>'
+        +'<div style="margin-top:12px;background:var(--navy-pale);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--navy);">Assessment Status: <strong>Awaiting Instructor Review</strong></div>';
+      resultEl.classList.add('show');
+      document.getElementById('submitBtn') && document.getElementById('submitBtn').remove();
+      document.getElementById('modActions').innerHTML = '<button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>';
+      resultEl.scrollIntoView({behavior:'smooth',block:'start'});
+
+    } catch(e) {
+      alert('Error submitting: '+e.message);
+      submitted = false;
     }
-    await saveAttempt(currentMod, score, shownQuestions.length, true);
-    var isLast = currentMod === MODULES.length-1;
-    document.getElementById('submitBtn')&&document.getElementById('submitBtn').remove();
-    document.getElementById('modActions').innerHTML = isLast
-      ? '<button class="btn btn-amber" onclick="showComplete()">🎓 Finish Course →</button><button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>'
-      : '<button class="btn btn-primary" onclick="openMod('+(currentMod+1)+')">Next Module →</button><button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>';
-    resultEl.scrollIntoView({behavior:'smooth',block:'start'});
+
   } else {
-    // FAIL: no hints, no correct answers — lock quiz, force re-read
-    shownQuestions.forEach(function(q,qi) {
-      q.opts.forEach(function(_,oi) {
-        var el = document.getElementById('qo-'+qi+'-'+oi);
-        el.classList.add('disabled');
-        el.classList.remove('sel','correct','wrong');
+    // MCQ ONLY: original auto-grade logic
+    var passCount = Math.ceil(mcqQs.length * PASS_MARK / 100);
+    var passed = mcqScore >= passCount;
+
+    if (passed) {
+      mcqQs.forEach(function(q,qi) {
+        q.opts.forEach(function(_,oi) {
+          var el = document.getElementById('qo-'+qi+'-'+oi);
+          if(el){ el.classList.add('disabled'); if(oi===q.ans) el.classList.add('correct'); else el.classList.remove('sel'); }
+        });
       });
-    });
-    await saveAttempt(currentMod, score, shownQuestions.length, false);
-    var resultEl = document.getElementById('quizResult');
-    resultEl.innerHTML = '<div class="qr-score">'+score+'/'+shownQuestions.length+'</div>'
-      +'<div class="qr-label">Questions correct</div>'
-      +'<div class="qr-msg fail">Study the lesson carefully and try again. The assessment will re-lock so you re-read.</div>';
-    resultEl.classList.add('show');
-    document.getElementById('submitBtn')&&document.getElementById('submitBtn').remove();
-    document.getElementById('modActions').innerHTML = '<button class="btn btn-secondary" onclick="retryModFull()">↑ Re-read lesson</button>';
-    resultEl.scrollIntoView({behavior:'smooth',block:'start'});
+      resultEl.innerHTML = '<div class="qr-score">'+mcqScore+'/'+mcqQs.length+'</div>'
+        +'<div class="qr-label">Questions correct</div>'
+        +'<div class="qr-msg pass">✓ Excellent. This module is now complete.</div>';
+      resultEl.classList.add('show');
+      if (!completedModules.includes(currentMod)) {
+        completedModules.push(currentMod);
+        await saveProgress(currentMod);
+      }
+      await saveAttempt(currentMod, mcqScore, mcqQs.length, true);
+      var isLast = currentMod === MODULES.length-1;
+      document.getElementById('submitBtn') && document.getElementById('submitBtn').remove();
+      document.getElementById('modActions').innerHTML = isLast
+        ? '<button class="btn btn-amber" onclick="showComplete()">🎓 Finish Course →</button><button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>'
+        : '<button class="btn btn-primary" onclick="openMod('+(currentMod+1)+')">Next Module →</button><button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>';
+      resultEl.scrollIntoView({behavior:'smooth',block:'start'});
+    } else {
+      mcqQs.forEach(function(q,qi) {
+        q.opts.forEach(function(_,oi) {
+          var el = document.getElementById('qo-'+qi+'-'+oi);
+          if(el){ el.classList.add('disabled'); el.classList.remove('sel','correct','wrong'); }
+        });
+      });
+      await saveAttempt(currentMod, mcqScore, mcqQs.length, false);
+      resultEl.innerHTML = '<div class="qr-score">'+mcqScore+'/'+mcqQs.length+'</div>'
+        +'<div class="qr-label">Questions correct</div>'
+        +'<div class="qr-msg fail">Study the lesson carefully and try again.</div>';
+      resultEl.classList.add('show');
+      document.getElementById('submitBtn') && document.getElementById('submitBtn').remove();
+      document.getElementById('modActions').innerHTML = '<button class="btn btn-secondary" onclick="retryModFull()">↑ Re-read lesson</button>';
+      resultEl.scrollIntoView({behavior:'smooth',block:'start'});
+    }
   }
 }
 
