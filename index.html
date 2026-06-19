@@ -913,7 +913,7 @@ footer{background:var(--navy);padding:48px 24px 28px;}
   function ssActiveBorder(s){ return s==='active'?'border:1.5px solid #C9A84C;background:white;':''; }
 
   try {
-    var ssRes = await fetch(SUPA_URL+'/rest/v1/site_settings?key=like.mockup_*&select=key,value',
+    var ssRes = await fetch(SUPA_URL+'/rest/v1/site_settings?select=key,value',
       {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
     var ssRows = await ssRes.json();
     var ss = {};
