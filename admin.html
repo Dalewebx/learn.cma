@@ -1880,7 +1880,7 @@ var SS_STATUS_LABELS = {done:'Complete',active:'Active',lock:'Locked',hidden:'Hi
 async function renderSiteSettings() {
   // Load all mockup keys from DB
   try {
-    var rows = await sb('site_settings','GET',null,"key=like.mockup_*");
+    var rows = await sb('site_settings','GET',null,'select=key,value');
     SS_CACHE = {};
     (rows||[]).forEach(function(r){ SS_CACHE[r.key] = r.value; });
   } catch(e){ SS_CACHE = {}; }
@@ -1965,9 +1965,20 @@ async function saveSiteSettings(panel) {
   }
 
   try {
-    // Upsert all pairs — site_settings uses key as primary key
-    for (var i=0; i<pairs.length; i++) {
-      await sb('site_settings','POST',pairs[i],'on_conflict=key');
+    // Upsert all pairs using proper Supabase upsert headers
+    var res = await fetch(SUPA_URL + '/rest/v1/site_settings?on_conflict=key', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + SUPA_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates,return=minimal'
+      },
+      body: JSON.stringify(pairs.map(function(p){ return {key:p.key, value:p.value, updated_at: new Date().toISOString()}; }))
+    });
+    if (!res.ok) {
+      var errText = await res.text();
+      throw new Error(errText);
     }
     var msg = document.getElementById(msgId);
     if(msg){ msg.textContent='Saved. Homepage will reflect changes immediately.'; msg.style.display='block'; setTimeout(function(){msg.style.display='none';},4000); }
