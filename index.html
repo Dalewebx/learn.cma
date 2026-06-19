@@ -18,8 +18,8 @@
   --text:#0F172A;--muted:#64748B;--dim:#94A3B8;--border:#E4E8EF;
   --ok:#16A34A;--ok-bg:#F0FDF4;
 }
-html{scroll-behavior:smooth;}
-body{background:var(--white);color:var(--text);font-family:"DM Sans",sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+html{scroll-behavior:smooth;overflow-x:hidden;max-width:100%;}
+body{background:var(--white);color:var(--text);font-family:"DM Sans",sans-serif;overflow-x:hidden;max-width:100%;-webkit-font-smoothing:antialiased;}
 a,button{-webkit-tap-highlight-color:transparent;}
 img{max-width:100%;display:block;}
 
@@ -61,11 +61,11 @@ nav{background:var(--white);border-bottom:1px solid var(--border);position:stick
 .nav-acts{display:flex;align-items:center;gap:8px;flex-shrink:0;}
 
 /* ── HERO ── */
-.hero{background:var(--navy);min-height:100svh;display:flex;align-items:center;position:relative;overflow:hidden;}
+.hero{background:var(--navy);min-height:100svh;display:flex;align-items:center;position:relative;overflow:hidden;width:100%;max-width:100%;}
 .hero-parallax{position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=1600&q=80&auto=format&fit=crop');background-size:cover;background-position:center;background-attachment:fixed;opacity:0.18;z-index:0;}
 .hero-noise{position:absolute;inset:0;opacity:0.018;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:140px;pointer-events:none;}
-.hero-glow{position:absolute;top:-20%;right:-10%;width:min(700px,120vw);height:min(700px,120vw);border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.06),transparent 65%);pointer-events:none;}
-.hero-glow2{position:absolute;bottom:-30%;left:-5%;width:min(500px,80vw);height:min(500px,80vw);border-radius:50%;background:radial-gradient(circle,rgba(26,46,108,0.6),transparent 65%);pointer-events:none;}
+.hero-glow{position:absolute;top:-20%;right:-10%;width:min(700px,90vw);height:min(700px,90vw);border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.06),transparent 65%);pointer-events:none;}
+.hero-glow2{position:absolute;bottom:-30%;left:-5%;width:min(500px,75vw);height:min(500px,75vw);border-radius:50%;background:radial-gradient(circle,rgba(26,46,108,0.6),transparent 65%);pointer-events:none;}
 .hero-inner{max-width:1160px;margin:0 auto;padding:96px 24px 80px;width:100%;position:relative;z-index:1;display:grid;grid-template-columns:1fr;gap:48px;align-items:center;}
 @media(min-width:900px){.hero-inner{grid-template-columns:1fr 1fr;gap:64px;padding:120px 40px 100px;}}
 
@@ -120,8 +120,8 @@ nav{background:var(--white);border-bottom:1px solid var(--border);position:stick
 
 
 /* PARALLAX BREAK */
-.parallax-break{position:relative;min-height:340px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.parallax-break-img{position:absolute;inset:-40px;background-image:url('https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=1600&q=80&auto=format&fit=crop');background-size:cover;background-position:center;background-attachment:fixed;z-index:0;}
+.parallax-break{position:relative;min-height:340px;display:flex;align-items:center;justify-content:center;overflow:hidden;width:100%;max-width:100%;}
+.parallax-break-img{position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=1600&q=80&auto=format&fit=crop');background-size:cover;background-position:center;background-attachment:fixed;z-index:0;}
 .parallax-break-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(13,27,62,0.88) 0%,rgba(13,27,62,0.72) 100%);z-index:1;}
 .parallax-break-content{position:relative;z-index:2;text-align:center;padding:48px 24px;max-width:640px;}
 .pb-quote{font-family:"DM Serif Display",serif;font-size:clamp(22px,4vw,36px);color:white;line-height:1.3;margin-bottom:16px;font-style:italic;}
@@ -261,6 +261,10 @@ footer{background:var(--navy);padding:48px 24px 28px;}
    All desktop CSS untouched above.
    ════════════════════════════════════════════ */
 @media(max-width:768px){
+
+  /* Root overflow fix */
+  *{max-width:100%;}
+  .hero-glow,.hero-glow2{display:none;} /* remove glows on mobile — main overflow source */
 
   /* Parallax: disable fixed on mobile (iOS bug) */
   .hero-parallax,.parallax-break-img{background-attachment:scroll;}
