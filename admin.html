@@ -226,6 +226,7 @@ tr:hover td{background:var(--surface);cursor:pointer;}
 .analytics-val{font-size:12px;font-weight:700;color:var(--text);width:36px;text-align:right;}
 
 @media(max-width:800px){:root{--sidebar:0px;}.sidebar{transform:translateX(-100%);transition:transform 0.3s;}.main{margin-left:0;}}
+@media(max-width:900px){.ss-grid{grid-template-columns:1fr!important;}}
 
 /* CONTENT MANAGER */
 .cm-layout{display:grid;grid-template-columns:260px 1fr;gap:16px;align-items:start;}
@@ -609,6 +610,60 @@ tr:hover td{background:var(--surface);cursor:pointer;}
   <div id="feedbackList"><div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Loading feedback...</div></div>
 </div>
 
+
+<!-- SITE SETTINGS -->
+<div class="page" id="page-sitesettings">
+  <div class="page-header">
+    <div><div class="page-title">Site Settings</div><div class="page-sub">Edit the homepage mockup cards. Structure is fixed — all text content is editable here.</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;" class="ss-grid">
+
+    <!-- HERO MOCKUP PANEL -->
+    <div class="card">
+      <div class="form-section-title" style="margin-bottom:16px;">&#127968; Hero Card — CMA Student Portal</div>
+      <div class="alert alert-info" style="margin-bottom:16px;font-size:12px;">This is the dashboard mockup shown in the hero on the homepage. Edit the course name, progress, and each module row.</div>
+
+      <div class="form-group">
+        <label class="form-label">Course Name</label>
+        <input class="form-input" id="ss_h_course" placeholder="e.g. Liturgical Music Foundations"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Progress % (number only)</label>
+        <input class="form-input" id="ss_h_progress" type="number" min="0" max="100" placeholder="78"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Up Next Label</label>
+        <input class="form-input" id="ss_h_next" placeholder="e.g. Module 4 Quiz"/>
+      </div>
+
+      <div style="margin-bottom:8px;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:8px;">Module Rows (6)</div>
+      <div id="ss_hero_modules"></div>
+
+      <div id="ss_hero_msg" style="display:none;background:var(--ok-light);border:1px solid #86EFAC;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--ok);margin-top:12px;"></div>
+      <button class="btn btn-primary" style="margin-top:14px;width:100%;" onclick="saveSiteSettings('hero')">Save Hero Card</button>
+    </div>
+
+    <!-- PORTAL MOCKUP PANEL -->
+    <div class="card">
+      <div class="form-section-title" style="margin-bottom:16px;">&#128187; Portal Card — learn.catholicmusicacademy.org</div>
+      <div class="alert alert-info" style="margin-bottom:16px;font-size:12px;">This is the portal mockup in the "Inside the Student Portal" section. Edit the URL shown and each module row.</div>
+
+      <div class="form-group">
+        <label class="form-label">URL shown in browser bar</label>
+        <input class="form-input" id="ss_p_url" placeholder="learn.catholicmusicacademy.org"/>
+      </div>
+
+      <div style="margin-bottom:8px;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:8px;">Module Rows (4)</div>
+      <div id="ss_portal_modules"></div>
+
+      <div id="ss_portal_msg" style="display:none;background:var(--ok-light);border:1px solid #86EFAC;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--ok);margin-top:12px;"></div>
+      <button class="btn btn-primary" style="margin-top:14px;width:100%;" onclick="saveSiteSettings('portal')">Save Portal Card</button>
+    </div>
+
+  </div>
+</div>
+
 <!-- DEV TOOLS -->
 <div class="page" id="page-devtools">
   <div class="page-header"><div><div class="page-title">Developer Tools</div><div class="page-sub">Clear test data before going live. Irreversible.</div></div></div>
@@ -734,7 +789,7 @@ function goPage(id) {
   document.querySelectorAll('.nav-item').forEach(n=>{
     if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
   });
-  var renders={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback};
+  var renders={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings};
   if(id==='courses'){
     cmState.selectedModule=null;
     renderCourses();
@@ -781,7 +836,7 @@ function updateBadges() {
   if(bell) bell.textContent=total>0?total+' alerts':'';
 }
 function renderCurrentPage() {
-  var r={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback};
+  var r={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings};
   if(currentPage==='courses') renderCourses();
   else if(r[currentPage]) r[currentPage]();
 }
@@ -1160,9 +1215,8 @@ function renderAtrisk() {
         +'<div class="prog-bg" style="margin-bottom:10px;"><div class="prog-fill danger" style="width:'+pct+'%'+(pct===0?';background:var(--border)':'')+'"></div></div>'
         +'<div style="display:flex;gap:8px;flex-wrap:wrap;">'
         +(wn?'<a class="btn btn-wa" href="'+waLink(wn,nudge)+'" target="_blank">💬 WhatsApp Nudge</a>':'')
-      var sid = s.id;
-      return '<div style="margin-bottom:12px;cursor:pointer;" onclick="openStudentDetail(\''+sid+'\')">'
-        +'<button class="btn btn-ghost" onclick="openStudentDetail(\''+s.id+'\')">View Profile</button></div></div>';
+        +'<button class="btn btn-ghost" onclick="openStudentDetail(\''+s.id+'\')">View Profile</button>'
+        +'</div></div>';
     }).join('');
 }
 
@@ -1774,6 +1828,118 @@ async function clearStudents(){if(!confirm('Delete ALL students and progress?'))
 async function clearProgress(){if(!confirm('Clear all progress?'))return;try{await sb('progress','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');showToast('Progress cleared.');await loadAllData();}catch(e){showToast('Error: '+e.message,'err');}}
 async function clearEverything(){if(!confirm('Delete EVERYTHING?'))return;if(!confirm('Absolutely sure?'))return;var c=prompt('Type DELETE to confirm:');if(c!=='DELETE'){showToast('Cancelled','warn');return;}try{await sb('progress','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');await sb('assessment_attempts','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000').catch(()=>{});await sb('students','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');await sb('applications','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');showToast('Everything cleared.');await loadAllData();}catch(e){showToast('Error: '+e.message,'err');}}
 
+
+
+// ── SITE SETTINGS ──────────────────────────────────────────────────────────────
+var SS_CACHE = {}; // key -> value, loaded once
+
+var SS_HERO_MODULE_DEFAULTS = [
+  {title:'Sacred Music History',status:'done'},
+  {title:'Gregorian Chant Fundamentals',status:'done'},
+  {title:'Choir Direction Basics',status:'done'},
+  {title:'Liturgical Calendar and Music',status:'active'},
+  {title:'Sacred Polyphony',status:'lock'},
+  {title:'Final Assessment',status:'lock'}
+];
+
+var SS_PORTAL_MODULE_DEFAULTS = [
+  {title:'Sacred Music History',meta:'Video lesson, 24 min',status:'done'},
+  {title:'Gregorian Chant',meta:'Audio, reading, assessment',status:'done'},
+  {title:'Choir Direction',meta:'In progress, 2 of 4 sections',status:'active'},
+  {title:'Liturgical Calendar',meta:'Unlocks after Module 3',status:'lock'}
+];
+
+var SS_STATUSES = ['done','active','lock','hidden'];
+var SS_STATUS_LABELS = {done:'Complete',active:'Active',lock:'Locked',hidden:'Hidden'};
+
+async function renderSiteSettings() {
+  // Load all mockup keys from DB
+  try {
+    var rows = await sb('site_settings','GET',null,"key=like.mockup_*");
+    SS_CACHE = {};
+    (rows||[]).forEach(function(r){ SS_CACHE[r.key] = r.value; });
+  } catch(e){ SS_CACHE = {}; }
+
+  // Populate hero card fields
+  var hCourse = document.getElementById('ss_h_course');
+  var hProg = document.getElementById('ss_h_progress');
+  var hNext = document.getElementById('ss_h_next');
+  if(hCourse) hCourse.value = SS_CACHE['mockup_hero_course'] || 'Liturgical Music Foundations';
+  if(hProg) hProg.value = SS_CACHE['mockup_hero_progress'] || '78';
+  if(hNext) hNext.value = SS_CACHE['mockup_hero_next'] || 'Module 4 Quiz';
+
+  // Build hero module rows
+  var heroMods = document.getElementById('ss_hero_modules');
+  if(heroMods) {
+    heroMods.innerHTML = SS_HERO_MODULE_DEFAULTS.map(function(def, i) {
+      var savedTitle = SS_CACHE['mockup_hero_mod'+i+'_title'] || def.title;
+      var savedStatus = SS_CACHE['mockup_hero_mod'+i+'_status'] || def.status;
+      return '<div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:8px;align-items:center;">'
+        +'<input class="form-input" id="ss_hm'+i+'_title" value="'+savedTitle+'" placeholder="Module '+(i+1)+' title" style="padding:8px 11px;font-size:12px;"/>'
+        +'<select class="form-select" id="ss_hm'+i+'_status" style="padding:8px 10px;font-size:12px;">'
+        +SS_STATUSES.map(function(s){return '<option value="'+s+'"'+(savedStatus===s?' selected':'')+'>'+SS_STATUS_LABELS[s]+'</option>';}).join('')
+        +'</select></div>';
+    }).join('');
+  }
+
+  // Populate portal card fields
+  var pUrl = document.getElementById('ss_p_url');
+  if(pUrl) pUrl.value = SS_CACHE['mockup_portal_url'] || 'learn.catholicmusicacademy.org';
+
+  // Build portal module rows
+  var portalMods = document.getElementById('ss_portal_modules');
+  if(portalMods) {
+    portalMods.innerHTML = SS_PORTAL_MODULE_DEFAULTS.map(function(def, i) {
+      var savedTitle = SS_CACHE['mockup_portal_mod'+i+'_title'] || def.title;
+      var savedMeta = SS_CACHE['mockup_portal_mod'+i+'_meta'] || def.meta;
+      var savedStatus = SS_CACHE['mockup_portal_mod'+i+'_status'] || def.status;
+      return '<div style="background:var(--surface);border-radius:9px;padding:10px 12px;margin-bottom:10px;">'
+        +'<div style="font-size:10px;color:var(--muted);margin-bottom:6px;font-weight:600;">Row '+(i+1)+'</div>'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px;">'
+        +'<input class="form-input" id="ss_pm'+i+'_title" value="'+savedTitle+'" placeholder="Module title" style="padding:8px 11px;font-size:12px;"/>'
+        +'<input class="form-input" id="ss_pm'+i+'_meta" value="'+savedMeta+'" placeholder="Subtitle / meta" style="padding:8px 11px;font-size:12px;"/>'
+        +'</div>'
+        +'<select class="form-select" id="ss_pm'+i+'_status" style="width:100%;padding:8px 10px;font-size:12px;">'
+        +SS_STATUSES.map(function(s){return '<option value="'+s+'"'+(savedStatus===s?' selected':'')+'>'+SS_STATUS_LABELS[s]+'</option>';}).join('')
+        +'</select></div>';
+    }).join('');
+  }
+}
+
+async function saveSiteSettings(panel) {
+  var pairs = [];
+  var msgId = 'ss_'+panel+'_msg';
+
+  if (panel === 'hero') {
+    pairs.push({key:'mockup_hero_course', value:(document.getElementById('ss_h_course')||{}).value||''});
+    pairs.push({key:'mockup_hero_progress', value:(document.getElementById('ss_h_progress')||{}).value||'78'});
+    pairs.push({key:'mockup_hero_next', value:(document.getElementById('ss_h_next')||{}).value||''});
+    SS_HERO_MODULE_DEFAULTS.forEach(function(_,i){
+      pairs.push({key:'mockup_hero_mod'+i+'_title', value:(document.getElementById('ss_hm'+i+'_title')||{}).value||''});
+      pairs.push({key:'mockup_hero_mod'+i+'_status', value:(document.getElementById('ss_hm'+i+'_status')||{}).value||'lock'});
+    });
+  } else {
+    pairs.push({key:'mockup_portal_url', value:(document.getElementById('ss_p_url')||{}).value||''});
+    SS_PORTAL_MODULE_DEFAULTS.forEach(function(_,i){
+      pairs.push({key:'mockup_portal_mod'+i+'_title', value:(document.getElementById('ss_pm'+i+'_title')||{}).value||''});
+      pairs.push({key:'mockup_portal_mod'+i+'_meta', value:(document.getElementById('ss_pm'+i+'_meta')||{}).value||''});
+      pairs.push({key:'mockup_portal_mod'+i+'_status', value:(document.getElementById('ss_pm'+i+'_status')||{}).value||'lock'});
+    });
+  }
+
+  try {
+    // Upsert all pairs — site_settings uses key as primary key
+    for (var i=0; i<pairs.length; i++) {
+      await sb('site_settings','POST',pairs[i],'on_conflict=key');
+    }
+    var msg = document.getElementById(msgId);
+    if(msg){ msg.textContent='Saved. Homepage will reflect changes immediately.'; msg.style.display='block'; setTimeout(function(){msg.style.display='none';},4000); }
+    showToast('Site settings saved.');
+  } catch(e) {
+    var msg = document.getElementById(msgId);
+    if(msg){ msg.textContent='Error: '+e.message+'. Make sure the site_settings table exists in Supabase.'; msg.style.background='#FEE2E2'; msg.style.color='var(--danger)'; msg.style.display='block'; }
+  }
+}
 
 // ── STUDENT FEEDBACK ─────────────────────────────────────────────────────────
 async function renderFeedback() {
