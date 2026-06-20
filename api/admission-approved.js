@@ -13,7 +13,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ ok: true, skipped: true });
   }
 
-  const { to, firstName, programme, ref } = req.body || {};
+  const { to, firstName, programme, ref, testMode } = req.body || {};
   if (!to || !firstName) {
     return res.status(400).json({ error: 'Missing required fields: to, firstName' });
   }
@@ -21,7 +21,12 @@ module.exports = async function handler(req, res) {
   const prog = programme || 'your chosen programme';
   const portalUrl = 'https://learn.catholicmusicacademy.net';
 
-  const textBody = `Dear ${firstName},
+  const testDisclaimer = testMode ? `
+⚠ THIS IS A TEST EMAIL
+This message was sent during a system demonstration and does not constitute an official communication from the Catholic Music Academy. No admission, rejection, or assessment result conveyed in this email is valid or binding.
+---
+` : '';
+  const textBody = `${testDisclaimer}Dear ${firstName},
 
 Congratulations! Your application to the Catholic Music Academy has been reviewed and approved.
 
@@ -59,6 +64,13 @@ Catholic Diocese of Warri`;
 
     <!-- Body -->
     <div style="padding:32px;">
+      ${testMode ? `
+      <!-- TEST MODE DISCLAIMER -->
+      <div style="background:#FEF2F2;border:2px solid #DC2626;border-radius:8px;padding:14px 20px;margin:0 0 20px 0;text-align:center;">
+        <div style="font-size:13px;font-weight:700;color:#DC2626;margin-bottom:4px;">⚠ THIS IS A TEST EMAIL</div>
+        <div style="font-size:12px;color:#64748B;line-height:1.6;">This message was sent during a system demonstration and does not constitute an official communication from the Catholic Music Academy. No admission, rejection, or assessment result conveyed in this email is valid or binding.</div>
+      </div>` : ''}
+
       <p style="font-size:15px;color:#0F172A;line-height:1.7;margin-bottom:20px;">
         Dear <strong>${firstName}</strong>, your application to the Catholic Music Academy has been reviewed and 
         <strong style="color:#16A34A;">approved</strong>. Welcome to the Academy.
@@ -131,7 +143,7 @@ Catholic Diocese of Warri`;
         from: 'Catholic Music Academy <noreply@catholicmusicacademy.net>',
         reply_to: 'musicacademywarri@gmail.com',
         to: [to],
-        subject: 'You Have Been Admitted — Catholic Music Academy',
+        subject: (testMode ? '[TEST] ' : '') + 'You Have Been Admitted — Catholic Music Academy',
         html: htmlBody,
         text: textBody
       })
