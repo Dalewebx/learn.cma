@@ -21,6 +21,8 @@
 }
 html{scroll-behavior:smooth;}
 body.loading{visibility:hidden;}
+.test-bar{display:none;background:#DC2626;color:white;text-align:center;padding:9px 16px;font-size:12px;font-weight:700;letter-spacing:0.3px;position:sticky;top:0;z-index:9999;width:100%;}
+.test-bar.on{display:block;}
 body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;min-height:100vh;}
 .screen{display:none;animation:fadeUp 0.28s ease both;}
 .screen.active{display:block;}
@@ -205,6 +207,7 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
 </style>
 </head>
 <body class="loading">
+<div class="test-bar" id="testBar">⚠ TEST MODE — This is a demonstration. No results, admissions, or data shown here are official.</div>
 
 <div class="topbar" id="topbar" style="background:var(--white);border-bottom:1px solid var(--border);padding:0 28px;height:64px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;gap:16px;display:none;">
   <div style="display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;min-width:0;flex:1;" onclick="goDash()">
@@ -767,8 +770,8 @@ async function doLogin() {
 
     // 10. Update UI
     document.getElementById('topbar').style.display = 'flex';
-    document.getElementById('topbarName').textContent = student.first_name;
-    document.getElementById('dashName').textContent = 'Welcome back, ' + student.first_name + '.';
+    document.getElementById('topbarName').textContent = student.first_name + (IS_TEST_MODE ? ' (Test)' : '');
+    document.getElementById('dashName').textContent = 'Welcome back, ' + student.first_name + (IS_TEST_MODE ? ' — Test Mode' : '') + '.';
     var safeSet = function(id, val, isHtml) {
       var el = document.getElementById(id);
       if (!el || !CURRENT_COURSE) return;
@@ -1390,6 +1393,18 @@ function clearRememberMe() {
     var cb = document.getElementById('rememberMe');
     if (cb) cb.checked = true;
   }
+  // Fetch site_settings for test mode
+  try {
+    var ssRes = await fetch(SUPA_URL+'/rest/v1/site_settings?key=eq.testing_mode&select=key,value',
+      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    var ssRows = await ssRes.json();
+    if (ssRows && ssRows.length && ssRows[0].value === 'true') {
+      IS_TEST_MODE = true;
+      var tb = document.getElementById('testBar');
+      if (tb) tb.classList.add('on');
+    }
+  } catch(e){ IS_TEST_MODE = false; }
+
   // Restore session if active — reload course + modules fresh from DB
   var session = loadSession();
   if (session && session.student && session.student.status === 'active') {
@@ -1404,8 +1419,8 @@ function clearRememberMe() {
     // Refresh session timestamp
     saveSession(currentStudent, CURRENT_COURSE, completedModules);
     document.getElementById('topbar').style.display = 'flex';
-    document.getElementById('topbarName').textContent = session.student.first_name;
-    document.getElementById('dashName').textContent = 'Welcome back, ' + session.student.first_name + '.';
+    document.getElementById('topbarName').textContent = session.student.first_name + (IS_TEST_MODE ? ' (Test)' : '');
+    document.getElementById('dashName').textContent = 'Welcome back, ' + session.student.first_name + (IS_TEST_MODE ? ' — Test Mode' : '') + '.';
     var safeSet = function(id, val, isHtml) {
       var el = document.getElementById(id);
       if (!el || !CURRENT_COURSE) return;
