@@ -13,7 +13,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ ok: true, skipped: true, reason: 'RESEND_API_KEY not configured' });
   }
 
-  const { to, subject, body } = req.body || {};
+  const { to, subject, body, testMode } = req.body || {};
 
   if (!to || !subject || !body) {
     return res.status(400).json({ error: 'Missing required fields: to, subject, body' });
@@ -29,7 +29,7 @@ module.exports = async function handler(req, res) {
   const emailPayload = {
     from: 'Catholic Music Academy <noreply@catholicmusicacademy.net>',
     to: [to],
-    subject: subject,
+    subject: (testMode ? '[TEST] ' : '') + subject,
     html: '<!DOCTYPE html><html><head><meta charset="UTF-8"/></head><body style="margin:0;padding:0;background:#F7F7F5;font-family:Arial,sans-serif;">'
       + '<div style="max-width:560px;margin:32px auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">'
       + '<div style="background:#0D1B3E;padding:28px 32px;">'
@@ -37,6 +37,12 @@ module.exports = async function handler(req, res) {
       + '<div style="font-size:22px;font-weight:700;color:white;">Assessment Result</div>'
       + '</div>'
       + '<div style="padding:28px 32px;">'
+      + (testMode ? `
+      <!-- TEST MODE DISCLAIMER -->
+      <div style="background:#FEF2F2;border:2px solid #DC2626;border-radius:8px;padding:14px 20px;margin:0 0 20px 0;text-align:center;">
+        <div style="font-size:13px;font-weight:700;color:#DC2626;margin-bottom:4px;">⚠ THIS IS A TEST EMAIL</div>
+        <div style="font-size:12px;color:#64748B;line-height:1.6;">This message was sent during a system demonstration and does not constitute an official communication from the Catholic Music Academy. No admission, rejection, or assessment result conveyed in this email is valid or binding.</div>
+      </div>` : '')
       + '<p style="font-size:15px;color:#0F172A;line-height:1.7;margin-bottom:20px;">' + htmlBody + '</p>'
       + '<div style="text-align:center;margin:28px 0;">'
       + '<a href="https://learn.catholicmusicacademy.net" style="display:inline-block;background:#0D1B3E;color:white;text-decoration:none;padding:14px 32px;border-radius:10px;font-size:14px;font-weight:700;">Log In to Your Portal &rarr;</a>'
