@@ -36,6 +36,8 @@ img{max-width:100%;display:block;}
 .btn-gold-outline{background:transparent;border:1.5px solid var(--gold);color:var(--gold-dark);font-size:13px;padding:10px 20px;font-weight:600;}
 .btn-gold-outline:hover{background:var(--gold);color:var(--navy);}
 
+.test-bar{display:none;background:#DC2626;color:white;text-align:center;padding:9px 16px;font-size:12px;font-weight:700;letter-spacing:0.3px;width:100%;}
+.test-bar.on{display:block;}
 .mob-contact-btn{display:none;}
 .mob-contact-drop{display:none;}
 
@@ -475,6 +477,7 @@ footer{background:var(--navy);padding:48px 24px 28px;}
 </nav>
 
 <!-- SECTION 1: HERO -->
+<div class="test-bar" id="testBar">⚠ TEST MODE — This is a demonstration environment. Nothing shown here is official.</div>
 <section class="hero">
   <div class="hero-noise"></div>
   <div class="hero-parallax"></div>
@@ -918,6 +921,12 @@ footer{background:var(--navy);padding:48px 24px 28px;}
     var ssRows = await ssRes.json();
     var ss = {};
     (ssRows||[]).forEach(function(r){ ss[r.key]=r.value; });
+
+    // Test mode
+    if (ss['testing_mode'] === 'true') {
+      var tb = document.getElementById('testBar');
+      if (tb) tb.classList.add('on');
+    }
 
     // Contact dropdown
     var cdE=document.getElementById('cdEmail');
