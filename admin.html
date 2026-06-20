@@ -993,22 +993,106 @@ async function approveApp(id) {
       await sb('students','POST',{application_id:id,first_name:a.first_name,last_name:a.last_name,email:a.email,password_hash:a.password_hash,phone:a.phone,whatsapp:a.whatsapp||a.phone,programme:a.programme,state:a.state,security_question:a.security_question||null,security_answer_hash:a.security_answer_hash||null,status:'active'});
       showToast('✓ Approved: '+a.first_name+' account created');
     }
+    // Send approval email — fire and forget
+    if (a.email) {
+      fetch('/api/admission-approved', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          to: a.email,
+          firstName: a.first_name,
+          programme: a.programme,
+          ref: a.ref || ('CMA-'+id.slice(-6).toUpperCase())
+        })
+      }).catch(function(e){ console.warn('Approval email failed:',e); });
+    }
     await loadAllData();
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
 
 async function rejectApp(id) {
-  var a=window._appMap[id];
-  if(!a||!confirm((a.status==='approved'?'Revoke access for':'Reject')+' '+a.first_name+'?')) return;
+  var a = window._appMap[id];
+  if (!a) return;
+
+  // Show rejection modal with reason selector
+  var existing = document.getElementById('rejectModal');
+  if (existing) existing.remove();
+  var modal = document.createElement('div');
+  modal.id = 'rejectModal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;';
+  modal.innerHTML = '<div style="background:white;border-radius:16px;padding:28px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,0.2);">'
+    +'<div style="font-family:DM Serif Display,serif;font-size:20px;color:var(--navy);margin-bottom:4px;">Reject Application</div>'
+    +'<div style="font-size:13px;color:var(--muted);margin-bottom:20px;">'+a.first_name+' '+a.last_name+' · '+a.programme+'</div>'
+    +'<div class="form-group">'
+    +'<label class="form-label">Reason for rejection <span style="color:var(--danger);">*</span></label>'
+    +'<select class="form-select" id="rejectReason">'
+    +'<option value="">Select a reason...</option>'
+    +'<option value="Payment not confirmed — your receipt could not be verified. Please reapply with a clear receipt.">Payment not confirmed</option>'
+    +'<option value="The cohort is currently full. We invite you to apply for the next intake.">Cohort is full</option>'
+    +'<option value="Your application was incomplete. Please reapply with all required information.">Incomplete application</option>'
+    +'<option value="We were unable to verify the information provided in your application.">Information could not be verified</option>'
+    +'<option value="You do not meet the entry requirements for this programme at this time.">Does not meet entry requirements</option>'
+    +'<option value="other">Other (specify below)</option>'
+    +'</select>'
+    +'<div style="display:none;font-size:11px;color:var(--danger);margin-top:4px;" id="rejectReasonErr">Please select a reason.</div>'
+    +'</div>'
+    +'<div class="form-group">'
+    +'<label class="form-label">Additional note <span style="font-size:11px;font-weight:400;color:var(--muted);">(optional)</span></label>'
+    +'<textarea class="form-textarea" id="rejectNote" placeholder="Any additional context for the applicant..." style="min-height:80px;"></textarea>'
+    +'</div>'
+    +'<div style="background:var(--navy-pale);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--navy);margin-bottom:16px;">An email will be sent to <strong>'+a.email+'</strong> with this reason.</div>'
+    +'<div style="display:flex;gap:8px;">'
+    +'<button class="btn btn-danger" style="flex:2;" onclick="confirmReject(\''+id+'\')">Send Rejection</button>'
+    +'<button class="btn btn-ghost" style="flex:1;" onclick="document.getElementById(\'rejectModal\').remove()">Cancel</button>'
+    +'</div></div>';
+  modal.addEventListener('click', function(e){ if(e.target===modal) modal.remove(); });
+  document.body.appendChild(modal);
+}
+
+async function confirmReject(id) {
+  var a = window._appMap[id];
+  if (!a) return;
+  var reasonEl = document.getElementById('rejectReason');
+  var noteEl = document.getElementById('rejectNote');
+  var reason = reasonEl ? reasonEl.value : '';
+  var note = noteEl ? noteEl.value.trim() : '';
+  var errEl = document.getElementById('rejectReasonErr');
+
+  if (!reason) {
+    if (errEl) errEl.style.display = 'block';
+    return;
+  }
+
+  var finalReason = reason === 'other' ? (note || 'We were unable to process your application at this time.') : reason;
+  var finalNote = reason === 'other' ? '' : note;
+
   try {
+    document.getElementById('rejectModal').remove();
     await sb('applications','PATCH',{status:'rejected',reviewed_at:new Date().toISOString(),reviewed_by:currentAdmin},'id=eq.'+id);
-    if(a.email) {
-      var ex=await sb('students','GET',null,'email=eq.'+encodeURIComponent(a.email)+'&select=id');
-      if(ex&&ex.length>0) await sb('students','PATCH',{status:'inactive'},'id=eq.'+ex[0].id);
+    if (a.email) {
+      var ex = await sb('students','GET',null,'email=eq.'+encodeURIComponent(a.email)+'&select=id');
+      if (ex && ex.length > 0) await sb('students','PATCH',{status:'inactive'},'id=eq.'+ex[0].id);
     }
-    showToast(a.status==='approved'?'Access revoked':'Application rejected');
+    // Send rejection email
+    if (a.email) {
+      fetch('/api/admission-rejected', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          to: a.email,
+          firstName: a.first_name,
+          programme: a.programme,
+          ref: a.ref || '',
+          reason: finalReason,
+          note: finalNote
+        })
+      }).catch(function(e){ console.warn('Rejection email failed:',e); });
+    }
+    showToast('Application rejected. Email sent to '+a.first_name+'.');
     await loadAllData();
-  } catch(e) { showToast('Error: '+e.message,'err'); }
+  } catch(e) {
+    showToast('Error: '+e.message, 'err');
+  }
 }
 
 async function viewReceipt(id) {
