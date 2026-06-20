@@ -472,7 +472,7 @@ tr:hover td{background:var(--surface);cursor:pointer;}
   <div class="notif-btn" onclick="goPage('dashboard')" id="notifBell">🔔 <span id="notifCount" style="font-weight:700;"></span></div>
   <div class="sb-section">Overview</div>
   <div class="nav-item active" onclick="goPage('dashboard')">📊 Dashboard</div>
-  <div class="sb-section">Admissions</div>
+  <div class="sb-section" id="sbSectionAdmissions">Admissions</div>
   <div class="nav-item" onclick="goPage('applications')" id="navApplications">📋 Applications</div>
   <div class="sb-section">Academics</div>
   <div class="nav-item" onclick="goPage('courses')">📚 Courses & Modules</div>
@@ -485,14 +485,15 @@ tr:hover td{background:var(--surface);cursor:pointer;}
   <div class="nav-item" onclick="goPage('announcements')">📢 Announcements</div>
   <div class="nav-item" onclick="goPage('grading')" id="navGrading">📋 Grading Queue</div>
     <div class="nav-item" onclick="goPage('feedback')">💬 Student Feedback</div>
-  <div class="sb-section">Settings</div>
-  <div class="nav-item" onclick="goPage('cohort')">📅 Cohort & Deadline</div>
-  <div class="nav-item" onclick="goPage('sitesettings')">🌐 Site Settings</div>
-  <div class="nav-item" onclick="goPage('devtools')" style="color:rgba(255,165,0,0.6);">🛠 Dev Tools</div>
+  <div class="sb-section" id="sbSectionSettings">Settings</div>
+  <div class="nav-item" onclick="goPage('cohort')" id="navCohort">📅 Cohort & Deadline</div>
+  <div class="nav-item" onclick="goPage('sitesettings')" id="navSiteSettings">🌐 Site Settings</div>
+  <div class="nav-item" onclick="goPage('adminaccounts')" id="navAdminAccounts">👤 Admin Accounts</div>
+  <div class="nav-item" onclick="goPage('devtools')" id="navDevTools" style="color:rgba(255,165,0,0.6);">🛠 Dev Tools</div>
   <div class="sb-footer">
     <div class="sb-user">
       <div class="sb-avatar" id="sidebarInitial">D</div>
-      <div><div class="sb-user-name" id="sidebarName">Admin</div><div class="sb-user-role">Administrator</div></div>
+      <div><div class="sb-user-name" id="sidebarName">Admin</div><div class="sb-user-role" id="sidebarRole">Administrator</div></div>
     </div>
     <button class="sb-logout" onclick="adminLogout()">↩ Sign out</button>
   </div>
@@ -717,6 +718,16 @@ tr:hover td{background:var(--surface);cursor:pointer;}
 
 </div>
 
+
+<!-- ADMIN ACCOUNTS -->
+<div class="page" id="page-adminaccounts">
+  <div class="page-header">
+    <div><div class="page-title">Admin Accounts</div><div class="page-sub">Manage master admins and lecturers. Lecturers only see their assigned course.</div></div>
+    <button class="btn btn-primary" onclick="showCreateAdminModal()">+ New Account</button>
+  </div>
+  <div id="adminAccountsList"><div style="text-align:center;padding:40px;color:var(--muted);">Loading...</div></div>
+</div>
+
 <!-- DEV TOOLS -->
 <div class="page" id="page-devtools">
   <div class="page-header"><div><div class="page-title">Developer Tools</div><div class="page-sub">Clear test data before going live. Irreversible.</div></div></div>
@@ -736,8 +747,8 @@ tr:hover td{background:var(--surface);cursor:pointer;}
 <script>
 const SUPA_URL = 'https://ltqwofagofmvufvqsuyj.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0cXdvZmFnb2ZtdnVmdnFzdXlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjgyMTgsImV4cCI6MjA5NzMwNDIxOH0.7EkluJspwopQxxQmL7AuYxx4XHgchpYR7tsajyoXHaI';
-const ADMIN_CREDS = {"dale":"dale","admin":"cma2026admin"};
-const ADMIN_NAMES = {"dale":"Dale","admin":"Administrator"};
+// Admin credentials now stored in Supabase admins table
+// currentAdmin object: {id, name, email, role, assigned_course_id}
 var MODULE_COUNT = 3; // updated dynamically from DB after loadCourseContent
 var MODULE_NAMES = ['Module 1','Module 2','Module 3']; // updated dynamically
 var COURSE_NAMES = []; // updated dynamically
@@ -796,7 +807,7 @@ function statCard(val,label,cls) {
 }
 
 // ── SESSION ──────────────────────────────────────────────────────────────────
-function saveAdminSession(user) { try{localStorage.setItem('cma_admin_session',JSON.stringify({user,at:Date.now()}));}catch(e){} }
+function saveAdminSession(admin) { try{localStorage.setItem('cma_admin_session',JSON.stringify({user:admin,at:Date.now()}));}catch(e){} }
 function clearAdminSession() { try{localStorage.removeItem('cma_admin_session');}catch(e){} }
 function loadAdminSession() {
   try{
@@ -809,19 +820,73 @@ function loadAdminSession() {
 }
 
 // ── AUTH ─────────────────────────────────────────────────────────────────────
-function doAdminLogin() {
-  var u=document.getElementById('adminUser').value.trim().toLowerCase();
-  var p=document.getElementById('adminPass').value.trim();
-  var err=document.getElementById('adminErr');
-  if(!u||!p){err.textContent='Please enter both fields.';err.style.display='block';return;}
-  if(!ADMIN_CREDS[u]||ADMIN_CREDS[u]!==p){err.textContent='Incorrect credentials.';err.style.display='block';return;}
-  currentAdmin=u;
-  saveAdminSession(u);
-  document.getElementById('sidebarName').textContent=ADMIN_NAMES[u];
-  document.getElementById('sidebarInitial').textContent=ADMIN_NAMES[u].charAt(0);
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('adminShell').style.display='block';
-  loadAllData();
+async function doAdminLogin() {
+  var emailEl = document.getElementById('adminUser');
+  var passEl = document.getElementById('adminPass');
+  var err = document.getElementById('adminErr');
+  var btn = document.getElementById('adminLoginBtn');
+  var email = emailEl.value.trim().toLowerCase();
+  var pass = passEl.value.trim();
+  if (!email||!pass) { err.textContent='Please enter both fields.'; err.style.display='block'; return; }
+  if (btn) { btn.disabled=true; btn.textContent='Signing in...'; }
+  err.style.display='none';
+  try {
+    // Hash password same way as students
+    var hash = await hashAdminPass(pass);
+    // Look up in admins table
+    var results = await sb('admins','GET',null,'email=eq.'+encodeURIComponent(email)+'&select=*');
+    if (!results||!results.length) throw new Error('No admin account found with that email.');
+    var admin = results[0];
+    if (admin.password_hash !== hash) throw new Error('Incorrect password.');
+    // Login success
+    currentAdmin = admin;
+    saveAdminSession(admin);
+    // Update last_login
+    sb('admins','PATCH',{last_login:new Date().toISOString()},'id=eq.'+admin.id).catch(function(){});
+    // Update sidebar
+    document.getElementById('sidebarName').textContent = admin.name;
+    document.getElementById('sidebarInitial').textContent = admin.name.charAt(0).toUpperCase();
+    document.getElementById('sidebarRole').textContent = admin.role === 'master' ? 'Master Admin' : 'Lecturer';
+    // Apply role-based sidebar
+    applyRoleSidebar(admin.role);
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('adminShell').style.display='block';
+    loadAllData();
+  } catch(e) {
+    err.textContent = e.message || 'Login failed.';
+    err.style.display='block';
+    if (btn) { btn.disabled=false; btn.textContent='Sign In →'; }
+  }
+}
+
+async function hashAdminPass(pass) {
+  var data = new TextEncoder().encode(pass + 'cma_salt_2026');
+  var buf = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function applyRoleSidebar(role) {
+  // Hide elements that lecturers cannot access
+  var masterOnly = [
+    'navApplications',
+    'sbSectionAdmissions',
+    'sbSectionSettings',
+    'navCohort',
+    'navSiteSettings',
+    'navDevTools',
+    'navAdminAccounts'
+  ];
+  if (role !== 'master') {
+    masterOnly.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+  } else {
+    masterOnly.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.style.display = '';
+    });
+  }
 }
 function adminLogout() {
   clearAdminSession();
@@ -842,7 +907,7 @@ function goPage(id) {
   document.querySelectorAll('.nav-item').forEach(n=>{
     if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
   });
-  var renders={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings,'grading':renderGrading};
+  var renders={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings,'grading':renderGrading,'adminaccounts':renderAdminAccounts};
   if(id==='courses'){
     cmState.selectedModule=null;
     renderCourses();
@@ -852,13 +917,31 @@ function goPage(id) {
 // ── DATA LOAD ────────────────────────────────────────────────────────────────
 async function loadAllData() {
   try {
+    // Build filters based on role
+    var isMaster = !currentAdmin || !currentAdmin.role || currentAdmin.role === 'master';
+    var courseFilter = (!isMaster && currentAdmin.assigned_course_id)
+      ? '&course_id=eq.'+currentAdmin.assigned_course_id : '';
+    var progFilter = (!isMaster && currentAdmin.assigned_course_id)
+      ? 'course_id=eq.'+currentAdmin.assigned_course_id+'&select=*'
+      : 'select=*';
+
     var [apps,studs,prog,atts,coh] = await Promise.all([
-      sb('applications','GET',null,'order=submitted_at.desc'),
-      sb('students','GET',null,'order=created_at.desc&select=*'),
-      sb('progress','GET',null,'select=*'),
-      sb('assessment_attempts','GET',null,'select=*&order=attempted_at.desc').catch(()=>[]),
+      isMaster ? sb('applications','GET',null,'order=submitted_at.desc') : Promise.resolve([]),
+      isMaster
+        ? sb('students','GET',null,'order=created_at.desc&select=*')
+        : sb('students','GET',null,'status=eq.active&order=created_at.desc&select=*'),
+      sb('progress','GET',null,progFilter),
+      sb('assessment_attempts','GET',null,'select=*&order=attempted_at.desc'+courseFilter).catch(()=>[]),
       sb('cohort_settings','GET',null,'limit=1')
     ]);
+    // For lecturer: filter students to only those in their assigned course
+    if (!isMaster && currentAdmin.assigned_course_id) {
+      studs = studs.filter(function(s){
+        return s.programme && cmCourses.some(function(c){
+          return c.id === currentAdmin.assigned_course_id && s.programme === c.title;
+        });
+      });
+    }
     allApplications=apps; allStudents=studs; allProgress=prog; allAttempts=atts;
     cohortSettings=coh[0]||{name:'Cohort 1',deadline:'2026-07-13',pass_mark:100};
     // Load course content and update dynamic module/course counts
@@ -889,7 +972,7 @@ function updateBadges() {
   if(bell) bell.textContent=total>0?total+' alerts':'';
 }
 function renderCurrentPage() {
-  var r={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings,'grading':renderGrading};
+  var r={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings,'grading':renderGrading,'adminaccounts':renderAdminAccounts};
   if(currentPage==='courses') renderCourses();
   else if(r[currentPage]) r[currentPage]();
 }
@@ -1422,6 +1505,19 @@ function saveCourseLocally() {
 }
 
 function renderCourses() {
+  // Filter cmCourses for lecturers
+  if (currentAdmin && currentAdmin.role === 'lecturer' && currentAdmin.assigned_course_id) {
+    var filtered = cmCourses.filter(function(c){ return c.id === currentAdmin.assigned_course_id; });
+    if (filtered.length) {
+      // Temporarily scope to assigned course only for rendering
+      var _all = cmCourses;
+      cmCourses = filtered;
+      renderCMSidebar();
+      if (!cmState.selectedModule) { renderCMOverview(); }
+      cmCourses = _all;
+      return;
+    }
+  }
   renderCMSidebar();
   if (!cmState.selectedModule) {
     // Show overview list of all courses
@@ -2223,7 +2319,12 @@ async function renderGrading() {
   if (!el) return;
   el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);">Loading...</div>';
   try {
-    var rows = await sb('assessment_submissions','GET',null,'status=eq.pending&order=submitted_at.asc');
+    var isMaster = !currentAdmin || !currentAdmin.role || currentAdmin.role === 'master';
+    var gradingQuery = 'status=eq.pending&order=submitted_at.asc';
+    if (!isMaster && currentAdmin.assigned_course_id) {
+      gradingQuery += '&course_id=eq.'+currentAdmin.assigned_course_id;
+    }
+    var rows = await sb('assessment_submissions','GET',null,gradingQuery);
     // Update badge
     var badge = document.getElementById('navGrading');
     if (badge && rows.length) badge.innerHTML = '📋 Grading Queue <span class="badge badge-danger">'+rows.length+'</span>';
@@ -2404,13 +2505,142 @@ async function gradeSubmission(id, result, mcqScore, mcqTotal, writtenTotal, ema
   }
 }
 
+
+// ── ADMIN ACCOUNTS ────────────────────────────────────────────────────────────
+async function renderAdminAccounts() {
+  var el = document.getElementById('adminAccountsList');
+  if (!el) return;
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);">Loading...</div>';
+  try {
+    var admins = await sb('admins','GET',null,'order=created_at.asc&select=id,name,email,role,assigned_course_id,last_login,created_at');
+    if (!admins.length) { el.innerHTML='<div class="alert alert-info">No admin accounts yet. Create the first one above.</div>'; return; }
+    el.innerHTML = '<div style="display:grid;gap:12px;">'
+      + admins.map(function(a) {
+        var course = a.assigned_course_id ? (cmCourses.find(function(c){return c.id===a.assigned_course_id;})||{title:'Unknown Course'}).title : 'All Courses';
+        var isSelf = currentAdmin && currentAdmin.id === a.id;
+        return '<div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">'
+          +'<div style="display:flex;align-items:center;gap:14px;">'
+          +'<div style="width:42px;height:42px;border-radius:50%;background:var(--navy);color:white;display:flex;align-items:center;justify-content:center;font-family:DM Serif Display,serif;font-size:18px;flex-shrink:0;">'+a.name.charAt(0).toUpperCase()+'</div>'
+          +'<div>'
+          +'<div style="font-size:15px;font-weight:700;color:var(--navy);">'+a.name+(isSelf?' <span style="font-size:11px;color:var(--muted);">(you)</span>':'')+'</div>'
+          +'<div style="font-size:12px;color:var(--muted);">'+a.email+'</div>'
+          +'<div style="font-size:11px;color:var(--dim);margin-top:2px;">Last login: '+fmtDateTime(a.last_login)+'</div>'
+          +'</div></div>'
+          +'<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">'
+          +'<span class="pill '+(a.role==='master'?'pill-blue':'pill-gold')+'" style="font-size:11px;">'+( a.role==='master'?'Master Admin':'Lecturer')+'</span>'
+          +(a.role==='lecturer'?'<span class="pill pill-dim" style="font-size:11px;">'+course+'</span>':'')
+          +(isSelf?'':'<button class="btn btn-ghost btn-xs" data-id="'+a.id+'" data-name="'+a.name+'" onclick="resetAdminPassword(this.dataset.id,this.dataset.name)">Reset Password</button>')
+          +(isSelf?'':'<button class="btn btn-danger btn-xs" data-id="'+a.id+'" data-name="'+a.name+'" onclick="deleteAdminAccount(this.dataset.id,this.dataset.name)" style="font-size:11px;padding:5px 10px;">Remove</button>')
+          +'</div></div>';
+      }).join('')
+      +'</div>';
+  } catch(e) {
+    el.innerHTML = '<div class="alert alert-warn">Could not load admin accounts: '+e.message+'</div>';
+  }
+}
+
+function showCreateAdminModal() {
+  var existing = document.getElementById('createAdminModal');
+  if (existing) existing.remove();
+  var courses = cmCourses.map(function(c){ return '<option value="'+c.id+'">'+c.title+'</option>'; }).join('');
+  var modal = document.createElement('div');
+  modal.id = 'createAdminModal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;';
+  modal.innerHTML = '<div style="background:white;border-radius:16px;padding:28px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,0.2);">'
+    +'<div style="font-family:DM Serif Display,serif;font-size:22px;color:var(--navy);margin-bottom:18px;">New Admin Account</div>'
+    +'<div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="newAdminName" placeholder="e.g. Fr. Joseph Okoro"/></div>'
+    +'<div class="form-group"><label class="form-label">Email Address</label><input class="form-input" id="newAdminEmail" type="email" placeholder="lecturer@example.com"/></div>'
+    +'<div class="form-group"><label class="form-label">Password</label><input class="form-input" id="newAdminPass" type="password" placeholder="Choose a password"/></div>'
+    +'<div class="form-group"><label class="form-label">Role</label>'
+    +'<select class="form-select" id="newAdminRole" onchange="toggleCourseField(this.value)">'
+    +'<option value="lecturer">Lecturer</option>'
+    +'<option value="master">Master Admin</option>'
+    +'</select></div>'
+    +'<div class="form-group" id="newAdminCourseWrap"><label class="form-label">Assigned Course</label>'
+    +'<select class="form-select" id="newAdminCourse"><option value="">Select course...</option>'+courses+'</select></div>'
+    +'<div id="createAdminErr" style="display:none;font-size:12px;color:var(--danger);background:var(--danger-light);border-radius:8px;padding:9px 13px;margin-bottom:12px;"></div>'
+    +'<div style="display:flex;gap:8px;">'
+    +'<button class="btn btn-primary" onclick="createAdminAccount()" id="createAdminBtn">Create Account</button>'
+    +'<button class="btn btn-ghost" onclick="closeCreateAdminModal()">Cancel</button>'
+    +'</div></div>';
+  modal.addEventListener('click',function(e){if(e.target===modal)modal.remove();});
+  document.body.appendChild(modal);
+}
+
+function closeCreateAdminModal() {
+  var m = document.getElementById('createAdminModal');
+  if (m) m.remove();
+}
+function toggleCourseField(val) {
+  var el = document.getElementById('newAdminCourseWrap');
+  if (el) el.style.display = val === 'lecturer' ? 'block' : 'none';
+}
+
+async function createAdminAccount() {
+  var name = (document.getElementById('newAdminName')||{}).value||'';
+  var email = (document.getElementById('newAdminEmail')||{}).value||'';
+  var pass = (document.getElementById('newAdminPass')||{}).value||'';
+  var role = (document.getElementById('newAdminRole')||{}).value||'lecturer';
+  var courseId = (document.getElementById('newAdminCourse')||{}).value||null;
+  var errEl = document.getElementById('createAdminErr');
+  var btn = document.getElementById('createAdminBtn');
+
+  if (!name.trim()||!email.trim()||!pass.trim()) { errEl.textContent='All fields are required.'; errEl.style.display='block'; return; }
+  if (role==='lecturer'&&!courseId) { errEl.textContent='Please assign a course for this lecturer.'; errEl.style.display='block'; return; }
+
+  btn.disabled=true; btn.textContent='Creating...';
+  try {
+    var hash = await hashAdminPass(pass);
+    await sb('admins','POST',{
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      password_hash: hash,
+      role: role,
+      assigned_course_id: role==='master' ? null : courseId
+    });
+    document.getElementById('createAdminModal').remove();
+    showToast('Account created for '+name+'. They can now log in.');
+    renderAdminAccounts();
+  } catch(e) {
+    errEl.textContent = 'Error: '+(e.message||'Could not create account.');
+    errEl.style.display='block';
+    btn.disabled=false; btn.textContent='Create Account';
+  }
+}
+
+async function resetAdminPassword(id, name) {
+  var newPass = prompt('Enter new password for '+name+':');
+  if (!newPass||!newPass.trim()) return;
+  try {
+    var hash = await hashAdminPass(newPass.trim());
+    await sb('admins','PATCH',{password_hash:hash},'id=eq.'+id);
+    showToast('Password reset for '+name+'.');
+  } catch(e) { showToast('Error: '+e.message,'err'); }
+}
+
+async function deleteAdminAccount(id, name) {
+  if (!confirm('Remove admin account for '+name+'? This cannot be undone.')) return;
+  try {
+    await sb('admins','DELETE',null,'id=eq.'+id);
+    showToast(name+' account removed.');
+    renderAdminAccounts();
+  } catch(e) { showToast('Error: '+e.message,'err'); }
+}
+
 // ── STUDENT FEEDBACK ─────────────────────────────────────────────────────────
 async function renderFeedback() {
   var el = document.getElementById('feedbackList');
   if (!el) return;
   el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Loading...</div>';
   try {
-    var rows = await sb('student_feedback','GET',null,'order=submitted_at.desc');
+    var isMaster = !currentAdmin || !currentAdmin.role || currentAdmin.role === 'master';
+    var feedbackQuery = 'order=submitted_at.desc';
+    var rows = await sb('student_feedback','GET',null,feedbackQuery);
+    // Filter by lecturer's students if not master
+    if (!isMaster && currentAdmin.assigned_course_id) {
+      var myCourseStudentIds = allStudents.map(function(s){ return s.id; });
+      rows = rows.filter(function(r){ return myCourseStudentIds.indexOf(r.student_id) !== -1; });
+    }
     if (!rows.length) { el.innerHTML='<div class="alert alert-info">No feedback submitted yet. Students can send feedback from within any module.</div>'; return; }
     var typeColors = {question:'pill-blue',issue:'pill-danger',suggestion:'pill-gold',compliment:'pill-ok'};
     el.innerHTML = rows.map(function(r) {
@@ -2453,6 +2683,11 @@ function showToast(msg,type='ok'){
   var sess=loadAdminSession();
   if(sess&&ADMIN_CREDS[sess.user]){
     currentAdmin=sess.user;
+    document.getElementById('sidebarName').textContent = currentAdmin.name || currentAdmin;
+    document.getElementById('sidebarInitial').textContent = (currentAdmin.name||'A').charAt(0).toUpperCase();
+    var roleEl = document.getElementById('sidebarRole');
+    if (roleEl) roleEl.textContent = currentAdmin.role === 'master' ? 'Master Admin' : 'Lecturer';
+    applyRoleSidebar(currentAdmin.role || 'master');
     document.getElementById('sidebarName').textContent=ADMIN_NAMES[sess.user];
     document.getElementById('sidebarInitial').textContent=ADMIN_NAMES[sess.user].charAt(0);
     document.getElementById('loginScreen').style.display='none';
