@@ -1086,12 +1086,15 @@ async function confirmReject(id) {
 
   try {
     document.getElementById('rejectModal').remove();
-    await sb('applications','PATCH',{status:'rejected',reviewed_at:new Date().toISOString(),reviewed_by:currentAdmin},'id=eq.'+id);
-    if (a.email) {
-      var ex = await sb('students','GET',null,'email=eq.'+encodeURIComponent(a.email)+'&select=id');
-      if (ex && ex.length > 0) await sb('students','PATCH',{status:'inactive'},'id=eq.'+ex[0].id);
-    }
-    // Send rejection email
+    // Run DB updates in parallel for speed
+    var patchApp = sb('applications','PATCH',{status:'rejected',reviewed_at:new Date().toISOString(),reviewed_by:currentAdmin},'id=eq.'+id);
+    var deactivateStudent = a.email
+      ? sb('students','GET',null,'email=eq.'+encodeURIComponent(a.email)+'&select=id').then(function(ex){
+          if (ex && ex.length > 0) return sb('students','PATCH',{status:'inactive'},'id=eq.'+ex[0].id);
+        })
+      : Promise.resolve();
+    await Promise.all([patchApp, deactivateStudent]);
+    // Send rejection email FIRST — before loadAllData so no delay
     if (a.email) {
       fetch('/api/admission-rejected', {
         method: 'POST',
