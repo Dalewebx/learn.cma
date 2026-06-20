@@ -835,22 +835,21 @@ async function saveProgress(modIndex) {
   if (!currentStudent) return;
   try {
     var courseId = CURRENT_COURSE ? CURRENT_COURSE.id : 'unknown';
-    // Upsert-style: try insert, ignore duplicate key error
     var res = await fetch(SUPA_URL+'/rest/v1/progress', {
       method:'POST',
       headers:{
-        'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,
+        'apikey':SUPA_KEY,
+        'Authorization':'Bearer '+SUPA_KEY,
         'Content-Type':'application/json',
-        'Prefer':'resolution=ignore-duplicates,return=minimal'
+        'Prefer':'return=minimal'
       },
       body:JSON.stringify({
-        student_id:currentStudent.id,
-        course_id:courseId,
-        module_index:modIndex,
-        completed_at:new Date().toISOString()
+        student_id: currentStudent.id,
+        course_id: courseId,
+        module_index: modIndex,
+        completed_at: new Date().toISOString()
       })
     });
-    // Update session regardless of DB result
     saveSession(currentStudent, CURRENT_COURSE, completedModules);
   } catch(e) {
     saveSession(currentStudent, CURRENT_COURSE, completedModules);
