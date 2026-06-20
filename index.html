@@ -252,7 +252,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);position:stick
 /* ── FOOTER ── */
 footer{background:var(--navy);padding:48px 24px 28px;}
 .footer-inner{max-width:1160px;margin:0 auto;}
-.footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:32px;}
+.footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px 20px;margin-bottom:0;}
 @media(min-width:768px){.footer-grid{grid-template-columns:1fr 1fr 1fr;gap:48px;}}
 .footer-brand-name{font-family:"DM Serif Display",serif;font-size:16px;color:white;margin-bottom:4px;}
 .footer-brand-sub{font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:12px;line-height:1.5;}
@@ -394,10 +394,12 @@ footer{background:var(--navy);padding:48px 24px 28px;}
   opacity:0;
   transform:translateY(24px);
   transition:opacity 0.5s ease,transform 0.5s ease;
+  pointer-events:none;
 }
 .tl-step.visible,.why-card.visible,.exp-card.visible,.prog-card.visible,.pf-item.visible{
   opacity:1;
   transform:translateY(0);
+  pointer-events:auto;
 }
 /* Stagger delays */
 .tl-step:nth-child(1){transition-delay:0ms;}
@@ -793,12 +795,14 @@ footer{background:var(--navy);padding:48px 24px 28px;}
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
+    <!-- Brand -->
+    <div style="margin-bottom:32px;padding-bottom:28px;border-bottom:1px solid rgba(255,255,255,0.08);">
+      <div class="footer-brand-name">Catholic Music Academy Online</div>
+      <div class="footer-brand-sub">Excellence in Sacred Arts &nbsp;&middot;&nbsp; Catholic Diocese of Warri &nbsp;&middot;&nbsp; Ozoro, Delta State</div>
+      <div class="footer-desc">Structured, accessible music education delivered online and nationally recognised.</div>
+    </div>
+    <!-- Links -->
     <div class="footer-grid">
-      <div style="grid-column:span 2;">
-        <div class="footer-brand-name">Catholic Music Academy Online</div>
-        <div class="footer-brand-sub">Catholic Diocese of Warri, Excellence in Sacred Arts, Ozoro, Delta State, Nigeria</div>
-        <div class="footer-desc">Structured, accessible music education, sacred and general, delivered online and nationally recognised.</div>
-      </div>
       <div>
         <div class="footer-col-title">Platform</div>
         <div class="footer-links">
@@ -814,12 +818,21 @@ footer{background:var(--navy);padding:48px 24px 28px;}
         <div class="footer-links">
           <a class="footer-link" href="login.html">Forgot Password</a>
           <a class="footer-link" id="footerEmail" href="mailto:musicacademywarri@gmail.com">Email Support</a>
+          <a class="footer-link" href="apply.html">New Application</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Contact Us</div>
+        <div class="footer-links">
+          <a class="footer-link" id="footerContactEmail" href="mailto:musicacademywarri@gmail.com">&#128231; musicacademywarri@gmail.com</a>
+          <span class="footer-link" style="cursor:default;">&#128172; <span id="footerWaText">WhatsApp the Academy</span></span>
+          <span class="footer-link" style="cursor:default;">&#128205; <span id="footerLocText">Ozoro, Delta State, Nigeria</span></span>
         </div>
       </div>
     </div>
     <div class="footer-bottom">
       <div class="footer-copy">&#169; 2026 Music Academy, Catholic Diocese of Warri. All rights reserved.</div>
-      <div class="footer-credit">CMA Online Learning Portal, Built by DaleX</div>
+      <div class="footer-credit">CMA Online Learning Portal &nbsp;&middot;&nbsp; Built by DaleX</div>
     </div>
   </div>
 </footer>
