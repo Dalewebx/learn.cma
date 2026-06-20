@@ -13,7 +13,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ ok: true, skipped: true });
   }
 
-  const { to, firstName, programme, ref } = req.body || {};
+  const { to, firstName, programme, ref, testMode } = req.body || {};
 
   if (!to || !firstName || !ref) {
     return res.status(400).json({ error: 'Missing required fields: to, firstName, ref' });
@@ -21,7 +21,12 @@ module.exports = async function handler(req, res) {
 
   const prog = programme || 'your chosen programme';
 
-  const textBody = `Dear ${firstName},
+  const testDisclaimer = testMode ? `
+⚠ THIS IS A TEST EMAIL
+This message was sent during a system demonstration and does not constitute an official communication from the Catholic Music Academy. No data shown is valid or binding.
+---
+` : '';
+  const textBody = `${testDisclaimer}Dear ${firstName},
 
 Thank you for applying to the Catholic Music Academy, Catholic Diocese of Warri.
 
@@ -110,7 +115,7 @@ Catholic Diocese of Warri`;
         from: 'Catholic Music Academy <noreply@catholicmusicacademy.net>',
         reply_to: 'musicacademywarri@gmail.com',
         to: [to],
-        subject: 'Application Received — Catholic Music Academy',
+        subject: (testMode ? '[TEST] ' : '') + 'Application Received — Catholic Music Academy',
         html: htmlBody,
         text: textBody
       })
