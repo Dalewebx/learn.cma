@@ -225,6 +225,10 @@ tr:hover td{background:var(--surface);cursor:pointer;}
 .analytics-bar{height:100%;border-radius:8px;transition:width 0.5s;}
 .analytics-val{font-size:12px;font-weight:700;color:var(--text);width:36px;text-align:right;}
 
+.test-mode-banner{display:none;background:#DC2626;color:white;text-align:center;padding:8px 16px;font-size:12px;font-weight:700;letter-spacing:0.5px;position:sticky;top:0;z-index:9999;}
+.test-mode-banner.on{display:block;}
+.test-mode-bar{background:#FEF2F2;border:2px solid #DC2626;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;}
+.test-mode-pill{background:#DC2626;color:white;font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:20px;flex-shrink:0;}
 @media(max-width:800px){:root{--sidebar:0px;}.sidebar{transform:translateX(-100%);transition:transform 0.3s;}.main{margin-left:0;}}
 @media(max-width:900px){.ss-grid{grid-template-columns:1fr!important;}}
 
@@ -630,6 +634,19 @@ tr:hover td{background:var(--surface);cursor:pointer;}
     <div><div class="page-title">Site Settings</div><div class="page-sub">Edit the homepage mockup cards. Structure is fixed — all text content is editable here.</div></div>
   </div>
 
+  <!-- TEST MODE TOGGLE -->
+  <div class="test-mode-bar" id="testModeBar">
+    <span class="test-mode-pill" id="testModePill">OFF</span>
+    <div style="flex:1;">
+      <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:2px;">Test / Demo Mode</div>
+      <div style="font-size:12px;color:var(--muted);">When ON — all emails carry a test disclaimer banner and [TEST] subject prefix. Student portal shows a test badge. Turn OFF before going live.</div>
+    </div>
+    <div class="pub-toggle" style="flex-shrink:0;">
+      <div class="pub-switch" id="testModeSwitch" onclick="toggleTestMode()"><div class="pub-switch-dot"></div></div>
+      <span style="font-size:12px;color:var(--muted);min-width:24px;" id="testModeLabel">Off</span>
+    </div>
+  </div>
+
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;" class="ss-grid">
 
     <!-- HERO MOCKUP PANEL -->
@@ -1002,7 +1019,8 @@ async function approveApp(id) {
           to: a.email,
           firstName: a.first_name,
           programme: a.programme,
-          ref: a.ref || ('CMA-'+id.slice(-6).toUpperCase())
+          ref: a.ref || ('CMA-'+id.slice(-6).toUpperCase()),
+          testMode: SS_CACHE['testing_mode'] === 'true'
         })
       }).catch(function(e){ console.warn('Approval email failed:',e); });
     }
@@ -1084,7 +1102,8 @@ async function confirmReject(id) {
           programme: a.programme,
           ref: a.ref || '',
           reason: finalReason,
-          note: finalNote
+          note: finalNote,
+          testMode: SS_CACHE['testing_mode'] === 'true'
         })
       }).catch(function(e){ console.warn('Rejection email failed:',e); });
     }
@@ -2067,6 +2086,19 @@ async function renderSiteSettings() {
     }).join('');
   }
 
+  // Load and apply testing mode state
+  var isTestMode = SS_CACHE['testing_mode'] === 'true';
+  var sw = document.getElementById('testModeSwitch');
+  var lbl = document.getElementById('testModeLabel');
+  var pill = document.getElementById('testModePill');
+  var banner = document.getElementById('testModeBanner');
+  var bar = document.getElementById('testModeBar');
+  if (sw) sw.classList.toggle('on', isTestMode);
+  if (lbl) lbl.textContent = isTestMode ? 'On' : 'Off';
+  if (pill) { pill.textContent = isTestMode ? 'ON' : 'OFF'; pill.style.background = isTestMode ? '#DC2626' : '#94A3B8'; }
+  if (banner) banner.classList.toggle('on', isTestMode);
+  if (bar) bar.style.borderColor = isTestMode ? '#DC2626' : 'var(--border)';
+
   // Populate contact fields
   var cEmail = document.getElementById('ss_contact_email');
   var cWa = document.getElementById('ss_contact_whatsapp');
@@ -2096,6 +2128,38 @@ async function renderSiteSettings() {
         +SS_STATUSES.map(function(s){return '<option value="'+s+'"'+(savedStatus===s?' selected':'')+'>'+SS_STATUS_LABELS[s]+'</option>';}).join('')
         +'</select></div>';
     }).join('');
+  }
+}
+
+async function toggleTestMode() {
+  var current = SS_CACHE['testing_mode'] === 'true';
+  var next = !current;
+  try {
+    var res = await fetch(SUPA_URL + '/rest/v1/site_settings?on_conflict=key', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates,return=minimal'
+      },
+      body: JSON.stringify([{key:'testing_mode', value: String(next), updated_at: new Date().toISOString()}])
+    });
+    if (!res.ok) throw new Error(await res.text());
+    SS_CACHE['testing_mode'] = String(next);
+    // Update UI
+    var sw = document.getElementById('testModeSwitch');
+    var lbl = document.getElementById('testModeLabel');
+    var pill = document.getElementById('testModePill');
+    var banner = document.getElementById('testModeBanner');
+    var bar = document.getElementById('testModeBar');
+    if (sw) sw.classList.toggle('on', next);
+    if (lbl) lbl.textContent = next ? 'On' : 'Off';
+    if (pill) { pill.textContent = next ? 'ON' : 'OFF'; pill.style.background = next ? '#DC2626' : '#94A3B8'; }
+    if (banner) banner.classList.toggle('on', next);
+    if (bar) bar.style.borderColor = next ? '#DC2626' : 'var(--border)';
+    showToast(next ? 'Test Mode ON — emails will carry disclaimer.' : 'Test Mode OFF — emails are live.');
+  } catch(e) {
+    showToast('Error saving test mode: '+e.message, 'err');
   }
 }
 
@@ -2315,7 +2379,8 @@ async function gradeSubmission(id, result, mcqScore, mcqTotal, writtenTotal, ema
             score: combinedScore,
             total: combinedTotal,
             moduleIndex: modIdx,
-            comments: comment
+            comments: comment,
+            testMode: SS_CACHE['testing_mode'] === 'true'
           })
         });
       } catch(emailErr){ console.warn('Email send failed:', emailErr); }
