@@ -156,6 +156,8 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px
   .actions .btn{flex:none;width:100%;}
   .field-input,.field-select{font-size:16px;} /* prevent iOS zoom on focus */
 }
+.test-bar{display:none;background:#DC2626;color:white;text-align:center;padding:9px 16px;font-size:12px;font-weight:700;}
+.test-bar.on{display:block;}
 </style>
 </head>
 <body>
@@ -174,6 +176,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px
   <a class="nav-back" href="index.html">&#8592; Back</a>
 </nav>
 
+<div class="test-bar" id="testBar">⚠ TEST MODE — This is a demonstration. Applications submitted here are not official.</div>
 <div class="apply-wrap">
 
   <!-- PROGRESS -->
@@ -390,6 +393,29 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px
 </div>
 
 <script>
+var IS_TEST_MODE = false;
+
+// Redirect already-logged-in students away from apply page
+(function(){
+  try {
+    var raw = localStorage.getItem('cma_session');
+    if (!raw) return;
+    var s = JSON.parse(raw);
+    if (!s||!s.student||s.student.status!=='active') return;
+    if (Date.now()-s.savedAt > 30*24*60*60*1000) return;
+    // Show a message instead of the form
+    document.addEventListener('DOMContentLoaded', function(){
+      var wrap = document.querySelector('.apply-wrap');
+      if (wrap) wrap.innerHTML = '<div style="text-align:center;padding:64px 24px;">'
+        +'<div style="font-size:48px;margin-bottom:16px;">&#127891;</div>'
+        +'<div style="font-family:DM Serif Display,serif;font-size:28px;color:var(--navy);margin-bottom:10px;">You are already enrolled</div>'
+        +'<div style="font-size:14px;color:var(--muted);line-height:1.7;max-width:380px;margin:0 auto 28px;">Welcome back, '+(s.student.first_name||'Student')+'. You already have an active student account at the Catholic Music Academy.</div>'
+        +'<a href="login.html" class="btn btn-primary" style="display:inline-flex;font-size:15px;padding:14px 28px;">Go to My Portal &rarr;</a>'
+        +'<div style="margin-top:16px;"><a href="index.html" style="font-size:13px;color:var(--muted);text-decoration:none;">&#8592; Back to Home</a></div>'
+        +'</div>';
+    });
+  } catch(e){}
+})();
 const SUPA_URL = 'https://ltqwofagofmvufvqsuyj.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0cXdvZmFnb2ZtdnVmdnFzdXlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjgyMTgsImV4cCI6MjA5NzMwNDIxOH0.7EkluJspwopQxxQmL7AuYxx4XHgchpYR7tsajyoXHaI';
 
@@ -409,6 +435,20 @@ async function hashPassword(password) {
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
+
+// Fetch test mode from site_settings
+(async function(){
+  try {
+    var r = await fetch(SUPA_URL+'/rest/v1/site_settings?key=eq.testing_mode&select=key,value',
+      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    var d = await r.json();
+    if (d && d.length && d[0].value === 'true') {
+      IS_TEST_MODE = true;
+      var tb = document.getElementById('testBar');
+      if (tb) tb.classList.add('on');
+    }
+  } catch(e){}
+})();
 
 var currentStep = 1;
 var selectedProg = '';
@@ -657,7 +697,8 @@ async function submitApplication() {
         to: v('email'),
         firstName: v('firstName'),
         programme: selectedProg,
-        ref: ref
+        ref: ref,
+        testMode: IS_TEST_MODE
       })
     }).catch(function(e){ console.warn('Confirmation email failed:', e); });
   } catch(e) {
