@@ -655,8 +655,8 @@ footer{background:var(--navy);padding:48px 24px 28px;}
 <section class="sec portal-sec" id="portal">
   <div class="sec-inner">
     <div class="label">Inside the Student Portal</div>
-    <h2 class="sec-title">See what you are getting into</h2>
-    <p class="sec-sub">A complete online learning environment built specifically for music education at the Catholic Music Academy.</p>
+    <h2 class="sec-title" id="portalSectionTitle">See what you are getting into</h2>
+    <p class="sec-sub" id="portalSectionSub">A complete online learning environment built specifically for music education at the Catholic Music Academy.</p>
     <div class="portal-grid">
 
       <!-- Left: portal mockup -->
@@ -1050,6 +1050,12 @@ footer{background:var(--navy);padding:48px 24px 28px;}
     if (Date.now() - s.savedAt > 30 * 24 * 60 * 60 * 1000) return; // expired
     var name = s.student.first_name || 'Student';
 
+    // ── PORTAL SECTION: update text for logged-in student ──
+    var portalTitle = document.getElementById('portalSectionTitle');
+    var portalSub = document.getElementById('portalSectionSub');
+    if (portalTitle) portalTitle.textContent = 'Inside Your Learning Portal';
+    if (portalSub) portalSub.textContent = 'Everything you need for your music education, in one place.';
+
     // ── CTA SECTION: transform for logged-in student ──
     var ctaTitle = document.getElementById('ctaTitle');
     var ctaSub = document.getElementById('ctaSub');
@@ -1077,14 +1083,18 @@ footer{background:var(--navy);padding:48px 24px 28px;}
       var observer = new MutationObserver(function() {
         var cards = progGrid.querySelectorAll('.prog-card');
         cards.forEach(function(card) {
-          var titleEl = card.querySelector('.prog-name');
+          var titleEl = card.querySelector('.prog-name,.prog-title,.prog-card-title,[class*="prog"][class*="title"],[class*="prog"][class*="name"]');
           if (!titleEl) return;
           // Check if this card matches the enrolled course
           var isEnrolled = false;
           try {
             var raw2 = localStorage.getItem('cma_session');
             var sess2 = JSON.parse(raw2);
-            isEnrolled = sess2 && sess2.student && titleEl.textContent === sess2.student.programme;
+            var enrolledProg2 = sess2 && sess2.student ? sess2.student.programme : '';
+            var cardText = card.textContent || '';
+            isEnrolled = titleEl
+              ? titleEl.textContent.trim() === enrolledProg2
+              : enrolledProg2 && cardText.indexOf(enrolledProg2) !== -1;
           } catch(e2){}
           if (isEnrolled) {
             // Highlight enrolled card
@@ -1121,7 +1131,8 @@ footer{background:var(--navy);padding:48px 24px 28px;}
     var navActs = document.querySelector('.nav-acts');
     if (navActs) {
       navActs.innerHTML = '<div class="session-chip" style="display:inline-flex;">&#9679; '+name+'</div>'
-        + '<a class="btn btn-gold" href="login.html" style="font-size:13px;padding:9px 18px;">My Portal &rarr;</a>';
+        + '<a class="btn btn-gold" href="login.html" style="font-size:13px;padding:9px 18px;">My Portal &rarr;</a>'
+        + '<button onclick="cmaLogout()" id="homeSignOutBtn">Sign Out</button>';
     }
 
     // ── HERO: personalise for logged-in student ──
