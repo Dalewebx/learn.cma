@@ -112,7 +112,7 @@ Catholic Diocese of Warri`;
     <div style="background:#F0F3FF;padding:18px 32px;border-top:1px solid #E2E8F0;">
       <div style="font-size:11px;color:#64748B;line-height:1.6;">
         Catholic Music Academy &middot; Catholic Diocese of Warri &middot; Ozoro, Delta State, Nigeria<br/>
-        <a href="https://learn.catholicmusicacademy.net" style="color:#0D1B3E;">learn.catholicmusicacademy.net</a>
+        <a href="https://catholicmusicacademy.net" style="color:#0D1B3E;">catholicmusicacademy.net</a>
       </div>
     </div>
   </div>
