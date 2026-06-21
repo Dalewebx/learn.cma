@@ -639,11 +639,11 @@ footer{background:var(--navy);padding:48px 24px 28px;}
   <div class="sec-inner">
     <div class="prog-hd">
       <div>
-        <div class="label">Current Programmes</div>
-        <h2 class="sec-title">Choose your path</h2>
-        <p class="sec-sub">Each programme is a structured series of online modules leading to a recognised qualification.</p>
+        <div class="label" id="progLabel">Current Programmes</div>
+        <h2 class="sec-title" id="progTitle">Choose your path</h2>
+        <p class="sec-sub" id="progSub">Each programme is a structured series of online modules leading to a recognised qualification.</p>
       </div>
-      <a class="btn btn-navy" href="apply.html">Apply for a Programme</a>
+      <a class="btn btn-navy" href="apply.html" id="progCta">Apply for a Programme</a>
     </div>
     <div class="prog-grid" id="progGrid">
       <div class="prog-empty">Loading programmes...</div>
@@ -1049,6 +1049,65 @@ footer{background:var(--navy);padding:48px 24px 28px;}
     if (!s || !s.student || s.student.status !== 'active') return;
     if (Date.now() - s.savedAt > 30 * 24 * 60 * 60 * 1000) return; // expired
     var name = s.student.first_name || 'Student';
+
+    // ── PROGRAMMES SECTION: transform for logged-in student ──
+    var progLabel = document.getElementById('progLabel');
+    var progTitle = document.getElementById('progTitle');
+    var progSub = document.getElementById('progSub');
+    var progCta = document.getElementById('progCta');
+    var enrolledProg = s.courseId || null;
+
+    if (progLabel) progLabel.textContent = 'Your Learning Path';
+    if (progTitle) progTitle.textContent = 'You have chosen your path';
+    if (progSub) progSub.textContent = 'Your current programme is highlighted below. Want to study more? Speak to your coordinator about adding another course.';
+    if (progCta) progCta.style.display = 'none';
+
+    // Mark enrolled course card after progGrid renders
+    // Use MutationObserver to wait for cards to be injected by the main script
+    var progGrid = document.getElementById('progGrid');
+    if (progGrid && enrolledProg) {
+      var observer = new MutationObserver(function() {
+        var cards = progGrid.querySelectorAll('.prog-card');
+        cards.forEach(function(card) {
+          var titleEl = card.querySelector('.prog-name');
+          if (!titleEl) return;
+          // Check if this card matches the enrolled course
+          var isEnrolled = false;
+          try {
+            var raw2 = localStorage.getItem('cma_session');
+            var sess2 = JSON.parse(raw2);
+            isEnrolled = sess2 && sess2.student && titleEl.textContent === sess2.student.programme;
+          } catch(e2){}
+          if (isEnrolled) {
+            // Highlight enrolled card
+            card.style.border = '2px solid var(--ok,#16A34A)';
+            card.style.background = 'var(--ok-bg,#F0FDF4)';
+            // Add active badge
+            var band = card.querySelector('.prog-band');
+            if (band) band.style.background = 'var(--ok,#16A34A)';
+            var foot = card.querySelector('.prog-foot');
+            if (foot) {
+              foot.innerHTML = '<span style="display:inline-flex;align-items:center;gap:5px;background:var(--ok-light,#DCFCE7);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--ok,#16A34A);">&#10003; Currently Enrolled</span>'
+                + '<a class="prog-link" href="login.html">Continue &rarr;</a>';
+            }
+          } else {
+            // Dim other cards slightly, remove apply link
+            card.style.opacity = '0.7';
+            var foot2 = card.querySelector('.prog-foot');
+            if (foot2) {
+              var link = foot2.querySelector('.prog-link');
+              if (link) link.style.display = 'none';
+            }
+          }
+        });
+        observer.disconnect();
+      });
+      observer.observe(progGrid, {childList: true, subtree: true});
+    }
+
+    // ── HERO CARD: personalise portal title ──
+    var mkTitleBar = document.querySelector('.mk-title-bar');
+    if (mkTitleBar) mkTitleBar.textContent = name + "'s Portal";
 
     // ── NAV: swap buttons ──
     var navActs = document.querySelector('.nav-acts');
