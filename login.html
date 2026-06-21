@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iI0Y1RTZDMCIvPgogIDxyZWN0IHg9IjgiIHk9IjIyIiB3aWR0aD0iOSIgaGVpZ2h0PSIzIiByeD0iMS41IiBmaWxsPSIjMEQxQjNFIi8+CiAgPHJlY3QgeD0iOCIgeT0iMTYiIHdpZHRoPSI5IiBoZWlnaHQ9IjMiIHJ4PSIxLjUiIGZpbGw9IiMwRDFCM0UiLz4KICA8cmVjdCB4PSIxNSIgeT0iOCIgd2lkdGg9IjMiIGhlaWdodD0iMTciIHJ4PSIxLjUiIGZpbGw9IiMwRDFCM0UiLz4KICA8Y2lyY2xlIGN4PSIxMSIgY3k9IjIzLjUiIHI9IjMuNSIgZmlsbD0iI0M5QTg0QyIvPgogIDxjaXJjbGUgY3g9IjExIiBjeT0iMTcuNSIgcj0iMy41IiBmaWxsPSIjMEQxQjNFIi8+Cjwvc3ZnPg=="/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iI0M5QTg0QyIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iMi41IiBoZWlnaHQ9IjE2IiByeD0iMS4yIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iOSIgaGVpZ2h0PSIyLjUiIHJ4PSIxLjIiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMTAuNSIgY3k9IjIyIiByPSIzLjUiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg=="/>
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iI0M5QTg0QyIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iMi41IiBoZWlnaHQ9IjE2IiByeD0iMS4yIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iOSIgaGVpZ2h0PSIyLjUiIHJ4PSIxLjIiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMTAuNSIgY3k9IjIyIiByPSIzLjUiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg=="/>
 <title>Catholic Music Academy · Student Portal</title>
 
 
@@ -203,6 +204,7 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
   .course-header-top{flex-direction:column;} .content-area{padding:20px;}
 }
 @media(max-width:380px){.brand-sub{display:none;}.chip span{display:none;}.btn-logout{display:none;}}
+@media(min-width:601px){.brand-text-desktop{display:block!important;}}
 </style>
 </head>
 <body class="loading">
@@ -270,7 +272,7 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
   <text x="18" y="85" font-size="7" fill="#C9A84C">✦</text>
   <text x="96" y="85" font-size="7" fill="#C9A84C">✦</text>
 </svg>
-    <div style="min-width:0;overflow:hidden;">
+    <div style="min-width:0;overflow:hidden;display:none;" class="brand-text-desktop">
       <div style="font-family:DM Serif Display,serif;font-size:16px;color:var(--navy);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Catholic Music Academy</div>
       <div style="font-size:10px;color:var(--muted);letter-spacing:0.5px;margin-top:1px;">Excellence in Sacred Arts</div>
     </div>
@@ -1312,6 +1314,40 @@ function openMod(i) {
   } else {
     ds.style.display = 'none';
   }
+  // Check if already completed — skip timer and quiz if so
+  if (completedModules.includes(i)) {
+    // Module already passed — show reflection mode
+    showScreen('screen-module');
+    // Don't start timer or lock quiz — just show a reflection widget
+    var rt = document.getElementById('readTimer');
+    if (rt) rt.style.display = 'none';
+    var qc = document.getElementById('quizCard');
+    if (qc) qc.style.display = 'none';
+    document.getElementById('modActions').innerHTML = '<button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>';
+    document.getElementById('quizResult').innerHTML = '';
+    document.getElementById('quizResult').classList.remove('show');
+    // Show reflection widget at bottom
+    setTimeout(function(){
+      var existing = document.getElementById('reflectionWidget');
+      if (!existing) {
+        var widget = document.createElement('div');
+        widget.id = 'reflectionWidget';
+        widget.style.cssText = 'background:var(--ok-light);border:1.5px solid #86EFAC;border-radius:14px;padding:20px 22px;margin-top:16px;';
+        widget.innerHTML = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'
+          +'<span style="font-size:16px;">✅</span>'
+          +'<div style="font-size:13px;font-weight:700;color:var(--ok);">You have completed this module</div>'
+          +'</div>'
+          +'<div style="font-size:12px;color:var(--ok);margin-bottom:14px;">Want to share additional thoughts or insights from this module with your instructor?</div>'
+          +'<textarea id="reflectionText" placeholder="Write your additional thoughts, questions, or insights here..." style="width:100%;border:1.5px solid #86EFAC;border-radius:10px;padding:12px 14px;font-size:13px;font-family:DM Sans,sans-serif;outline:none;min-height:100px;resize:vertical;background:white;line-height:1.65;"></textarea>'
+          +'<button onclick="submitReflection('+i+')" class="btn btn-secondary" style="margin-top:10px;font-size:13px;border-color:var(--ok);color:var(--ok);">Send Reflection to Instructor</button>'
+          +'<div id="reflectionMsg" style="display:none;font-size:12px;color:var(--ok);margin-top:8px;"></div>';
+        var modActions = document.getElementById('modActions');
+        if (modActions) modActions.after(widget);
+      }
+    }, 300);
+    return;
+  }
+
   // reset quiz
   lockQuiz();
   document.getElementById('modActions').innerHTML = '';
@@ -1608,6 +1644,9 @@ function clearRememberMe() {
       loginBtn.textContent = 'Sign in →';
     }
   }
+  // Show biometric button if available
+  showBiometricButton();
+
   // Restore session if active — reload course + modules fresh from DB
   var session = loadSession();
   if (session && session.student && session.student.status === 'active') {
@@ -1643,7 +1682,171 @@ function clearRememberMe() {
   showScreen('screen-login');
 })();
 
+
+// ── BIOMETRIC AUTHENTICATION ──────────────────────────────────────────────────
+var BIOMETRIC_AVAILABLE = false;
+
+async function checkBiometricAvailable() {
+  try {
+    if (!window.PublicKeyCredential) return false;
+    var available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+    BIOMETRIC_AVAILABLE = available;
+    return available;
+  } catch(e) { return false; }
+}
+
+async function saveBiometricCredential(email, passHash) {
+  try {
+    if (!await checkBiometricAvailable()) return false;
+    var userId = new TextEncoder().encode(email);
+    var challenge = new Uint8Array(32);
+    crypto.getRandomValues(challenge);
+    var credential = await navigator.credentials.create({
+      publicKey: {
+        challenge: challenge,
+        rp: { name: 'Catholic Music Academy', id: location.hostname },
+        user: { id: userId, name: email, displayName: email },
+        pubKeyCredParams: [{ alg: -7, type: 'public-key' }],
+        authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required' },
+        timeout: 60000
+      }
+    });
+    // Store credential ID alongside passHash for biometric login
+    var credId = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
+    localStorage.setItem('cma_biometric', JSON.stringify({
+      email: email,
+      passHash: passHash,
+      credId: credId,
+      at: Date.now()
+    }));
+    return true;
+  } catch(e) {
+    console.log('Biometric save skipped:', e.message);
+    return false;
+  }
+}
+
+async function biometricLogin() {
+  try {
+    var stored = JSON.parse(localStorage.getItem('cma_biometric')||'null');
+    if (!stored || !stored.credId) return false;
+    if (Date.now() - stored.at > 30*24*60*60*1000) { localStorage.removeItem('cma_biometric'); return false; }
+    var credId = Uint8Array.from(atob(stored.credId), c => c.charCodeAt(0));
+    var challenge = new Uint8Array(32);
+    crypto.getRandomValues(challenge);
+    await navigator.credentials.get({
+      publicKey: {
+        challenge: challenge,
+        rpId: location.hostname,
+        allowCredentials: [{ id: credId, type: 'public-key' }],
+        userVerification: 'required',
+        timeout: 60000
+      }
+    });
+    // Biometric verified — login with stored hash
+    return stored;
+  } catch(e) {
+    console.log('Biometric login failed:', e.message);
+    return false;
+  }
+}
+
+function showBiometricButton() {
+  var stored = null;
+  try { stored = JSON.parse(localStorage.getItem('cma_biometric')||'null'); } catch(e){}
+  if (!stored) return;
+  var loginCard = document.querySelector('.login-card');
+  if (!loginCard) return;
+  var bioBtn = document.createElement('button');
+  bioBtn.className = 'btn btn-secondary';
+  bioBtn.style.cssText = 'width:100%;margin-bottom:14px;border-color:var(--navy);color:var(--navy);display:flex;align-items:center;justify-content:center;gap:8px;';
+  bioBtn.innerHTML = '&#128274; Sign in with Biometrics';
+  bioBtn.onclick = async function() {
+    bioBtn.disabled = true; bioBtn.textContent = 'Verifying...';
+    var result = await biometricLogin();
+    if (!result) {
+      bioBtn.disabled = false; bioBtn.innerHTML = '&#128274; Sign in with Biometrics';
+      return;
+    }
+    // Use stored credentials to login
+    document.getElementById('loginEmail').value = result.email;
+    // Trigger auto-login with stored hash
+    var res = await fetch(SUPA_URL+'/rest/v1/students?email=eq.'+encodeURIComponent(result.email)+'&select=*',
+      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    var rows = await res.json();
+    if (rows && rows.length && rows[0].password_hash === result.passHash && rows[0].status === 'active') {
+      var student = rows[0];
+      currentStudent = student;
+      var dbResult = await loadCourseAndModulesFromDB(student.programme);
+      CURRENT_COURSE = dbResult.course; MODULES = dbResult.modules;
+      await loadProgress().catch(function(){});
+      await loadEnrolments().catch(function(){});
+      saveSession(student, CURRENT_COURSE, completedModules);
+      document.getElementById('topbar').style.display = 'flex';
+      document.getElementById('topbarName').textContent = student.first_name;
+      document.getElementById('dashName').textContent = 'Welcome back, '+student.first_name+'.';
+      renderDashboard();
+      history.replaceState({screen:'dash'},'','/portal');
+      showScreen('screen-dash');
+      loadAnnouncements();
+    } else {
+      bioBtn.disabled=false; bioBtn.innerHTML='&#128274; Sign in with Biometrics';
+      showErr('Biometric session expired. Please sign in manually.');
+    }
+  };
+  var loginBtn = document.getElementById('loginBtn');
+  if (loginBtn) loginBtn.before(bioBtn);
+}
+
+// After successful login, offer biometric save
+async function offerBiometricSave(email, passHash) {
+  try {
+    if (!await checkBiometricAvailable()) return;
+    var existing = localStorage.getItem('cma_biometric');
+    if (existing) return; // already saved
+    var rememberCb = document.getElementById('rememberMe');
+    if (!rememberCb || !rememberCb.checked) return;
+    // Prompt after short delay so dashboard renders first
+    setTimeout(async function() {
+      if (confirm('Would you like to enable biometric sign-in (Face ID / Fingerprint) for future logins?')) {
+        var saved = await saveBiometricCredential(email, passHash);
+        if (saved) {
+          alert('Biometric sign-in enabled. Next time, tap the biometric button to sign in instantly.');
+        }
+      }
+    }, 1500);
+  } catch(e){}
+}
+
 // ── STUDENT FEEDBACK ─────────────────────────────────────────────────────────
+async function submitReflection(modIdx) {
+  var text = (document.getElementById('reflectionText')||{}).value||'';
+  var msgEl = document.getElementById('reflectionMsg');
+  if (!text.trim()) { if(msgEl){msgEl.textContent='Please write something before sending.';msgEl.style.display='block';} return; }
+  try {
+    await fetch(SUPA_URL+'/rest/v1/student_feedback', {
+      method:'POST',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({
+        student_id: currentStudent ? currentStudent.id : null,
+        module_index: modIdx,
+        type: 'reflection',
+        message: text.trim(),
+        module_completed: true,
+        submitted_at: new Date().toISOString(),
+        resolved: false
+      })
+    });
+    if(msgEl){msgEl.textContent='✓ Reflection sent to your instructor.';msgEl.style.color='var(--ok)';msgEl.style.display='block';}
+    var btn = document.querySelector('#reflectionWidget button');
+    if(btn){btn.disabled=true;btn.textContent='Sent ✓';}
+    var ta = document.getElementById('reflectionText');
+    if(ta) ta.value='';
+  } catch(e) {
+    if(msgEl){msgEl.textContent='Error: '+e.message;msgEl.style.color='var(--danger)';msgEl.style.display='block';}
+  }
+}
+
 function showFeedbackModal() {
   var existing = document.getElementById('feedbackModal');
   if (existing) existing.remove();
