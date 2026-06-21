@@ -6,6 +6,8 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iI0M5QTg0QyIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iMi41IiBoZWlnaHQ9IjE2IiByeD0iMS4yIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iOSIgaGVpZ2h0PSIyLjUiIHJ4PSIxLjIiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMTAuNSIgY3k9IjIyIiByPSIzLjUiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg=="/>
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iI0M5QTg0QyIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iMi41IiBoZWlnaHQ9IjE2IiByeD0iMS4yIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iOSIgaGVpZ2h0PSIyLjUiIHJ4PSIxLjIiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMTAuNSIgY3k9IjIyIiByPSIzLjUiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg=="/>
 <title>Catholic Music Academy · Student Portal</title>
+
+
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -25,6 +27,17 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
 .screen{display:none;animation:fadeUp 0.28s ease both;}
 .screen.active{display:block;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;border-bottom:1px solid var(--border);background:var(--white);position:sticky;top:0;z-index:200;gap:16px;}
+.brand{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;min-width:0;flex:1;}
+.brand-icon{width:36px;height:36px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--white);flex-shrink:0;}
+.brand-text{min-width:0;overflow:hidden;}
+.brand-name{font-family:DM Serif Display,serif;font-size:17px;color:var(--blue);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.brand-sub{font-size:10px;color:var(--muted);letter-spacing:0.5px;margin-top:1px;}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--blue-light);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--blue);font-weight:500;white-space:nowrap;}
+.chip-dot{width:7px;height:7px;border-radius:50%;background:var(--ok);flex-shrink:0;}
+.btn-logout{background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;color:var(--muted);cursor:pointer;font-family:DM Sans,sans-serif;transition:all 0.15s;}
+.btn-logout:hover{border-color:var(--danger);color:var(--danger);}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;font-family:DM Sans,sans-serif;font-weight:600;cursor:pointer;transition:all 0.18s;text-decoration:none;}
 .btn-primary{background:var(--navy);color:var(--white);padding:13px 28px;font-size:14px;}
 .btn-primary:hover{background:var(--navy-mid);}
@@ -116,19 +129,24 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
 .media-section-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
 .video-wrap{background:#000;border-radius:12px;overflow:hidden;position:relative;padding-top:42%;max-width:640px;}
 .video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;}
+.video-placeholder{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--surface);border:1.5px dashed var(--border);border-radius:12px;color:var(--dim);gap:10px;font-size:13px;}
 .audio-player{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:16px 20px;}
 .audio-native{width:100%;height:36px;border-radius:6px;outline:none;margin-top:8px;}
+.audio-placeholder{font-size:13px;color:var(--dim);text-align:center;padding:12px 0;font-style:italic;}
 .downloads-grid{display:flex;flex-direction:column;gap:8px;}
 .download-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;background:var(--white);cursor:pointer;transition:all 0.15s;text-decoration:none;}
 .download-item:hover{border-color:var(--blue);background:var(--blue-pale);}
 .dl-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.dl-icon.pdf{background:#FEE2E2;}.dl-icon.music{background:var(--amber-light);}
-.dl-info{flex:1;}.dl-name{font-size:13px;font-weight:600;color:var(--text);}.dl-size{font-size:11px;color:var(--muted);}
+.dl-icon.pdf{background:#FEE2E2;} .dl-icon.music{background:var(--amber-light);}
+.dl-info{flex:1;} .dl-name{font-size:13px;font-weight:600;color:var(--text);} .dl-size{font-size:11px;color:var(--muted);}
 .dl-arrow{font-size:16px;color:var(--blue);}
+.download-placeholder{font-size:13px;color:var(--dim);text-align:center;padding:12px 0;font-style:italic;border:1.5px dashed var(--border);border-radius:10px;}
 .content-area{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:32px;margin-bottom:24px;line-height:1.85;font-size:15px;color:#334155;}
-.content-area h2{font-family:DM Serif Display,serif;font-size:22px;color:var(--text);margin:24px 0 10px;font-weight:400;}
-.content-area h2:first-child{margin-top:0;}
+.content-area h3{font-family:DM Serif Display,serif;font-size:22px;color:var(--text);margin:24px 0 10px;font-weight:400;}
+.content-area h3:first-child{margin-top:0;}
 .content-area p{margin-bottom:14px;}
+.content-area strong{color:inherit;font-weight:400;}
+.content-area em{font-style:normal;}
 .quiz-card{border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:24px;}
 .quiz-card-header{background:var(--navy);padding:20px 24px;color:var(--white);}
 .qch-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
@@ -140,7 +158,7 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
 .quiz-locked-icon{font-size:30px;margin-bottom:12px;}
 .quiz-locked-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;}
 .quiz-locked-text{font-size:13px;color:var(--muted);line-height:1.65;max-width:380px;}
-.q-item{margin-bottom:22px;}.q-item:last-child{margin-bottom:0;}
+.q-item{margin-bottom:22px;} .q-item:last-child{margin-bottom:0;}
 .q-text{font-size:14px;font-weight:500;color:var(--text);margin-bottom:12px;line-height:1.5;}
 .q-options{display:flex;flex-direction:column;gap:8px;}
 .q-opt{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.15s;font-size:14px;color:var(--muted);background:var(--white);min-height:52px;}
@@ -160,7 +178,7 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
 .qr-score{font-family:DM Serif Display,serif;font-size:52px;color:var(--blue);line-height:1;}
 .qr-label{font-size:13px;color:var(--muted);margin-top:4px;}
 .qr-msg{font-size:14px;margin-top:12px;font-weight:500;}
-.qr-msg.pass{color:var(--ok);}.qr-msg.fail{color:var(--danger);}
+.qr-msg.pass{color:var(--ok);} .qr-msg.fail{color:var(--danger);}
 .mod-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:40px;}
 .complete-wrap{max-width:560px;margin:0 auto;padding:64px 32px;text-align:center;}
 .complete-icon{font-size:64px;margin-bottom:24px;}
@@ -171,53 +189,96 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
 .complete-card-item{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text);padding:8px 0;border-bottom:1px solid var(--border);}
 .complete-card-item:last-child{border-bottom:none;}
 .other-course-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:20px;position:relative;opacity:0.75;}
+.other-course-lock{position:absolute;top:16px;right:16px;font-size:14px;}
 .other-course-num{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
 .other-course-title{font-family:DM Serif Display,serif;font-size:17px;color:var(--text);margin-bottom:6px;line-height:1.3;padding-right:24px;}
+.other-course-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:12px;}
 .other-course-tag{display:inline-flex;align-items:center;gap:4px;background:var(--blue-light);border-radius:6px;padding:3px 10px;font-size:11px;color:var(--blue);font-weight:500;}
 @media(min-width:768px){.login-left{display:flex;}}
 @media(max-width:600px){
+  .topbar{padding:0 14px;min-height:56px;}
+  .brand-name{font-size:13px;} .brand-icon{width:30px;height:30px;font-size:15px;}
+  .chip{padding:5px 10px;font-size:11px;} .btn-logout{padding:5px 10px;font-size:11px;}
   .dash-header,.dash-body,.course-header,.modules-wrap,.module-page,.complete-wrap{padding-left:18px;padding-right:18px;}
-  .course-h1,.module-h1{font-size:26px;}.dash-name{font-size:28px;}
-  .course-header-top{flex-direction:column;}.content-area{padding:20px;}
+  .course-h1,.module-h1{font-size:26px;} .dash-name{font-size:28px;}
+  .course-header-top{flex-direction:column;} .content-area{padding:20px;}
 }
+@media(max-width:380px){.brand-sub{display:none;}.chip span{display:none;}.btn-logout{display:none;}}
+@media(min-width:601px){.brand-text-desktop{display:block!important;}}
 </style>
 </head>
 <body class="loading">
 
-<div id="topbar" style="display:none;background:var(--white);border-bottom:1px solid var(--border);padding:0 28px;height:64px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;gap:16px;">
+<div class="topbar" id="topbar" style="background:var(--white);border-bottom:1px solid var(--border);padding:0 28px;height:64px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;gap:16px;display:none;">
   <a href="/home" style="display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;min-width:0;flex:1;" title="Go to Home">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="42" height="42" style="flex-shrink:0;" aria-label="Catholic Music Academy">
-      <circle cx="60" cy="60" r="58" fill="white" stroke="#1A2E6C" stroke-width="3"/>
-      <circle cx="60" cy="60" r="52" fill="white" stroke="#1A2E6C" stroke-width="1"/>
-      <path id="topArc" d="M 14,60 A 46,46 0 1,1 106,60" fill="none"/>
-      <path id="botArc" d="M 18,62 A 42,42 0 0,0 102,62" fill="none"/>
-      <text font-family="Georgia,serif" font-size="8.5" font-weight="700" fill="#1A2E6C" letter-spacing="2.8"><textPath href="#topArc" startOffset="8%">MUSIC ACADEMY</textPath></text>
-      <text font-family="Georgia,serif" font-size="7.5" font-weight="700" fill="#1A2E6C" letter-spacing="1.8"><textPath href="#botArc" startOffset="5%">CATHOLIC DIOCESE OF WARRI</textPath></text>
-      <circle cx="60" cy="52" r="32" fill="#f8f6f0" stroke="#1A2E6C" stroke-width="1.2"/>
-      <g opacity="0.35" stroke="#1A2E6C" stroke-width="0.7"><line x1="36" y1="36" x2="84" y2="36"/><line x1="36" y1="39" x2="84" y2="39"/><line x1="36" y1="42" x2="84" y2="42"/><line x1="36" y1="45" x2="84" y2="45"/><line x1="36" y1="48" x2="84" y2="48"/></g>
-      <text x="36" y="52" font-family="Georgia,serif" font-size="22" fill="#1A2E6C" opacity="0.8">𝄞</text>
-      <ellipse cx="68" cy="34" rx="6" ry="7" fill="#f5d5b0" stroke="#c4956a" stroke-width="0.5"/>
-      <path d="M62 32 Q64 26 68 27 Q72 26 74 32" fill="#8B6914" stroke="none"/>
-      <path d="M60 41 Q62 38 68 37 Q74 38 76 41 L78 62 L58 62 Z" fill="#1A2E6C"/>
-      <path d="M63 41 L62 62 M73 41 L74 62" stroke="#C9A84C" stroke-width="0.6" opacity="0.5"/>
-      <path d="M58 48 Q56 50 57 54 Q58 52 60 51" fill="#f5d5b0" stroke="#c4956a" stroke-width="0.3"/>
-      <path d="M78 48 Q80 50 79 54 Q78 52 76 51" fill="#f5d5b0" stroke="#c4956a" stroke-width="0.3"/>
-      <rect x="72" y="44" width="2" height="10" rx="1" fill="#C9A84C" opacity="0.7"/>
-      <rect x="75" y="46" width="2" height="8" rx="1" fill="#C9A84C" opacity="0.7"/>
-      <rect x="78" y="48" width="2" height="6" rx="1" fill="#C9A84C" opacity="0.7"/>
-      <path d="M4 58 L14 52 L14 68 Z" fill="#1A2E6C"/><path d="M116 58 L106 52 L106 68 Z" fill="#1A2E6C"/>
-      <path d="M2 60 L12 58 L14 60 L12 62 Z" fill="#C9A84C"/><path d="M118 60 L108 58 L106 60 L108 62 Z" fill="#C9A84C"/>
-      <path d="M24 76 Q60 85 96 76 L96 88 Q60 97 24 88 Z" fill="#1A2E6C"/>
-      <text x="60" y="85" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" font-style="italic" fill="#C9A84C" letter-spacing="0.5">Excellence In Sacred Arts</text>
-      <text x="18" y="85" font-size="7" fill="#C9A84C">✦</text><text x="96" y="85" font-size="7" fill="#C9A84C">✦</text>
-    </svg>
+  <!-- Outer circle ring -->
+  <circle cx="60" cy="60" r="58" fill="white" stroke="#1A2E6C" stroke-width="3"/>
+  <circle cx="60" cy="60" r="52" fill="white" stroke="#1A2E6C" stroke-width="1"/>
+
+  <!-- Outer ring text paths -->
+  <path id="topArc" d="M 14,60 A 46,46 0 1,1 106,60" fill="none"/>
+  <path id="botArc" d="M 18,62 A 42,42 0 0,0 102,62" fill="none"/>
+  <text font-family="Georgia,serif" font-size="8.5" font-weight="700" fill="#1A2E6C" letter-spacing="2.8">
+    <textPath href="#topArc" startOffset="8%">MUSIC ACADEMY</textPath>
+  </text>
+  <text font-family="Georgia,serif" font-size="7.5" font-weight="700" fill="#1A2E6C" letter-spacing="1.8">
+    <textPath href="#botArc" startOffset="5%">CATHOLIC DIOCESE OF WARRI</textPath>
+  </text>
+
+  <!-- Inner circle -->
+  <circle cx="60" cy="52" r="32" fill="#f8f6f0" stroke="#1A2E6C" stroke-width="1.2"/>
+
+  <!-- Musical staff lines in upper portion -->
+  <g opacity="0.35" stroke="#1A2E6C" stroke-width="0.7">
+    <line x1="36" y1="36" x2="84" y2="36"/>
+    <line x1="36" y1="39" x2="84" y2="39"/>
+    <line x1="36" y1="42" x2="84" y2="42"/>
+    <line x1="36" y1="45" x2="84" y2="45"/>
+    <line x1="36" y1="48" x2="84" y2="48"/>
+  </g>
+
+  <!-- Treble clef -->
+  <text x="36" y="52" font-family="Georgia,serif" font-size="22" fill="#1A2E6C" opacity="0.8">𝄞</text>
+
+  <!-- Central figure: stylised Saint Cecilia (simplified woman with robe) -->
+  <!-- Head -->
+  <ellipse cx="68" cy="34" rx="6" ry="7" fill="#f5d5b0" stroke="#c4956a" stroke-width="0.5"/>
+  <!-- Hair -->
+  <path d="M62 32 Q64 26 68 27 Q72 26 74 32" fill="#8B6914" stroke="none"/>
+  <!-- Robe/body -->
+  <path d="M60 41 Q62 38 68 37 Q74 38 76 41 L78 62 L58 62 Z" fill="#1A2E6C"/>
+  <!-- Robe folds -->
+  <path d="M63 41 L62 62 M73 41 L74 62" stroke="#C9A84C" stroke-width="0.6" opacity="0.5"/>
+  <!-- Hands with instrument suggestion -->
+  <path d="M58 48 Q56 50 57 54 Q58 52 60 51" fill="#f5d5b0" stroke="#c4956a" stroke-width="0.3"/>
+  <path d="M78 48 Q80 50 79 54 Q78 52 76 51" fill="#f5d5b0" stroke="#c4956a" stroke-width="0.3"/>
+  <!-- Simple pipe organ suggestion -->
+  <rect x="72" y="44" width="2" height="10" rx="1" fill="#C9A84C" opacity="0.7"/>
+  <rect x="75" y="46" width="2" height="8" rx="1" fill="#C9A84C" opacity="0.7"/>
+  <rect x="78" y="48" width="2" height="6" rx="1" fill="#C9A84C" opacity="0.7"/>
+
+  <!-- Chevron/wing decorations on sides -->
+  <path d="M4 58 L14 52 L14 68 Z" fill="#1A2E6C"/>
+  <path d="M116 58 L106 52 L106 68 Z" fill="#1A2E6C"/>
+  <path d="M2 60 L12 58 L14 60 L12 62 Z" fill="#C9A84C"/>
+  <path d="M118 60 L108 58 L106 60 L108 62 Z" fill="#C9A84C"/>
+
+  <!-- Bottom banner -->
+  <path d="M24 76 Q60 85 96 76 L96 88 Q60 97 24 88 Z" fill="#1A2E6C"/>
+  <text x="60" y="85" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" font-style="italic" fill="#C9A84C" letter-spacing="0.5">Excellence In Sacred Arts</text>
+
+  <!-- Gold star decorations on banner sides -->
+  <text x="18" y="85" font-size="7" fill="#C9A84C">✦</text>
+  <text x="96" y="85" font-size="7" fill="#C9A84C">✦</text>
+</svg>
     <div style="min-width:0;overflow:hidden;display:none;" class="brand-text-desktop">
       <div style="font-family:DM Serif Display,serif;font-size:16px;color:var(--navy);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Catholic Music Academy</div>
       <div style="font-size:10px;color:var(--muted);letter-spacing:0.5px;margin-top:1px;">Excellence in Sacred Arts</div>
     </div>
   </a>
   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-    <a href="/home" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--navy)';this.style.color='var(--navy)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">⌂ Home</a>
+    <a href="/home" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--navy)';this.style.color='var(--navy)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">&#8962; Home</a>
     <div style="display:inline-flex;align-items:center;gap:6px;background:var(--navy-light);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--navy);font-weight:500;white-space:nowrap;">
       <div style="width:7px;height:7px;border-radius:50%;background:var(--ok);flex-shrink:0;"></div>
       <span id="topbarName">Student</span>
@@ -238,8 +299,68 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
     </div>
     <div class="login-right">
       <div class="login-card">
-        <a href="/home" class="login-logo" style="text-decoration:none;">
-          <div class="login-logo-icon">🎵</div>
+        <a href="/home" class="login-logo" style="text-decoration:none;display:flex;align-items:center;gap:10px;margin-bottom:36px;">
+          <div class="login-logo-icon" style="display:flex;align-items:center;justify-content:center;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="42" height="42" style="flex-shrink:0;" aria-label="Catholic Music Academy">
+  <!-- Outer circle ring -->
+  <circle cx="60" cy="60" r="58" fill="white" stroke="#1A2E6C" stroke-width="3"/>
+  <circle cx="60" cy="60" r="52" fill="white" stroke="#1A2E6C" stroke-width="1"/>
+
+  <!-- Outer ring text paths -->
+  <path id="topArc" d="M 14,60 A 46,46 0 1,1 106,60" fill="none"/>
+  <path id="botArc" d="M 18,62 A 42,42 0 0,0 102,62" fill="none"/>
+  <text font-family="Georgia,serif" font-size="8.5" font-weight="700" fill="#1A2E6C" letter-spacing="2.8">
+    <textPath href="#topArc" startOffset="8%">MUSIC ACADEMY</textPath>
+  </text>
+  <text font-family="Georgia,serif" font-size="7.5" font-weight="700" fill="#1A2E6C" letter-spacing="1.8">
+    <textPath href="#botArc" startOffset="5%">CATHOLIC DIOCESE OF WARRI</textPath>
+  </text>
+
+  <!-- Inner circle -->
+  <circle cx="60" cy="52" r="32" fill="#f8f6f0" stroke="#1A2E6C" stroke-width="1.2"/>
+
+  <!-- Musical staff lines in upper portion -->
+  <g opacity="0.35" stroke="#1A2E6C" stroke-width="0.7">
+    <line x1="36" y1="36" x2="84" y2="36"/>
+    <line x1="36" y1="39" x2="84" y2="39"/>
+    <line x1="36" y1="42" x2="84" y2="42"/>
+    <line x1="36" y1="45" x2="84" y2="45"/>
+    <line x1="36" y1="48" x2="84" y2="48"/>
+  </g>
+
+  <!-- Treble clef -->
+  <text x="36" y="52" font-family="Georgia,serif" font-size="22" fill="#1A2E6C" opacity="0.8">𝄞</text>
+
+  <!-- Central figure: stylised Saint Cecilia (simplified woman with robe) -->
+  <!-- Head -->
+  <ellipse cx="68" cy="34" rx="6" ry="7" fill="#f5d5b0" stroke="#c4956a" stroke-width="0.5"/>
+  <!-- Hair -->
+  <path d="M62 32 Q64 26 68 27 Q72 26 74 32" fill="#8B6914" stroke="none"/>
+  <!-- Robe/body -->
+  <path d="M60 41 Q62 38 68 37 Q74 38 76 41 L78 62 L58 62 Z" fill="#1A2E6C"/>
+  <!-- Robe folds -->
+  <path d="M63 41 L62 62 M73 41 L74 62" stroke="#C9A84C" stroke-width="0.6" opacity="0.5"/>
+  <!-- Hands with instrument suggestion -->
+  <path d="M58 48 Q56 50 57 54 Q58 52 60 51" fill="#f5d5b0" stroke="#c4956a" stroke-width="0.3"/>
+  <path d="M78 48 Q80 50 79 54 Q78 52 76 51" fill="#f5d5b0" stroke="#c4956a" stroke-width="0.3"/>
+  <!-- Simple pipe organ suggestion -->
+  <rect x="72" y="44" width="2" height="10" rx="1" fill="#C9A84C" opacity="0.7"/>
+  <rect x="75" y="46" width="2" height="8" rx="1" fill="#C9A84C" opacity="0.7"/>
+  <rect x="78" y="48" width="2" height="6" rx="1" fill="#C9A84C" opacity="0.7"/>
+
+  <!-- Chevron/wing decorations on sides -->
+  <path d="M4 58 L14 52 L14 68 Z" fill="#1A2E6C"/>
+  <path d="M116 58 L106 52 L106 68 Z" fill="#1A2E6C"/>
+  <path d="M2 60 L12 58 L14 60 L12 62 Z" fill="#C9A84C"/>
+  <path d="M118 60 L108 58 L106 60 L108 62 Z" fill="#C9A84C"/>
+
+  <!-- Bottom banner -->
+  <path d="M24 76 Q60 85 96 76 L96 88 Q60 97 24 88 Z" fill="#1A2E6C"/>
+  <text x="60" y="85" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" font-style="italic" fill="#C9A84C" letter-spacing="0.5">Excellence In Sacred Arts</text>
+
+  <!-- Gold star decorations on banner sides -->
+  <text x="18" y="85" font-size="7" fill="#C9A84C">✦</text>
+  <text x="96" y="85" font-size="7" fill="#C9A84C">✦</text>
+</svg></div>
           <div>
             <div class="login-logo-name">Catholic Music Academy</div>
             <div class="login-logo-sub">Online Learning Platform</div>
@@ -279,28 +400,23 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
   <div class="dash-header">
     <div class="dash-eyebrow">Student Dashboard</div>
     <div class="dash-name" id="dashName">Welcome back</div>
-    <div class="dash-sub" id="dashSub">Your enrolled course is ready. Continue where you left off.</div>
+    <div class="dash-sub">Your enrolled course is ready. Continue where you left off.</div>
   </div>
   <div class="dash-body">
     <div id="dashAnnouncements" style="display:none;margin-bottom:24px;"></div>
-    <div id="multiCourseSection" style="display:none;">
-      <div class="dash-section-label">Your Enrolled Courses</div>
-      <div id="multiCourseGrid" style="margin-bottom:24px;"></div>
-    </div>
-    <div id="singleCourseSection">
-      <div class="dash-section-label">Your Enrolled Course</div>
-      <div class="course-card" onclick="goCourse()">
-        <div class="course-card-band"></div>
-        <div class="course-card-body">
-          <div class="course-status-pill">✓ Enrolled &amp; Active</div>
-          <div class="course-card-title" id="enrolledCourseTitle">Loading...</div>
-          <div class="course-card-meta" id="enrolledCourseMeta"></div>
+    <div class="dash-section-label">Your Enrolled Course</div>
+    <div class="course-card" onclick="goCourse()">
+      <div class="course-card-band"></div>
+      <div class="course-card-body">
+        <div class="course-status-pill">✓ Enrolled &amp; Active</div>
+        <div class="course-card-num" id="enrolledCourseNum">Course 01 of 6</div>
+        <div class="course-card-title" id="enrolledCourseTitle">Theory of Ancient Music</div>
+        <div class="course-card-desc" id="enrolledCourseDesc">Trace the origins of music from ancient civilisations through medieval sacred traditions to the emergence of modern harmony and notation.</div>
+        <div class="course-card-meta" id="enrolledCourseMeta">
+          <div>📖 3 Modules</div><div>⏱ ~4 hours</div><div>✍ Assessment per module</div><div>🎓 Final exam (in-person)</div>
         </div>
-        <div class="course-card-cta"><div class="course-card-cta-text">Continue Course →</div></div>
       </div>
-    </div>
-    <div style="margin-top:16px;" id="addProgBtnWrap">
-      <button class="btn btn-secondary" style="font-size:13px;" onclick="showAddCourseModal()">+ Add Another Programme</button>
+      <div class="course-card-cta"><div class="course-card-cta-text">Continue Course →</div></div>
     </div>
     <div class="dash-section-label" style="margin-top:40px;">Other Courses Available</div>
     <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Complete your current course and speak to your coordinator to enrol in any of the following programmes.</p>
@@ -308,20 +424,20 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
   </div>
 </div>
 
-<!-- COURSE -->
+<!-- COURSE, MODULE, COMPLETE screens — identical to before, included below -->
 <div class="screen" id="screen-course">
   <div class="course-header">
-    <div class="breadcrumb"><a onclick="goDash()">Dashboard</a><span class="breadcrumb-sep">›</span><span id="courseTitle2">Course</span></div>
+    <div class="breadcrumb"><a onclick="goDash()">Dashboard</a><span class="breadcrumb-sep">›</span><span id="courseTitle2">Theory of Ancient Music</span></div>
     <div class="course-header-top">
       <div>
-        <div class="course-tag">♪ Music Programme</div>
-        <div class="course-h1" id="courseH1">Course</div>
+        <div class="course-tag">♪ Music Theory</div>
+        <div class="course-h1" id="courseH1">Theory of Ancient Music</div>
         <div class="course-desc">Work through each module in order. Read the content carefully, then complete the assessment. Meet the required pass mark to advance.</div>
       </div>
       <div class="course-progress-card">
         <div class="cpc-label">Your Progress</div>
         <div class="cpc-bar-bg"><div class="cpc-bar-fill" id="progressFill" style="width:0%"></div></div>
-        <div class="cpc-text" id="progressText">0 of 0 complete</div>
+        <div class="cpc-text" id="progressText">0 of 3 complete</div>
       </div>
     </div>
   </div>
@@ -331,7 +447,6 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
   </div>
 </div>
 
-<!-- MODULE -->
 <div class="screen" id="screen-module">
   <div class="module-page">
     <div class="breadcrumb" style="margin-bottom:20px;">
@@ -343,14 +458,14 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
     <div class="module-h1" id="modTitle"></div>
     <div class="read-timer" id="readTimer">
       <div class="rt-top"><span>⏱</span><span class="rt-msg" id="timerMsg">Reading timer active</span></div>
-      <div class="rt-sub" id="timerSub">Read through the full lesson. The assessment unlocks when you have read the content and scrolled to the end.</div>
+      <div class="rt-sub" id="timerSub">Read through the full lesson. The assessment unlocks when you've read the content and scrolled to the end.</div>
       <div class="rt-bar-bg"><div class="rt-bar" id="timerBar"></div></div>
     </div>
-    <div class="media-section" id="videoSection" style="display:none;">
+    <div class="media-section" id="videoSection">
       <div class="media-section-title">🎬 Video Lesson</div>
       <div class="video-wrap" id="videoWrap"></div>
     </div>
-    <div class="media-section" id="audioSection" style="display:none;">
+    <div class="media-section" id="audioSection">
       <div class="media-section-title">🎵 Audio Examples</div>
       <div class="audio-player" id="audioPlayer"></div>
     </div>
@@ -358,7 +473,7 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
       <div class="media-section-title">📖 Lesson Notes</div>
       <div class="content-area" id="modContent"></div>
     </div>
-    <div class="media-section" id="downloadsSection" style="display:none;">
+    <div class="media-section" id="downloadsSection">
       <div class="media-section-title">📥 Downloads</div>
       <div class="downloads-grid" id="downloadsGrid"></div>
     </div>
@@ -382,19 +497,18 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
   </div>
 </div>
 
-<!-- COMPLETE -->
 <div class="screen" id="screen-complete">
   <div class="complete-wrap">
     <div class="complete-icon">🎓</div>
-    <div class="complete-title" id="completeTitle">Course Complete</div>
-    <div class="complete-sub" id="completeSub">You have successfully completed all modules. Your instructor will be in touch with details for the final examination.</div>
+    <div class="complete-title">Course Complete</div>
+    <div class="complete-sub">You have successfully completed all modules. Your instructor will be in touch with details for the final examination.</div>
     <div class="complete-card">
       <div class="complete-card-title">What happens next</div>
       <div class="complete-card-item"><div>📋</div>Your completion is recorded</div>
       <div class="complete-card-item"><div>📞</div>Your instructor will contact you with exam details</div>
       <div class="complete-card-item"><div>🎓</div>Certificate issued upon passing the final examination</div>
     </div>
-    <button class="btn btn-amber" onclick="generateCertificate()" style="margin-right:10px;">📄 Download Statement</button>
+    <button class="btn btn-amber" onclick="generateCertificate()" style="margin-right:10px;">🎓 Download Certificate</button>
     <button class="btn btn-secondary" onclick="goDash()">← Back to Dashboard</button>
   </div>
 </div>
@@ -404,14 +518,24 @@ const SUPA_URL = 'https://ltqwofagofmvufvqsuyj.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0cXdvZmFnb2ZtdnVmdnFzdXlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjgyMTgsImV4cCI6MjA5NzMwNDIxOH0.7EkluJspwopQxxQmL7AuYxx4XHgchpYR7tsajyoXHaI';
 
 async function sbGet(table, query) {
-  var res = await fetch(SUPA_URL+'/rest/v1/'+table+'?'+query,
-    {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+  const res = await fetch(SUPA_URL+'/rest/v1/'+table+'?'+query, {
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+  });
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 }
 async function sbPost(table, body) {
-  var res = await fetch(SUPA_URL+'/rest/v1/'+table, {
+  const res = await fetch(SUPA_URL+'/rest/v1/'+table, {
     method:'POST',
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=representation'},
+    body:JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+async function sbPatch(table, query, body) {
+  const res = await fetch(SUPA_URL+'/rest/v1/'+table+'?'+query, {
+    method:'PATCH',
     headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=representation'},
     body:JSON.stringify(body)
   });
@@ -420,8 +544,8 @@ async function sbPost(table, body) {
 }
 
 async function hashPassword(password) {
-  var data = new TextEncoder().encode(password + 'cma_salt_2026');
-  var buf = await crypto.subtle.digest('SHA-256', data);
+  const data = new TextEncoder().encode(password + 'cma_salt_2026');
+  const buf = await crypto.subtle.digest('SHA-256', data);
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
@@ -430,12 +554,10 @@ function togglePass() {
   el.type = el.type==='password'?'text':'password';
 }
 
-// ── STATE ────────────────────────────────────────────────────────────────────
 var currentStudent = null;
 var completedModules = [];
 var currentMod = 0;
 var shownQuestions = [];
-var writtenAnswers = {};
 var answers = {};
 var submitted = false;
 var timerDone = false;
@@ -443,25 +565,1040 @@ var scrollDone = false;
 var timerInterval = null;
 var SHOW_COUNT = 4;
 var READ_TIME = 90;
-var PASS_MARK = 100;
-var MAX_ATTEMPTS = 0;
-var currentAttemptCount = 0;
+var PASS_MARK = 100; // overridden per module
+var MAX_ATTEMPTS = 0; // overridden per module; 0 = unlimited
+var currentAttemptCount = 0; // attempts on current module this session
+
+// ── COURSE STATE (DB-driven, no hardcoding) ─────────────────────────────────
 var MODULES = [];
 var CURRENT_COURSE = null;
-var ALL_DB_COURSES = [];
-var ALL_ENROLMENTS = [];
+var ALL_DB_COURSES = []; // populated on login — used for "other courses" panel
 
-// ── FIX 1: saveSession — includes progressPct so homepage reads it ────────────
+// ── LOAD COURSE + MODULES FROM SUPABASE ──────────────────────────────────────
+
+// Single source of truth. Fetches ALL published courses from course_content,
+// populates ALL_DB_COURSES for the "other courses" panel,
+// and returns the course + modules matching the student's enrolled programme.
+async function loadCourseAndModulesFromDB(programmeStr) {
+  var result = { course: null, modules: [] };
+  try {
+    var res = await fetch(
+      SUPA_URL + '/rest/v1/course_content?order=course_order.asc,module_index.asc',
+      { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
+    );
+    if (!res.ok) throw new Error('fetch failed');
+    var rows = await res.json();
+    if (!rows.length) throw new Error('no published content');
+
+    var prog = (programmeStr || '').trim();
+
+    // Group all rows by course_id — build courseMap
+    var courseMap = {};
+    var courseOrder = [];
+    rows.forEach(function(r) {
+      if (!courseMap[r.course_id]) {
+        courseMap[r.course_id] = {
+          id: r.course_id,
+          title: r.course_title || '',
+          color: r.course_color || '#0D1B3E',
+          order: r.course_order || 0,
+          rows: []
+        };
+        courseOrder.push(r.course_id);
+      }
+      courseMap[r.course_id].rows.push(r);
+    });
+
+    // Populate ALL_DB_COURSES for renderOtherCourses
+    ALL_DB_COURSES = courseOrder.map(function(id) { return courseMap[id]; });
+
+    // Find the student's enrolled course — exact title match first, then partial
+    var matchedGroup = null;
+    for (var i = 0; i < courseOrder.length; i++) {
+      if (courseMap[courseOrder[i]].title.trim() === prog) {
+        matchedGroup = courseMap[courseOrder[i]]; break;
+      }
+    }
+    if (!matchedGroup) {
+      for (var j = 0; j < courseOrder.length; j++) {
+        var t = courseMap[courseOrder[j]].title.toLowerCase();
+        var p = prog.toLowerCase();
+        if (p.indexOf(t) !== -1 || t.indexOf(p) !== -1) {
+          matchedGroup = courseMap[courseOrder[j]]; break;
+        }
+      }
+    }
+    if (!matchedGroup) {
+      // Last resort: if only one course in DB, just use it
+      // (handles students approved before new apply.html was deployed)
+      if (courseOrder.length === 1) {
+        matchedGroup = courseMap[courseOrder[0]];
+      } else {
+        // Multiple courses, can't guess — show all modules from first course
+        matchedGroup = courseMap[courseOrder[0]];
+      }
+    }
+
+    // Only show published modules to students; use all rows to identify the course
+    var publishedRows = matchedGroup.rows.filter(function(r) { return r.published; });
+    // If admin hasn't published any yet, show all (better than blank — useful during setup)
+    var moduleRows = publishedRows.length ? publishedRows : matchedGroup.rows;
+
+    result.course = {
+      id: matchedGroup.id,
+      title: matchedGroup.title,
+      code: matchedGroup.title,
+      moduleCount: moduleRows.length,
+      duration: '~' + (moduleRows.length * 60) + ' min'
+    };
+
+    result.modules = moduleRows.map(function(r) {
+      var questions = [], audio = [], downloads = [];
+      try { questions = JSON.parse(typeof r.questions === 'string' ? r.questions : '[]'); } catch(e){}
+      try { audio = JSON.parse(typeof r.audio_tracks === 'string' ? r.audio_tracks : '[]'); } catch(e){}
+      try { downloads = JSON.parse(typeof r.downloads === 'string' ? r.downloads : '[]'); } catch(e){}
+      return {
+        num: 'Module ' + String(r.module_index + 1).padStart(2, '0'),
+        title: r.module_title || ('Module ' + (r.module_index + 1)),
+        topic: r.module_topic || '',
+        duration: '~60 min',
+        videoUrl: r.video_url || '',
+        audioTracks: audio,
+        downloads: downloads,
+        content: r.reading_html || '<p>Content coming soon.</p>',
+        pool: questions,
+        passMark: r.pass_mark || 100,
+        maxAttempts: r.max_attempts || 0
+      };
+    });
+
+    return result;
+  } catch(e) {
+    // Complete fallback — show empty state, don't crash
+    result.course = { id: 'unknown', title: programmeStr || 'Your Course', code: programmeStr || '', moduleCount: 0, duration: '' };
+    result.modules = [];
+    return result;
+  }
+}
+
+function renderDashboard() {
+  // If student has multiple enrolments, show them all
+  if (ALL_ENROLMENTS.length > 1) {
+    // Update dash greeting
+    document.getElementById('dashName').textContent =
+      (currentStudent ? 'Welcome back, '+currentStudent.first_name+'.' : 'Welcome back.');
+    // Build multi-course section
+    var body = document.querySelector('.dash-body');
+    if (!body) { renderOtherCourses(); return; }
+    // Replace course card section with multi-enrolment grid
+    var existingGrid = document.getElementById('multiCourseGrid');
+    if (!existingGrid) {
+      var section = document.createElement('div');
+      section.id = 'multiCourseGrid';
+      var first = body.querySelector('.course-card');
+      if (first) body.insertBefore(section, first.parentNode);
+    }
+    var grid = document.getElementById('multiCourseGrid');
+    if (grid) {
+      grid.innerHTML = '<div class="dash-section-label">Your Enrolled Courses</div>'
+        + ALL_ENROLMENTS.map(function(e, i) {
+          var isCurrent = e.course_id === (CURRENT_COURSE ? CURRENT_COURSE.id : null);
+          return '<div class="course-card" style="margin-bottom:12px;'+(isCurrent?'border-color:var(--navy);':'')+';cursor:pointer;" data-cid="'+e.course_id+'" data-prog="'+e.programme+'" onclick="switchCourse(this.dataset.cid,this.dataset.prog)">'
+            +'<div class="course-card-band"></div>'
+            +'<div class="course-card-body">'
+            +'<div class="course-status-pill">✓ '+(isCurrent?'Currently Open':'Enrolled &amp; Active')+'</div>'
+            +'<div class="course-card-title">'+e.programme+'</div>'
+            +'</div>'
+            +'<div class="course-card-cta"><div class="course-card-cta-text">'+(isCurrent?'Continue Course →':'Open Course →')+'</div></div>'
+            +'</div>';
+        }).join('')
+        + '<button class="btn btn-secondary" style="margin-top:8px;font-size:13px;" onclick="showAddCourseModal()">+ Add Another Programme</button>';
+      // Hide the original single course card
+      var orig = body.querySelector('.course-card:not(#multiCourseGrid .course-card)');
+      if (orig) orig.parentNode.style.display = 'none';
+    }
+  } else {
+    // Single enrolment — show original layout with Add Programme button
+    renderOtherCourses();
+    // Add "Add Programme" button
+    var body2 = document.querySelector('.dash-body');
+    if (body2 && !document.getElementById('addProgBtn')) {
+      var btn = document.createElement('button');
+      btn.id = 'addProgBtn';
+      btn.className = 'btn btn-secondary';
+      btn.style.cssText = 'margin-top:16px;font-size:13px;';
+      btn.textContent = '+ Add Another Programme';
+      btn.onclick = showAddCourseModal;
+      body2.appendChild(btn);
+    }
+  }
+}
+
+async function switchCourse(courseId, programme) {
+  // Load the selected course
+  var dbResult = await loadCourseAndModulesFromDB(programme);
+  CURRENT_COURSE = dbResult.course;
+  MODULES = dbResult.modules;
+  await loadProgress();
+  saveSession(currentStudent, CURRENT_COURSE, completedModules);
+  goCourse();
+}
+
+function showAddCourseModal() {
+  var existing = document.getElementById('addCourseModal');
+  if (existing) existing.remove();
+
+  // Get courses student is not already in
+  // Check both enrolment course_ids AND current student programme title
+  var enrolledIds = ALL_ENROLMENTS.map(function(e){ return e.course_id; });
+  var enrolledTitles = ALL_ENROLMENTS.map(function(e){ return e.programme; });
+  // Always exclude the current course
+  if (CURRENT_COURSE) enrolledIds.push(CURRENT_COURSE.id);
+  if (currentStudent && currentStudent.programme) enrolledTitles.push(currentStudent.programme);
+
+  var available = ALL_DB_COURSES.filter(function(c){
+    return enrolledIds.indexOf(c.id) === -1 && enrolledTitles.indexOf(c.title) === -1;
+  });
+
+  if (!available.length) {
+    alert('You are already enrolled in all available programmes. Contact the Academy for more information.');
+    return;
+  }
+
+  var modal = document.createElement('div');
+  modal.id = 'addCourseModal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;';
+  modal.innerHTML = '<div style="background:white;border-radius:16px;padding:28px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;">'
+    +'<div style="font-family:DM Serif Display,serif;font-size:22px;color:var(--navy);margin-bottom:6px;">Add Another Programme</div>'
+    +'<div style="font-size:13px;color:var(--muted);margin-bottom:20px;">Select a programme and upload your payment receipt. Your existing account details will be used.</div>'
+
+    +'<div style="margin-bottom:14px;">'
+    +'<label style="font-size:12px;font-weight:700;display:block;margin-bottom:6px;">Select Programme <span style="color:var(--danger);">*</span></label>'
+    +'<div id="addCourseList" style="display:flex;flex-direction:column;gap:8px;">'
+    +available.map(function(c){
+      return '<div style="border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;" data-cid="'+c.id+'" data-title="'+c.title+'" onclick="selectAddCourse(this,this.dataset.cid,this.dataset.title)">'
+        +'<div style="width:10px;height:10px;border-radius:50%;background:'+c.color+';flex-shrink:0;"></div>'
+        +'<div style="font-size:13px;font-weight:600;color:var(--text);">'+c.title+'</div>'
+        +'</div>';
+    }).join('')
+    +'</div></div>'
+
+    // Payment info
+    +'<div style="background:var(--gold-light);border:1.5px solid #E8D48A;border-radius:12px;padding:16px 18px;margin-bottom:14px;" id="addCoursePayBox">'
+    +'<div style="font-size:11px;font-weight:700;color:var(--gold-dark);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;">Payment Required</div>'
+    +'<div style="font-size:13px;color:var(--navy);font-weight:700;margin-bottom:8px;" id="addCourseAmount">&#8358;5,000</div>'
+    +'<div style="font-size:12px;color:var(--gold-dark);margin-bottom:8px;" id="addCoursePayMsg">Select a programme above</div>'
+    +'<div style="font-size:12px;color:var(--gold-dark);">Bank: <strong>First Bank of Nigeria</strong></div>'
+    +'<div style="font-size:12px;color:var(--gold-dark);">Account: <strong>Catholic Music Academy — 3155067093</strong></div>'
+    +'</div>'
+
+    // Receipt upload
+    +'<div style="margin-bottom:16px;">'
+    +'<label style="font-size:12px;font-weight:700;display:block;margin-bottom:6px;">Payment Receipt <span style="color:var(--danger);">*</span></label>'
+    +'<div style="border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;" onclick="triggerReceiptInput()" id="addReceiptBox">'
+    +'<div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:4px;">Tap to upload receipt</div>'
+    +'<div style="font-size:12px;color:var(--muted);">JPG, PNG or PDF</div>'
+    +'<div style="font-size:12px;color:var(--ok);margin-top:4px;" id="addReceiptName"></div>'
+    +'</div>'
+    +'<input type="file" id="addCourseReceiptInput" style="display:none;" accept="image/*,.pdf" onchange="handleAddReceipt(this)"/>'
+    +'</div>'
+
+    +'<div id="addCourseErr" style="display:none;font-size:12px;color:var(--danger);background:var(--danger-light);border-radius:8px;padding:9px 13px;margin-bottom:12px;"></div>'
+    +'<div style="display:flex;gap:8px;">'
+    +'<button class="btn btn-primary" onclick="submitAddCourse()" id="addCourseBtn">Submit Request</button>'
+    +'<button class="btn btn-secondary" onclick="closeAddCourseModal()">Cancel</button>'
+    +'</div></div>';
+
+  modal.addEventListener('click', function(e){ if(e.target===modal) modal.remove(); });
+  document.body.appendChild(modal);
+
+  // Fetch course amount
+  fetch(SUPA_URL+'/rest/v1/site_settings?key=eq.course_amount&select=value',
+    {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d&&d.length&&d[0].value){
+        var amt = parseInt(d[0].value)||5000;
+        var amtEl = document.getElementById('addCourseAmount');
+        if(amtEl) amtEl.textContent = '₦'+amt.toLocaleString();
+      }
+    }).catch(function(){});
+}
+
+var addCourseSelected = null;
+var addCourseFile = null;
+
+function selectAddCourse(el, courseId, title) {
+  document.querySelectorAll('#addCourseList > div').forEach(function(d){
+    d.style.borderColor='var(--border)'; d.style.background='white';
+  });
+  el.style.borderColor='var(--navy)'; el.style.background='var(--navy-pale)';
+  addCourseSelected = {id: courseId, title: title};
+  var msgEl = document.getElementById('addCoursePayMsg');
+  if(msgEl) msgEl.textContent = 'Pay for: '+title;
+}
+
+function closeAddCourseModal() {
+  var m = document.getElementById('addCourseModal');
+  if (m) m.remove();
+}
+function triggerReceiptInput() {
+  var el = document.getElementById('addCourseReceiptInput');
+  if (el) el.click();
+}
+function handleAddReceipt(input) {
+  if(input.files && input.files[0]){
+    addCourseFile = input.files[0];
+    var nameEl = document.getElementById('addReceiptName');
+    if(nameEl) nameEl.textContent = '📎 '+addCourseFile.name;
+    var box = document.getElementById('addReceiptBox');
+    if(box) box.style.borderColor = 'var(--ok)';
+  }
+}
+
+async function submitAddCourse() {
+  var errEl = document.getElementById('addCourseErr');
+  var btn = document.getElementById('addCourseBtn');
+  if(!addCourseSelected){ errEl.textContent='Please select a programme.'; errEl.style.display='block'; return; }
+  if(!addCourseFile){ errEl.textContent='Please upload your payment receipt.'; errEl.style.display='block'; return; }
+
+  // Capture values before any async operations
+  var selectedTitle = addCourseSelected.title;
+  var selectedId = addCourseSelected.id;
+
+  btn.disabled=true; btn.textContent='Checking...';
+  try {
+    // Check for existing pending request — do NOT encodeURIComponent the programme value
+    // Supabase PostgREST eq. filter requires raw value, not URL-encoded
+    var pendingCheck = await fetch(
+      SUPA_URL+'/rest/v1/applications?email=eq.'+encodeURIComponent(currentStudent.email)
+        +'&programme=eq.'+selectedTitle.replace(/&/g,'%26')
+        +'&status=eq.pending&select=id',
+      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}}
+    );
+    var pendingRows = await pendingCheck.json();
+    if (pendingRows && pendingRows.length) {
+      btn.disabled=false; btn.textContent='Submit Request';
+      errEl.textContent='You already have a pending request for this programme. Please wait for the Academy to review it.';
+      errEl.style.display='block';
+      return;
+    }
+
+    btn.textContent='Submitting...';
+    var ref = 'CMA-ADD-'+Date.now().toString().slice(-6);
+
+    // Upload receipt — non-blocking, don't fail the whole submission if it fails
+    var receiptPath = '';
+    var receiptName = addCourseFile.name;
+    try {
+      var ext = addCourseFile.name.split('.').pop();
+      receiptPath = ref+'_receipt.'+ext;
+      var upRes = await fetch(SUPA_URL+'/storage/v1/object/receipts/'+receiptPath,{
+        method:'POST',
+        headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':addCourseFile.type||'application/octet-stream','x-upsert':'true'},
+        body:addCourseFile
+      });
+      if(!upRes.ok) { console.warn('Receipt upload failed — continuing without receipt path'); receiptPath=''; }
+    } catch(uploadErr) {
+      console.warn('Receipt upload error:', uploadErr.message);
+      receiptPath = '';
+    }
+
+    // Build application payload — only include receipt fields if upload succeeded
+    var appPayload = {
+      ref: ref,
+      first_name: currentStudent.first_name,
+      last_name: currentStudent.last_name,
+      email: currentStudent.email,
+      phone: currentStudent.phone||currentStudent.whatsapp||'',
+      programme: selectedTitle,
+      background: 'Existing student — additional course request',
+      status: 'pending',
+      type: 'additional',
+      existing_student_id: currentStudent.id
+    };
+    if (receiptPath) {
+      appPayload.receipt_path = receiptPath;
+      appPayload.receipt_name = receiptName;
+    }
+
+    // Submit application
+    var appRes = await fetch(SUPA_URL+'/rest/v1/applications',{
+      method:'POST',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify(appPayload)
+    });
+    if (!appRes.ok) {
+      var errText = await appRes.text();
+      throw new Error('Application save failed: '+errText);
+    }
+
+    // Close modal BEFORE nulling state
+    document.getElementById('addCourseModal').remove();
+
+    // Send emails — use captured values, not addCourseSelected (which may be null)
+    fetch('/api/application-received', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        to: currentStudent.email,
+        firstName: currentStudent.first_name,
+        programme: selectedTitle,
+        ref: ref,
+        testMode: false
+      })
+    }).catch(function(e){ console.warn('Confirmation email failed:',e); });
+
+    fetch('/api/notify-admin', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        studentName: currentStudent.first_name+' '+currentStudent.last_name,
+        studentEmail: currentStudent.email,
+        programme: selectedTitle,
+        ref: ref,
+        type: 'additional'
+      })
+    }).catch(function(e){ console.warn('Admin notification failed:',e); });
+
+    // Now safe to null state
+    addCourseSelected=null; addCourseFile=null;
+
+    alert('Request submitted successfully. The Academy will review your payment and add the course to your portal shortly.');
+
+  } catch(e){
+    errEl.textContent='Error: '+e.message; errEl.style.display='block';
+    btn.disabled=false; btn.textContent='Submit Request';
+  }
+}
+
+function renderOtherCourses() {
+  var container = document.getElementById('otherCoursesList');
+  if (!container || !CURRENT_COURSE) return;
+  var others = ALL_DB_COURSES.filter(function(c) { return c.id !== CURRENT_COURSE.id; });
+  if (!others.length) {
+    container.innerHTML = '<p style="font-size:13px;color:var(--muted);">More courses coming soon.</p>';
+    return;
+  }
+  container.innerHTML = others.map(function(c, i) {
+    return '<div class="other-course-card">'
+      + '<div class="other-course-lock">🔒</div>'
+      + '<div class="other-course-num">Course ' + String(i + 2).padStart(2, '0') + '</div>'
+      + '<div class="other-course-title">' + c.title + '</div>'
+      + '<div class="other-course-tag">' + c.rows.length + ' Module' + (c.rows.length !== 1 ? 's' : '') + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+
+async function doLogin() {
+  var emailEl = document.getElementById('loginEmail');
+  var passEl  = document.getElementById('loginPass');
+  var btn     = document.getElementById('loginBtn');
+  var email   = emailEl.value.trim().toLowerCase();
+  var pass    = passEl.value;
+
+  if (!email || !pass) { showErr('Please enter your email and password.'); return; }
+  btn.disabled = true; btn.textContent = 'Signing in...';
+  document.getElementById('loginErr').style.display = 'none';
+
+  try {
+    // 1. Hash password
+    var hash = await hashPassword(pass);
+
+    // 2. Fetch student record
+    var res = await fetch(SUPA_URL + '/rest/v1/students?email=eq.' + encodeURIComponent(email) + '&select=*', {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+    });
+    if (!res.ok) throw new Error('Network error (' + res.status + '). Please try again.');
+    var results = await res.json();
+
+    if (!results || results.length === 0) {
+      showErr('No account found with that email. Have you been approved yet?');
+      btn.disabled = false; btn.textContent = 'Sign in →'; return;
+    }
+    var student = results[0];
+
+    // 3. Check password
+    if (student.password_hash !== hash) {
+      showErr('Incorrect password. Please try again, or use Forgot password below.');
+      btn.disabled = false; btn.textContent = 'Sign in →'; return;
+    }
+
+    // 4. Check account status
+    if (student.status !== 'active') {
+      showErr('Your account is pending approval. The Academy will contact you via WhatsApp once activated.');
+      btn.disabled = false; btn.textContent = 'Sign in →'; return;
+    }
+
+    // 5. Record login time (fire and forget — don't let this block login)
+    fetch(SUPA_URL + '/rest/v1/students?id=eq.' + student.id, {
+      method: 'PATCH',
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ last_login: new Date().toISOString() })
+    }).catch(function(){});
+
+    // 6. Handle Remember Me
+    var rememberCb = document.getElementById('rememberMe');
+    if (rememberCb && rememberCb.checked) {
+      saveRememberMe(email, hash); // store hash, not raw password
+    } else {
+      clearRememberMe();
+    }
+
+    // 7. Set state — load course + modules from Supabase
+    currentStudent = student;
+    var dbResult = await loadCourseAndModulesFromDB(student.programme);
+    CURRENT_COURSE = dbResult.course;
+    MODULES = dbResult.modules;
+
+    // 8. Load enrolments
+    await loadEnrolments();
+    // 9. Load progress
+    await loadProgress();
+
+    // 9. Save session (so refresh survives)
+    saveSession(student, CURRENT_COURSE, completedModules);
+
+    // 10. Update UI
+    document.getElementById('topbar').style.display = 'flex';
+    document.getElementById('topbarName').textContent = student.first_name;
+    document.getElementById('dashName').textContent = 'Welcome back, ' + student.first_name + '.';
+    var safeSet = function(id, val, isHtml) {
+      var el = document.getElementById(id);
+      if (!el || !CURRENT_COURSE) return;
+      if (isHtml) el.innerHTML = val; else el.textContent = val;
+    };
+    safeSet('enrolledCourseNum', CURRENT_COURSE.title);
+    safeSet('enrolledCourseTitle', CURRENT_COURSE.title);
+    safeSet('enrolledCourseDesc', '');
+    safeSet('enrolledCourseMeta',
+      '📖 ' + MODULES.length + ' Module' + (MODULES.length !== 1 ? 's' : '') + ' &nbsp;·&nbsp; ✍ Assessment per module &nbsp;·&nbsp; 🎓 Final exam (in-person)', true);
+
+    history.replaceState({ screen: 'dash' }, '', '/portal');
+    renderDashboard();
+    showScreen('screen-dash');
+    loadAnnouncements();
+
+  } catch(e) {
+    console.error('Login error:', e);
+    showErr('Login error: ' + (e.message || 'Unable to connect. Check your internet and try again.'));
+    btn.disabled = false; btn.textContent = 'Sign in →';
+  }
+}
+
+function showErr(msg) {
+  var err = document.getElementById('loginErr');
+  err.textContent = msg; err.style.display = 'block';
+}
+
+function logout() {
+  clearSession();
+  currentStudent = null; completedModules = []; currentMod = 0;
+  answers = {}; submitted = false; timerDone = false; scrollDone = false;
+  if (timerInterval) clearInterval(timerInterval);
+  document.getElementById('topbar').style.display = 'none';
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginErr').style.display = 'none';
+  document.getElementById('loginBtn').disabled = false;
+  document.getElementById('loginBtn').textContent = 'Sign in →';
+  history.pushState({},'','/portal');
+  showScreen('screen-login');
+}
+
+// ── ENROLMENTS ───────────────────────────────────────────────────────────────
+var ALL_ENROLMENTS = []; // all active enrolments for this student
+
+async function loadEnrolments() {
+  if (!currentStudent) return;
+  try {
+    var rows = await sbGet('enrolments',
+      'student_id=eq.'+currentStudent.id+'&status=eq.active&order=enrolled_at.asc');
+    ALL_ENROLMENTS = rows || [];
+  } catch(e) {
+    // Table may not exist yet — fall back to single course from student record
+    ALL_ENROLMENTS = CURRENT_COURSE ? [{
+      course_id: CURRENT_COURSE.id,
+      programme: currentStudent.programme,
+      status: 'active'
+    }] : [];
+  }
+}
+
+// ── PROGRESS ─────────────────────────────────────────────────────────────────
+async function loadProgress() {
+  if (!currentStudent) return;
+  try {
+    var rows = await sbGet('progress', 'student_id=eq.'+currentStudent.id+'&select=module_index,course_id');
+    var courseId = CURRENT_COURSE ? CURRENT_COURSE.id : null;
+    // Try exact course match first
+    var courseRows = courseId ? rows.filter(function(r){ return r.course_id === courseId; }) : [];
+    if (courseRows.length) {
+      completedModules = courseRows.map(function(r){ return r.module_index; });
+    } else {
+      // Fallback: all rows for this student (handles legacy data)
+      completedModules = rows.map(function(r){ return r.module_index; });
+    }
+    // Remove duplicates
+    completedModules = completedModules.filter(function(v,i,a){ return a.indexOf(v)===i; });
+    // Always sync session to DB state
+    saveSession(currentStudent, CURRENT_COURSE, completedModules);
+  } catch(e) { completedModules = []; }
+}
+
+async function saveProgress(modIndex) {
+  if (!currentStudent) return;
+  try {
+    var courseId = CURRENT_COURSE ? CURRENT_COURSE.id : 'unknown';
+    var res = await fetch(SUPA_URL+'/rest/v1/progress', {
+      method:'POST',
+      headers:{
+        'apikey':SUPA_KEY,
+        'Authorization':'Bearer '+SUPA_KEY,
+        'Content-Type':'application/json',
+        'Prefer':'return=minimal'
+      },
+      body:JSON.stringify({
+        student_id: currentStudent.id,
+        course_id: courseId,
+        module_index: modIndex,
+        completed_at: new Date().toISOString()
+      })
+    });
+    saveSession(currentStudent, CURRENT_COURSE, completedModules);
+  } catch(e) {
+    saveSession(currentStudent, CURRENT_COURSE, completedModules);
+  }
+}
+
+async function saveAttempt(modIndex, score, total, passed) {
+  if (!currentStudent) return;
+  try {
+    await sbPost('assessment_attempts', {
+      student_id: currentStudent.id,
+      course_id: CURRENT_COURSE ? CURRENT_COURSE.id : 1,
+      module_index: modIndex,
+      score: score,
+      total: total,
+      passed: passed,
+      attempted_at: new Date().toISOString()
+    });
+  } catch(e) { /* table may not exist yet — silent */ }
+}
+
+// ── NAVIGATION ───────────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  // Show/hide topbar based on screen
+  var tb = document.getElementById('topbar');
+  if (tb) tb.style.display = (id === 'screen-login') ? 'none' : 'flex';
+  window.scrollTo(0,0);
+}
+function goDash() {
+  history.pushState({screen:'dash'},'','/portal');
+  showScreen('screen-dash');
+  loadAnnouncements();
+}
+
+async function loadAnnouncements() {
+  try {
+    var prog = CURRENT_COURSE ? CURRENT_COURSE.id : '';
+    var rows = await sbGet('announcements','order=created_at.desc&limit=3');
+    if (!rows.length) return;
+    var banner = document.getElementById('dashAnnouncements');
+    if (!banner) return;
+    banner.innerHTML = rows.map(function(a) {
+      var icons = {info:'ℹ️',warn:'⚠️',ok:'✅'};
+      var bgs = {info:'var(--navy-light)',warn:'var(--warn-light)',ok:'var(--ok-light)'};
+      var colors = {info:'var(--navy-mid)',warn:'var(--gold-dark)',ok:'var(--ok)'};
+      return '<div style="background:'+(bgs[a.type]||'var(--navy-light)')+';border-radius:10px;padding:12px 16px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start;">'
+        +'<span style="font-size:16px;flex-shrink:0;">'+(icons[a.type]||'ℹ️')+'</span>'
+        +'<div><div style="font-size:13px;font-weight:700;color:'+(colors[a.type]||'var(--navy)')+';margin-bottom:2px;">'+a.title+'</div>'
+        +'<div style="font-size:12px;color:var(--muted);">'+a.body+'</div></div></div>';
+    }).join('');
+    banner.style.display = 'block';
+  } catch(e){}
+}
+async function goCourse() {
+  // Always re-fetch progress from DB so module states are current after refresh
+  await loadProgress().catch(function(){});
+  renderCourse();
+  history.pushState({screen:'course'},'','/portal/course');
+  showScreen('screen-course');
+}
+
+// ── COURSE ────────────────────────────────────────────────────────────────────
+function renderCourse() {
+  // Update course header with correct course info
+  if (CURRENT_COURSE) {
+    document.getElementById('courseTitle2').textContent = CURRENT_COURSE.title;
+    document.getElementById('courseH1').textContent = CURRENT_COURSE.title;
+  }
+  // If no modules yet (content not uploaded), show placeholder
+  if (!MODULES || MODULES.length === 0) {
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('progressText').textContent = 'Content coming soon';
+    document.getElementById('modulesList').innerHTML = '<div style="text-align:center;padding:48px 24px;color:var(--muted);"><div style="font-size:40px;margin-bottom:16px;">📚</div><div style="font-size:22px;font-weight:600;color:var(--text);margin-bottom:8px;font-family:serif;">Content Coming Soon</div><div style="font-size:14px;line-height:1.65;">The academy is preparing content for <strong>' + ((CURRENT_COURSE && CURRENT_COURSE.title) || 'this course') + '</strong>.<br>Check back soon or contact your coordinator.</div></div>';
+    return;
+  }
+  var pct = Math.round((completedModules.length / MODULES.length) * 100);
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressText').textContent = completedModules.length+' of '+MODULES.length+' complete';
+  document.getElementById('modulesList').innerHTML = MODULES.map((m,i) => {
+    var done = completedModules.includes(i);
+    var locked = i > 0 && !completedModules.includes(i-1);
+    return '<div class="module-card'+(done?' mc-done-card':locked?' mc-locked':' mc-active')+'"'+(locked?'':' onclick="openMod('+i+')"')+'>'
+      +'<div class="mc-num'+(done?' mc-done':'')+'">'+(done?'✓':(i+1))+'</div>'
+      +'<div class="mc-body"><div class="mc-label">'+m.num+'</div><div class="mc-title">'+m.title+'</div>'
+      +'<div class="mc-meta">📖 Reading · ⏱ '+m.duration+'</div>'
+      +'<span class="mc-status '+(done?'s-done':locked?'s-locked':'s-open')+'">'+(done?'✓ Complete':locked?'🔒 Complete previous module':'▶ Open')+'</span>'
+      +'</div>'+(locked?'':'<div class="mc-arrow">›</div>')+'</div>';
+  }).join('');
+}
+
+// ── YOUTUBE URL NORMALISER ────────────────────────────────────────────────────
+// Accepts any YouTube URL format and returns a clean embed URL
+function toYouTubeEmbed(url) {
+  if (!url) return '';
+  url = url.trim();
+  // Already an embed URL
+  if (url.indexOf('youtube.com/embed/') !== -1) {
+    // Strip any extra params that cause issues and add rel=0
+    var base = url.split('?')[0];
+    return base + '?rel=0&modestbranding=1';
+  }
+  var videoId = null;
+  // youtu.be/VIDEO_ID
+  var m = url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
+  if (m) videoId = m[1];
+  // youtube.com/watch?v=VIDEO_ID
+  if (!videoId) { m = url.match(/[?&]v=([A-Za-z0-9_-]{11})/); if (m) videoId = m[1]; }
+  // youtube.com/shorts/VIDEO_ID
+  if (!videoId) { m = url.match(/shorts\/([A-Za-z0-9_-]{11})/); if (m) videoId = m[1]; }
+  // youtube.com/v/VIDEO_ID
+  if (!videoId) { m = url.match(/youtube\.com\/v\/([A-Za-z0-9_-]{11})/); if (m) videoId = m[1]; }
+  // youtube.com/embed/VIDEO_ID (already caught above but just in case)
+  if (!videoId) { m = url.match(/embed\/([A-Za-z0-9_-]{11})/); if (m) videoId = m[1]; }
+  if (videoId) return 'https://www.youtube.com/embed/' + videoId + '?rel=0&modestbranding=1';
+  // Not a YouTube URL — return as-is (could be a direct video file)
+  return url;
+}
+
+// ── MODULE ────────────────────────────────────────────────────────────────────
+function openMod(i) {
+  history.pushState({screen:'module',mod:i},'','/portal/module-'+(i+1));
+  currentMod = i; answers = {}; submitted = false;
+  timerDone = false; scrollDone = false;
+  if (timerInterval) clearInterval(timerInterval);
+  var m = MODULES[i];
+  PASS_MARK = m.passMark || 100;
+  MAX_ATTEMPTS = m.maxAttempts || 0;
+  // Count existing attempts for this module from DB
+  currentAttemptCount = 0;
+  if (MAX_ATTEMPTS > 0 && currentStudent) {
+    sbGet('assessment_attempts','student_id=eq.'+currentStudent.id+'&module_index=eq.'+i+'&select=id').then(function(rows){
+      currentAttemptCount = rows.length;
+      if (currentAttemptCount >= MAX_ATTEMPTS) {
+        var quizBody = document.getElementById('quizBody');
+        if (quizBody) quizBody.innerHTML = '<div class="quiz-locked" style="background:var(--danger-light);border-radius:10px;padding:24px;">'
+          +'<div class="quiz-locked-icon">🔒</div>'
+          +'<div class="quiz-locked-title" style="color:var(--danger);">Attempt limit reached</div>'
+          +'<div class="quiz-locked-text">You have used all '+MAX_ATTEMPTS+' attempt(s) for this module. Please contact your instructor.</div>'
+          +'</div>';
+      }
+    }).catch(function(){});
+  }
+  var pool = [...m.pool];
+  shownQuestions = [];
+  var count = Math.min(SHOW_COUNT, pool.length);
+  while (shownQuestions.length < count && pool.length) {
+    var idx = Math.floor(Math.random()*pool.length);
+    shownQuestions.push(pool.splice(idx,1)[0]);
+  }
+  document.getElementById('modBreadcrumb').textContent = m.title;
+  var bc = document.getElementById('modBreadcrumbCourse');
+  if (bc) bc.textContent = CURRENT_COURSE ? CURRENT_COURSE.title : 'Course';
+  document.getElementById('modTitle').textContent = m.title;
+  // Show topic/header if set
+  var topicEl = document.getElementById('modTopic');
+  if (topicEl) {
+    if (m.topic) { topicEl.textContent = m.topic; topicEl.style.display = 'block'; }
+    else { topicEl.style.display = 'none'; }
+  }
+  var wordCount = (m.content || '').replace(/<[^>]*>/g,'').split(/\s+/).filter(Boolean).length;
+  var readMins = Math.max(1, Math.ceil(wordCount / 200));
+  document.getElementById('modContent').innerHTML =
+    '<div style="font-size:11px;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:8px;">'
+    +'<span>📖 Estimated reading time: ~'+readMins+' min</span>'
+    +'<span style="color:var(--dim);">·</span>'
+    +'<span>'+wordCount+' words</span></div>'
+    + m.content;
+  // video — normalise any YouTube URL format to embed
+  var vw = document.getElementById('videoWrap');
+  var vs = document.getElementById('videoSection');
+  if (m.videoUrl) {
+    var embedUrl = toYouTubeEmbed(m.videoUrl);
+    vw.innerHTML = '<iframe src="'+embedUrl+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="border:0;"></iframe>';
+    vs.style.display = 'block';
+  } else {
+    vs.style.display = 'none';
+  }
+  // audio — only show if tracks exist
+  var ap = document.getElementById('audioPlayer');
+  var as2 = document.getElementById('audioSection');
+  if (m.audioTracks && m.audioTracks.length) {
+    ap.innerHTML = m.audioTracks.map(function(t){ return '<div style="margin-bottom:8px;font-size:13px;font-weight:600;color:var(--text);">🎵 '+t.name+'</div><audio class="audio-native" controls src="'+t.url+'"></audio>'; }).join('');
+    as2.style.display = 'block';
+  } else {
+    as2.style.display = 'none';
+  }
+  // downloads — only show if files exist
+  var dg = document.getElementById('downloadsGrid');
+  var ds = document.getElementById('downloadsSection');
+  if (m.downloads && m.downloads.length) {
+    dg.innerHTML = m.downloads.map(function(d){ return '<a class="download-item" href="'+d.url+'" download target="_blank"><div class="dl-icon '+(d.type||'pdf')+'">'+(d.type==='music'?'🎼':'📄')+'</div><div class="dl-info"><div class="dl-name">'+d.name+'</div><div class="dl-size">'+(d.size||'')+'</div></div><div class="dl-arrow">↓</div></a>'; }).join('');
+    ds.style.display = 'block';
+  } else {
+    ds.style.display = 'none';
+  }
+  // Check if already completed — skip timer and quiz if so
+  if (completedModules.includes(i)) {
+    // Module already passed — show reflection mode
+    showScreen('screen-module');
+    // Don't start timer or lock quiz — just show a reflection widget
+    var rt = document.getElementById('readTimer');
+    if (rt) rt.style.display = 'none';
+    var qc = document.getElementById('quizCard');
+    if (qc) qc.style.display = 'none';
+    document.getElementById('modActions').innerHTML = '<button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>';
+    document.getElementById('quizResult').innerHTML = '';
+    document.getElementById('quizResult').classList.remove('show');
+    // Show reflection widget at bottom
+    setTimeout(function(){
+      var existing = document.getElementById('reflectionWidget');
+      if (!existing) {
+        var widget = document.createElement('div');
+        widget.id = 'reflectionWidget';
+        widget.style.cssText = 'background:var(--ok-light);border:1.5px solid #86EFAC;border-radius:14px;padding:20px 22px;margin-top:16px;';
+        widget.innerHTML = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'
+          +'<span style="font-size:16px;">✅</span>'
+          +'<div style="font-size:13px;font-weight:700;color:var(--ok);">You have completed this module</div>'
+          +'</div>'
+          +'<div style="font-size:12px;color:var(--ok);margin-bottom:14px;">Want to share additional thoughts or insights from this module with your instructor?</div>'
+          +'<textarea id="reflectionText" placeholder="Write your additional thoughts, questions, or insights here..." style="width:100%;border:1.5px solid #86EFAC;border-radius:10px;padding:12px 14px;font-size:13px;font-family:DM Sans,sans-serif;outline:none;min-height:100px;resize:vertical;background:white;line-height:1.65;"></textarea>'
+          +'<button onclick="submitReflection('+i+')" class="btn btn-secondary" style="margin-top:10px;font-size:13px;border-color:var(--ok);color:var(--ok);">Send Reflection to Instructor</button>'
+          +'<div id="reflectionMsg" style="display:none;font-size:12px;color:var(--ok);margin-top:8px;"></div>';
+        var modActions = document.getElementById('modActions');
+        if (modActions) modActions.after(widget);
+      }
+    }, 300);
+    return;
+  }
+
+  // reset quiz
+  lockQuiz();
+  document.getElementById('modActions').innerHTML = '';
+  document.getElementById('quizResult').innerHTML = '';
+  document.getElementById('quizResult').classList.remove('show');
+  // reset timer
+  var rt = document.getElementById('readTimer');
+  rt.className = 'read-timer';
+  document.getElementById('timerMsg').textContent = 'Reading timer active';
+  document.getElementById('timerSub').textContent = 'Read through the full lesson. The assessment unlocks when you have read the content and scrolled to the end.';
+  document.getElementById('timerBar').style.cssText = 'width:0%;transition:none;';
+  showScreen('screen-module');
+  startReadTimer(); setupScrollCheck();
+}
+
+function startReadTimer() {
+  var elapsed = 0;
+  var bar = document.getElementById('timerBar');
+  timerInterval = setInterval(() => {
+    elapsed++;
+    bar.style.transition = 'width 1s linear';
+    bar.style.width = Math.min(Math.round((elapsed/READ_TIME)*100),100)+'%';
+    if (elapsed >= READ_TIME) {
+      clearInterval(timerInterval); timerDone = true;
+      document.getElementById('readTimer').classList.add('rt-unlocked');
+      document.getElementById('timerMsg').textContent = 'Reading period complete';
+      document.getElementById('timerSub').textContent = 'Now scroll to the end of the lesson to unlock the assessment.';
+      bar.style.width = '100%';
+      // Force scrollDone if content is already visible or page is short
+      var content = document.getElementById('modContent');
+      if (content) {
+        var vh2 = document.documentElement.clientHeight || window.innerHeight;
+        if (content.getBoundingClientRect().bottom <= vh2 + 200) {
+          scrollDone = true;
+        }
+      }
+      checkUnlock();
+    }
+  }, 1000);
+}
+
+function setupScrollCheck() {
+  var handler = () => {
+    var content = document.getElementById('modContent');
+    if (!content) return;
+    var vh = document.documentElement.clientHeight || window.innerHeight;
+    if (content.getBoundingClientRect().bottom <= vh + 120) {
+      scrollDone = true; window.removeEventListener('scroll', handler); checkUnlock();
+    }
+  };
+  window.addEventListener('scroll', handler);
+  setTimeout(handler, 800);
+}
+
+function checkUnlock() {
+  if (timerDone && scrollDone) {
+    document.getElementById('readTimer').classList.add('rt-unlocked');
+    document.getElementById('timerMsg').textContent = '✓ Assessment unlocked';
+    document.getElementById('timerSub').textContent = 'Answer all questions below to complete this module.';
+    document.getElementById('timerBar').style.width = '100%';
+    document.getElementById('quizLockBadge').style.display = 'none';
+    renderQuiz();
+    document.getElementById('modActions').innerHTML = '<button class="btn btn-primary" id="submitBtn" onclick="submitQuiz()">Submit Assessment →</button>';
+    document.getElementById('quizCard').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
+function lockQuiz() {
+  document.getElementById('quizLockBadge').style.display = 'inline-flex';
+  document.getElementById('quizBody').innerHTML = '<div class="quiz-locked"><div class="quiz-locked-icon">🔒</div><div class="quiz-locked-title">Assessment locked</div><div class="quiz-locked-text">Read through the full lesson and scroll to the end to unlock.</div></div>';
+}
+
+function renderQuiz() {
+  document.getElementById('quizBody').innerHTML = shownQuestions.map((q,qi) =>
+    '<div class="q-item"><div class="q-text">'+(qi+1)+'. '+q.q+'</div><div class="q-options">'
+    +q.opts.map((opt,oi) => '<div class="q-opt" id="qo-'+qi+'-'+oi+'" onclick="pick('+qi+','+oi+')">'
+      +'<div class="q-radio"><div class="q-radio-dot"></div></div>'+opt+'</div>').join('')
+    +'</div></div>'
+  ).join('');
+}
+
+function pick(qi, oi) {
+  if (submitted) return;
+  answers[qi] = oi;
+  shownQuestions[qi].opts.forEach((_,idx) => document.getElementById('qo-'+qi+'-'+idx).classList.remove('sel'));
+  document.getElementById('qo-'+qi+'-'+oi).classList.add('sel');
+}
+
+async function submitQuiz() {
+  if (Object.keys(answers).length < shownQuestions.length) { alert('Please answer all '+shownQuestions.length+' questions.'); return; }
+  submitted = true;
+  var score = shownQuestions.filter((q,qi) => answers[qi]===q.ans).length;
+  var passCount = Math.ceil(shownQuestions.length * PASS_MARK / 100);
+  currentAttemptCount++;
+  var passed = score >= passCount;
+  if (passed) {
+    // PASS: show correct answers, unlock next module
+    shownQuestions.forEach(function(q,qi) {
+      q.opts.forEach(function(_,oi) {
+        var el = document.getElementById('qo-'+qi+'-'+oi);
+        el.classList.add('disabled');
+        if (oi===q.ans) el.classList.add('correct');
+        else el.classList.remove('sel');
+      });
+    });
+    var resultEl = document.getElementById('quizResult');
+    resultEl.innerHTML = '<div class="qr-score">'+score+'/'+shownQuestions.length+'</div>'
+      +'<div class="qr-label">Questions correct</div>'
+      +'<div class="qr-msg pass">✓ Excellent. This module is now complete.</div>';
+    resultEl.classList.add('show');
+    if (!completedModules.includes(currentMod)) {
+      completedModules.push(currentMod);
+      await saveProgress(currentMod);
+    }
+    await saveAttempt(currentMod, score, shownQuestions.length, true);
+    var isLast = currentMod === MODULES.length-1;
+    document.getElementById('submitBtn')&&document.getElementById('submitBtn').remove();
+    document.getElementById('modActions').innerHTML = isLast
+      ? '<button class="btn btn-amber" onclick="showComplete()">🎓 Finish Course →</button><button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>'
+      : '<button class="btn btn-primary" onclick="openMod('+(currentMod+1)+')">Next Module →</button><button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>';
+    resultEl.scrollIntoView({behavior:'smooth',block:'start'});
+  } else {
+    // FAIL: no hints, no correct answers — lock quiz, force re-read
+    shownQuestions.forEach(function(q,qi) {
+      q.opts.forEach(function(_,oi) {
+        var el = document.getElementById('qo-'+qi+'-'+oi);
+        el.classList.add('disabled');
+        el.classList.remove('sel','correct','wrong');
+      });
+    });
+    await saveAttempt(currentMod, score, shownQuestions.length, false);
+    var resultEl = document.getElementById('quizResult');
+    resultEl.innerHTML = '<div class="qr-score">'+score+'/'+shownQuestions.length+'</div>'
+      +'<div class="qr-label">Questions correct</div>'
+      +'<div class="qr-msg fail">Study the lesson carefully and try again. The assessment will re-lock so you re-read.</div>';
+    resultEl.classList.add('show');
+    document.getElementById('submitBtn')&&document.getElementById('submitBtn').remove();
+    document.getElementById('modActions').innerHTML = '<button class="btn btn-secondary" onclick="retryModFull()">↑ Re-read lesson</button>';
+    resultEl.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
+function retryModFull() {
+  // Clear all state cleanly
+  timerDone = false;
+  scrollDone = false;
+  submitted = false;
+  answers = {};
+  writtenAnswers = {};
+  shownQuestions = []; // reset so questions are re-picked on unlock
+
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+
+  // Reset visual state
+  var bar = document.getElementById('timerBar');
+  if (bar) bar.style.cssText = 'width:0%;transition:none;';
+  var rt = document.getElementById('readTimer');
+  if (rt) rt.className = 'read-timer';
+  var tm = document.getElementById('timerMsg');
+  if (tm) tm.textContent = 'Reading timer active';
+  var ts = document.getElementById('timerSub');
+  if (ts) ts.textContent = 'Read through the full lesson. The assessment unlocks when you have read the content and scrolled to the end.';
+  var qr = document.getElementById('quizResult');
+  if (qr) { qr.innerHTML = ''; qr.classList.remove('show'); }
+  document.getElementById('modActions').innerHTML = '';
+  lockQuiz();
+
+  // Wait for smooth scroll to finish before starting gates
+  // This prevents the scroll handler firing immediately after scrollTo
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(function() {
+    // Re-pick questions fresh for this attempt
+    var m = MODULES[currentMod] || {};
+    var pool = [...(m.pool||[])];
+    var mcqPool = pool.filter(function(q){ return (q.type||'mcq')==='mcq'; });
+    var writtenQs = pool.filter(function(q){ return q.type==='short'||q.type==='essay'; });
+    shownQuestions = [];
+    var count = Math.min(SHOW_COUNT, mcqPool.length);
+    var mcqCopy = [...mcqPool];
+    while (shownQuestions.length < count && mcqCopy.length) {
+      var idx = Math.floor(Math.random()*mcqCopy.length);
+      shownQuestions.push(mcqCopy.splice(idx,1)[0]);
+    }
+    writtenQs.forEach(function(q){ shownQuestions.push(q); });
+    // Start gates only after scroll has settled
+    startReadTimer();
+    setupScrollCheck();
+  }, 700); // 700ms covers the smooth scroll duration
+}
+
+function showComplete() {
+  history.pushState({screen:'complete'},'','/portal/complete');
+  showScreen('screen-complete');
+}
+
+// ── SESSION PERSISTENCE ─────────────────────────────────────────────────────
 function saveSession(student, course, completed) {
   try {
-    var pct = (course && MODULES && MODULES.length)
-      ? Math.round((completed.length / MODULES.length) * 100)
-      : 0;
     localStorage.setItem('cma_session', JSON.stringify({
       student: student,
       courseId: course ? course.id : null,
       completedModules: completed,
-      progressPct: pct,
       savedAt: Date.now()
     }));
   } catch(e){}
@@ -470,15 +1607,19 @@ function saveSession(student, course, completed) {
 function clearSession() {
   try { localStorage.removeItem('cma_session'); } catch(e){}
 }
+
 function loadSession() {
   try {
     var raw = localStorage.getItem('cma_session');
     if (!raw) return null;
     var s = JSON.parse(raw);
-    if (Date.now() - s.savedAt > 30*24*60*60*1000) { clearSession(); return null; }
+    // Expire after 30 days
+    if (Date.now() - s.savedAt > 30 * 24 * 60 * 60 * 1000) { clearSession(); return null; }
     return s;
   } catch(e){ return null; }
 }
+
+// Remember Me — store email + hash (never the raw password)
 function saveRememberMe(email, passHash) {
   try { localStorage.setItem('cma_remember', JSON.stringify({email:email, passHash:passHash})); } catch(e){}
 }
@@ -489,868 +1630,352 @@ function clearRememberMe() {
   try { localStorage.removeItem('cma_remember'); } catch(e){}
 }
 
-// ── COURSE LOADER ─────────────────────────────────────────────────────────────
-async function loadCourseAndModulesFromDB(programmeStr) {
-  var result = { course: null, modules: [] };
-  try {
-    var res = await fetch(
-      SUPA_URL + '/rest/v1/course_content?order=course_order.asc,module_index.asc',
-      { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
-    );
-    if (!res.ok) throw new Error('fetch failed');
-    var rows = await res.json();
-    if (!rows.length) throw new Error('no content');
+(async function(){
+  // Reveal body (was hidden to prevent flash)
+  document.body.classList.remove('loading');
 
-    var prog = (programmeStr || '').trim();
-    var courseMap = {}, courseOrder = [];
-    rows.forEach(function(r) {
-      if (!courseMap[r.course_id]) {
-        courseMap[r.course_id] = { id:r.course_id, title:r.course_title||'', color:r.course_color||'#0D1B3E', order:r.course_order||0, rows:[] };
-        courseOrder.push(r.course_id);
-      }
-      courseMap[r.course_id].rows.push(r);
-    });
-    ALL_DB_COURSES = courseOrder.map(function(id){ return courseMap[id]; });
-
-    // Match enrolled course — exact first, then partial
-    var matchedGroup = null;
-    for (var i=0;i<courseOrder.length;i++) {
-      if (courseMap[courseOrder[i]].title.trim()===prog) { matchedGroup=courseMap[courseOrder[i]]; break; }
-    }
-    if (!matchedGroup) {
-      for (var j=0;j<courseOrder.length;j++) {
-        var t=courseMap[courseOrder[j]].title.toLowerCase(), p=prog.toLowerCase();
-        if (p.indexOf(t)!==-1||t.indexOf(p)!==-1) { matchedGroup=courseMap[courseOrder[j]]; break; }
-      }
-    }
-    if (!matchedGroup) {
-      if (courseOrder.length===1) {
-        matchedGroup = courseMap[courseOrder[0]];
-      } else {
-        // FIX 6: multiple courses, no match — fail loudly, don't guess
-        console.error('CMA: Could not match programme "'+prog+'" to any course. Available:', courseOrder.map(function(id){return courseMap[id].title;}));
-        result.course = { id:'mismatch', title:prog||'Your Course', code:prog||'', moduleCount:0, duration:'' };
-        result.modules = [];
-        return result;
-      }
-    }
-
-    var publishedRows = matchedGroup.rows.filter(function(r){ return r.published; });
-    var moduleRows = publishedRows.length ? publishedRows : matchedGroup.rows;
-
-    result.course = {
-      id: matchedGroup.id,
-      title: matchedGroup.title,
-      code: matchedGroup.title,
-      moduleCount: moduleRows.length,
-      duration: '~'+(moduleRows.length*60)+' min'
-    };
-    result.modules = moduleRows.map(function(r) {
-      var questions=[],audio=[],downloads=[];
-      try{questions=JSON.parse(typeof r.questions==='string'?r.questions:'[]');}catch(e){}
-      try{audio=JSON.parse(typeof r.audio_tracks==='string'?r.audio_tracks:'[]');}catch(e){}
-      try{downloads=JSON.parse(typeof r.downloads==='string'?r.downloads:'[]');}catch(e){}
-      return {
-        num:'Module '+String(r.module_index+1).padStart(2,'0'),
-        title:r.module_title||('Module '+(r.module_index+1)),
-        topic:r.module_topic||'',
-        duration:'~60 min',
-        videoUrl:r.video_url||'',
-        audioTracks:audio,
-        downloads:downloads,
-        content:r.reading_html||'<p>Content coming soon.</p>',
-        pool:questions,
-        passMark:r.pass_mark||100,
-        maxAttempts:r.max_attempts||0
-      };
-    });
-    return result;
-  } catch(e) {
-    result.course = { id:'unknown', title:programmeStr||'Your Course', code:programmeStr||'', moduleCount:0, duration:'' };
-    result.modules = [];
-    return result;
+  // Check crypto.subtle is available (requires HTTPS + modern browser)
+  if (!window.crypto || !window.crypto.subtle) {
+    document.getElementById('screen-login').innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:32px;text-align:center;">'
+      +'<div><div style="font-size:48px;margin-bottom:16px;">⚠️</div>'
+      +'<div style="font-family:DM Serif Display,serif;font-size:24px;color:#0D1B3E;margin-bottom:10px;">Browser Not Supported</div>'
+      +'<div style="font-size:14px;color:#64748B;line-height:1.7;max-width:340px;">Please open this page in an up-to-date browser over a secure connection (HTTPS). Try Chrome, Firefox, or Safari.</div>'
+      +'</div></div>';
+    showScreen('screen-login');
+    return;
   }
-}
-
-// ── FIX 3+4: loadEnrolments — robust fallback that includes approved additional courses ──
-async function loadEnrolments() {
-  if (!currentStudent) return;
-  try {
-    var rows = await sbGet('enrolments',
-      'student_id=eq.'+currentStudent.id+'&status=eq.active&order=enrolled_at.asc');
-    ALL_ENROLMENTS = rows && rows.length ? rows : [];
-    // If enrolments table is empty but student has a programme, add synthetic row
-    if (!ALL_ENROLMENTS.length && currentStudent.programme) {
-      ALL_ENROLMENTS = CURRENT_COURSE ? [{
-        course_id: CURRENT_COURSE.id,
-        programme: currentStudent.programme,
-        status: 'active'
-      }] : [];
-    }
-  } catch(e) {
-    // Table unreachable — build fallback from student record + approved additional applications
-    var fallback = CURRENT_COURSE ? [{
-      course_id: CURRENT_COURSE.id,
-      programme: currentStudent.programme,
-      status: 'active'
-    }] : [];
-    try {
-      // Also pull approved additional courses so they stay hidden from the modal
-      var approvedApps = await sbGet('applications',
-        'existing_student_id=eq.'+currentStudent.id
-        +'&type=eq.additional&status=eq.approved&select=programme');
-      (approvedApps||[]).forEach(function(a){
-        if (a.programme && !fallback.some(function(f){return f.programme===a.programme;})) {
-          fallback.push({ course_id: null, programme: a.programme, status: 'active' });
+  // Pre-fill remembered credentials and auto-login if hash stored
+  var remembered = getRemembered();
+  if (remembered && remembered.email) {
+    var emailEl = document.getElementById('loginEmail');
+    if (emailEl) emailEl.value = remembered.email;
+    var cb = document.getElementById('rememberMe');
+    if (cb) cb.checked = true;
+    // Show a subtle "signing you in..." state
+    var loginBtn = document.getElementById('loginBtn');
+    if (loginBtn && remembered.passHash) {
+      loginBtn.textContent = 'Signing you in...';
+      loginBtn.disabled = true;
+      // Attempt auto-login with stored hash
+      try {
+        var res = await fetch(SUPA_URL + '/rest/v1/students?email=eq.' + encodeURIComponent(remembered.email) + '&select=*', {
+          headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+        });
+        var results = await res.json();
+        if (results && results.length && results[0].password_hash === remembered.passHash && results[0].status === 'active') {
+          var student = results[0];
+          currentStudent = student;
+          var dbResult = await loadCourseAndModulesFromDB(student.programme);
+          CURRENT_COURSE = dbResult.course;
+          MODULES = dbResult.modules;
+          await loadProgress().catch(function(){});
+          saveSession(student, CURRENT_COURSE, completedModules);
+          document.getElementById('topbar').style.display = 'flex';
+          document.getElementById('topbarName').textContent = student.first_name;
+          document.getElementById('dashName').textContent = 'Welcome back, ' + student.first_name + '.';
+          var safeSet = function(id, val, isHtml) {
+            var el = document.getElementById(id);
+            if (!el || !CURRENT_COURSE) return;
+            if (isHtml) el.innerHTML = val; else el.textContent = val;
+          };
+          safeSet('enrolledCourseNum', CURRENT_COURSE.title);
+          safeSet('enrolledCourseTitle', CURRENT_COURSE.title);
+          safeSet('enrolledCourseDesc', '');
+          safeSet('enrolledCourseMeta', '📖 ' + MODULES.length + ' Module' + (MODULES.length !== 1 ? 's' : '') + ' &nbsp;·&nbsp; ✍ Assessment per module &nbsp;·&nbsp; 🎓 Final exam (in-person)', true);
+          renderDashboard();
+          history.replaceState({ screen: 'dash' }, '', '/portal');
+          showScreen('screen-dash');
+          loadAnnouncements();
+          return;
         }
-      });
-    } catch(e2){}
-    ALL_ENROLMENTS = fallback;
+      } catch(autoErr) { /* fall through to manual login */ }
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Sign in →';
+    }
   }
-}
+  // Show biometric button if available
+  showBiometricButton();
 
-// ── PROGRESS ──────────────────────────────────────────────────────────────────
-async function loadProgress() {
-  if (!currentStudent) return;
-  try {
-    var rows = await sbGet('progress','student_id=eq.'+currentStudent.id+'&select=module_index,course_id');
-    var courseId = CURRENT_COURSE ? CURRENT_COURSE.id : null;
-    var courseRows = courseId ? rows.filter(function(r){ return r.course_id===courseId; }) : [];
-    completedModules = (courseRows.length ? courseRows : rows)
-      .map(function(r){ return r.module_index; })
-      .filter(function(v,i,a){ return a.indexOf(v)===i; });
+  // Restore session if active — reload course + modules fresh from DB
+  var session = loadSession();
+  if (session && session.student && session.student.status === 'active') {
+    currentStudent = session.student;
+    // Re-load from DB so any admin changes (new modules, edits) are always fresh
+    var dbResult = await loadCourseAndModulesFromDB(session.student.programme);
+    CURRENT_COURSE = dbResult.course;
+    MODULES = dbResult.modules;
+    completedModules = session.completedModules || [];
+    // Re-fetch progress from DB to stay current
+    await loadProgress().catch(function(){});
+    // Refresh session timestamp
     saveSession(currentStudent, CURRENT_COURSE, completedModules);
-  } catch(e){ completedModules=[]; }
-}
-
-async function saveProgress(modIndex) {
-  if (!currentStudent) return;
-  try {
-    await fetch(SUPA_URL+'/rest/v1/progress', {
-      method:'POST',
-      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body:JSON.stringify({student_id:currentStudent.id,course_id:CURRENT_COURSE?CURRENT_COURSE.id:'unknown',module_index:modIndex,completed_at:new Date().toISOString()})
-    });
-  } catch(e){}
-  saveSession(currentStudent, CURRENT_COURSE, completedModules);
-}
-
-async function saveAttempt(modIndex, score, total, passed) {
-  if (!currentStudent) return;
-  try {
-    await sbPost('assessment_attempts',{student_id:currentStudent.id,course_id:CURRENT_COURSE?CURRENT_COURSE.id:1,module_index:modIndex,score:score,total:total,passed:passed,attempted_at:new Date().toISOString()});
-  } catch(e){}
-}
-
-// ── AUTH ──────────────────────────────────────────────────────────────────────
-async function doLogin() {
-  var emailEl=document.getElementById('loginEmail');
-  var passEl=document.getElementById('loginPass');
-  var btn=document.getElementById('loginBtn');
-  var email=emailEl.value.trim().toLowerCase();
-  var pass=passEl.value;
-  if (!email||!pass){showErr('Please enter your email and password.');return;}
-  btn.disabled=true; btn.textContent='Signing in...';
-  document.getElementById('loginErr').style.display='none';
-  try {
-    var hash = await hashPassword(pass);
-    var res = await fetch(SUPA_URL+'/rest/v1/students?email=eq.'+encodeURIComponent(email)+'&select=*',
-      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
-    if (!res.ok) throw new Error('Network error ('+res.status+'). Please try again.');
-    var results = await res.json();
-    if (!results||!results.length){showErr('No account found with that email. Have you been approved yet?');btn.disabled=false;btn.textContent='Sign in →';return;}
-    var student=results[0];
-    if (student.password_hash!==hash){showErr('Incorrect password. Please try again, or use Forgot password below.');btn.disabled=false;btn.textContent='Sign in →';return;}
-    if (student.status!=='active'){showErr('Your account is pending approval. The Academy will contact you once activated.');btn.disabled=false;btn.textContent='Sign in →';return;}
-    fetch(SUPA_URL+'/rest/v1/students?id=eq.'+student.id,{method:'PATCH',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json'},body:JSON.stringify({last_login:new Date().toISOString()})}).catch(function(){});
-    var rememberCb=document.getElementById('rememberMe');
-    if (rememberCb&&rememberCb.checked) saveRememberMe(email,hash);
-    else clearRememberMe();
-    currentStudent=student;
-    var dbResult=await loadCourseAndModulesFromDB(student.programme);
-    CURRENT_COURSE=dbResult.course; MODULES=dbResult.modules;
-    await loadEnrolments();
-    await loadProgress();
-    saveSession(student,CURRENT_COURSE,completedModules);
-    initDashUI(student);
+    document.getElementById('topbar').style.display = 'flex';
+    document.getElementById('topbarName').textContent = session.student.first_name;
+    document.getElementById('dashName').textContent = 'Welcome back, ' + session.student.first_name + '.';
+    var safeSet = function(id, val, isHtml) {
+      var el = document.getElementById(id);
+      if (!el || !CURRENT_COURSE) return;
+      if (isHtml) el.innerHTML = val; else el.textContent = val;
+    };
+    safeSet('enrolledCourseNum', CURRENT_COURSE.title);
+    safeSet('enrolledCourseTitle', CURRENT_COURSE.title);
+    safeSet('enrolledCourseDesc', '');
+    safeSet('enrolledCourseMeta',
+      '📖 ' + MODULES.length + ' Module' + (MODULES.length !== 1 ? 's' : '') + ' &nbsp;·&nbsp; ✍ Assessment per module &nbsp;·&nbsp; 🎓 Final exam (in-person)', true);
     renderDashboard();
     history.replaceState({screen:'dash'},'','/portal');
     showScreen('screen-dash');
     loadAnnouncements();
-    offerBiometricSave(email,hash);
-  } catch(e) {
-    showErr('Login error: '+(e.message||'Unable to connect. Check your internet and try again.'));
-    btn.disabled=false; btn.textContent='Sign in →';
-  }
-}
-
-function initDashUI(student) {
-  document.getElementById('topbar').style.display='flex';
-  document.getElementById('topbarName').textContent=student.first_name;
-  document.getElementById('dashName').textContent='Welcome back, '+student.first_name+'.';
-  var titleEl=document.getElementById('enrolledCourseTitle');
-  if (titleEl&&CURRENT_COURSE) titleEl.textContent=CURRENT_COURSE.title;
-  var metaEl=document.getElementById('enrolledCourseMeta');
-  if (metaEl&&MODULES) metaEl.innerHTML='📖 '+MODULES.length+' Module'+(MODULES.length!==1?'s':'')
-    +' &nbsp;·&nbsp; ✍ Assessment per module &nbsp;·&nbsp; 🎓 Final exam (in-person)';
-}
-
-function showErr(msg) {
-  var err=document.getElementById('loginErr');
-  err.textContent=msg; err.style.display='block';
-}
-
-function logout() {
-  clearSession();
-  currentStudent=null; completedModules=[]; currentMod=0;
-  answers={}; writtenAnswers={}; submitted=false; timerDone=false; scrollDone=false;
-  if (timerInterval) clearInterval(timerInterval);
-  document.getElementById('topbar').style.display='none';
-  document.getElementById('loginEmail').value='';
-  document.getElementById('loginPass').value='';
-  document.getElementById('loginErr').style.display='none';
-  document.getElementById('loginBtn').disabled=false;
-  document.getElementById('loginBtn').textContent='Sign in →';
-  history.pushState({},'','/portal');
-  showScreen('screen-login');
-}
-
-// ── NAVIGATION ────────────────────────────────────────────────────────────────
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
-  document.getElementById(id).classList.add('active');
-  document.getElementById('topbar').style.display=(id==='screen-login')?'none':'flex';
-  window.scrollTo(0,0);
-}
-function goDash() {
-  history.pushState({screen:'dash'},'','/portal');
-  showScreen('screen-dash');
-  loadAnnouncements();
-}
-async function goCourse() {
-  await loadProgress().catch(function(){});
-  renderCourse();
-  history.pushState({screen:'course'},'','/portal/course');
-  showScreen('screen-course');
-}
-
-// ── DASHBOARD ─────────────────────────────────────────────────────────────────
-function renderDashboard() {
-  var multiSection=document.getElementById('multiCourseSection');
-  var singleSection=document.getElementById('singleCourseSection');
-  if (ALL_ENROLMENTS.length>1) {
-    if (multiSection) multiSection.style.display='block';
-    if (singleSection) singleSection.style.display='none';
-    var grid=document.getElementById('multiCourseGrid');
-    if (grid) {
-      grid.innerHTML=ALL_ENROLMENTS.map(function(e){
-        var isCurrent=e.course_id===(CURRENT_COURSE?CURRENT_COURSE.id:null)
-          || e.programme===(currentStudent?currentStudent.programme:'');
-        return '<div class="course-card" style="margin-bottom:12px;'+(isCurrent?'border-color:var(--navy);':'')+'" data-cid="'+e.course_id+'" data-prog="'+e.programme+'" onclick="switchCourse(this.dataset.cid,this.dataset.prog)">'
-          +'<div class="course-card-band"></div>'
-          +'<div class="course-card-body">'
-          +'<div class="course-status-pill">✓ '+(isCurrent?'Currently Open':'Enrolled &amp; Active')+'</div>'
-          +'<div class="course-card-title">'+e.programme+'</div>'
-          +'</div>'
-          +'<div class="course-card-cta"><div class="course-card-cta-text">'+(isCurrent?'Continue Course →':'Open Course →')+'</div></div>'
-          +'</div>';
-      }).join('');
-    }
-  } else {
-    if (multiSection) multiSection.style.display='none';
-    if (singleSection) singleSection.style.display='block';
-  }
-  renderOtherCourses();
-}
-
-async function switchCourse(courseId, programme) {
-  var dbResult=await loadCourseAndModulesFromDB(programme);
-  CURRENT_COURSE=dbResult.course; MODULES=dbResult.modules;
-  await loadProgress();
-  saveSession(currentStudent,CURRENT_COURSE,completedModules);
-  goCourse();
-}
-
-function renderOtherCourses() {
-  var container=document.getElementById('otherCoursesList');
-  if (!container||!CURRENT_COURSE) return;
-  var enrolledIds=ALL_ENROLMENTS.map(function(e){return e.course_id;});
-  var enrolledTitles=ALL_ENROLMENTS.map(function(e){return e.programme;});
-  var others=ALL_DB_COURSES.filter(function(c){
-    return enrolledIds.indexOf(c.id)===-1&&enrolledTitles.indexOf(c.title)===-1&&c.id!==CURRENT_COURSE.id;
-  });
-  if (!others.length){container.innerHTML='<p style="font-size:13px;color:var(--muted);">More courses coming soon.</p>';return;}
-  container.innerHTML=others.map(function(c,i){
-    return '<div class="other-course-card">'
-      +'<div style="position:absolute;top:16px;right:16px;font-size:14px;">🔒</div>'
-      +'<div class="other-course-num">Course '+String(i+2).padStart(2,'0')+'</div>'
-      +'<div class="other-course-title">'+c.title+'</div>'
-      +'<div class="other-course-tag">'+c.rows.length+' Module'+(c.rows.length!==1?'s':'')+'</div>'
-      +'</div>';
-  }).join('');
-}
-
-// ── ADD ANOTHER PROGRAMME ─────────────────────────────────────────────────────
-function showAddCourseModal() {
-  var existing=document.getElementById('addCourseModal');
-  if (existing) existing.remove();
-
-  // Build list of courses student is NOT already in
-  var enrolledIds=ALL_ENROLMENTS.map(function(e){return e.course_id;});
-  var enrolledTitles=ALL_ENROLMENTS.map(function(e){return e.programme;});
-  if (CURRENT_COURSE) enrolledIds.push(CURRENT_COURSE.id);
-  if (currentStudent&&currentStudent.programme) enrolledTitles.push(currentStudent.programme);
-
-  var available=ALL_DB_COURSES.filter(function(c){
-    return enrolledIds.indexOf(c.id)===-1&&enrolledTitles.indexOf(c.title)===-1;
-  });
-
-  if (!available.length) {
-    showInlineNotice('You are already enrolled in all available programmes.','info');
     return;
   }
+  showScreen('screen-login');
+})();
 
-  var modal=document.createElement('div');
-  modal.id='addCourseModal';
-  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;';
-  modal.innerHTML='<div style="background:white;border-radius:16px;padding:28px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;">'
-    +'<div style="font-family:DM Serif Display,serif;font-size:22px;color:var(--navy);margin-bottom:6px;">Add Another Programme</div>'
-    +'<div style="font-size:13px;color:var(--muted);margin-bottom:20px;">Select a programme and upload your payment receipt. Your existing account details will be used.</div>'
-    +'<div style="margin-bottom:14px;">'
-    +'<label style="font-size:12px;font-weight:700;display:block;margin-bottom:6px;">Select Programme <span style="color:var(--danger);">*</span></label>'
-    +'<div id="addCourseList" style="display:flex;flex-direction:column;gap:8px;">'
-    +available.map(function(c){
-      return '<div style="border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all 0.15s;" data-cid="'+c.id+'" data-title="'+c.title.replace(/"/g,'&quot;')+'" onclick="selectAddCourse(this)">'
-        +'<div style="width:10px;height:10px;border-radius:50%;background:'+c.color+';flex-shrink:0;"></div>'
-        +'<div style="font-size:13px;font-weight:600;color:var(--text);">'+c.title+'</div>'
-        +'</div>';
-    }).join('')
-    +'</div></div>'
-    +'<div style="background:var(--gold-light);border:1.5px solid #E8D48A;border-radius:12px;padding:16px 18px;margin-bottom:14px;">'
-    +'<div style="font-size:11px;font-weight:700;color:var(--gold-dark);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;">Payment Required</div>'
-    +'<div style="font-size:13px;color:var(--navy);font-weight:700;margin-bottom:8px;" id="addCourseAmount">₦5,000</div>'
-    +'<div style="font-size:12px;color:var(--gold-dark);margin-bottom:4px;" id="addCoursePayMsg">Select a programme above</div>'
-    +'<div id="addPayDetails" style="display:none;font-size:12px;color:var(--gold-dark);line-height:1.7;"></div>'
-    +'</div>'
-    +'<div style="margin-bottom:16px;">'
-    +'<label style="font-size:12px;font-weight:700;display:block;margin-bottom:6px;">Payment Receipt <span style="color:var(--danger);">*</span></label>'
-    +'<div style="border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;" onclick="document.getElementById(\'addCourseReceiptInput\').click()" id="addReceiptBox">'
-    +'<div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:4px;">Tap to upload receipt</div>'
-    +'<div style="font-size:12px;color:var(--muted);">JPG, PNG or PDF</div>'
-    +'<div style="font-size:12px;color:var(--ok);margin-top:4px;" id="addReceiptName"></div>'
-    +'</div>'
-    +'<input type="file" id="addCourseReceiptInput" style="display:none;" accept="image/*,.pdf" onchange="handleAddReceipt(this)"/>'
-    +'</div>'
-    +'<div id="addCourseErr" style="display:none;font-size:12px;color:var(--danger);background:var(--danger-light);border-radius:8px;padding:9px 13px;margin-bottom:12px;"></div>'
-    +'<div style="display:flex;gap:8px;">'
-    +'<button class="btn btn-primary" onclick="submitAddCourse()" id="addCourseBtn">Submit Request</button>'
-    +'<button class="btn btn-secondary" onclick="document.getElementById(\'addCourseModal\').remove()">Cancel</button>'
-    +'</div></div>';
-  modal.addEventListener('click',function(e){if(e.target===modal)modal.remove();});
-  document.body.appendChild(modal);
 
-  // Load payment settings
-  sbGet('site_settings','key=in.(course_amount,payment_bank,payment_acc_name,payment_acc_num)&select=key,value')
-    .then(function(rows){
-      var s={};(rows||[]).forEach(function(r){s[r.key]=r.value;});
-      var amt=parseInt(s['course_amount'])||5000;
-      var amtEl=document.getElementById('addCourseAmount');
-      if(amtEl) amtEl.textContent='₦'+amt.toLocaleString();
-      var detEl=document.getElementById('addPayDetails');
-      if(detEl&&s['payment_bank']){
-        detEl.innerHTML='Bank: <strong>'+s['payment_bank']+'</strong><br>'
-          +'Account Name: <strong>'+s['payment_acc_name']+'</strong><br>'
-          +'Account Number: <strong>'+s['payment_acc_num']+'</strong>';
-        detEl.style.display='block';
-      }
-    }).catch(function(){});
-}
+// ── BIOMETRIC AUTHENTICATION ──────────────────────────────────────────────────
+var BIOMETRIC_AVAILABLE = false;
 
-var addCourseSelected=null;
-var addCourseFile=null;
-
-function selectAddCourse(el) {
-  document.querySelectorAll('#addCourseList > div').forEach(function(d){
-    d.style.borderColor='var(--border)';d.style.background='white';
-  });
-  el.style.borderColor='var(--navy)';el.style.background='var(--navy-pale)';
-  addCourseSelected={id:el.dataset.cid, title:el.dataset.title};
-  var msgEl=document.getElementById('addCoursePayMsg');
-  if(msgEl) msgEl.textContent='Paying for: '+el.dataset.title;
-}
-
-function handleAddReceipt(input) {
-  if(input.files&&input.files[0]){
-    addCourseFile=input.files[0];
-    var nameEl=document.getElementById('addReceiptName');
-    if(nameEl) nameEl.textContent='📎 '+addCourseFile.name;
-    var box=document.getElementById('addReceiptBox');
-    if(box) box.style.borderColor='var(--ok)';
-  }
-}
-
-async function submitAddCourse() {
-  var errEl=document.getElementById('addCourseErr');
-  var btn=document.getElementById('addCourseBtn');
-  if(!addCourseSelected){errEl.textContent='Please select a programme.';errEl.style.display='block';return;}
-  if(!addCourseFile){errEl.textContent='Please upload your payment receipt.';errEl.style.display='block';return;}
-
-  var selectedTitle=addCourseSelected.title;
-  var selectedId=addCourseSelected.id;
-
-  btn.disabled=true;btn.textContent='Checking...';
+async function checkBiometricAvailable() {
   try {
-    // FIX 5a: Check active enrolments first (server-side safety net)
-    try {
-      var enrolCheck=await fetch(
-        SUPA_URL+'/rest/v1/enrolments?student_id=eq.'+currentStudent.id
-          +'&programme=eq.'+selectedTitle.replace(/&/g,'%26')
-          +'&status=eq.active&select=id',
-        {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}}
-      );
-      var enrolRows=await enrolCheck.json();
-      if(enrolRows&&enrolRows.length){
-        btn.disabled=false;btn.textContent='Submit Request';
-        errEl.textContent='You are already enrolled in this programme.';errEl.style.display='block';return;
+    if (!window.PublicKeyCredential) return false;
+    var available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+    BIOMETRIC_AVAILABLE = available;
+    return available;
+  } catch(e) { return false; }
+}
+
+async function saveBiometricCredential(email, passHash) {
+  try {
+    if (!await checkBiometricAvailable()) return false;
+    var userId = new TextEncoder().encode(email);
+    var challenge = new Uint8Array(32);
+    crypto.getRandomValues(challenge);
+    var credential = await navigator.credentials.create({
+      publicKey: {
+        challenge: challenge,
+        rp: { name: 'Catholic Music Academy', id: location.hostname },
+        user: { id: userId, name: email, displayName: email },
+        pubKeyCredParams: [{ alg: -7, type: 'public-key' }],
+        authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required' },
+        timeout: 60000
       }
-    } catch(enrolErr){}
-
-    // FIX 5b: Check for existing pending application
-    var pendingCheck=await fetch(
-      SUPA_URL+'/rest/v1/applications?email=eq.'+encodeURIComponent(currentStudent.email)
-        +'&programme=eq.'+selectedTitle.replace(/&/g,'%26')
-        +'&status=eq.pending&select=id',
-      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}}
-    );
-    var pendingRows=await pendingCheck.json();
-    if(pendingRows&&pendingRows.length){
-      btn.disabled=false;btn.textContent='Submit Request';
-      errEl.textContent='You already have a pending request for this programme. Please wait for the Academy to review it.';
-      errEl.style.display='block';return;
-    }
-
-    btn.textContent='Submitting...';
-    var ref='CMA-ADD-'+Date.now().toString().slice(-6);
-
-    // Upload receipt
-    var receiptPath='',receiptName=addCourseFile.name;
-    try {
-      var ext=addCourseFile.name.split('.').pop();
-      receiptPath=ref+'_receipt.'+ext;
-      var upRes=await fetch(SUPA_URL+'/storage/v1/object/receipts/'+receiptPath,{
-        method:'POST',
-        headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':addCourseFile.type||'application/octet-stream','x-upsert':'true'},
-        body:addCourseFile
-      });
-      if(!upRes.ok){receiptPath='';}
-    } catch(e){receiptPath='';}
-
-    var appPayload={
-      ref:ref,
-      first_name:currentStudent.first_name,
-      last_name:currentStudent.last_name,
-      email:currentStudent.email,
-      phone:currentStudent.phone||currentStudent.whatsapp||'',
-      programme:selectedTitle,
-      background:'Existing student — additional course request',
-      status:'pending',
-      type:'additional',
-      existing_student_id:currentStudent.id
-    };
-    if(receiptPath){appPayload.receipt_path=receiptPath;appPayload.receipt_name=receiptName;}
-
-    var appRes=await fetch(SUPA_URL+'/rest/v1/applications',{
-      method:'POST',
-      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body:JSON.stringify(appPayload)
     });
-    if(!appRes.ok) throw new Error('Application save failed: '+(await appRes.text()));
-
-    var modal=document.getElementById('addCourseModal');
-    if(modal) modal.remove();
-
-    // Send emails — non-blocking
-    fetch('/api/application-received',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({to:currentStudent.email,firstName:currentStudent.first_name,programme:selectedTitle,ref:ref,testMode:false})}).catch(function(){});
-    fetch('/api/notify-admin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studentName:currentStudent.first_name+' '+currentStudent.last_name,studentEmail:currentStudent.email,programme:selectedTitle,ref:ref,type:'additional'})}).catch(function(){});
-
-    addCourseSelected=null;addCourseFile=null;
-    showInlineNotice('Request submitted. The Academy will review your payment and add the course to your portal shortly.','ok');
-
-  } catch(e){
-    errEl.textContent='Error: '+e.message;errEl.style.display='block';
-    btn.disabled=false;btn.textContent='Submit Request';
+    // Store credential ID alongside passHash for biometric login
+    var credId = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
+    localStorage.setItem('cma_biometric', JSON.stringify({
+      email: email,
+      passHash: passHash,
+      credId: credId,
+      at: Date.now()
+    }));
+    return true;
+  } catch(e) {
+    console.log('Biometric save skipped:', e.message);
+    return false;
   }
 }
 
-function showInlineNotice(msg,type) {
-  var existing=document.getElementById('inlineNotice');
-  if(existing) existing.remove();
-  var div=document.createElement('div');
-  div.id='inlineNotice';
-  var bg=type==='ok'?'var(--ok-light)':type==='danger'?'var(--danger-light)':'var(--navy-light)';
-  var color=type==='ok'?'var(--ok)':type==='danger'?'var(--danger)':'var(--navy-mid)';
-  div.style.cssText='background:'+bg+';border-radius:10px;padding:14px 18px;font-size:13px;color:'+color+';font-weight:600;margin-bottom:16px;';
-  div.textContent=msg;
-  var body=document.querySelector('.dash-body');
-  if(body) body.insertBefore(div,body.firstChild);
-  setTimeout(function(){if(div.parentNode)div.remove();},6000);
+async function biometricLogin() {
+  try {
+    var stored = JSON.parse(localStorage.getItem('cma_biometric')||'null');
+    if (!stored || !stored.credId) return false;
+    if (Date.now() - stored.at > 30*24*60*60*1000) { localStorage.removeItem('cma_biometric'); return false; }
+    var credId = Uint8Array.from(atob(stored.credId), c => c.charCodeAt(0));
+    var challenge = new Uint8Array(32);
+    crypto.getRandomValues(challenge);
+    await navigator.credentials.get({
+      publicKey: {
+        challenge: challenge,
+        rpId: location.hostname,
+        allowCredentials: [{ id: credId, type: 'public-key' }],
+        userVerification: 'required',
+        timeout: 60000
+      }
+    });
+    // Biometric verified — login with stored hash
+    return stored;
+  } catch(e) {
+    console.log('Biometric login failed:', e.message);
+    return false;
+  }
 }
 
-// ── ANNOUNCEMENTS ─────────────────────────────────────────────────────────────
-async function loadAnnouncements() {
+function showBiometricButton() {
+  var stored = null;
+  try { stored = JSON.parse(localStorage.getItem('cma_biometric')||'null'); } catch(e){}
+  if (!stored) return;
+  var loginCard = document.querySelector('.login-card');
+  if (!loginCard) return;
+  var bioBtn = document.createElement('button');
+  bioBtn.className = 'btn btn-secondary';
+  bioBtn.style.cssText = 'width:100%;margin-bottom:14px;border-color:var(--navy);color:var(--navy);display:flex;align-items:center;justify-content:center;gap:8px;';
+  bioBtn.innerHTML = '&#128274; Sign in with Biometrics';
+  bioBtn.onclick = async function() {
+    bioBtn.disabled = true; bioBtn.textContent = 'Verifying...';
+    var result = await biometricLogin();
+    if (!result) {
+      bioBtn.disabled = false; bioBtn.innerHTML = '&#128274; Sign in with Biometrics';
+      return;
+    }
+    // Use stored credentials to login
+    document.getElementById('loginEmail').value = result.email;
+    // Trigger auto-login with stored hash
+    var res = await fetch(SUPA_URL+'/rest/v1/students?email=eq.'+encodeURIComponent(result.email)+'&select=*',
+      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    var rows = await res.json();
+    if (rows && rows.length && rows[0].password_hash === result.passHash && rows[0].status === 'active') {
+      var student = rows[0];
+      currentStudent = student;
+      var dbResult = await loadCourseAndModulesFromDB(student.programme);
+      CURRENT_COURSE = dbResult.course; MODULES = dbResult.modules;
+      await loadProgress().catch(function(){});
+      await loadEnrolments().catch(function(){});
+      saveSession(student, CURRENT_COURSE, completedModules);
+      document.getElementById('topbar').style.display = 'flex';
+      document.getElementById('topbarName').textContent = student.first_name;
+      document.getElementById('dashName').textContent = 'Welcome back, '+student.first_name+'.';
+      renderDashboard();
+      history.replaceState({screen:'dash'},'','/portal');
+      showScreen('screen-dash');
+      loadAnnouncements();
+    } else {
+      bioBtn.disabled=false; bioBtn.innerHTML='&#128274; Sign in with Biometrics';
+      showErr('Biometric session expired. Please sign in manually.');
+    }
+  };
+  var loginBtn = document.getElementById('loginBtn');
+  if (loginBtn) loginBtn.before(bioBtn);
+}
+
+// After successful login, offer biometric save
+async function offerBiometricSave(email, passHash) {
   try {
-    var rows=await sbGet('announcements','order=created_at.desc&limit=3');
-    if(!rows.length) return;
-    var banner=document.getElementById('dashAnnouncements');
-    if(!banner) return;
-    var icons={info:'ℹ️',warn:'⚠️',ok:'✅'};
-    var bgs={info:'var(--navy-light)',warn:' var(--gold-light)',ok:'var(--ok-light)'};
-    var colors={info:'var(--navy-mid)',warn:'var(--gold-dark)',ok:'var(--ok)'};
-    banner.innerHTML=rows.map(function(a){
-      return '<div style="background:'+(bgs[a.type]||'var(--navy-light)')+';border-radius:10px;padding:12px 16px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start;">'
-        +'<span style="font-size:16px;flex-shrink:0;">'+(icons[a.type]||'ℹ️')+'</span>'
-        +'<div><div style="font-size:13px;font-weight:700;color:'+(colors[a.type]||'var(--navy)')+';margin-bottom:2px;">'+a.title+'</div>'
-        +'<div style="font-size:12px;color:var(--muted);">'+a.body+'</div></div></div>';
-    }).join('');
-    banner.style.display='block';
+    if (!await checkBiometricAvailable()) return;
+    var existing = localStorage.getItem('cma_biometric');
+    if (existing) return; // already saved
+    var rememberCb = document.getElementById('rememberMe');
+    if (!rememberCb || !rememberCb.checked) return;
+    // Prompt after short delay so dashboard renders first
+    setTimeout(async function() {
+      if (confirm('Would you like to enable biometric sign-in (Face ID / Fingerprint) for future logins?')) {
+        var saved = await saveBiometricCredential(email, passHash);
+        if (saved) {
+          alert('Biometric sign-in enabled. Next time, tap the biometric button to sign in instantly.');
+        }
+      }
+    }, 1500);
   } catch(e){}
 }
 
-// ── COURSE ────────────────────────────────────────────────────────────────────
-function renderCourse() {
-  if(CURRENT_COURSE){
-    document.getElementById('courseTitle2').textContent=CURRENT_COURSE.title;
-    document.getElementById('courseH1').textContent=CURRENT_COURSE.title;
-  }
-  if(!MODULES||!MODULES.length){
-    document.getElementById('progressFill').style.width='0%';
-    document.getElementById('progressText').textContent='Content coming soon';
-    document.getElementById('modulesList').innerHTML='<div style="text-align:center;padding:48px 24px;color:var(--muted);"><div style="font-size:40px;margin-bottom:16px;">📚</div><div style="font-family:DM Serif Display,serif;font-size:22px;color:var(--text);margin-bottom:8px;">Content Coming Soon</div><div style="font-size:14px;line-height:1.65;color:var(--muted);">The Academy is preparing content for <strong>'+((CURRENT_COURSE&&CURRENT_COURSE.title)||'this course')+'</strong>.<br>Check back soon or contact your coordinator.</div></div>';
-    return;
-  }
-  var pct=Math.round((completedModules.length/MODULES.length)*100);
-  document.getElementById('progressFill').style.width=pct+'%';
-  document.getElementById('progressText').textContent=completedModules.length+' of '+MODULES.length+' complete';
-  document.getElementById('modulesList').innerHTML=MODULES.map(function(m,i){
-    var done=completedModules.includes(i);
-    var locked=i>0&&!completedModules.includes(i-1);
-    return '<div class="module-card'+(done?' mc-done-card':locked?' mc-locked':' mc-active')+'"'+(locked?'':' onclick="openMod('+i+')"')+'>'
-      +'<div class="mc-num'+(done?' mc-done':'')+'">'+(done?'✓':(i+1))+'</div>'
-      +'<div class="mc-body"><div class="mc-label">'+m.num+'</div><div class="mc-title">'+m.title+'</div>'
-      +'<div class="mc-meta">📖 Reading · ⏱ '+m.duration+'</div>'
-      +'<span class="mc-status '+(done?'s-done':locked?'s-locked':'s-open')+'">'+(done?'✓ Complete':locked?'🔒 Complete previous module':'▶ Open')+'</span>'
-      +'</div>'+(locked?'':'<div class="mc-arrow">›</div>')+'</div>';
-  }).join('');
-}
-
-// ── YOUTUBE NORMALISER ────────────────────────────────────────────────────────
-function toYouTubeEmbed(url) {
-  if(!url) return '';
-  url=url.trim();
-  if(url.indexOf('youtube.com/embed/')!==-1) return url.split('?')[0]+'?rel=0&modestbranding=1';
-  var videoId=null;
-  var m=url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);if(m)videoId=m[1];
-  if(!videoId){m=url.match(/[?&]v=([A-Za-z0-9_-]{11})/);if(m)videoId=m[1];}
-  if(!videoId){m=url.match(/shorts\/([A-Za-z0-9_-]{11})/);if(m)videoId=m[1];}
-  if(!videoId){m=url.match(/embed\/([A-Za-z0-9_-]{11})/);if(m)videoId=m[1];}
-  if(videoId) return 'https://www.youtube.com/embed/'+videoId+'?rel=0&modestbranding=1';
-  return url;
-}
-
-// ── MODULE ────────────────────────────────────────────────────────────────────
-function openMod(i) {
-  history.pushState({screen:'module',mod:i},'','/portal/module-'+(i+1));
-  currentMod=i; answers={}; writtenAnswers={}; submitted=false;
-  timerDone=false; scrollDone=false;
-  if(timerInterval) clearInterval(timerInterval);
-  var m=MODULES[i];
-  PASS_MARK=m.passMark||100;
-  MAX_ATTEMPTS=m.maxAttempts||0;
-  currentAttemptCount=0;
-
-  // Check attempt count if capped
-  if(MAX_ATTEMPTS>0&&currentStudent){
-    sbGet('assessment_attempts','student_id=eq.'+currentStudent.id+'&module_index=eq.'+i+'&select=id').then(function(rows){
-      currentAttemptCount=rows.length;
-      if(currentAttemptCount>=MAX_ATTEMPTS){
-        var qb=document.getElementById('quizBody');
-        if(qb) qb.innerHTML='<div class="quiz-locked" style="background:var(--danger-light);border-radius:10px;padding:24px;">'
-          +'<div class="quiz-locked-icon">🔒</div>'
-          +'<div class="quiz-locked-title" style="color:var(--danger);">Attempt limit reached</div>'
-          +'<div class="quiz-locked-text">You have used all '+MAX_ATTEMPTS+' attempt(s). Please contact your instructor.</div>'
-          +'</div>';
-      }
-    }).catch(function(){});
-  }
-
-  // Pick random questions from MCQ pool
-  var pool=[...m.pool];
-  shownQuestions=[];
-  var count=Math.min(SHOW_COUNT,pool.length);
-  while(shownQuestions.length<count&&pool.length){
-    var idx=Math.floor(Math.random()*pool.length);
-    shownQuestions.push(pool.splice(idx,1)[0]);
-  }
-
-  document.getElementById('modBreadcrumb').textContent=m.title;
-  var bc=document.getElementById('modBreadcrumbCourse');
-  if(bc) bc.textContent=CURRENT_COURSE?CURRENT_COURSE.title:'Course';
-  document.getElementById('modTitle').textContent=m.title;
-
-  var topicEl=document.getElementById('modTopic');
-  if(topicEl){
-    if(m.topic){topicEl.textContent=m.topic;topicEl.style.display='block';}
-    else{topicEl.style.display='none';}
-  }
-
-  // FIX 2: reading time proportional to word count (180 wpm, 60s min, 600s max)
-  var wordCount=(m.content||'').replace(/<[^>]*>/g,'').split(/\s+/).filter(Boolean).length;
-  var readMins=Math.max(1,Math.ceil(wordCount/200));
-  READ_TIME=Math.min(600,Math.max(60,Math.ceil(wordCount/180)*60));
-
-  document.getElementById('modContent').innerHTML=
-    '<div style="font-size:11px;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:8px;">'
-    +'<span>📖 ~'+readMins+' min read</span><span style="color:var(--dim);">·</span><span>'+wordCount+' words</span></div>'
-    +m.content;
-
-  // Video
-  var vw=document.getElementById('videoWrap');
-  var vs=document.getElementById('videoSection');
-  if(m.videoUrl){vw.innerHTML='<iframe src="'+toYouTubeEmbed(m.videoUrl)+'" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share" allowfullscreen loading="lazy"></iframe>';vs.style.display='block';}
-  else{vs.style.display='none';}
-
-  // Audio
-  var ap=document.getElementById('audioPlayer');
-  var as2=document.getElementById('audioSection');
-  if(m.audioTracks&&m.audioTracks.length){
-    ap.innerHTML=m.audioTracks.map(function(t){return '<div style="margin-bottom:8px;font-size:13px;font-weight:600;color:var(--text);">🎵 '+t.name+'</div><audio class="audio-native" controls src="'+t.url+'"></audio>';}).join('');
-    as2.style.display='block';
-  }else{as2.style.display='none';}
-
-  // Downloads
-  var dg=document.getElementById('downloadsGrid');
-  var ds=document.getElementById('downloadsSection');
-  if(m.downloads&&m.downloads.length){
-    dg.innerHTML=m.downloads.map(function(d){return '<a class="download-item" href="'+d.url+'" download target="_blank"><div class="dl-icon '+(d.type||'pdf')+'">'+(d.type==='music'?'🎼':'📄')+'</div><div class="dl-info"><div class="dl-name">'+d.name+'</div><div class="dl-size">'+(d.size||'')+'</div></div><div class="dl-arrow">↓</div></a>';}).join('');
-    ds.style.display='block';
-  }else{ds.style.display='none';}
-
-  // Already completed — show reflection mode
-  if(completedModules.includes(i)){
-    showScreen('screen-module');
-    document.getElementById('readTimer').style.display='none';
-    document.getElementById('quizCard').style.display='none';
-    document.getElementById('modActions').innerHTML='<button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>';
-    document.getElementById('quizResult').innerHTML='';
-    document.getElementById('quizResult').classList.remove('show');
-    setTimeout(function(){
-      if(document.getElementById('reflectionWidget')) return;
-      var widget=document.createElement('div');
-      widget.id='reflectionWidget';
-      widget.style.cssText='background:var(--ok-light);border:1.5px solid #86EFAC;border-radius:14px;padding:20px 22px;margin-top:16px;';
-      widget.innerHTML='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="font-size:16px;">✅</span><div style="font-size:13px;font-weight:700;color:var(--ok);">You have completed this module</div></div>'
-        +'<div style="font-size:12px;color:var(--ok);margin-bottom:14px;">Share additional thoughts or insights with your instructor.</div>'
-        +'<textarea id="reflectionText" placeholder="Write your thoughts, questions, or insights here..." style="width:100%;border:1.5px solid #86EFAC;border-radius:10px;padding:12px 14px;font-size:13px;font-family:DM Sans,sans-serif;outline:none;min-height:100px;resize:vertical;background:white;line-height:1.65;"></textarea>'
-        +'<button onclick="submitReflection('+i+')" class="btn btn-secondary" style="margin-top:10px;font-size:13px;border-color:var(--ok);color:var(--ok);">Send Reflection</button>'
-        +'<div id="reflectionMsg" style="display:none;font-size:12px;color:var(--ok);margin-top:8px;"></div>';
-      var ma=document.getElementById('modActions');
-      if(ma) ma.after(widget);
-    },300);
-    return;
-  }
-
-  // Fresh attempt
-  lockQuiz();
-  document.getElementById('modActions').innerHTML='';
-  document.getElementById('quizResult').innerHTML='';
-  document.getElementById('quizResult').classList.remove('show');
-  document.getElementById('readTimer').style.display='block';
-  document.getElementById('quizCard').style.display='block';
-  var rt=document.getElementById('readTimer');
-  rt.className='read-timer';
-  document.getElementById('timerMsg').textContent='Reading timer active';
-  document.getElementById('timerSub').textContent='Read through the full lesson. The assessment unlocks when you have read the content and scrolled to the end.';
-  document.getElementById('timerBar').style.cssText='width:0%;transition:none;';
-  showScreen('screen-module');
-  startReadTimer();
-  setupScrollCheck();
-}
-
-function startReadTimer() {
-  var elapsed=0;
-  var bar=document.getElementById('timerBar');
-  timerInterval=setInterval(function(){
-    elapsed++;
-    bar.style.transition='width 1s linear';
-    bar.style.width=Math.min(Math.round((elapsed/READ_TIME)*100),100)+'%';
-    if(elapsed>=READ_TIME){
-      clearInterval(timerInterval);timerDone=true;
-      document.getElementById('readTimer').classList.add('rt-unlocked');
-      document.getElementById('timerMsg').textContent='Reading period complete';
-      document.getElementById('timerSub').textContent='Now scroll to the end of the lesson to unlock the assessment.';
-      bar.style.width='100%';
-      // Auto-set scrollDone if content already visible
-      var content=document.getElementById('modContent');
-      if(content&&content.getBoundingClientRect().bottom<=(document.documentElement.clientHeight||window.innerHeight)+200){
-        scrollDone=true;
-      }
-      checkUnlock();
-    }
-  },1000);
-}
-
-function setupScrollCheck() {
-  var handler=function(){
-    var content=document.getElementById('modContent');
-    if(!content) return;
-    var vh=document.documentElement.clientHeight||window.innerHeight;
-    if(content.getBoundingClientRect().bottom<=vh+120){
-      scrollDone=true;window.removeEventListener('scroll',handler);checkUnlock();
-    }
-  };
-  window.addEventListener('scroll',handler);
-  setTimeout(handler,800);
-}
-
-function checkUnlock() {
-  if(timerDone&&scrollDone){
-    document.getElementById('readTimer').classList.add('rt-unlocked');
-    document.getElementById('timerMsg').textContent='✓ Assessment unlocked';
-    document.getElementById('timerSub').textContent='Answer all questions below to complete this module.';
-    document.getElementById('timerBar').style.width='100%';
-    document.getElementById('quizLockBadge').style.display='none';
-    renderQuiz();
-    document.getElementById('modActions').innerHTML='<button class="btn btn-primary" id="submitBtn" onclick="submitQuiz()">Submit Assessment →</button>';
-    document.getElementById('quizCard').scrollIntoView({behavior:'smooth',block:'start'});
-  }
-}
-
-function lockQuiz() {
-  document.getElementById('quizLockBadge').style.display='inline-flex';
-  document.getElementById('quizBody').innerHTML='<div class="quiz-locked"><div class="quiz-locked-icon">🔒</div><div class="quiz-locked-title">Assessment locked</div><div class="quiz-locked-text">Read through the full lesson and scroll to the end to unlock.</div></div>';
-}
-
-function renderQuiz() {
-  document.getElementById('quizBody').innerHTML=shownQuestions.map(function(q,qi){
-    return '<div class="q-item"><div class="q-text">'+(qi+1)+'. '+q.q+'</div><div class="q-options">'
-      +q.opts.map(function(opt,oi){
-        return '<div class="q-opt" id="qo-'+qi+'-'+oi+'" onclick="pick('+qi+','+oi+')">'
-          +'<div class="q-radio"><div class="q-radio-dot"></div></div>'+opt+'</div>';
-      }).join('')+'</div></div>';
-  }).join('');
-}
-
-function pick(qi,oi) {
-  if(submitted) return;
-  answers[qi]=oi;
-  shownQuestions[qi].opts.forEach(function(_,idx){document.getElementById('qo-'+qi+'-'+idx).classList.remove('sel');});
-  document.getElementById('qo-'+qi+'-'+oi).classList.add('sel');
-}
-
-async function submitQuiz() {
-  if(Object.keys(answers).length<shownQuestions.length){alert('Please answer all '+shownQuestions.length+' questions.');return;}
-  submitted=true;
-  var score=shownQuestions.filter(function(q,qi){return answers[qi]===q.ans;}).length;
-  var passCount=Math.ceil(shownQuestions.length*PASS_MARK/100);
-  currentAttemptCount++;
-  var passed=score>=passCount;
-
-  if(passed){
-    shownQuestions.forEach(function(q,qi){
-      q.opts.forEach(function(_,oi){
-        var el=document.getElementById('qo-'+qi+'-'+oi);
-        el.classList.add('disabled');
-        if(oi===q.ans) el.classList.add('correct');
-        else el.classList.remove('sel');
-      });
+// ── STUDENT FEEDBACK ─────────────────────────────────────────────────────────
+async function submitReflection(modIdx) {
+  var text = (document.getElementById('reflectionText')||{}).value||'';
+  var msgEl = document.getElementById('reflectionMsg');
+  if (!text.trim()) { if(msgEl){msgEl.textContent='Please write something before sending.';msgEl.style.display='block';} return; }
+  try {
+    await fetch(SUPA_URL+'/rest/v1/student_feedback', {
+      method:'POST',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({
+        student_id: currentStudent ? currentStudent.id : null,
+        module_index: modIdx,
+        type: 'reflection',
+        message: text.trim(),
+        module_completed: true,
+        submitted_at: new Date().toISOString(),
+        resolved: false
+      })
     });
-    var resultEl=document.getElementById('quizResult');
-    resultEl.innerHTML='<div class="qr-score">'+score+'/'+shownQuestions.length+'</div>'
-      +'<div class="qr-label">Questions correct</div>'
-      +'<div class="qr-msg pass">✓ Excellent. This module is now complete.</div>';
-    resultEl.classList.add('show');
-    if(!completedModules.includes(currentMod)){
-      completedModules.push(currentMod);
-      await saveProgress(currentMod);
-    }
-    await saveAttempt(currentMod,score,shownQuestions.length,true);
-    var isLast=currentMod===MODULES.length-1;
-    var sb=document.getElementById('submitBtn');if(sb)sb.remove();
-    document.getElementById('modActions').innerHTML=isLast
-      ?'<button class="btn btn-amber" onclick="showComplete()">🎓 Finish Course →</button><button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>'
-      :'<button class="btn btn-primary" onclick="openMod('+(currentMod+1)+')">Next Module →</button><button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>';
-    resultEl.scrollIntoView({behavior:'smooth',block:'start'});
-  } else {
-    shownQuestions.forEach(function(q,qi){
-      q.opts.forEach(function(_,oi){
-        var el=document.getElementById('qo-'+qi+'-'+oi);
-        el.classList.add('disabled');el.classList.remove('sel','correct','wrong');
-      });
+    if(msgEl){msgEl.textContent='✓ Reflection sent to your instructor.';msgEl.style.color='var(--ok)';msgEl.style.display='block';}
+    var btn = document.querySelector('#reflectionWidget button');
+    if(btn){btn.disabled=true;btn.textContent='Sent ✓';}
+    var ta = document.getElementById('reflectionText');
+    if(ta) ta.value='';
+  } catch(e) {
+    if(msgEl){msgEl.textContent='Error: '+e.message;msgEl.style.color='var(--danger)';msgEl.style.display='block';}
+  }
+}
+
+function showFeedbackModal() {
+  var existing = document.getElementById('feedbackModal');
+  if (existing) existing.remove();
+  var m = MODULES[currentMod] || {};
+  var modal = document.createElement('div');
+  modal.id = 'feedbackModal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+  modal.innerHTML = '<div style="background:white;border-radius:16px;padding:28px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,0.2);">'
+    +'<div style="font-family:DM Serif Display,serif;font-size:20px;color:var(--text);margin-bottom:4px;">Send Feedback</div>'
+    +'<div style="font-size:13px;color:var(--muted);margin-bottom:18px;">Module: '+m.title+'</div>'
+    +'<div style="margin-bottom:12px;">'
+    +'<label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:5px;">Type</label>'
+    +'<select id="fbType" style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:13px;font-family:DM Sans,sans-serif;outline:none;">'
+    +'<option value="question">❓ Question about content</option>'
+    +'<option value="issue">⚠️ Problem / technical issue</option>'
+    +'<option value="suggestion">💡 Suggestion</option>'
+    +'<option value="compliment">⭐ Compliment</option>'
+    +'</select></div>'
+    +'<div style="margin-bottom:16px;">'
+    +'<label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:5px;">Message</label>'
+    +'<textarea id="fbMessage" placeholder="Type your message here..." style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:13px;font-family:DM Sans,sans-serif;outline:none;min-height:100px;resize:vertical;"></textarea>'
+    +'</div>'
+    +'<div id="fbMsg" style="display:none;font-size:13px;color:var(--ok);background:var(--ok-light);border-radius:8px;padding:9px 13px;margin-bottom:10px;"></div>'
+    +'<div style="display:flex;gap:8px;">'
+    +'<button class="btn btn-primary" onclick="submitFeedback()">Send →</button>'
+    +'<button class="btn btn-secondary" onclick="document.getElementById(\'feedbackModal\').remove()">Cancel</button>'
+    +'</div></div>';
+  modal.addEventListener('click',function(e){if(e.target===modal)modal.remove();});
+  document.body.appendChild(modal);
+}
+
+async function submitFeedback() {
+  var typeEl = document.getElementById('fbType');
+  var msgEl = document.getElementById('fbMessage');
+  var type = typeEl ? typeEl.value : 'general';
+  var message = msgEl ? msgEl.value.trim() : '';
+  if (!message) { alert('Please enter a message.'); return; }
+  var statusEl = document.getElementById('fbMsg');
+  var btn = document.querySelector('#feedbackModal .btn-primary');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+  try {
+    var payload = {
+      student_id: currentStudent ? currentStudent.id : null,
+      module_index: currentMod,
+      type: type,
+      message: message,
+      submitted_at: new Date().toISOString(),
+      resolved: false
+    };
+    var res = await fetch(SUPA_URL+'/rest/v1/student_feedback', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer '+SUPA_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(payload)
     });
-    await saveAttempt(currentMod,score,shownQuestions.length,false);
-    var resultEl=document.getElementById('quizResult');
-    resultEl.innerHTML='<div class="qr-score">'+score+'/'+shownQuestions.length+'</div>'
-      +'<div class="qr-label">Questions correct</div>'
-      +'<div class="qr-msg fail">Study the lesson carefully and try again.</div>';
-    resultEl.classList.add('show');
-    var sb=document.getElementById('submitBtn');if(sb)sb.remove();
-    document.getElementById('modActions').innerHTML='<button class="btn btn-secondary" onclick="retryModFull()">↑ Re-read lesson</button>';
-    resultEl.scrollIntoView({behavior:'smooth',block:'start'});
-  }
-}
-
-function retryModFull() {
-  timerDone=false;scrollDone=false;submitted=false;answers={};writtenAnswers={};shownQuestions=[];
-  if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
-  var bar=document.getElementById('timerBar');if(bar)bar.style.cssText='width:0%;transition:none;';
-  var rt=document.getElementById('readTimer');if(rt)rt.className='read-timer';
-  var tm=document.getElementById('timerMsg');if(tm)tm.textContent='Reading timer active';
-  var ts=document.getElementById('timerSub');if(ts)ts.textContent='Read through the full lesson. The assessment unlocks when you have read the content and scrolled to the end.';
-  var qr=document.getElementById('quizResult');if(qr){qr.innerHTML='';qr.classList.remove('show');}
-  document.getElementById('modActions').innerHTML='';
-  lockQuiz();
-  window.scrollTo({top:0,behavior:'smooth'});
-  setTimeout(function(){
-    var m=MODULES[currentMod]||{};
-    var pool=[...(m.pool||[])];
-    shownQuestions=[];
-    var count=Math.min(SHOW_COUNT,pool.length);
-    while(shownQuestions.length<count&&pool.length){
-      var idx=Math.floor(Math.random()*pool.length);
-      shownQuestions.push(pool.splice(idx,1)[0]);
+    if (!res.ok) {
+      var errText = await res.text();
+      throw new Error(errText);
     }
-    startReadTimer();
-    setupScrollCheck();
-  },700);
-}
-
-// FIX 4: showComplete — personalised with name, course, date, module count
-function showComplete() {
-  history.pushState({screen:'complete'},'','/portal/complete');
-  var name=currentStudent?currentStudent.first_name+' '+currentStudent.last_name:'';
-  var course=CURRENT_COURSE?CURRENT_COURSE.title:'';
-  var date=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  var modCount=MODULES?MODULES.length:0;
-  var titleEl=document.getElementById('completeTitle');
-  var subEl=document.getElementById('completeSub');
-  if(titleEl) titleEl.textContent='Well done, '+(currentStudent?currentStudent.first_name:'')+'.';
-  if(subEl) subEl.innerHTML='You have completed all <strong>'+modCount+' module'+(modCount!==1?'s':'')+'</strong> of <em>'+course+'</em> on '+date+'.<br><br>Your instructor will be in touch with details for the final examination.';
-  showScreen('screen-complete');
-  // Notify admin
-  if(currentStudent){
-    fetch('/api/course-completed',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studentName:name,studentEmail:currentStudent.email,course:course,completedAt:new Date().toISOString()})}).catch(function(){});
+    if (statusEl) { statusEl.style.color='var(--ok)'; statusEl.style.background='var(--ok-light)'; statusEl.textContent='✓ Feedback sent. Thank you!'; statusEl.style.display='block'; }
+    setTimeout(function(){ var m=document.getElementById('feedbackModal'); if(m) m.remove(); }, 2000);
+  } catch(e) {
+    if (statusEl) { statusEl.style.color='var(--danger)'; statusEl.style.background='#FEE2E2'; statusEl.textContent='Error: '+(e.message||'Could not send. Create the student_feedback table in Supabase.'); statusEl.style.display='block'; }
+    if (btn) { btn.disabled = false; btn.textContent = 'Send →'; }
   }
 }
 
-// FIX 5: generateCertificate — removed DaleX branding, correct institution sig
+// ── CERTIFICATE GENERATION ────────────────────────────────────────────────────
 function generateCertificate() {
-  if(!currentStudent||!CURRENT_COURSE) return;
-  var name=currentStudent.first_name+' '+currentStudent.last_name;
-  var course=CURRENT_COURSE.title;
-  var date=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  var certId='CMA-'+Date.now().toString(36).toUpperCase();
-  var win=window.open('','_blank','width=900,height=640');
-  if(!win){alert('Please allow popups to download your statement.');return;}
+  if (!currentStudent || !CURRENT_COURSE) return;
+  var name = currentStudent.first_name + ' ' + currentStudent.last_name;
+  var course = CURRENT_COURSE.title;
+  var date = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  var certId = 'CMA-' + Date.now().toString(36).toUpperCase();
+
+  var win = window.open('','_blank','width=900,height=640');
   win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"/>'
     +'<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet"/>'
     +'<style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#f8f6f0;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:DM Sans,sans-serif;padding:24px;}'
@@ -1364,219 +1989,34 @@ function generateCertificate() {
     +'.completion{font-size:14px;color:#64748B;margin-bottom:8px;}'
     +'.course-name{font-family:DM Serif Display,serif;font-size:24px;color:#0D1B3E;margin-bottom:32px;}'
     +'.seal{font-size:56px;margin:16px 0;}'
-    +'.note{font-size:12px;color:#94A3B8;margin-bottom:32px;line-height:1.6;max-width:480px;margin-left:auto;margin-right:auto;}'
     +'.date-row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:40px;padding-top:24px;border-top:1px solid #E2E8F0;}'
     +'.sig-block{text-align:left;}'
     +'.sig-name{font-family:DM Serif Display,serif;font-size:16px;color:#0D1B3E;border-bottom:1px solid #0D1B3E;padding-bottom:4px;margin-bottom:4px;}'
     +'.sig-label{font-size:11px;color:#94A3B8;letter-spacing:0.5px;}'
     +'.cert-id{font-size:10px;color:#CBD5E1;margin-top:20px;letter-spacing:1px;}'
-    +'@media print{body{background:white;padding:0;}.cert{box-shadow:none;}}'
+    +'@media print{body{background:white;padding:0;}.cert{box-shadow:none;border:3px solid #0D1B3E;}}'
     +'</style></head><body>'
     +'<div class="cert">'
-    +'<div class="eyebrow">Statement of Module Completion</div>'
+    +'<div class="eyebrow">Certificate of Completion</div>'
     +'<div class="academy">Catholic Music Academy</div>'
     +'<div class="diocese">Diocese of Warri · Ozoro, Delta State, Nigeria</div>'
     +'<div class="awarded">This is to certify that</div>'
     +'<div><div class="student-name">'+name+'</div></div>'
-    +'<div class="completion">has successfully completed all online modules of</div>'
+    +'<div class="completion">has successfully completed all modules of</div>'
     +'<div class="course-name">'+course+'</div>'
     +'<div class="seal">✝</div>'
-    +'<div class="note">This statement confirms completion of online coursework only. The Certificate of Competence or National Diploma in Music will be issued upon successful completion of the final in-person examination.</div>'
     +'<div class="date-row">'
     +'<div class="sig-block"><div class="sig-name">The Director</div><div class="sig-label">Catholic Music Academy</div></div>'
     +'<div style="text-align:center;"><div style="font-size:13px;color:#0D1B3E;font-weight:600;">'+date+'</div><div class="sig-label">Date of Completion</div></div>'
-    +'<div class="sig-block" style="text-align:right;"><div class="sig-name">The Registrar</div><div class="sig-label">Catholic Music Academy</div></div>'
+    +'<div class="sig-block" style="text-align:right;"><div class="sig-name">DaleX Platform</div><div class="sig-label">Learning Management System</div></div>'
     +'</div>'
-    +'<div class="cert-id">Statement ID: '+certId+' · Catholic Music Academy Online Learning Platform</div>'
+    +'<div class="cert-id">Certificate ID: '+certId+' · Issued by the Catholic Music Academy LMS</div>'
     +'</div>'
     +'<script>window.onload=function(){window.print();}<\/script>'
     +'</body></html>');
   win.document.close();
 }
 
-// ── FEEDBACK & REFLECTION ─────────────────────────────────────────────────────
-async function submitReflection(modIdx) {
-  var text=(document.getElementById('reflectionText')||{}).value||'';
-  var msgEl=document.getElementById('reflectionMsg');
-  if(!text.trim()){if(msgEl){msgEl.textContent='Please write something before sending.';msgEl.style.display='block';}return;}
-  try {
-    await fetch(SUPA_URL+'/rest/v1/student_feedback',{
-      method:'POST',
-      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body:JSON.stringify({student_id:currentStudent?currentStudent.id:null,module_index:modIdx,type:'reflection',message:text.trim(),module_completed:true,submitted_at:new Date().toISOString(),resolved:false})
-    });
-    if(msgEl){msgEl.textContent='✓ Reflection sent to your instructor.';msgEl.style.color='var(--ok)';msgEl.style.display='block';}
-    var btn=document.querySelector('#reflectionWidget button');if(btn){btn.disabled=true;btn.textContent='Sent ✓';}
-    var ta=document.getElementById('reflectionText');if(ta)ta.value='';
-  } catch(e){if(msgEl){msgEl.textContent='Error: '+e.message;msgEl.style.color='var(--danger)';msgEl.style.display='block';}}
-}
-
-function showFeedbackModal() {
-  var existing=document.getElementById('feedbackModal');if(existing)existing.remove();
-  var m=MODULES[currentMod]||{};
-  var modal=document.createElement('div');
-  modal.id='feedbackModal';
-  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
-  modal.innerHTML='<div style="background:white;border-radius:16px;padding:28px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,0.2);">'
-    +'<div style="font-family:DM Serif Display,serif;font-size:20px;color:var(--text);margin-bottom:4px;">Send Feedback</div>'
-    +'<div style="font-size:13px;color:var(--muted);margin-bottom:18px;">Module: '+m.title+'</div>'
-    +'<div style="margin-bottom:12px;"><label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:5px;">Type</label>'
-    +'<select id="fbType" style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:13px;font-family:DM Sans,sans-serif;outline:none;">'
-    +'<option value="question">❓ Question about content</option>'
-    +'<option value="issue">⚠️ Problem / technical issue</option>'
-    +'<option value="suggestion">💡 Suggestion</option>'
-    +'<option value="compliment">⭐ Compliment</option>'
-    +'</select></div>'
-    +'<div style="margin-bottom:16px;"><label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:5px;">Message</label>'
-    +'<textarea id="fbMessage" placeholder="Type your message here..." style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:13px;font-family:DM Sans,sans-serif;outline:none;min-height:100px;resize:vertical;"></textarea></div>'
-    +'<div id="fbMsg" style="display:none;font-size:13px;border-radius:8px;padding:9px 13px;margin-bottom:10px;"></div>'
-    +'<div style="display:flex;gap:8px;">'
-    +'<button class="btn btn-primary" onclick="submitFeedback()">Send →</button>'
-    +'<button class="btn btn-secondary" onclick="document.getElementById(\'feedbackModal\').remove()">Cancel</button>'
-    +'</div></div>';
-  modal.addEventListener('click',function(e){if(e.target===modal)modal.remove();});
-  document.body.appendChild(modal);
-}
-
-async function submitFeedback() {
-  var type=(document.getElementById('fbType')||{}).value||'general';
-  var message=((document.getElementById('fbMessage')||{}).value||'').trim();
-  if(!message){alert('Please enter a message.');return;}
-  var statusEl=document.getElementById('fbMsg');
-  var btn=document.querySelector('#feedbackModal .btn-primary');
-  if(btn){btn.disabled=true;btn.textContent='Sending...';}
-  try {
-    var res=await fetch(SUPA_URL+'/rest/v1/student_feedback',{
-      method:'POST',
-      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body:JSON.stringify({student_id:currentStudent?currentStudent.id:null,module_index:currentMod,type:type,message:message,submitted_at:new Date().toISOString(),resolved:false})
-    });
-    if(!res.ok) throw new Error(await res.text());
-    if(statusEl){statusEl.style.cssText='color:var(--ok);background:var(--ok-light);display:block;';statusEl.textContent='✓ Feedback sent. Thank you!';}
-    setTimeout(function(){var m=document.getElementById('feedbackModal');if(m)m.remove();},2000);
-  } catch(e){
-    if(statusEl){statusEl.style.cssText='color:var(--danger);background:#FEE2E2;display:block;';statusEl.textContent='Error: '+(e.message||'Could not send.');}
-    if(btn){btn.disabled=false;btn.textContent='Send →';}
-  }
-}
-
-// ── BIOMETRIC ─────────────────────────────────────────────────────────────────
-var BIOMETRIC_AVAILABLE=false;
-async function checkBiometricAvailable(){try{if(!window.PublicKeyCredential)return false;BIOMETRIC_AVAILABLE=await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();return BIOMETRIC_AVAILABLE;}catch(e){return false;}}
-async function saveBiometricCredential(email,passHash){try{if(!await checkBiometricAvailable())return false;var userId=new TextEncoder().encode(email);var challenge=new Uint8Array(32);crypto.getRandomValues(challenge);var credential=await navigator.credentials.create({publicKey:{challenge:challenge,rp:{name:'Catholic Music Academy',id:location.hostname},user:{id:userId,name:email,displayName:email},pubKeyCredParams:[{alg:-7,type:'public-key'}],authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required'},timeout:60000}});var credId=btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));localStorage.setItem('cma_biometric',JSON.stringify({email:email,passHash:passHash,credId:credId,at:Date.now()}));return true;}catch(e){return false;}}
-async function biometricLogin(){try{var stored=JSON.parse(localStorage.getItem('cma_biometric')||'null');if(!stored||!stored.credId)return false;if(Date.now()-stored.at>30*24*60*60*1000){localStorage.removeItem('cma_biometric');return false;}var credId=Uint8Array.from(atob(stored.credId),function(c){return c.charCodeAt(0);});var challenge=new Uint8Array(32);crypto.getRandomValues(challenge);await navigator.credentials.get({publicKey:{challenge:challenge,rpId:location.hostname,allowCredentials:[{id:credId,type:'public-key'}],userVerification:'required',timeout:60000}});return stored;}catch(e){return false;}}
-
-function showBiometricButton(){
-  var stored=null;try{stored=JSON.parse(localStorage.getItem('cma_biometric')||'null');}catch(e){}
-  if(!stored) return;
-  var loginCard=document.querySelector('.login-card');if(!loginCard)return;
-  var bioBtn=document.createElement('button');
-  bioBtn.className='btn btn-secondary';
-  bioBtn.style.cssText='width:100%;margin-bottom:14px;border-color:var(--navy);color:var(--navy);';
-  bioBtn.innerHTML='🔑 Sign in with Biometrics';
-  bioBtn.onclick=async function(){
-    bioBtn.disabled=true;bioBtn.textContent='Verifying...';
-    var result=await biometricLogin();
-    if(!result){bioBtn.disabled=false;bioBtn.innerHTML='🔑 Sign in with Biometrics';return;}
-    var res=await fetch(SUPA_URL+'/rest/v1/students?email=eq.'+encodeURIComponent(result.email)+'&select=*',{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
-    var rows=await res.json();
-    if(rows&&rows.length&&rows[0].password_hash===result.passHash&&rows[0].status==='active'){
-      var student=rows[0];currentStudent=student;
-      var dbResult=await loadCourseAndModulesFromDB(student.programme);
-      CURRENT_COURSE=dbResult.course;MODULES=dbResult.modules;
-      await loadEnrolments();await loadProgress();
-      saveSession(student,CURRENT_COURSE,completedModules);
-      initDashUI(student);renderDashboard();
-      history.replaceState({screen:'dash'},'','/portal');
-      showScreen('screen-dash');loadAnnouncements();
-    }else{bioBtn.disabled=false;bioBtn.innerHTML='🔑 Sign in with Biometrics';showErr('Biometric session expired. Please sign in manually.');}
-  };
-  var loginBtn=document.getElementById('loginBtn');if(loginBtn)loginBtn.before(bioBtn);
-}
-
-async function offerBiometricSave(email,passHash){
-  try{
-    if(!await checkBiometricAvailable())return;
-    if(localStorage.getItem('cma_biometric'))return;
-    var rememberCb=document.getElementById('rememberMe');
-    if(!rememberCb||!rememberCb.checked)return;
-    setTimeout(async function(){
-      // Use in-page prompt instead of confirm()
-      var bar=document.createElement('div');
-      bar.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy);color:white;border-radius:14px;padding:16px 20px;box-shadow:0 8px 32px rgba(0,0,0,0.2);z-index:9999;display:flex;align-items:center;gap:14px;max-width:360px;width:calc(100% - 48px);font-size:13px;';
-      bar.innerHTML='<span style="flex:1;line-height:1.5;">Enable biometric sign-in (Face ID / Fingerprint) for faster access?</span>'
-        +'<button style="background:var(--gold);color:var(--navy);border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;white-space:nowrap;" id="bioYes">Enable</button>'
-        +'<button style="background:none;border:1px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.7);border-radius:8px;padding:8px 10px;font-size:12px;cursor:pointer;font-family:DM Sans,sans-serif;" id="bioNo">Skip</button>';
-      document.body.appendChild(bar);
-      document.getElementById('bioYes').onclick=async function(){
-        bar.remove();
-        var saved=await saveBiometricCredential(email,passHash);
-        if(saved){
-          var toast=document.createElement('div');
-          toast.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ok);color:white;border-radius:10px;padding:12px 20px;font-size:13px;font-weight:600;z-index:9999;';
-          toast.textContent='✓ Biometric sign-in enabled';
-          document.body.appendChild(toast);
-          setTimeout(function(){toast.remove();},3000);
-        }
-      };
-      document.getElementById('bioNo').onclick=function(){bar.remove();};
-      setTimeout(function(){if(bar.parentNode)bar.remove();},12000);
-    },1500);
-  }catch(e){}
-}
-
-// ── INIT ──────────────────────────────────────────────────────────────────────
-(async function(){
-  document.body.classList.remove('loading');
-  if(!window.crypto||!window.crypto.subtle){
-    document.getElementById('screen-login').innerHTML='<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:32px;text-align:center;"><div><div style="font-size:48px;margin-bottom:16px;">⚠️</div><div style="font-family:DM Serif Display,serif;font-size:24px;color:#0D1B3E;margin-bottom:10px;">Browser Not Supported</div><div style="font-size:14px;color:#64748B;line-height:1.7;max-width:340px;">Please open this page in an up-to-date browser over HTTPS. Try Chrome, Firefox, or Safari.</div></div></div>';
-    showScreen('screen-login');return;
-  }
-
-  // Remember Me auto-login
-  var remembered=getRemembered();
-  if(remembered&&remembered.email&&remembered.passHash){
-    var emailEl=document.getElementById('loginEmail');
-    if(emailEl) emailEl.value=remembered.email;
-    var cb=document.getElementById('rememberMe');if(cb)cb.checked=true;
-    var loginBtn=document.getElementById('loginBtn');
-    if(loginBtn){loginBtn.textContent='Signing you in...';loginBtn.disabled=true;}
-    try{
-      var res=await fetch(SUPA_URL+'/rest/v1/students?email=eq.'+encodeURIComponent(remembered.email)+'&select=*',{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
-      var results=await res.json();
-      if(results&&results.length&&results[0].password_hash===remembered.passHash&&results[0].status==='active'){
-        var student=results[0];currentStudent=student;
-        var dbResult=await loadCourseAndModulesFromDB(student.programme);
-        CURRENT_COURSE=dbResult.course;MODULES=dbResult.modules;
-        await loadEnrolments(); // FIX 4: also called in remember-me path
-        await loadProgress();
-        saveSession(student,CURRENT_COURSE,completedModules);
-        initDashUI(student);renderDashboard();
-        history.replaceState({screen:'dash'},'','/portal');
-        showScreen('screen-dash');loadAnnouncements();return;
-      }
-    }catch(e){}
-    if(loginBtn){loginBtn.disabled=false;loginBtn.textContent='Sign in →';}
-  }
-
-  showBiometricButton();
-
-  // Session restore
-  var session=loadSession();
-  if(session&&session.student&&session.student.status==='active'){
-    currentStudent=session.student;
-    var dbResult=await loadCourseAndModulesFromDB(session.student.programme);
-    CURRENT_COURSE=dbResult.course;MODULES=dbResult.modules;
-    completedModules=session.completedModules||[];
-    await loadEnrolments(); // FIX 4: called in session-restore path too
-    await loadProgress();
-    saveSession(currentStudent,CURRENT_COURSE,completedModules);
-    initDashUI(session.student);renderDashboard();
-    history.replaceState({screen:'dash'},'','/portal');
-    showScreen('screen-dash');loadAnnouncements();return;
-  }
-  showScreen('screen-login');
-})();
 </script>
 </body>
 </html>
