@@ -558,6 +558,7 @@ var currentStudent = null;
 var completedModules = [];
 var currentMod = 0;
 var shownQuestions = [];
+var writtenAnswers = {};
 var answers = {};
 var submitted = false;
 var timerDone = false;
@@ -1289,7 +1290,7 @@ function toYouTubeEmbed(url) {
 // ── MODULE ────────────────────────────────────────────────────────────────────
 function openMod(i) {
   history.pushState({screen:'module',mod:i},'','/portal/module-'+(i+1));
-  currentMod = i; answers = {}; submitted = false;
+  currentMod = i; answers = {}; writtenAnswers = {}; submitted = false;
   timerDone = false; scrollDone = false;
   if (timerInterval) clearInterval(timerInterval);
   var m = MODULES[i];
