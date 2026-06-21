@@ -19,7 +19,7 @@ module.exports = async function handler(req, res) {
   }
 
   const prog = programme || 'your chosen programme';
-  const portalUrl = 'https://learn.catholicmusicacademy.net';
+  const portalUrl = 'https://catholicmusicacademy.net';
 
   const testDisclaimer = testMode ? `
 ⚠ THIS IS A TEST EMAIL
