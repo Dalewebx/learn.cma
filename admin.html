@@ -1134,7 +1134,10 @@ function renderApplications() {
     return '<div class="app-card '+a.status+'">'
       +'<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">'
       +'<div><div class="app-name">'+a.first_name+' '+a.last_name+'</div><div class="app-email">'+a.email+'</div></div>'
-      +'<span class="pill '+(a.status==='pending'?'pill-warn':a.status==='approved'?'pill-ok':'pill-danger')+'">'+a.status+'</span></div>'
+      +'<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">'
+      +(a.type==='additional'?'<span class="pill pill-blue" style="font-size:11px;">+ Additional Course</span>':'<span class="pill" style="background:var(--navy-light);color:var(--navy);font-size:11px;">New Student</span>')
+      +'<span class="pill '+(a.status==='pending'?'pill-warn':a.status==='approved'?'pill-ok':'pill-danger')+'">'+a.status+'</span>'
+      +'</div></div>'
       +'<div class="app-meta">'
       +'<div class="app-meta-item"><div class="lbl">Programme</div><div class="val">'+(a.programme||'—')+'</div></div>'
       +'<div class="app-meta-item"><div class="lbl">Country</div><div class="val">'+(a.country||'—')+'</div></div>'
