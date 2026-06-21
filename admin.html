@@ -1144,7 +1144,10 @@ var _appTabFilter='pending';
 function setAppTab(f,el){_appTabFilter=f;document.querySelectorAll('#page-applications .tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderApplications();}
 function renderApplications() {
   allApplications.forEach(a=>{window._appMap[a.id]=a;});
-  var list=_appTabFilter==='all'?allApplications:allApplications.filter(a=>a.status===_appTabFilter);
+  var list;
+  if (_appTabFilter==='all') list=allApplications;
+  else if (_appTabFilter==='additional') list=allApplications.filter(function(a){ return a.type==='additional'; });
+  else list=allApplications.filter(function(a){ return a.status===_appTabFilter && a.type!=='additional'; });
   document.getElementById('pendingCount').textContent=allApplications.filter(a=>a.status==='pending').length>0?'('+allApplications.filter(a=>a.status==='pending').length+')':'';
   if(!list.length){document.getElementById('appList').innerHTML='<div class="alert alert-info">No '+_appTabFilter+' applications.</div>';return;}
   document.getElementById('appList').innerHTML=list.map(a=>{
@@ -2929,21 +2932,39 @@ function showToast(msg,type='ok'){
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 (function(){
-  var sess=loadAdminSession();
-  if(sess&&ADMIN_CREDS[sess.user]){
-    currentAdmin=sess.user;
-    document.getElementById('sidebarName').textContent = currentAdmin.name || currentAdmin;
+  var sess = loadAdminSession();
+  if (sess && sess.user && sess.user.id) {
+    currentAdmin = sess.user;
+    document.getElementById('sidebarName').textContent = currentAdmin.name || 'Admin';
     document.getElementById('sidebarInitial').textContent = (currentAdmin.name||'A').charAt(0).toUpperCase();
     var roleEl = document.getElementById('sidebarRole');
     if (roleEl) roleEl.textContent = currentAdmin.role === 'master' ? 'Master Admin' : 'Lecturer';
     applyRoleSidebar(currentAdmin.role || 'master');
-    document.getElementById('sidebarName').textContent=ADMIN_NAMES[sess.user];
-    document.getElementById('sidebarInitial').textContent=ADMIN_NAMES[sess.user].charAt(0);
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('adminShell').style.display='block';
+    // Pre-fill remembered email
+    try {
+      var rememberedEmail = localStorage.getItem('cma_admin_remember');
+      if (rememberedEmail) {
+        var emailEl2 = document.getElementById('adminUser');
+        if (emailEl2) emailEl2.value = rememberedEmail;
+        var remCb = document.getElementById('adminRemember');
+        if (remCb) remCb.checked = true;
+      }
+    } catch(e){}
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminShell').style.display = 'block';
     loadAllData();
     return;
   }
+  // Pre-fill remembered email even on login screen
+  try {
+    var rememberedEmail = localStorage.getItem('cma_admin_remember');
+    if (rememberedEmail) {
+      var emailEl3 = document.getElementById('adminUser');
+      if (emailEl3) emailEl3.value = rememberedEmail;
+      var remCb2 = document.getElementById('adminRemember');
+      if (remCb2) remCb2.checked = true;
+    }
+  } catch(e){}
   document.getElementById('adminUser').focus();
 })();
 </script>
