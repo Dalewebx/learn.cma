@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iI0Y1RTZDMCIvPgogIDxyZWN0IHg9IjgiIHk9IjIyIiB3aWR0aD0iOSIgaGVpZ2h0PSIzIiByeD0iMS41IiBmaWxsPSIjMEQxQjNFIi8+CiAgPHJlY3QgeD0iOCIgeT0iMTYiIHdpZHRoPSI5IiBoZWlnaHQ9IjMiIHJ4PSIxLjUiIGZpbGw9IiMwRDFCM0UiLz4KICA8cmVjdCB4PSIxNSIgeT0iOCIgd2lkdGg9IjMiIGhlaWdodD0iMTciIHJ4PSIxLjUiIGZpbGw9IiMwRDFCM0UiLz4KICA8Y2lyY2xlIGN4PSIxMSIgY3k9IjIzLjUiIHI9IjMuNSIgZmlsbD0iI0M5QTg0QyIvPgogIDxjaXJjbGUgY3g9IjExIiBjeT0iMTcuNSIgcj0iMy41IiBmaWxsPSIjMEQxQjNFIi8+Cjwvc3ZnPg=="/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iI0M5QTg0QyIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iMi41IiBoZWlnaHQ9IjE2IiByeD0iMS4yIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iOSIgaGVpZ2h0PSIyLjUiIHJ4PSIxLjIiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMTAuNSIgY3k9IjIyIiByPSIzLjUiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg=="/>
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iI0M5QTg0QyIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iMi41IiBoZWlnaHQ9IjE2IiByeD0iMS4yIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iOSIgaGVpZ2h0PSIyLjUiIHJ4PSIxLjIiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMTAuNSIgY3k9IjIyIiByPSIzLjUiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg=="/>
 <title>Apply — Catholic Music Academy</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
 <style>
@@ -479,6 +480,50 @@ function updatePaymentBox() {
 }
 
 var currentStep = 1;
+
+// Save form state to sessionStorage
+function saveFormState() {
+  try {
+    var state = {
+      step: currentStep,
+      firstName: v('firstName')||'',
+      lastName: v('lastName')||'',
+      email: v('email')||'',
+      phone: v('phone')||'',
+      state: v('state')||'',
+      background: (document.getElementById('f-background')||{}).value||'',
+      programme: selectedProg||''
+    };
+    sessionStorage.setItem('cma_apply_draft',JSON.stringify(state));
+  } catch(e){}
+}
+
+function restoreFormState() {
+  try {
+    var raw = sessionStorage.getItem('cma_apply_draft');
+    if (!raw) return;
+    var state = JSON.parse(raw);
+    if (!state) return;
+    var setVal = function(id,val){ var el=document.getElementById(id); if(el&&val) el.value=val; };
+    setVal('f-firstName', state.firstName);
+    setVal('f-lastName', state.lastName);
+    setVal('f-email', state.email);
+    setVal('f-phone', state.phone);
+    setVal('f-state', state.state);
+    setVal('f-background', state.background);
+    if (state.programme) {
+      selectedProg = state.programme;
+      document.querySelectorAll('.prog-option').forEach(function(p){
+        if(p.dataset.prog === state.programme) p.classList.add('selected');
+      });
+    }
+    // Restore to correct step
+    if (state.step > 1) {
+      currentStep = state.step;
+      showStep(currentStep);
+    }
+  } catch(e){}
+}
 var selectedProg = '';
 var selectedBg = 'No formal training — I sing but have not studied music formally';
 var selectedFile = null;
@@ -683,13 +728,22 @@ async function submitApplication() {
   var btn = document.getElementById('submitBtn');
   btn.disabled = true; btn.textContent = 'Checking...';
 
-  // Check for existing pending application with same email
+  // Check for existing active student account with same email
   try {
     var emailVal = v('email');
-    var checkRes = await fetch(SUPA_URL+'/rest/v1/applications?email=eq.'+encodeURIComponent(emailVal)+'&status=eq.pending&select=id,programme',
+    var studentCheck = await fetch(SUPA_URL+'/rest/v1/students?email=eq.'+encodeURIComponent(emailVal)+'&status=eq.active&select=id',
       {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
-    var existing = await checkRes.json();
-    if (existing && existing.length) {
+    var existingStudent = await studentCheck.json();
+    if (existingStudent && existingStudent.length) {
+      btn.disabled = false; btn.textContent = 'Submit Application →';
+      alert('A student account already exists with this email address. If you are an existing student, please log in to your portal. If you want to add another programme, use the "Add a Programme" option from your dashboard.');
+      return;
+    }
+    // Check for pending application
+    var appCheck = await fetch(SUPA_URL+'/rest/v1/applications?email=eq.'+encodeURIComponent(emailVal)+'&status=eq.pending&select=id,programme',
+      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    var existingApp = await appCheck.json();
+    if (existingApp && existingApp.length) {
       btn.disabled = false; btn.textContent = 'Submit Application →';
       alert('An application with this email address is already pending review. Please wait to hear from the Academy before applying again.');
       return;
@@ -733,6 +787,7 @@ async function submitApplication() {
     [1,2,3,4].forEach(function(i){ document.getElementById('step'+i).style.display='none'; });
     document.getElementById('stepSuccess').style.display = 'block';
     window.scrollTo({top:0,behavior:'smooth'});
+    try { sessionStorage.removeItem('cma_apply_draft'); } catch(e){}
 
     // Send confirmation email — fire and forget, don't block success screen
     fetch('/api/application-received', {
@@ -746,6 +801,19 @@ async function submitApplication() {
         testMode: IS_TEST_MODE
       })
     }).catch(function(e){ console.warn('Confirmation email failed:', e); });
+
+    // Notify admin of new application
+    fetch('/api/notify-admin', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        studentName: v('firstName')+' '+v('lastName'),
+        studentEmail: v('email'),
+        programme: selectedProg,
+        ref: ref,
+        type: 'new'
+      })
+    }).catch(function(e){ console.warn('Admin notification failed:', e); });
   } catch(e) {
     btn.disabled = false;
     btn.textContent = 'Submit Application →';
