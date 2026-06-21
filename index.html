@@ -667,7 +667,7 @@ footer{background:var(--navy);padding:48px 24px 28px;}
             <div class="pm-dot" style="background:#FEBC2E;"></div>
             <div class="pm-dot" style="background:#28C840;"></div>
           </div>
-          <div class="pm-url" id="pmUrl">learn.catholicmusicacademy.org</div>
+          <div class="pm-url" id="pmUrl">catholicmusicacademy.net</div>
         </div>
         <div class="pm-body" id="pmModList">
           <div class="pm-mod-card">
@@ -1038,5 +1038,50 @@ footer{background:var(--navy);padding:48px 24px 28px;}
 
 })();
 </script>
+
+<script>
+// ── SESSION AWARENESS ──
+(function(){
+  try {
+    var raw = localStorage.getItem('cma_session');
+    if (!raw) return;
+    var s = JSON.parse(raw);
+    if (!s || !s.student || s.student.status !== 'active') return;
+    if (Date.now() - s.savedAt > 30 * 24 * 60 * 60 * 1000) return; // expired
+    var name = s.student.first_name || 'Student';
+
+    // ── NAV: swap buttons ──
+    var navActs = document.querySelector('.nav-acts');
+    if (navActs) {
+      navActs.innerHTML = '<div class="session-chip" style="display:inline-flex;">&#9679; '+name+'</div>'
+        + '<a class="btn btn-gold" href="login.html" style="font-size:13px;padding:9px 18px;">My Portal &rarr;</a>';
+    }
+
+    // ── HERO: personalise for logged-in student ──
+    var heroTitle = document.querySelector('.hero-title');
+    if (heroTitle) {
+      heroTitle.innerHTML = 'Welcome<br>back,<br><em>'+name+'</em>';
+    }
+    var heroSub = document.querySelector('.hero-sub');
+    if (heroSub) {
+      heroSub.textContent = 'Continue where you left off. Your modules and progress are waiting.';
+    }
+    var heroActs = document.querySelector('.hero-acts');
+    if (heroActs) {
+      heroActs.innerHTML = '<a class="btn btn-gold" href="login.html" style="font-size:15px;padding:14px 28px;">Continue Learning &rarr;</a>';
+    }
+    var heroNote = document.querySelector('.hero-note');
+    if (heroNote) heroNote.style.display = 'none';
+
+    // ── HERO TAG: update badge ──
+    var heroTag = document.querySelector('.hero-tag');
+    if (heroTag) {
+      heroTag.innerHTML = '<span class="hero-dot" style="background:var(--ok,#16A34A);"></span>Currently Enrolled';
+    }
+
+  } catch(e){}
+})();
+</script>
+
 </body>
 </html>
