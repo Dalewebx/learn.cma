@@ -344,10 +344,11 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px
 
       <div class="payment-box">
         <div class="payment-box-title">Bank Details</div>
-        <div class="payment-row"><span class="payment-key">Bank</span><span class="payment-val">First Bank of Nigeria</span></div>
-        <div class="payment-row"><span class="payment-key">Account Name</span><span class="payment-val">Catholic Music Academy</span></div>
-        <div class="payment-row"><span class="payment-key">Account Number</span><span class="payment-val">3155067093</span></div>
-        <div class="payment-row"><span class="payment-key">Amount</span><span class="payment-val">As advised by the Academy</span></div>
+        <div class="payment-row"><span class="payment-key">Bank</span><span class="payment-val" id="paymentBank">First Bank of Nigeria</span></div>
+        <div class="payment-row"><span class="payment-key">Account Name</span><span class="payment-val" id="paymentAccName">Catholic Music Academy</span></div>
+        <div class="payment-row"><span class="payment-key">Account Number</span><span class="payment-val" id="paymentAccNum">3155067093</span></div>
+        <div class="payment-row"><span class="payment-key">Amount</span><span class="payment-val" id="paymentAmount">&#8358;5,000</span></div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(201,168,76,0.2);font-size:12px;color:var(--gold-dark);" id="paymentMsg">Pay &#8358;5,000 for your chosen programme</div>
       </div>
 
       <div class="upload-box" id="uploadBox"
@@ -394,6 +395,8 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px
 
 <script>
 var IS_TEST_MODE = false;
+var COURSE_AMOUNT = 5000; // Default — overridden by site_settings
+var selectedCourseForPayment = '';
 
 // Redirect already-logged-in students away from apply page
 (function(){
@@ -436,19 +439,43 @@ async function hashPassword(password) {
   return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
 
-// Fetch test mode from site_settings
+// Fetch course amount and test mode from site_settings
 (async function(){
   try {
-    var r = await fetch(SUPA_URL+'/rest/v1/site_settings?key=eq.testing_mode&select=key,value',
+    var r = await fetch(SUPA_URL+'/rest/v1/site_settings?key=in.(testing_mode,course_amount,payment_bank,payment_acc_name,payment_acc_num)&select=key,value',
       {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
     var d = await r.json();
-    if (d && d.length && d[0].value === 'true') {
-      IS_TEST_MODE = true;
-      var tb = document.getElementById('testBar');
-      if (tb) tb.classList.add('on');
-    }
+    d.forEach(function(row){
+      if(row.key==='course_amount' && row.value) COURSE_AMOUNT = parseInt(row.value)||5000;
+      if(row.key==='testing_mode' && row.value==='true'){
+        IS_TEST_MODE = true;
+        var tb = document.getElementById('testBar');
+        if(tb) tb.classList.add('on');
+      }
+      if(row.key==='payment_bank' && row.value){
+        var el=document.getElementById('paymentBank'); if(el) el.textContent=row.value;
+      }
+      if(row.key==='payment_acc_name' && row.value){
+        var el=document.getElementById('paymentAccName'); if(el) el.textContent=row.value;
+      }
+      if(row.key==='payment_acc_num' && row.value){
+        var el=document.getElementById('paymentAccNum'); if(el) el.textContent=row.value;
+      }
+    });
+    updatePaymentBox();
   } catch(e){}
 })();
+
+
+
+function updatePaymentBox() {
+  var amountEl = document.getElementById('paymentAmount');
+  var msgEl = document.getElementById('paymentMsg');
+  var course = selectedProg || selectedCourseForPayment || 'your chosen programme';
+  var formatted = '&#8358;' + COURSE_AMOUNT.toLocaleString();
+  if (amountEl) amountEl.textContent = formatted;
+  if (msgEl) msgEl.textContent = 'Pay ' + formatted + ' for ' + course;
+}
 
 var currentStep = 1;
 var selectedProg = '';
@@ -585,7 +612,9 @@ function selectProg(el, val) {
   document.querySelectorAll('.prog-option').forEach(function(p){ p.classList.remove('selected'); });
   el.classList.add('selected');
   selectedProg = val;
+  selectedCourseForPayment = val;
   document.getElementById('err-prog').style.display = 'none';
+  updatePaymentBox();
 }
 
 function selectBg(el, val) {
