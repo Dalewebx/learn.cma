@@ -746,8 +746,16 @@ function showAddCourseModal() {
   if (existing) existing.remove();
 
   // Get courses student is not already in
+  // Check both enrolment course_ids AND current student programme title
   var enrolledIds = ALL_ENROLMENTS.map(function(e){ return e.course_id; });
-  var available = ALL_DB_COURSES.filter(function(c){ return enrolledIds.indexOf(c.id) === -1; });
+  var enrolledTitles = ALL_ENROLMENTS.map(function(e){ return e.programme; });
+  // Always exclude the current course
+  if (CURRENT_COURSE) enrolledIds.push(CURRENT_COURSE.id);
+  if (currentStudent && currentStudent.programme) enrolledTitles.push(currentStudent.programme);
+
+  var available = ALL_DB_COURSES.filter(function(c){
+    return enrolledIds.indexOf(c.id) === -1 && enrolledTitles.indexOf(c.title) === -1;
+  });
 
   if (!available.length) {
     alert('You are already enrolled in all available programmes. Contact the Academy for more information.');
