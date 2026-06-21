@@ -400,24 +400,35 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
   <div class="dash-header">
     <div class="dash-eyebrow">Student Dashboard</div>
     <div class="dash-name" id="dashName">Welcome back</div>
-    <div class="dash-sub">Your enrolled course is ready. Continue where you left off.</div>
+    <div class="dash-sub" id="dashSub">Your enrolled course is ready. Continue where you left off.</div>
   </div>
   <div class="dash-body">
     <div id="dashAnnouncements" style="display:none;margin-bottom:24px;"></div>
-    <div class="dash-section-label">Your Enrolled Course</div>
-    <div class="course-card" onclick="goCourse()">
-      <div class="course-card-band"></div>
-      <div class="course-card-body">
-        <div class="course-status-pill">✓ Enrolled &amp; Active</div>
-        <div class="course-card-num" id="enrolledCourseNum">Course 01 of 6</div>
-        <div class="course-card-title" id="enrolledCourseTitle">Theory of Ancient Music</div>
-        <div class="course-card-desc" id="enrolledCourseDesc">Trace the origins of music from ancient civilisations through medieval sacred traditions to the emergence of modern harmony and notation.</div>
-        <div class="course-card-meta" id="enrolledCourseMeta">
-          <div>📖 3 Modules</div><div>⏱ ~4 hours</div><div>✍ Assessment per module</div><div>🎓 Final exam (in-person)</div>
-        </div>
-      </div>
-      <div class="course-card-cta"><div class="course-card-cta-text">Continue Course →</div></div>
+
+    <!-- Multiple courses -->
+    <div id="multiCourseSection" style="display:none;">
+      <div class="dash-section-label">Your Enrolled Courses</div>
+      <div id="multiCourseGrid" style="margin-bottom:16px;"></div>
     </div>
+
+    <!-- Single course -->
+    <div id="singleCourseSection">
+      <div class="dash-section-label">Your Enrolled Course</div>
+      <div class="course-card" onclick="goCourse()">
+        <div class="course-card-band"></div>
+        <div class="course-card-body">
+          <div class="course-status-pill">✓ Enrolled &amp; Active</div>
+          <div class="course-card-title" id="enrolledCourseTitle">Loading...</div>
+          <div class="course-card-meta" id="enrolledCourseMeta"></div>
+        </div>
+        <div class="course-card-cta"><div class="course-card-cta-text">Continue Course →</div></div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px;" id="addProgBtnWrap">
+      <button class="btn btn-secondary" style="font-size:13px;" onclick="showAddCourseModal()">+ Add Another Programme</button>
+    </div>
+
     <div class="dash-section-label" style="margin-top:40px;">Other Courses Available</div>
     <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Complete your current course and speak to your coordinator to enrol in any of the following programmes.</p>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;" id="otherCoursesList"></div>
@@ -683,56 +694,42 @@ async function loadCourseAndModulesFromDB(programmeStr) {
 }
 
 function renderDashboard() {
-  // If student has multiple enrolments, show them all
+  var multiSection = document.getElementById('multiCourseSection');
+  var singleSection = document.getElementById('singleCourseSection');
+  var addProgWrap = document.getElementById('addProgBtnWrap');
+
   if (ALL_ENROLMENTS.length > 1) {
-    // Update dash greeting
-    document.getElementById('dashName').textContent =
-      (currentStudent ? 'Welcome back, '+currentStudent.first_name+'.' : 'Welcome back.');
-    // Build multi-course section
-    var body = document.querySelector('.dash-body');
-    if (!body) { renderOtherCourses(); return; }
-    // Replace course card section with multi-enrolment grid
-    var existingGrid = document.getElementById('multiCourseGrid');
-    if (!existingGrid) {
-      var section = document.createElement('div');
-      section.id = 'multiCourseGrid';
-      var first = body.querySelector('.course-card');
-      if (first) body.insertBefore(section, first.parentNode);
-    }
+    // Show multiple courses
+    if (multiSection) multiSection.style.display = 'block';
+    if (singleSection) singleSection.style.display = 'none';
     var grid = document.getElementById('multiCourseGrid');
     if (grid) {
-      grid.innerHTML = '<div class="dash-section-label">Your Enrolled Courses</div>'
-        + ALL_ENROLMENTS.map(function(e, i) {
-          var isCurrent = e.course_id === (CURRENT_COURSE ? CURRENT_COURSE.id : null);
-          return '<div class="course-card" style="margin-bottom:12px;'+(isCurrent?'border-color:var(--navy);':'')+';cursor:pointer;" data-cid="'+e.course_id+'" data-prog="'+e.programme+'" onclick="switchCourse(this.dataset.cid,this.dataset.prog)">'
-            +'<div class="course-card-band"></div>'
-            +'<div class="course-card-body">'
-            +'<div class="course-status-pill">✓ '+(isCurrent?'Currently Open':'Enrolled &amp; Active')+'</div>'
-            +'<div class="course-card-title">'+e.programme+'</div>'
-            +'</div>'
-            +'<div class="course-card-cta"><div class="course-card-cta-text">'+(isCurrent?'Continue Course →':'Open Course →')+'</div></div>'
-            +'</div>';
-        }).join('')
-        + '<button class="btn btn-secondary" style="margin-top:8px;font-size:13px;" onclick="showAddCourseModal()">+ Add Another Programme</button>';
-      // Hide the original single course card
-      var orig = body.querySelector('.course-card:not(#multiCourseGrid .course-card)');
-      if (orig) orig.parentNode.style.display = 'none';
+      grid.innerHTML = ALL_ENROLMENTS.map(function(e) {
+        var isCurrent = (CURRENT_COURSE && e.course_id === CURRENT_COURSE.id)
+          || (currentStudent && e.programme === currentStudent.programme && !e.course_id);
+        return '<div class="course-card" style="margin-bottom:12px;'+(isCurrent?'border-color:var(--navy);':'')+'" data-cid="'+e.course_id+'" data-prog="'+e.programme.replace(/"/g,'&quot;')+'" onclick="switchCourse(this.dataset.cid,this.dataset.prog)">'
+          +'<div class="course-card-band"></div>'
+          +'<div class="course-card-body">'
+          +'<div class="course-status-pill">✓ '+(isCurrent?'Currently Open':'Enrolled &amp; Active')+'</div>'
+          +'<div class="course-card-title">'+e.programme+'</div>'
+          +'</div>'
+          +'<div class="course-card-cta"><div class="course-card-cta-text">'+(isCurrent?'Continue Course →':'Open Course →')+'</div></div>'
+          +'</div>';
+      }).join('');
     }
   } else {
-    // Single enrolment — show original layout with Add Programme button
-    renderOtherCourses();
-    // Add "Add Programme" button
-    var body2 = document.querySelector('.dash-body');
-    if (body2 && !document.getElementById('addProgBtn')) {
-      var btn = document.createElement('button');
-      btn.id = 'addProgBtn';
-      btn.className = 'btn btn-secondary';
-      btn.style.cssText = 'margin-top:16px;font-size:13px;';
-      btn.textContent = '+ Add Another Programme';
-      btn.onclick = showAddCourseModal;
-      body2.appendChild(btn);
-    }
+    // Single enrolment
+    if (multiSection) multiSection.style.display = 'none';
+    if (singleSection) singleSection.style.display = 'block';
+    // Update single course card
+    var titleEl = document.getElementById('enrolledCourseTitle');
+    if (titleEl && CURRENT_COURSE) titleEl.textContent = CURRENT_COURSE.title;
+    var metaEl = document.getElementById('enrolledCourseMeta');
+    if (metaEl && MODULES) metaEl.innerHTML = '📖 '+MODULES.length+' Module'+(MODULES.length!==1?'s':'')
+      +' &nbsp;·&nbsp; ✍ Assessment per module &nbsp;·&nbsp; 🎓 Final exam (in-person)';
   }
+
+  renderOtherCourses();
 }
 
 async function switchCourse(courseId, programme) {
@@ -1113,18 +1110,37 @@ var ALL_ENROLMENTS = []; // all active enrolments for this student
 
 async function loadEnrolments() {
   if (!currentStudent) return;
+  var enrolments = [];
+
+  // Layer 1: enrolments table
   try {
     var rows = await sbGet('enrolments',
       'student_id=eq.'+currentStudent.id+'&status=eq.active&order=enrolled_at.asc');
-    ALL_ENROLMENTS = rows || [];
-  } catch(e) {
-    // Table may not exist yet — fall back to single course from student record
-    ALL_ENROLMENTS = CURRENT_COURSE ? [{
-      course_id: CURRENT_COURSE.id,
+    enrolments = rows || [];
+  } catch(e) {}
+
+  // Layer 2: approved additional applications not yet in enrolments table
+  try {
+    var approvedApps = await sbGet('applications',
+      'existing_student_id=eq.'+currentStudent.id+'&type=eq.additional&status=eq.approved&select=programme');
+    (approvedApps||[]).forEach(function(a) {
+      if (a.programme && !enrolments.some(function(e){ return e.programme === a.programme; })) {
+        enrolments.push({ course_id: null, programme: a.programme, status: 'active' });
+      }
+    });
+  } catch(e) {}
+
+  // Layer 3: always include primary programme from student record
+  if (currentStudent.programme &&
+      !enrolments.some(function(e){ return e.programme === currentStudent.programme; })) {
+    enrolments.unshift({
+      course_id: CURRENT_COURSE ? CURRENT_COURSE.id : null,
       programme: currentStudent.programme,
       status: 'active'
-    }] : [];
+    });
   }
+
+  ALL_ENROLMENTS = enrolments;
 }
 
 // ── PROGRESS ─────────────────────────────────────────────────────────────────
@@ -1683,10 +1699,14 @@ function showComplete() {
 // ── SESSION PERSISTENCE ─────────────────────────────────────────────────────
 function saveSession(student, course, completed) {
   try {
+    var total = (MODULES && MODULES.length) ? MODULES.length : 0;
+    var pct = (total > 0 && completed && completed.length)
+      ? Math.round((completed.length / total) * 100) : 0;
     localStorage.setItem('cma_session', JSON.stringify({
       student: student,
       courseId: course ? course.id : null,
       completedModules: completed,
+      progressPct: pct,
       savedAt: Date.now()
     }));
   } catch(e){}
