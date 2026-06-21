@@ -1188,34 +1188,37 @@ async function approveApp(id) {
   if(!a||!confirm('Approve application for '+a.first_name+' '+a.last_name+'?')) return;
   try {
     await sb('applications','PATCH',{status:'approved',reviewed_at:new Date().toISOString(),reviewed_by:currentAdmin},'id=eq.'+id);
-    var existing=await sb('students','GET',null,'email=eq.'+encodeURIComponent(a.email)+'&select=id');
-    if(existing&&existing.length>0) {
-      await sb('students','PATCH',{status:'active',programme:a.programme,password_hash:a.password_hash,application_id:id,phone:a.phone,whatsapp:a.whatsapp||a.phone,state:a.state,security_question:a.security_question||null,security_answer_hash:a.security_answer_hash||null},'id=eq.'+existing[0].id);
-      showToast('✓ Reactivated: '+a.first_name);
+
+    var newStudent = null;
+
+    if (a.type === 'additional' && a.existing_student_id) {
+      // Additional course — just use existing student, add enrolment only
+      newStudent = {id: a.existing_student_id};
+      showToast('✓ Additional course approved for '+a.first_name);
     } else {
-      var newStudent;
-      if (a.type === 'additional' && a.existing_student_id) {
-        // Additional course — find existing student and add enrolment
-        newStudent = {id: a.existing_student_id};
-        showToast('✓ Additional course approved for '+a.first_name);
+      // New or re-activating student
+      var existing = await sb('students','GET',null,'email=eq.'+encodeURIComponent(a.email)+'&select=id');
+      if (existing && existing.length > 0) {
+        await sb('students','PATCH',{status:'active',programme:a.programme,password_hash:a.password_hash,application_id:id,phone:a.phone,whatsapp:a.whatsapp||a.phone,state:a.state,security_question:a.security_question||null,security_answer_hash:a.security_answer_hash||null},'id=eq.'+existing[0].id);
+        newStudent = {id: existing[0].id};
+        showToast('✓ Reactivated: '+a.first_name);
       } else {
-        // New student — create student record
         var created = await sb('students','POST',{application_id:id,first_name:a.first_name,last_name:a.last_name,email:a.email,password_hash:a.password_hash,phone:a.phone,whatsapp:a.whatsapp||a.phone,programme:a.programme,state:a.state,security_question:a.security_question||null,security_answer_hash:a.security_answer_hash||null,status:'active'});
         newStudent = created && created[0] ? created[0] : {id: null};
         showToast('✓ Approved: '+a.first_name+' account created');
       }
-      // Create enrolment row regardless of new/additional
-      if (newStudent && newStudent.id) {
-        // Find course_id from cmCourses
-        var matchedCourse = cmCourses.find(function(c){ return c.title === a.programme; });
-        var courseId = matchedCourse ? matchedCourse.id : a.programme;
-        sb('enrolments','POST',{
-          student_id: newStudent.id,
-          course_id: courseId,
-          programme: a.programme,
-          status: 'active'
-        }).catch(function(e){ console.warn('Enrolment insert failed:', e); });
-      }
+    }
+
+    // Create enrolment row for all approvals
+    if (newStudent && newStudent.id) {
+      var matchedCourse = cmCourses.find(function(c){ return c.title === a.programme; });
+      var courseId = matchedCourse ? matchedCourse.id : a.programme;
+      sb('enrolments','POST',{
+        student_id: newStudent.id,
+        course_id: courseId,
+        programme: a.programme,
+        status: 'active'
+      }).catch(function(e){ console.warn('Enrolment insert failed:', e); });
     }
     // Send appropriate email based on type
     if (a.email) {
