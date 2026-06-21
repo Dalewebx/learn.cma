@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iI0ZBRkFGNyIvPgogIDxyZWN0IHg9IjUiIHk9IjUiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSIjMEQxQjNFIi8+CiAgPHJlY3QgeD0iMTgiIHk9IjUiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iNSIgeT0iMTgiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iOSIgaGVpZ2h0PSI5IiByeD0iMiIgZmlsbD0iIzBEMUIzRSIvPgo8L3N2Zz4="/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBEMUIzRSIvPgogIDxyZWN0IHg9IjUiIHk9IjUiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iMTgiIHk9IjUiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjUiIHk9IjE4IiB3aWR0aD0iOSIgaGVpZ2h0PSI5IiByeD0iMiIgZmlsbD0id2hpdGUiLz4KICA8cmVjdCB4PSIxOCIgeT0iMTgiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSIjQzlBODRDIi8+Cjwvc3ZnPg=="/>
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBEMUIzRSIvPgogIDxyZWN0IHg9IjUiIHk9IjUiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iMTgiIHk9IjUiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjUiIHk9IjE4IiB3aWR0aD0iOSIgaGVpZ2h0PSI5IiByeD0iMiIgZmlsbD0id2hpdGUiLz4KICA8cmVjdCB4PSIxOCIgeT0iMTgiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSIjQzlBODRDIi8+Cjwvc3ZnPg=="/>
 <title>Catholic Music Academy — Admin</title>
 
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet"/>
@@ -1147,7 +1148,7 @@ function renderApplications() {
   var list;
   if (_appTabFilter==='all') list=allApplications;
   else if (_appTabFilter==='additional') list=allApplications.filter(function(a){ return a.type==='additional'; });
-  else list=allApplications.filter(function(a){ return a.status===_appTabFilter && a.type!=='additional'; });
+  else list=allApplications.filter(function(a){ return a.status===_appTabFilter; }); // pending shows ALL pending incl additional
   document.getElementById('pendingCount').textContent=allApplications.filter(a=>a.status==='pending').length>0?'('+allApplications.filter(a=>a.status==='pending').length+')':'';
   if(!list.length){document.getElementById('appList').innerHTML='<div class="alert alert-info">No '+_appTabFilter+' applications.</div>';return;}
   document.getElementById('appList').innerHTML=list.map(a=>{
