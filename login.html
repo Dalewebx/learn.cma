@@ -861,62 +861,111 @@ async function submitAddCourse() {
   var btn = document.getElementById('addCourseBtn');
   if(!addCourseSelected){ errEl.textContent='Please select a programme.'; errEl.style.display='block'; return; }
   if(!addCourseFile){ errEl.textContent='Please upload your payment receipt.'; errEl.style.display='block'; return; }
+
+  // Capture values before any async operations
+  var selectedTitle = addCourseSelected.title;
+  var selectedId = addCourseSelected.id;
+
   btn.disabled=true; btn.textContent='Checking...';
   try {
-    // Check for existing pending request for same course
-    var pendingCheck = await fetch(SUPA_URL+'/rest/v1/applications?email=eq.'+encodeURIComponent(currentStudent.email)+'&programme=eq.'+encodeURIComponent(addCourseSelected.title)+'&status=eq.pending&select=id',
-      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    // Check for existing pending request — do NOT encodeURIComponent the programme value
+    // Supabase PostgREST eq. filter requires raw value, not URL-encoded
+    var pendingCheck = await fetch(
+      SUPA_URL+'/rest/v1/applications?email=eq.'+encodeURIComponent(currentStudent.email)
+        +'&programme=eq.'+selectedTitle.replace(/&/g,'%26')
+        +'&status=eq.pending&select=id',
+      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}}
+    );
     var pendingRows = await pendingCheck.json();
     if (pendingRows && pendingRows.length) {
       btn.disabled=false; btn.textContent='Submit Request';
-      alert('You already have a pending request for '+addCourseSelected.title+'. Please wait for the Academy to review it before applying again.');
+      errEl.textContent='You already have a pending request for this programme. Please wait for the Academy to review it.';
+      errEl.style.display='block';
       return;
     }
+
     btn.textContent='Submitting...';
     var ref = 'CMA-ADD-'+Date.now().toString().slice(-6);
-    // Upload receipt
-    var ext = addCourseFile.name.split('.').pop();
-    var receiptPath = ref+'_receipt.'+ext;
-    var upRes = await fetch(SUPA_URL+'/storage/v1/object/receipts/'+receiptPath,{
-      method:'POST',
-      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':addCourseFile.type||'application/octet-stream','x-upsert':'true'},
-      body:addCourseFile
-    });
-    if(!upRes.ok) throw new Error('Receipt upload failed');
-    // Submit as application with type=additional
-    await fetch(SUPA_URL+'/rest/v1/applications',{
+
+    // Upload receipt — non-blocking, don't fail the whole submission if it fails
+    var receiptPath = '';
+    var receiptName = addCourseFile.name;
+    try {
+      var ext = addCourseFile.name.split('.').pop();
+      receiptPath = ref+'_receipt.'+ext;
+      var upRes = await fetch(SUPA_URL+'/storage/v1/object/receipts/'+receiptPath,{
+        method:'POST',
+        headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':addCourseFile.type||'application/octet-stream','x-upsert':'true'},
+        body:addCourseFile
+      });
+      if(!upRes.ok) { console.warn('Receipt upload failed — continuing without receipt path'); receiptPath=''; }
+    } catch(uploadErr) {
+      console.warn('Receipt upload error:', uploadErr.message);
+      receiptPath = '';
+    }
+
+    // Build application payload — only include receipt fields if upload succeeded
+    var appPayload = {
+      ref: ref,
+      first_name: currentStudent.first_name,
+      last_name: currentStudent.last_name,
+      email: currentStudent.email,
+      phone: currentStudent.phone||currentStudent.whatsapp||'',
+      programme: selectedTitle,
+      background: 'Existing student — additional course request',
+      status: 'pending',
+      type: 'additional',
+      existing_student_id: currentStudent.id
+    };
+    if (receiptPath) {
+      appPayload.receipt_path = receiptPath;
+      appPayload.receipt_name = receiptName;
+    }
+
+    // Submit application
+    var appRes = await fetch(SUPA_URL+'/rest/v1/applications',{
       method:'POST',
       headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body:JSON.stringify({
-        ref: ref,
-        first_name: currentStudent.first_name,
-        last_name: currentStudent.last_name,
-        email: currentStudent.email,
-        phone: currentStudent.phone||currentStudent.whatsapp||'',
-        programme: addCourseSelected.title,
-        background: 'Existing student — additional course request',
-        receipt_path: receiptPath,
-        receipt_name: addCourseFile.name,
-        status: 'pending',
-        type: 'additional',
-        existing_student_id: currentStudent.id
-      })
+      body:JSON.stringify(appPayload)
     });
+    if (!appRes.ok) {
+      var errText = await appRes.text();
+      throw new Error('Application save failed: '+errText);
+    }
+
+    // Close modal BEFORE nulling state
     document.getElementById('addCourseModal').remove();
-    // Send confirmation email — fire and forget
+
+    // Send emails — use captured values, not addCourseSelected (which may be null)
     fetch('/api/application-received', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         to: currentStudent.email,
         firstName: currentStudent.first_name,
-        programme: addCourseSelected.title,
+        programme: selectedTitle,
         ref: ref,
         testMode: false
       })
     }).catch(function(e){ console.warn('Confirmation email failed:',e); });
-    alert('Request submitted. The Academy will review your payment and add the course to your portal shortly.');
+
+    fetch('/api/notify-admin', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        studentName: currentStudent.first_name+' '+currentStudent.last_name,
+        studentEmail: currentStudent.email,
+        programme: selectedTitle,
+        ref: ref,
+        type: 'additional'
+      })
+    }).catch(function(e){ console.warn('Admin notification failed:',e); });
+
+    // Now safe to null state
     addCourseSelected=null; addCourseFile=null;
+
+    alert('Request submitted successfully. The Academy will review your payment and add the course to your portal shortly.');
+
   } catch(e){
     errEl.textContent='Error: '+e.message; errEl.style.display='block';
     btn.disabled=false; btn.textContent='Submit Request';
