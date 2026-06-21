@@ -389,12 +389,19 @@ tr:hover td{background:var(--surface);cursor:pointer;}
   </div>
   <h2 style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--text);margin-bottom:5px;">Admin Sign In</h2>
   <p style="font-size:13px;color:var(--muted);margin-bottom:22px;">Manage applications, students, courses and progress.</p>
-  <label class="f-label">Username</label>
-  <input class="f-input" id="adminUser" type="text" placeholder="Admin username" autocomplete="username"/>
+  <label class="f-label">Email Address</label>
+  <input class="f-input" id="adminUser" type="email" placeholder="your@email.com" autocomplete="email"/>
   <label class="f-label">Password</label>
-  <input class="f-input" id="adminPass" type="password" placeholder="Admin password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doAdminLogin()"/>
+  <div style="position:relative;margin-bottom:14px;">
+    <input class="f-input" id="adminPass" type="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doAdminLogin()" style="margin-bottom:0;padding-right:46px;"/>
+    <button type="button" onclick="toggleAdminPass()" id="adminPassToggle" style="position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:15px;padding:4px;">👁</button>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+    <input type="checkbox" id="adminRemember" style="width:16px;height:16px;accent-color:var(--navy);cursor:pointer;"/>
+    <label for="adminRemember" style="font-size:12px;color:var(--muted);cursor:pointer;user-select:none;">Remember me for 30 days</label>
+  </div>
   <div class="f-err" id="adminErr"></div>
-  <button class="btn btn-primary" style="width:100%;padding:13px;font-size:15px;" onclick="doAdminLogin()">Sign in to Admin →</button>
+  <button class="btn btn-primary" id="adminLoginBtn" style="width:100%;padding:13px;font-size:15px;" onclick="doAdminLogin()">Sign in to Admin →</button>
 </div>
 </div>
 </div>
@@ -560,6 +567,10 @@ tr:hover td{background:var(--surface);cursor:pointer;}
 
 <!-- ALL STUDENTS -->
 <div class="page" id="page-students">
+  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+    <button class="tab active" onclick="setStudentView('active',this)">Active Students</button>
+    <button class="tab" onclick="setStudentView('inactive',this)">Archived / Revoked</button>
+  </div>
   <div class="page-header"><div><div class="page-title">All Students</div><div class="page-sub">Click any student to view their full profile.</div></div></div>
   <div class="search-bar"><input class="search-input" id="studentSearch" placeholder="Search by name or email..." oninput="renderStudents()"/></div>
   <div class="card"><div class="table-wrap"><table>
@@ -877,19 +888,27 @@ function statCard(val,label,cls) {
 }
 
 // ── SESSION ──────────────────────────────────────────────────────────────────
-function saveAdminSession(admin) { try{localStorage.setItem('cma_admin_session',JSON.stringify({user:admin,at:Date.now()}));}catch(e){} }
+function saveAdminSession(admin, remember) { try{localStorage.setItem('cma_admin_session',JSON.stringify({user:admin,at:Date.now(),remember:!!remember}));}catch(e){} }
 function clearAdminSession() { try{localStorage.removeItem('cma_admin_session');}catch(e){} }
 function loadAdminSession() {
   try{
     var raw=localStorage.getItem('cma_admin_session');
     if(!raw) return null;
     var s=JSON.parse(raw);
-    if(Date.now()-s.at>8*60*60*1000){clearAdminSession();return null;}
+    var maxAge = s.remember ? 30*24*60*60*1000 : 8*60*60*1000;
+    if(Date.now()-s.at>maxAge){clearAdminSession();return null;}
     return s;
   }catch(e){return null;}
 }
 
 // ── AUTH ─────────────────────────────────────────────────────────────────────
+function toggleAdminPass() {
+  var el = document.getElementById('adminPass');
+  var btn = document.getElementById('adminPassToggle');
+  el.type = el.type === 'password' ? 'text' : 'password';
+  btn.textContent = el.type === 'password' ? '👁' : '🙈';
+}
+
 async function doAdminLogin() {
   var emailEl = document.getElementById('adminUser');
   var passEl = document.getElementById('adminPass');
@@ -910,7 +929,15 @@ async function doAdminLogin() {
     if (admin.password_hash !== hash) throw new Error('Incorrect password.');
     // Login success
     currentAdmin = admin;
-    saveAdminSession(admin);
+    var rememberCb = document.getElementById('adminRemember');
+    var remember = rememberCb && rememberCb.checked;
+    saveAdminSession(admin, remember);
+    // Save email for prefill
+    if (remember) {
+      try { localStorage.setItem('cma_admin_remember', email); } catch(e){}
+    } else {
+      try { localStorage.removeItem('cma_admin_remember'); } catch(e){}
+    }
     // Update last_login
     sb('admins','PATCH',{last_login:new Date().toISOString()},'id=eq.'+admin.id).catch(function(){});
     // Update sidebar
@@ -997,9 +1024,7 @@ async function loadAllData() {
 
     var [apps,studs,prog,atts,coh] = await Promise.all([
       isMaster ? sb('applications','GET',null,'order=submitted_at.desc') : Promise.resolve([]),
-      isMaster
-        ? sb('students','GET',null,'order=created_at.desc&select=*')
-        : sb('students','GET',null,'status=eq.active&order=created_at.desc&select=*'),
+      sb('students','GET',null,'status=eq.active&order=created_at.desc&select=*'),
       sb('progress','GET',null,progFilter),
       sb('assessment_attempts','GET',null,'select=*&order=attempted_at.desc'+courseFilter).catch(()=>[]),
       sb('cohort_settings','GET',null,'limit=1')
