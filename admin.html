@@ -489,6 +489,8 @@ tr:hover td{background:var(--surface);cursor:pointer;}
   <div class="nav-item" onclick="goPage('cohort')" id="navCohort">📅 Cohort & Deadline</div>
   <div class="nav-item" onclick="goPage('sitesettings')" id="navSiteSettings">🌐 Site Settings</div>
   <div class="nav-item" onclick="goPage('adminaccounts')" id="navAdminAccounts">👤 Admin Accounts</div>
+  <div class="nav-item" onclick="goPage('accountsettings')" id="navAccountSettings">⚙️ Account Settings</div>
+  <div class="nav-item" onclick="goPage('paymentsettings')" id="navPaymentSettings">💳 Payment Settings</div>
   <div class="nav-item" onclick="goPage('devtools')" id="navDevTools" style="color:rgba(255,165,0,0.6);">🛠 Dev Tools</div>
   <div class="sb-footer">
     <div class="sb-user">
@@ -677,12 +679,12 @@ tr:hover td{background:var(--surface);cursor:pointer;}
 
     <!-- PORTAL MOCKUP PANEL -->
     <div class="card">
-      <div class="form-section-title" style="margin-bottom:16px;">&#128187; Portal Card — learn.catholicmusicacademy.org</div>
+      <div class="form-section-title" style="margin-bottom:16px;">&#128187; Portal Card — catholicmusicacademy.net</div>
       <div class="alert alert-info" style="margin-bottom:16px;font-size:12px;">This is the portal mockup in the "Inside the Student Portal" section. Edit the URL shown and each module row.</div>
 
       <div class="form-group">
         <label class="form-label">URL shown in browser bar</label>
-        <input class="form-input" id="ss_p_url" placeholder="learn.catholicmusicacademy.org"/>
+        <input class="form-input" id="ss_p_url" placeholder="catholicmusicacademy.net"/>
       </div>
 
       <div style="margin-bottom:8px;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:8px;">Module Rows (4)</div>
@@ -701,7 +703,7 @@ tr:hover td{background:var(--surface);cursor:pointer;}
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;" class="ss-grid">
       <div class="form-group" style="margin-bottom:0;">
         <label class="form-label">Email Address</label>
-        <input class="form-input" id="ss_contact_email" placeholder="info@catholicmusicacademy.org"/>
+        <input class="form-input" id="ss_contact_email" placeholder="musicacademywarri@gmail.com"/>
       </div>
       <div class="form-group" style="margin-bottom:0;">
         <label class="form-label">WhatsApp / Phone</label>
@@ -718,6 +720,74 @@ tr:hover td{background:var(--surface);cursor:pointer;}
 
 </div>
 
+
+
+<!-- ACCOUNT SETTINGS -->
+<div class="page" id="page-accountsettings">
+  <div class="page-header">
+    <div><div class="page-title">Account Settings</div><div class="page-sub">Update your admin name, email, and password.</div></div>
+  </div>
+  <div class="card" style="max-width:480px;">
+    <div class="form-section-title" style="margin-bottom:16px;">&#9881;&#65039; Your Admin Account</div>
+    <div class="form-group">
+      <label class="form-label">Full Name</label>
+      <input class="form-input" id="as_name" placeholder="Your name"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input class="form-input" id="as_email" type="email" placeholder="your@email.com"/>
+    </div>
+    <div style="margin-top:4px;padding-top:16px;border-top:1px solid var(--border);margin-bottom:16px;">
+      <div class="form-section-title" style="margin-bottom:12px;">Change Password</div>
+      <div class="form-group">
+        <label class="form-label">Current Password</label>
+        <input class="form-input" id="as_current_pass" type="password" placeholder="Enter current password"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">New Password</label>
+        <input class="form-input" id="as_new_pass" type="password" placeholder="New password (leave blank to keep current)"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm New Password</label>
+        <input class="form-input" id="as_confirm_pass" type="password" placeholder="Repeat new password"/>
+      </div>
+    </div>
+    <div id="as_msg" style="display:none;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:12px;"></div>
+    <button class="btn btn-primary" onclick="saveAccountSettings()">Save Changes</button>
+  </div>
+</div>
+
+<!-- PAYMENT SETTINGS -->
+<div class="page" id="page-paymentsettings">
+  <div class="page-header">
+    <div><div class="page-title">Payment Settings</div><div class="page-sub">Manage bank details and course fees shown to applicants.</div></div>
+  </div>
+  <div class="card" style="max-width:560px;">
+    <div class="form-section-title" style="margin-bottom:16px;">&#128179; Bank Account Details</div>
+    <div class="form-group">
+      <label class="form-label">Bank Name</label>
+      <input class="form-input" id="ps_bank" placeholder="e.g. First Bank of Nigeria"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Account Name</label>
+      <input class="form-input" id="ps_acc_name" placeholder="e.g. Catholic Music Academy"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Account Number</label>
+      <input class="form-input" id="ps_acc_num" placeholder="e.g. 3155067093"/>
+    </div>
+    <div style="padding-top:16px;border-top:1px solid var(--border);margin-top:4px;margin-bottom:16px;">
+      <div class="form-section-title" style="margin-bottom:12px;">Course Fee</div>
+      <div class="form-group">
+        <label class="form-label">Amount per Course (&#8358;)</label>
+        <input class="form-input" id="ps_amount" type="number" min="0" placeholder="5000"/>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">This amount auto-populates on the application form when a student selects a course.</div>
+      </div>
+    </div>
+    <div id="ps_msg" style="display:none;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:12px;"></div>
+    <button class="btn btn-primary" onclick="savePaymentSettings()">Save Payment Settings</button>
+  </div>
+</div>
 
 <!-- ADMIN ACCOUNTS -->
 <div class="page" id="page-adminaccounts">
@@ -907,7 +977,7 @@ function goPage(id) {
   document.querySelectorAll('.nav-item').forEach(n=>{
     if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
   });
-  var renders={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings,'grading':renderGrading,'adminaccounts':renderAdminAccounts};
+  var renders={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings,'grading':renderGrading,'adminaccounts':renderAdminAccounts,'accountsettings':renderAccountSettings,'paymentsettings':renderPaymentSettings};
   if(id==='courses'){
     cmState.selectedModule=null;
     renderCourses();
@@ -972,7 +1042,7 @@ function updateBadges() {
   if(bell) bell.textContent=total>0?total+' alerts':'';
 }
 function renderCurrentPage() {
-  var r={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings,'grading':renderGrading,'adminaccounts':renderAdminAccounts};
+  var r={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings,'grading':renderGrading,'adminaccounts':renderAdminAccounts,'accountsettings':renderAccountSettings,'paymentsettings':renderPaymentSettings};
   if(currentPage==='courses') renderCourses();
   else if(r[currentPage]) r[currentPage]();
 }
@@ -1053,7 +1123,7 @@ function renderApplications() {
   if(!list.length){document.getElementById('appList').innerHTML='<div class="alert alert-info">No '+_appTabFilter+' applications.</div>';return;}
   document.getElementById('appList').innerHTML=list.map(a=>{
     var wn=a.whatsapp||a.phone;
-    var acceptMsg='Dear '+a.first_name+', your application to the Catholic Music Academy has been approved! 🎉\n\nLog in at: learn-cma.vercel.app/login\n\nUse your registered email and the password you set during application.\n\nWelcome to the Academy!';
+    var acceptMsg='Dear '+a.first_name+', your application to the Catholic Music Academy has been approved! 🎉\n\nLog in at: catholicmusicacademy.net/login.html\n\nUse your registered email and the password you set during application.\n\nWelcome to the Academy!';
         window._appMap[a.id] = a;
     var aid = a.id;
     var acts='';
@@ -1090,22 +1160,52 @@ async function approveApp(id) {
       await sb('students','PATCH',{status:'active',programme:a.programme,password_hash:a.password_hash,application_id:id,phone:a.phone,whatsapp:a.whatsapp||a.phone,state:a.state,security_question:a.security_question||null,security_answer_hash:a.security_answer_hash||null},'id=eq.'+existing[0].id);
       showToast('✓ Reactivated: '+a.first_name);
     } else {
-      await sb('students','POST',{application_id:id,first_name:a.first_name,last_name:a.last_name,email:a.email,password_hash:a.password_hash,phone:a.phone,whatsapp:a.whatsapp||a.phone,programme:a.programme,state:a.state,security_question:a.security_question||null,security_answer_hash:a.security_answer_hash||null,status:'active'});
-      showToast('✓ Approved: '+a.first_name+' account created');
-    }
-    // Send approval email — fire and forget
-    if (a.email) {
-      fetch('/api/admission-approved', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-          to: a.email,
-          firstName: a.first_name,
+      var newStudent;
+      if (a.type === 'additional' && a.existing_student_id) {
+        // Additional course — find existing student and add enrolment
+        newStudent = {id: a.existing_student_id};
+        showToast('✓ Additional course approved for '+a.first_name);
+      } else {
+        // New student — create student record
+        var created = await sb('students','POST',{application_id:id,first_name:a.first_name,last_name:a.last_name,email:a.email,password_hash:a.password_hash,phone:a.phone,whatsapp:a.whatsapp||a.phone,programme:a.programme,state:a.state,security_question:a.security_question||null,security_answer_hash:a.security_answer_hash||null,status:'active'});
+        newStudent = created && created[0] ? created[0] : {id: null};
+        showToast('✓ Approved: '+a.first_name+' account created');
+      }
+      // Create enrolment row regardless of new/additional
+      if (newStudent && newStudent.id) {
+        // Find course_id from cmCourses
+        var matchedCourse = cmCourses.find(function(c){ return c.title === a.programme; });
+        var courseId = matchedCourse ? matchedCourse.id : a.programme;
+        sb('enrolments','POST',{
+          student_id: newStudent.id,
+          course_id: courseId,
           programme: a.programme,
-          ref: a.ref || ('CMA-'+id.slice(-6).toUpperCase()),
-          testMode: SS_CACHE['testing_mode'] === 'true'
-        })
-      }).catch(function(e){ console.warn('Approval email failed:',e); });
+          status: 'active'
+        }).catch(function(e){ console.warn('Enrolment insert failed:', e); });
+      }
+    }
+    // Send appropriate email based on type
+    if (a.email) {
+      if (a.type === 'additional') {
+        fetch('/api/course-added', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            to:a.email, firstName:a.first_name, programme:a.programme,
+            testMode: SS_CACHE['testing_mode']==='true'
+          })
+        }).catch(function(e){ console.warn('Course added email failed:',e); });
+      } else {
+        fetch('/api/admission-approved', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            to:a.email, firstName:a.first_name, programme:a.programme,
+            ref:a.ref||('CMA-'+id.slice(-6).toUpperCase()),
+            testMode:SS_CACHE['testing_mode']==='true'
+          })
+        }).catch(function(e){ console.warn('Approval email failed:',e); });
+      }
     }
     await loadAllData();
   } catch(e) { showToast('Error: '+e.message,'err'); }
@@ -1248,7 +1348,7 @@ function openStudentDetail(sid) {
   var risk=isAtRisk(s);
   var app=allApplications.find(function(a){return a.email===s.email;})||{};
   var wn=s.whatsapp||s.phone;
-  var nudgeMsg='Hello '+s.first_name+', this is the Catholic Music Academy. You have '+(MODULE_COUNT-comp.length)+' module(s) remaining. Log in: learn-cma.vercel.app/login';
+  var nudgeMsg='Hello '+s.first_name+', this is the Catholic Music Academy. You have '+(MODULE_COUNT-comp.length)+' module(s) remaining. Log in: catholicmusicacademy.net/login.html';
 
   // Overview
   var ov='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:18px;">'
@@ -1432,7 +1532,7 @@ function renderAtrisk() {
       if(du<=7&&comp<MODULE_COUNT) reasons.push('Deadline in '+du+' days');
       if(du<=14&&comp===0) reasons.push('Not started');
       var wn=s.whatsapp||s.phone;
-      var nudge='Hi '+s.first_name+', this is the Catholic Music Academy! You have '+(MODULE_COUNT-comp)+' module(s) left. Deadline: '+fmtDate(cohortSettings.deadline)+'. Log in: learn-cma.vercel.app/login';
+      var nudge='Hi '+s.first_name+', this is the Catholic Music Academy! You have '+(MODULE_COUNT-comp)+' module(s) left. Deadline: '+fmtDate(cohortSettings.deadline)+'. Log in: catholicmusicacademy.net/login.html';
       return '<div class="risk-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:8px;">'
         +'<div><div style="font-size:15px;font-weight:700;">'+s.first_name+' '+s.last_name+'</div><div style="font-size:12px;color:var(--muted);">'+s.email+'</div></div>'
         +'<span class="pill pill-danger">⚠ At Risk</span></div>'
@@ -2202,13 +2302,13 @@ async function renderSiteSettings() {
   var cEmail = document.getElementById('ss_contact_email');
   var cWa = document.getElementById('ss_contact_whatsapp');
   var cLoc = document.getElementById('ss_contact_location');
-  if(cEmail) cEmail.value = SS_CACHE['contact_email'] || 'info@catholicmusicacademy.org';
+  if(cEmail) cEmail.value = SS_CACHE['contact_email'] || 'musicacademywarri@gmail.com';
   if(cWa) cWa.value = SS_CACHE['contact_whatsapp'] || '';
   if(cLoc) cLoc.value = SS_CACHE['contact_location'] || 'Ozoro, Delta State, Nigeria';
 
   // Populate portal card fields
   var pUrl = document.getElementById('ss_p_url');
-  if(pUrl) pUrl.value = SS_CACHE['mockup_portal_url'] || 'learn.catholicmusicacademy.org';
+  if(pUrl) pUrl.value = SS_CACHE['mockup_portal_url'] || 'catholicmusicacademy.net';
 
   // Build portal module rows
   var portalMods = document.getElementById('ss_portal_modules');
@@ -2392,7 +2492,7 @@ async function renderGrading() {
         +'<div style="margin-bottom:14px;">'
         +'<div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Email to Student (editable)</div>'
         +'<input class="form-input" id="gemail-subj-'+r.id+'" value="Your Assessment Result — Catholic Music Academy" style="margin-bottom:8px;"/>'
-        +'<textarea class="form-textarea" id="gemail-body-'+r.id+'" style="min-height:160px;font-size:12px;line-height:1.7;">Dear '+studentName.split(' ')[0]+',\n\nYour assessment for Module '+(r.module_index+1)+' has been reviewed by your instructor.\n\nResult: [PASS/FAIL]\nScore: [X] / [Total]\n\n[Comments]\n\nLog in to continue your studies:\nhttps://learn.catholicmusicacademy.net\n\nGod bless,\nCatholic Music Academy\nCatholic Diocese of Warri</textarea>'
+        +'<textarea class="form-textarea" id="gemail-body-'+r.id+'" style="min-height:160px;font-size:12px;line-height:1.7;">Dear '+studentName.split(' ')[0]+',\n\nYour assessment for Module '+(r.module_index+1)+' has been reviewed by your instructor.\n\nResult: [PASS/FAIL]\nScore: [X] / [Total]\n\n[Comments]\n\nLog in to continue your studies:\nhttps://catholicmusicacademy.net\n\nGod bless,\nCatholic Music Academy\nCatholic Diocese of Warri</textarea>'
         +'</div>'
 
         // Action buttons
@@ -2421,7 +2521,7 @@ function doWhatsApp(btn) {
 
 function openWhatsApp(subId, phone, name, modIdx) {
   var comment = (document.getElementById('gcomment-'+subId)||{}).value||'';
-  var msg = 'Dear '+name+', your assessment for Module '+(modIdx+1)+' has been reviewed. '+(comment?'Comments: '+comment+'. ':'')+' Log in to check your result: https://learn.catholicmusicacademy.net';
+  var msg = 'Dear '+name+', your assessment for Module '+(modIdx+1)+' has been reviewed. '+(comment?'Comments: '+comment+'. ':'')+' Log in to check your result: https://catholicmusicacademy.net';
   window.open(waLink(phone, msg), '_blank');
 }
 
@@ -2505,6 +2605,109 @@ async function gradeSubmission(id, result, mcqScore, mcqTotal, writtenTotal, ema
   }
 }
 
+
+
+// ── ACCOUNT SETTINGS ─────────────────────────────────────────────────────────
+async function renderAccountSettings() {
+  if (!currentAdmin) return;
+  var nameEl = document.getElementById('as_name');
+  var emailEl = document.getElementById('as_email');
+  if (nameEl) nameEl.value = currentAdmin.name || '';
+  if (emailEl) emailEl.value = currentAdmin.email || '';
+}
+
+async function saveAccountSettings() {
+  var name = (document.getElementById('as_name')||{}).value||'';
+  var email = (document.getElementById('as_email')||{}).value||'';
+  var currPass = (document.getElementById('as_current_pass')||{}).value||'';
+  var newPass = (document.getElementById('as_new_pass')||{}).value||'';
+  var confirmPass = (document.getElementById('as_confirm_pass')||{}).value||'';
+  var msg = document.getElementById('as_msg');
+
+  if (!name.trim()||!email.trim()) {
+    msg.textContent='Name and email are required.'; msg.style.background='var(--danger-light)'; msg.style.color='var(--danger)'; msg.style.display='block'; return;
+  }
+
+  var updates = {name: name.trim(), email: email.trim().toLowerCase()};
+
+  // Handle password change
+  if (newPass) {
+    if (!currPass) { msg.textContent='Enter your current password to change it.'; msg.style.background='var(--danger-light)'; msg.style.color='var(--danger)'; msg.style.display='block'; return; }
+    if (newPass !== confirmPass) { msg.textContent='New passwords do not match.'; msg.style.background='var(--danger-light)'; msg.style.color='var(--danger)'; msg.style.display='block'; return; }
+    var currHash = await hashAdminPass(currPass);
+    if (currHash !== currentAdmin.password_hash) { msg.textContent='Current password is incorrect.'; msg.style.background='var(--danger-light)'; msg.style.color='var(--danger)'; msg.style.display='block'; return; }
+    updates.password_hash = await hashAdminPass(newPass);
+  }
+
+  try {
+    await sb('admins','PATCH',updates,'id=eq.'+currentAdmin.id);
+    // Update local session
+    currentAdmin.name = updates.name;
+    currentAdmin.email = updates.email;
+    if (updates.password_hash) currentAdmin.password_hash = updates.password_hash;
+    saveAdminSession(currentAdmin);
+    document.getElementById('sidebarName').textContent = currentAdmin.name;
+    document.getElementById('sidebarInitial').textContent = currentAdmin.name.charAt(0).toUpperCase();
+    // Clear password fields
+    ['as_current_pass','as_new_pass','as_confirm_pass'].forEach(function(id){
+      var el=document.getElementById(id); if(el) el.value='';
+    });
+    msg.textContent='Account updated successfully.'; msg.style.background='var(--ok-light)'; msg.style.color='var(--ok)'; msg.style.display='block';
+    setTimeout(function(){ msg.style.display='none'; }, 3000);
+    showToast('Account settings saved.');
+  } catch(e) {
+    msg.textContent='Error: '+e.message; msg.style.background='var(--danger-light)'; msg.style.color='var(--danger)'; msg.style.display='block';
+  }
+}
+
+// ── PAYMENT SETTINGS ──────────────────────────────────────────────────────────
+async function renderPaymentSettings() {
+  try {
+    var rows = await sb('site_settings','GET',null,'key=in.(payment_bank,payment_acc_name,payment_acc_num,course_amount)&select=key,value');
+    var s = {};
+    (rows||[]).forEach(function(r){ s[r.key]=r.value; });
+    var bankEl=document.getElementById('ps_bank');
+    var nameEl=document.getElementById('ps_acc_name');
+    var numEl=document.getElementById('ps_acc_num');
+    var amtEl=document.getElementById('ps_amount');
+    if(bankEl) bankEl.value=s['payment_bank']||'First Bank of Nigeria';
+    if(nameEl) nameEl.value=s['payment_acc_name']||'Catholic Music Academy';
+    if(numEl) numEl.value=s['payment_acc_num']||'3155067093';
+    if(amtEl) amtEl.value=s['course_amount']||'5000';
+  } catch(e){}
+}
+
+async function savePaymentSettings() {
+  var bank=(document.getElementById('ps_bank')||{}).value||'';
+  var accName=(document.getElementById('ps_acc_name')||{}).value||'';
+  var accNum=(document.getElementById('ps_acc_num')||{}).value||'';
+  var amount=(document.getElementById('ps_amount')||{}).value||'';
+  var msg=document.getElementById('ps_msg');
+
+  if(!bank.trim()||!accName.trim()||!accNum.trim()||!amount) {
+    msg.textContent='All fields are required.'; msg.style.background='var(--danger-light)'; msg.style.color='var(--danger)'; msg.style.display='block'; return;
+  }
+
+  try {
+    var pairs=[
+      {key:'payment_bank',value:bank.trim(),updated_at:new Date().toISOString()},
+      {key:'payment_acc_name',value:accName.trim(),updated_at:new Date().toISOString()},
+      {key:'payment_acc_num',value:accNum.trim(),updated_at:new Date().toISOString()},
+      {key:'course_amount',value:String(parseInt(amount)||5000),updated_at:new Date().toISOString()}
+    ];
+    var res=await fetch(SUPA_URL+'/rest/v1/site_settings?on_conflict=key',{
+      method:'POST',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
+      body:JSON.stringify(pairs)
+    });
+    if(!res.ok) throw new Error(await res.text());
+    msg.textContent='Payment settings saved. Apply form will reflect changes immediately.'; msg.style.background='var(--ok-light)'; msg.style.color='var(--ok)'; msg.style.display='block';
+    setTimeout(function(){ msg.style.display='none'; },4000);
+    showToast('Payment settings saved.');
+  } catch(e){
+    msg.textContent='Error: '+e.message; msg.style.background='var(--danger-light)'; msg.style.color='var(--danger)'; msg.style.display='block';
+  }
+}
 
 // ── ADMIN ACCOUNTS ────────────────────────────────────────────────────────────
 async function renderAdminAccounts() {
