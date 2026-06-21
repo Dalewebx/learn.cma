@@ -785,9 +785,9 @@ footer{background:var(--navy);padding:48px 24px 28px;}
 <!-- SECTION 9: CTA -->
 <section class="cta-sec">
   <div style="max-width:560px;margin:0 auto;">
-    <h2 class="cta-title">Begin your music education journey</h2>
-    <p class="cta-sub">Applications are open. Catholic Diocese of Warri.</p>
-    <div class="cta-acts">
+    <h2 class="cta-title" id="ctaTitle">Begin your music education journey</h2>
+    <p class="cta-sub" id="ctaSub">Applications are open. Catholic Diocese of Warri.</p>
+    <div class="cta-acts" id="ctaActs">
       <a class="btn btn-navy" href="apply.html" style="font-size:15px;padding:14px 32px;">Apply Now</a>
       <a class="btn btn-gold-outline" href="login.html" style="font-size:14px;padding:13px 26px;">Already enrolled? Log In</a>
     </div>
@@ -1049,6 +1049,14 @@ footer{background:var(--navy);padding:48px 24px 28px;}
     if (!s || !s.student || s.student.status !== 'active') return;
     if (Date.now() - s.savedAt > 30 * 24 * 60 * 60 * 1000) return; // expired
     var name = s.student.first_name || 'Student';
+
+    // ── CTA SECTION: transform for logged-in student ──
+    var ctaTitle = document.getElementById('ctaTitle');
+    var ctaSub = document.getElementById('ctaSub');
+    var ctaActs = document.getElementById('ctaActs');
+    if (ctaTitle) ctaTitle.textContent = 'Continue your music education';
+    if (ctaSub) ctaSub.textContent = 'Welcome back, '+name+'. Your modules and progress are waiting for you.';
+    if (ctaActs) ctaActs.innerHTML = '<a class="btn btn-navy" href="login.html" style="font-size:15px;padding:14px 32px;">Go to My Portal →</a>';
 
     // ── PROGRAMMES SECTION: transform for logged-in student ──
     var progLabel = document.getElementById('progLabel');
