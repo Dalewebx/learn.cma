@@ -655,6 +655,16 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 </div>
 
 
+
+<!-- COURSE PROGRESS -->
+<div class="page" id="page-courseprogress">
+  <div class="page-header">
+    <div><div class="page-title">Course Progress</div><div class="page-sub">View all enrolled students and their module completion for each course.</div></div>
+    <button class="btn btn-ghost" onclick="renderCourseProgress()">↻ Refresh</button>
+  </div>
+  <div id="courseProgressContent"><div style="text-align:center;padding:40px;color:var(--muted);">Loading...</div></div>
+</div>
+
 <!-- GRADING QUEUE -->
 <div class="page" id="page-grading">
   <div class="page-header">
@@ -1033,7 +1043,7 @@ function goPage(id) {
   document.querySelectorAll('.nav-item').forEach(n=>{
     if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
   });
-  var renders={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings,'grading':renderGrading,'adminaccounts':renderAdminAccounts,'accountsettings':renderAccountSettings,'paymentsettings':renderPaymentSettings};
+  var renders={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings,'grading':renderGrading,'adminaccounts':renderAdminAccounts,'accountsettings':renderAccountSettings,'paymentsettings':renderPaymentSettings,'courseprogress':renderCourseProgress};
   if(id==='courses'){
     cmState.selectedModule=null;
     renderCourses();
@@ -1096,7 +1106,7 @@ function updateBadges() {
   if(bell) bell.textContent=total>0?total+' alerts':'';
 }
 function renderCurrentPage() {
-  var r={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings,'grading':renderGrading,'adminaccounts':renderAdminAccounts,'accountsettings':renderAccountSettings,'paymentsettings':renderPaymentSettings};
+  var r={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings,'grading':renderGrading,'adminaccounts':renderAdminAccounts,'accountsettings':renderAccountSettings,'paymentsettings':renderPaymentSettings,'courseprogress':renderCourseProgress};
   if(currentPage==='courses') renderCourses();
   else if(r[currentPage]) r[currentPage]();
 }
@@ -2492,6 +2502,92 @@ async function saveSiteSettings(panel) {
   }
 }
 
+
+
+// ── COURSE PROGRESS ───────────────────────────────────────────────────────────
+async function renderCourseProgress() {
+  var el = document.getElementById('courseProgressContent');
+  if (!el) return;
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);">Loading...</div>';
+
+  try {
+    // Get all courses
+    var isMaster = !currentAdmin || currentAdmin.role === 'master';
+    var courseFilter = (!isMaster && currentAdmin.assigned_course_id) ? currentAdmin.assigned_course_id : null;
+
+    // Group students by course/programme
+    var students = allStudents;
+    if (courseFilter) {
+      students = students.filter(function(s){
+        var mc = cmCourses.find(function(c){ return c.id === courseFilter; });
+        return mc && s.programme === mc.title;
+      });
+    }
+
+    if (!students.length) {
+      el.innerHTML = '<div class="alert alert-info">No active students found.</div>';
+      return;
+    }
+
+    // Group by programme
+    var groups = {};
+    students.forEach(function(s) {
+      var prog = s.programme || 'Unknown Programme';
+      if (!groups[prog]) groups[prog] = [];
+      groups[prog].push(s);
+    });
+
+    el.innerHTML = Object.keys(groups).map(function(prog) {
+      var groupStudents = groups[prog];
+      // Find module count for this course
+      var mc = cmCourses.find(function(c){ return c.title === prog; });
+      var modCount = mc ? (mc.modules||[]).filter(function(m){ return m.published!==false; }).length : MODULE_COUNT;
+
+      return '<div class="card" style="margin-bottom:20px;">'
+        +'<div style="font-family:DM Serif Display,serif;font-size:20px;color:var(--navy);margin-bottom:4px;">'+prog+'</div>'
+        +'<div style="font-size:12px;color:var(--muted);margin-bottom:16px;">'+groupStudents.length+' student'+(groupStudents.length!==1?'s':'')+' enrolled \u00b7 '+modCount+' module'+(modCount!==1?'s':'')+'</div>'
+        +'<div style="overflow-x:auto;">'
+        +'<table style="width:100%;border-collapse:collapse;font-size:13px;">'
+        +'<thead><tr style="border-bottom:2px solid var(--border);">'
+        +'<th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Student</th>'
+        +'<th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Progress</th>'
+        +'<th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Modules</th>'
+        +'<th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Last Login</th>'
+        +'<th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Status</th>'
+        +'</tr></thead>'
+        +'<tbody>'
+        +groupStudents.map(function(s) {
+          var progress = allProgress.filter(function(p){ return p.student_id===s.id; });
+          var completed = progress.length;
+          var pct = modCount > 0 ? Math.round((completed/modCount)*100) : 0;
+          var isComplete = completed >= modCount && modCount > 0;
+          var lastLogin = s.last_login ? new Date(s.last_login).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : 'Never';
+          return '<tr style="border-bottom:1px solid var(--border);">'
+            +'<td style="padding:12px;"><div style="font-weight:600;color:var(--text);">'+s.first_name+' '+s.last_name+'</div><div style="font-size:11px;color:var(--muted);">'+s.email+'</div></td>'
+            +'<td style="padding:12px;min-width:140px;">'
+            +'<div style="background:var(--border);border-radius:4px;height:6px;overflow:hidden;margin-bottom:4px;">'
+            +'<div style="width:'+pct+'%;height:100%;background:'+(isComplete?'var(--ok)':'linear-gradient(90deg,var(--navy-mid),var(--gold))')+';border-radius:4px;"></div>'
+            +'</div>'
+            +'<div style="font-size:11px;color:var(--muted);">'+pct+'%</div>'
+            +'</td>'
+            +'<td style="padding:12px;font-size:13px;color:var(--text);">'+completed+' / '+modCount+'</td>'
+            +'<td style="padding:12px;font-size:12px;color:var(--muted);">'+lastLogin+'</td>'
+            +'<td style="padding:12px;">'
+            +(isComplete
+              ? '<span class="pill pill-ok" style="font-size:11px;">✓ Complete</span>'
+              : pct > 0
+                ? '<span class="pill" style="font-size:11px;background:var(--navy-light);color:var(--navy);">In Progress</span>'
+                : '<span class="pill pill-dim" style="font-size:11px;">Not Started</span>')
+            +'</td>'
+            +'</tr>';
+        }).join('')
+        +'</tbody></table></div></div>';
+    }).join('');
+
+  } catch(e) {
+    el.innerHTML = '<div class="alert alert-warn">Error loading course progress: '+e.message+'</div>';
+  }
+}
 
 // ── GRADING QUEUE ────────────────────────────────────────────────────────────
 async function renderGrading() {
