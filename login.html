@@ -1177,89 +1177,59 @@ function openMod(i) {
 }
 
 function startReadTimer() {
-  var elapsed=0;
-  var bar=document.getElementById('timerBar');
-  timerInterval=setInterval(function(){
+  var elapsed = 0;
+  var bar = document.getElementById('timerBar');
+  timerInterval = setInterval(() => {
     elapsed++;
-    bar.style.transition='width 1s linear';
-    bar.style.width=Math.min(Math.round((elapsed/READ_TIME)*100),100)+'%';
-    if(elapsed>=READ_TIME){
-      clearInterval(timerInterval);timerDone=true;
+    bar.style.transition = 'width 1s linear';
+    bar.style.width = Math.min(Math.round((elapsed/READ_TIME)*100),100)+'%';
+    if (elapsed >= READ_TIME) {
+      clearInterval(timerInterval); timerDone = true;
       document.getElementById('readTimer').classList.add('rt-unlocked');
-      document.getElementById('timerMsg').textContent='Reading period complete';
-      document.getElementById('timerSub').textContent='Now scroll to the end of the lesson to unlock the assessment.';
-      bar.style.width='100%';
-      // After timer, check if content is already visible (short modules)
-      // Also force-check scroll position in case student already scrolled
-      var modC=document.getElementById('modContent');
-      if(modC){
-        var rect=modC.getBoundingClientRect();
-        var vh2=document.documentElement.clientHeight||window.innerHeight;
-        var scrolled2=window.pageYOffset||document.documentElement.scrollTop;
-        var totalH2=document.documentElement.scrollHeight;
-        if(rect.bottom<=vh2+200 || (totalH2>vh2 && scrolled2/(totalH2-vh2)>=0.8)){
-          scrollDone=true;
+      document.getElementById('timerMsg').textContent = 'Reading period complete';
+      document.getElementById('timerSub').textContent = 'Now scroll to the end of the lesson to unlock the assessment.';
+      bar.style.width = '100%';
+      // Force scrollDone if content is already visible or page is short
+      var content = document.getElementById('modContent');
+      if (content) {
+        var vh2 = document.documentElement.clientHeight || window.innerHeight;
+        if (content.getBoundingClientRect().bottom <= vh2 + 200) {
+          scrollDone = true;
         }
       }
       checkUnlock();
     }
-  },1000);
+  }, 1000);
 }
+
 
 function setupScrollCheck() {
-  // Poll every 500ms — avoids all issues with scroll event targets,
-  // mobile overflow containers, and listener self-removal bugs.
-  // Stops as soon as scrollDone is true.
-  var pollId = setInterval(function(){
-    // Stop if we're no longer on the module screen
-    if (!document.getElementById('screen-module') ||
-        !document.getElementById('screen-module').classList.contains('active')) {
-      clearInterval(pollId); return;
-    }
-    // Stop if already done
-    if (scrollDone) { clearInterval(pollId); return; }
-
-    var modContent = document.getElementById('modContent');
-    if (!modContent) return;
-
-    var rect = modContent.getBoundingClientRect();
+  var handler = () => {
+    var content = document.getElementById('modContent');
+    if (!content) return;
     var vh = document.documentElement.clientHeight || window.innerHeight;
-
-    // Check 1: bottom of reading content is near or past viewport bottom
-    // (student has scrolled far enough to see the end of the reading)
-    if (rect.bottom <= vh + 200) {
-      scrollDone = true;
-      clearInterval(pollId);
-      checkUnlock();
-      return;
+    if (content.getBoundingClientRect().bottom <= vh + 120) {
+      scrollDone = true; window.removeEventListener('scroll', handler); checkUnlock();
     }
-
-    // Check 2: student has scrolled at least 80% of the way through the page
-    // (handles cases where quiz card extends the page significantly)
-    var scrolled = window.pageYOffset || document.documentElement.scrollTop;
-    var totalH = document.documentElement.scrollHeight;
-    var clientH = document.documentElement.clientHeight;
-    if (totalH > clientH && scrolled / (totalH - clientH) >= 0.8) {
-      scrollDone = true;
-      clearInterval(pollId);
-      checkUnlock();
-      return;
-    }
-  }, 500);
+  };
+  window.addEventListener('scroll', handler);
+  setTimeout(handler, 800);
 }
 
+
 function checkUnlock() {
-  if(timerDone&&scrollDone){
+  if (timerDone && scrollDone) {
     document.getElementById('readTimer').classList.add('rt-unlocked');
-    document.getElementById('timerMsg').textContent='✓ Assessment unlocked';
-    document.getElementById('timerSub').textContent='Answer all questions below to complete this module.';
-    document.getElementById('timerBar').style.width='100%';
-    document.getElementById('quizLockBadge').style.display='none';
+    document.getElementById('timerMsg').textContent = '✓ Assessment unlocked';
+    document.getElementById('timerSub').textContent = 'Answer all questions below to complete this module.';
+    document.getElementById('timerBar').style.width = '100%';
+    document.getElementById('quizLockBadge').style.display = 'none';
     renderQuiz();
-    document.getElementById('modActions').innerHTML='<button class="btn btn-primary" id="submitBtn" onclick="submitQuiz()">Submit Assessment →</button>';
+    document.getElementById('modActions').innerHTML = '<button class="btn btn-primary" id="submitBtn" onclick="submitQuiz()">Submit Assessment →</button>';
     document.getElementById('quizCard').scrollIntoView({behavior:'smooth',block:'start'});
   }
 }
+
 
 function lockQuiz() {
   document.getElementById('quizLockBadge').style.display='inline-flex';
