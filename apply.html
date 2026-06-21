@@ -680,7 +680,22 @@ function buildReview() {
 // ── SUBMIT ──
 async function submitApplication() {
   var btn = document.getElementById('submitBtn');
-  btn.disabled = true; btn.textContent = 'Submitting...';
+  btn.disabled = true; btn.textContent = 'Checking...';
+
+  // Check for existing pending application with same email
+  try {
+    var emailVal = v('email');
+    var checkRes = await fetch(SUPA_URL+'/rest/v1/applications?email=eq.'+encodeURIComponent(emailVal)+'&status=eq.pending&select=id,programme',
+      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    var existing = await checkRes.json();
+    if (existing && existing.length) {
+      btn.disabled = false; btn.textContent = 'Submit Application →';
+      alert('An application with this email address is already pending review. Please wait to hear from the Academy before applying again.');
+      return;
+    }
+  } catch(e){ /* proceed if check fails */ }
+
+  btn.textContent = 'Submitting...';
   try {
     var ref = 'CMA-' + Date.now().toString().slice(-6);
     var pwHash = await hashPassword(document.getElementById('password').value);
