@@ -4,7 +4,11 @@
     {"source": "/apply", "destination": "/apply.html"},
     {"source": "/portal", "destination": "/login.html"},
     {"source": "/portal/:path*", "destination": "/login.html"},
+    {"source": "/forgot-password", "destination": "/forgot-password.html"},
     {"source": "/academy-management", "destination": "/admin.html"}
+  ],
+  "redirects": [
+    {"source": "/admin.html", "destination": "/academy-management", "permanent": true}
   ],
   "headers": [
     {
