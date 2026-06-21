@@ -890,6 +890,18 @@ async function submitAddCourse() {
       })
     });
     document.getElementById('addCourseModal').remove();
+    // Send confirmation email — fire and forget
+    fetch('/api/application-received', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        to: currentStudent.email,
+        firstName: currentStudent.first_name,
+        programme: addCourseSelected.title,
+        ref: ref,
+        testMode: false
+      })
+    }).catch(function(e){ console.warn('Confirmation email failed:',e); });
     alert('Request submitted. The Academy will review your payment and add the course to your portal shortly.');
     addCourseSelected=null; addCourseFile=null;
   } catch(e){
