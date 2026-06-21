@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iI0ZBRkFGNyIvPgogIDxyZWN0IHg9IjUiIHk9IjUiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSIjMEQxQjNFIi8+CiAgPHJlY3QgeD0iMTgiIHk9IjUiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iNSIgeT0iMTgiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iOSIgaGVpZ2h0PSI5IiByeD0iMiIgZmlsbD0iIzBEMUIzRSIvPgo8L3N2Zz4="/>
 <title>Catholic Music Academy — Admin</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDx0ZXh0IHg9IjYiIHk9IjIwIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNDOUE4NEMiPvCdhJ48L3RleHQ+CiAgPHBhdGggZD0iTTIyIDZDMjAgNiAxOC41IDcuNSAxOC41IDkuNUMxOC41IDEwLjIgMTguNyAxMC44IDE5IDExLjNMMTYgMTYuNUMxNS42IDE3LjEgMTUuOCAxNy45IDE2LjQgMTguM0MxNyAxOC43IDE3LjggMTguNSAxOC4yIDE3LjlMMjEuMiAxMi43QzIxLjYgMTIuOSAyMiAxMyAyMi41IDEzQzI0LjUgMTMgMjYgMTEuNSAyNiA5LjVDMjYgOC44IDI1LjggOC4yIDI1LjUgNy43TDIzLjUgOS43TDIxLjggOS40TDIxLjUgNy43TDIzLjUgNS43QzIzIDUuMiAyMi41IDYgMjIgNloiIGZpbGw9IiNDOUE4NEMiLz4KPC9zdmc+"/>
+
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -1339,9 +1340,26 @@ async function viewReceipt(id) {
 }
 
 // ── STUDENTS ─────────────────────────────────────────────────────────────────
-function renderStudents() {
+var _studentView = 'active';
+function setStudentView(view, el) {
+  _studentView = view;
+  document.querySelectorAll('#page-students .tab').forEach(function(t){ t.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  renderStudents();
+}
+
+async function renderStudents() {
   var q=(document.getElementById('studentSearch')||{}).value||'';
-  var list=allStudents.filter(function(s){
+  var list;
+  if (_studentView === 'inactive') {
+    // Fetch inactive students fresh from DB
+    try {
+      list = await sb('students','GET',null,'status=eq.inactive&order=created_at.desc&select=*');
+    } catch(e) { list = []; }
+  } else {
+    list = allStudents;
+  }
+  list = list.filter(function(s){
     return !q||[s.first_name,s.last_name,s.email].join(' ').toLowerCase().includes(q.toLowerCase());
   });
   var rows = list.map(function(s) {
