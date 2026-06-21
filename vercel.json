@@ -3,6 +3,7 @@
     {"source": "/home", "destination": "/index.html"},
     {"source": "/apply", "destination": "/apply.html"},
     {"source": "/portal", "destination": "/login.html"},
+    {"source": "/portal/:path*", "destination": "/login.html"},
     {"source": "/academy-management", "destination": "/admin.html"}
   ],
   "headers": [
