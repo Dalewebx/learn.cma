@@ -858,8 +858,18 @@ async function submitAddCourse() {
   var btn = document.getElementById('addCourseBtn');
   if(!addCourseSelected){ errEl.textContent='Please select a programme.'; errEl.style.display='block'; return; }
   if(!addCourseFile){ errEl.textContent='Please upload your payment receipt.'; errEl.style.display='block'; return; }
-  btn.disabled=true; btn.textContent='Submitting...';
+  btn.disabled=true; btn.textContent='Checking...';
   try {
+    // Check for existing pending request for same course
+    var pendingCheck = await fetch(SUPA_URL+'/rest/v1/applications?email=eq.'+encodeURIComponent(currentStudent.email)+'&programme=eq.'+encodeURIComponent(addCourseSelected.title)+'&status=eq.pending&select=id',
+      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    var pendingRows = await pendingCheck.json();
+    if (pendingRows && pendingRows.length) {
+      btn.disabled=false; btn.textContent='Submit Request';
+      alert('You already have a pending request for '+addCourseSelected.title+'. Please wait for the Academy to review it before applying again.');
+      return;
+    }
+    btn.textContent='Submitting...';
     var ref = 'CMA-ADD-'+Date.now().toString().slice(-6);
     // Upload receipt
     var ext = addCourseFile.name.split('.').pop();
@@ -1548,15 +1558,54 @@ function clearRememberMe() {
     showScreen('screen-login');
     return;
   }
-  // Pre-fill remembered credentials
+  // Pre-fill remembered credentials and auto-login if hash stored
   var remembered = getRemembered();
   if (remembered && remembered.email) {
     var emailEl = document.getElementById('loginEmail');
     if (emailEl) emailEl.value = remembered.email;
-    // Note: we store a hash, not the raw password, so we cannot prefill the password field.
-    // The checkbox is checked to signal the user their email is remembered.
     var cb = document.getElementById('rememberMe');
     if (cb) cb.checked = true;
+    // Show a subtle "signing you in..." state
+    var loginBtn = document.getElementById('loginBtn');
+    if (loginBtn && remembered.passHash) {
+      loginBtn.textContent = 'Signing you in...';
+      loginBtn.disabled = true;
+      // Attempt auto-login with stored hash
+      try {
+        var res = await fetch(SUPA_URL + '/rest/v1/students?email=eq.' + encodeURIComponent(remembered.email) + '&select=*', {
+          headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+        });
+        var results = await res.json();
+        if (results && results.length && results[0].password_hash === remembered.passHash && results[0].status === 'active') {
+          var student = results[0];
+          currentStudent = student;
+          var dbResult = await loadCourseAndModulesFromDB(student.programme);
+          CURRENT_COURSE = dbResult.course;
+          MODULES = dbResult.modules;
+          await loadProgress().catch(function(){});
+          saveSession(student, CURRENT_COURSE, completedModules);
+          document.getElementById('topbar').style.display = 'flex';
+          document.getElementById('topbarName').textContent = student.first_name;
+          document.getElementById('dashName').textContent = 'Welcome back, ' + student.first_name + '.';
+          var safeSet = function(id, val, isHtml) {
+            var el = document.getElementById(id);
+            if (!el || !CURRENT_COURSE) return;
+            if (isHtml) el.innerHTML = val; else el.textContent = val;
+          };
+          safeSet('enrolledCourseNum', CURRENT_COURSE.title);
+          safeSet('enrolledCourseTitle', CURRENT_COURSE.title);
+          safeSet('enrolledCourseDesc', '');
+          safeSet('enrolledCourseMeta', '📖 ' + MODULES.length + ' Module' + (MODULES.length !== 1 ? 's' : '') + ' &nbsp;·&nbsp; ✍ Assessment per module &nbsp;·&nbsp; 🎓 Final exam (in-person)', true);
+          renderDashboard();
+          history.replaceState({ screen: 'dash' }, '', '#dash');
+          showScreen('screen-dash');
+          loadAnnouncements();
+          return;
+        }
+      } catch(autoErr) { /* fall through to manual login */ }
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Sign in →';
+    }
   }
   // Restore session if active — reload course + modules fresh from DB
   var session = loadSession();
