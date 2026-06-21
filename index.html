@@ -6,8 +6,8 @@
 <meta name="description" content="Earn a recognised music qualification online. Music Academy, Catholic Diocese of Warri, approved by the Delta State Ministry of Higher Education. Certificate of Competence and National Diploma in Music."/>
 <meta property="og:title" content="Music Academy, Catholic Diocese of Warri — Earn a Recognised Music Qualification"/>
 <meta property="og:description" content="Structured video lessons, assessments, and a certification pathway. Study from anywhere."/>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iI0M5QTg0QyIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iMi41IiBoZWlnaHQ9IjE2IiByeD0iMS4yIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iOSIgaGVpZ2h0PSIyLjUiIHJ4PSIxLjIiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMTAuNSIgY3k9IjIyIiByPSIzLjUiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg=="/>
-<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iI0M5QTg0QyIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iMi41IiBoZWlnaHQ9IjE2IiByeD0iMS4yIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iOSIgaGVpZ2h0PSIyLjUiIHJ4PSIxLjIiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMTAuNSIgY3k9IjIyIiByPSIzLjUiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg=="/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDxyZWN0IHg9IjE0LjUiIHk9IjUiIHdpZHRoPSIzIiBoZWlnaHQ9IjIyIiByeD0iMS41IiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iNyIgeT0iMTIiIHdpZHRoPSIxOCIgaGVpZ2h0PSIzIiByeD0iMS41IiBmaWxsPSIjQzlBODRDIi8+CiAgPGNpcmNsZSBjeD0iMTAiIGN5PSIyNCIgcj0iMi41IiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iMTIiIHk9IjE4IiB3aWR0aD0iMiIgaGVpZ2h0PSI4IiByeD0iMSIgZmlsbD0iI0M5QTg0QyIvPgo8L3N2Zz4="/>
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDxyZWN0IHg9IjE0LjUiIHk9IjUiIHdpZHRoPSIzIiBoZWlnaHQ9IjIyIiByeD0iMS41IiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iNyIgeT0iMTIiIHdpZHRoPSIxOCIgaGVpZ2h0PSIzIiByeD0iMS41IiBmaWxsPSIjQzlBODRDIi8+CiAgPGNpcmNsZSBjeD0iMTAiIGN5PSIyNCIgcj0iMi41IiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iMTIiIHk9IjE4IiB3aWR0aD0iMiIgaGVpZ2h0PSI4IiByeD0iMSIgZmlsbD0iI0M5QTg0QyIvPgo8L3N2Zz4="/>
 <title>Music Academy, Catholic Diocese of Warri — Study. Progress. Get Certified.</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -952,6 +952,30 @@ footer{background:var(--navy);padding:48px 24px 28px;}
         obs2.disconnect();
       });
       obs2.observe(progGrid, {childList: true, subtree: true});
+      // Fire immediately in case cards already rendered before observer started
+      setTimeout(function(){
+        var cards = progGrid.querySelectorAll('.prog-card');
+        if (cards.length > 0) {
+          cards.forEach(function(card) {
+            var titleEl = card.querySelector('.prog-name');
+            if (!titleEl) return;
+            var isEnrolled = titleEl.textContent.trim() === programme;
+            if (isEnrolled) {
+              card.style.border = '2px solid var(--ok,#16A34A)';
+              card.style.background = 'var(--ok-bg,#F0FDF4)';
+              var band = card.querySelector('.prog-band');
+              if (band) band.style.background = 'var(--ok,#16A34A)';
+              var foot = card.querySelector('.prog-foot');
+              if (foot) foot.innerHTML = '<span style="display:inline-flex;align-items:center;gap:5px;background:#DCFCE7;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:#16A34A;">&#10003; Currently Enrolled</span><a class="prog-link" href="/portal">Continue &#8594;</a>';
+            } else {
+              card.style.opacity = '0.7';
+              var foot2 = card.querySelector('.prog-foot');
+              if (foot2) { var link = foot2.querySelector('.prog-link'); if (link) link.style.display = 'none'; }
+            }
+          });
+          obs2.disconnect();
+        }
+      }, 500);
     }
 
     // ── HERO: personalise for logged-in student ──
