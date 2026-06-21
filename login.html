@@ -1189,10 +1189,17 @@ function startReadTimer() {
       document.getElementById('timerMsg').textContent='Reading period complete';
       document.getElementById('timerSub').textContent='Now scroll to the end of the lesson to unlock the assessment.';
       bar.style.width='100%';
-      // Auto-set scrollDone if content already visible
-      var content=document.getElementById('modContent');
-      if(content&&content.getBoundingClientRect().bottom<=(document.documentElement.clientHeight||window.innerHeight)+200){
-        scrollDone=true;
+      // After timer, check if content is already visible (short modules)
+      // Also force-check scroll position in case student already scrolled
+      var modC=document.getElementById('modContent');
+      if(modC){
+        var rect=modC.getBoundingClientRect();
+        var vh2=document.documentElement.clientHeight||window.innerHeight;
+        var scrolled2=window.pageYOffset||document.documentElement.scrollTop;
+        var totalH2=document.documentElement.scrollHeight;
+        if(rect.bottom<=vh2+200 || (totalH2>vh2 && scrolled2/(totalH2-vh2)>=0.8)){
+          scrollDone=true;
+        }
       }
       checkUnlock();
     }
@@ -1200,31 +1207,45 @@ function startReadTimer() {
 }
 
 function setupScrollCheck() {
-  var handler=function(){
-    var content=document.getElementById('modContent');
-    if(!content) return;
-    var vh=document.documentElement.clientHeight||window.innerHeight;
-    if(content.getBoundingClientRect().bottom<=vh+120){
-      scrollDone=true;
-      window.removeEventListener('scroll',handler); // only remove on success
-      checkUnlock();
+  // Poll every 500ms — avoids all issues with scroll event targets,
+  // mobile overflow containers, and listener self-removal bugs.
+  // Stops as soon as scrollDone is true.
+  var pollId = setInterval(function(){
+    // Stop if we're no longer on the module screen
+    if (!document.getElementById('screen-module') ||
+        !document.getElementById('screen-module').classList.contains('active')) {
+      clearInterval(pollId); return;
     }
-    // DO NOT remove listener if check fails — keep listening until student scrolls down
-  };
-  window.addEventListener('scroll',handler);
-  // Check once on load for short pages where content is already in view
-  // setTimeout does NOT remove the listener regardless of result
-  setTimeout(function(){
-    var content=document.getElementById('modContent');
-    if(!content) return;
-    var vh=document.documentElement.clientHeight||window.innerHeight;
-    if(content.getBoundingClientRect().bottom<=vh+120){
-      scrollDone=true;
-      window.removeEventListener('scroll',handler);
+    // Stop if already done
+    if (scrollDone) { clearInterval(pollId); return; }
+
+    var modContent = document.getElementById('modContent');
+    if (!modContent) return;
+
+    var rect = modContent.getBoundingClientRect();
+    var vh = document.documentElement.clientHeight || window.innerHeight;
+
+    // Check 1: bottom of reading content is near or past viewport bottom
+    // (student has scrolled far enough to see the end of the reading)
+    if (rect.bottom <= vh + 200) {
+      scrollDone = true;
+      clearInterval(pollId);
       checkUnlock();
+      return;
     }
-    // if check fails here, the scroll listener above is still alive — correct
-  },400);
+
+    // Check 2: student has scrolled at least 80% of the way through the page
+    // (handles cases where quiz card extends the page significantly)
+    var scrolled = window.pageYOffset || document.documentElement.scrollTop;
+    var totalH = document.documentElement.scrollHeight;
+    var clientH = document.documentElement.clientHeight;
+    if (totalH > clientH && scrolled / (totalH - clientH) >= 0.8) {
+      scrollDone = true;
+      clearInterval(pollId);
+      checkUnlock();
+      return;
+    }
+  }, 500);
 }
 
 function checkUnlock() {
