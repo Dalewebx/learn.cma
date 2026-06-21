@@ -678,6 +678,218 @@ async function loadCourseAndModulesFromDB(programmeStr) {
   }
 }
 
+function renderDashboard() {
+  // If student has multiple enrolments, show them all
+  if (ALL_ENROLMENTS.length > 1) {
+    // Update dash greeting
+    document.getElementById('dashName').textContent =
+      (currentStudent ? 'Welcome back, '+currentStudent.first_name+'.' : 'Welcome back.');
+    // Build multi-course section
+    var body = document.querySelector('.dash-body');
+    if (!body) { renderOtherCourses(); return; }
+    // Replace course card section with multi-enrolment grid
+    var existingGrid = document.getElementById('multiCourseGrid');
+    if (!existingGrid) {
+      var section = document.createElement('div');
+      section.id = 'multiCourseGrid';
+      var first = body.querySelector('.course-card');
+      if (first) body.insertBefore(section, first.parentNode);
+    }
+    var grid = document.getElementById('multiCourseGrid');
+    if (grid) {
+      grid.innerHTML = '<div class="dash-section-label">Your Enrolled Courses</div>'
+        + ALL_ENROLMENTS.map(function(e, i) {
+          var isCurrent = e.course_id === (CURRENT_COURSE ? CURRENT_COURSE.id : null);
+          return '<div class="course-card" style="margin-bottom:12px;'+(isCurrent?'border-color:var(--navy);':'')+';cursor:pointer;" data-cid="'+e.course_id+'" data-prog="'+e.programme+'" onclick="switchCourse(this.dataset.cid,this.dataset.prog)">'
+            +'<div class="course-card-band"></div>'
+            +'<div class="course-card-body">'
+            +'<div class="course-status-pill">✓ '+(isCurrent?'Currently Open':'Enrolled &amp; Active')+'</div>'
+            +'<div class="course-card-title">'+e.programme+'</div>'
+            +'</div>'
+            +'<div class="course-card-cta"><div class="course-card-cta-text">'+(isCurrent?'Continue Course →':'Open Course →')+'</div></div>'
+            +'</div>';
+        }).join('')
+        + '<button class="btn btn-secondary" style="margin-top:8px;font-size:13px;" onclick="showAddCourseModal()">+ Add Another Programme</button>';
+      // Hide the original single course card
+      var orig = body.querySelector('.course-card:not(#multiCourseGrid .course-card)');
+      if (orig) orig.parentNode.style.display = 'none';
+    }
+  } else {
+    // Single enrolment — show original layout with Add Programme button
+    renderOtherCourses();
+    // Add "Add Programme" button
+    var body2 = document.querySelector('.dash-body');
+    if (body2 && !document.getElementById('addProgBtn')) {
+      var btn = document.createElement('button');
+      btn.id = 'addProgBtn';
+      btn.className = 'btn btn-secondary';
+      btn.style.cssText = 'margin-top:16px;font-size:13px;';
+      btn.textContent = '+ Add Another Programme';
+      btn.onclick = showAddCourseModal;
+      body2.appendChild(btn);
+    }
+  }
+}
+
+async function switchCourse(courseId, programme) {
+  // Load the selected course
+  var dbResult = await loadCourseAndModulesFromDB(programme);
+  CURRENT_COURSE = dbResult.course;
+  MODULES = dbResult.modules;
+  await loadProgress();
+  saveSession(currentStudent, CURRENT_COURSE, completedModules);
+  goCourse();
+}
+
+function showAddCourseModal() {
+  var existing = document.getElementById('addCourseModal');
+  if (existing) existing.remove();
+
+  // Get courses student is not already in
+  var enrolledIds = ALL_ENROLMENTS.map(function(e){ return e.course_id; });
+  var available = ALL_DB_COURSES.filter(function(c){ return enrolledIds.indexOf(c.id) === -1; });
+
+  if (!available.length) {
+    alert('You are already enrolled in all available programmes. Contact the Academy for more information.');
+    return;
+  }
+
+  var modal = document.createElement('div');
+  modal.id = 'addCourseModal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;';
+  modal.innerHTML = '<div style="background:white;border-radius:16px;padding:28px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;">'
+    +'<div style="font-family:DM Serif Display,serif;font-size:22px;color:var(--navy);margin-bottom:6px;">Add Another Programme</div>'
+    +'<div style="font-size:13px;color:var(--muted);margin-bottom:20px;">Select a programme and upload your payment receipt. Your existing account details will be used.</div>'
+
+    +'<div style="margin-bottom:14px;">'
+    +'<label style="font-size:12px;font-weight:700;display:block;margin-bottom:6px;">Select Programme <span style="color:var(--danger);">*</span></label>'
+    +'<div id="addCourseList" style="display:flex;flex-direction:column;gap:8px;">'
+    +available.map(function(c){
+      return '<div style="border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;" data-cid="'+c.id+'" data-title="'+c.title+'" onclick="selectAddCourse(this,this.dataset.cid,this.dataset.title)">'
+        +'<div style="width:10px;height:10px;border-radius:50%;background:'+c.color+';flex-shrink:0;"></div>'
+        +'<div style="font-size:13px;font-weight:600;color:var(--text);">'+c.title+'</div>'
+        +'</div>';
+    }).join('')
+    +'</div></div>'
+
+    // Payment info
+    +'<div style="background:var(--gold-light);border:1.5px solid #E8D48A;border-radius:12px;padding:16px 18px;margin-bottom:14px;" id="addCoursePayBox">'
+    +'<div style="font-size:11px;font-weight:700;color:var(--gold-dark);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;">Payment Required</div>'
+    +'<div style="font-size:13px;color:var(--navy);font-weight:700;margin-bottom:8px;" id="addCourseAmount">&#8358;5,000</div>'
+    +'<div style="font-size:12px;color:var(--gold-dark);margin-bottom:8px;" id="addCoursePayMsg">Select a programme above</div>'
+    +'<div style="font-size:12px;color:var(--gold-dark);">Bank: <strong>First Bank of Nigeria</strong></div>'
+    +'<div style="font-size:12px;color:var(--gold-dark);">Account: <strong>Catholic Music Academy — 3155067093</strong></div>'
+    +'</div>'
+
+    // Receipt upload
+    +'<div style="margin-bottom:16px;">'
+    +'<label style="font-size:12px;font-weight:700;display:block;margin-bottom:6px;">Payment Receipt <span style="color:var(--danger);">*</span></label>'
+    +'<div style="border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;" onclick="triggerReceiptInput()" id="addReceiptBox">'
+    +'<div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:4px;">Tap to upload receipt</div>'
+    +'<div style="font-size:12px;color:var(--muted);">JPG, PNG or PDF</div>'
+    +'<div style="font-size:12px;color:var(--ok);margin-top:4px;" id="addReceiptName"></div>'
+    +'</div>'
+    +'<input type="file" id="addCourseReceiptInput" style="display:none;" accept="image/*,.pdf" onchange="handleAddReceipt(this)"/>'
+    +'</div>'
+
+    +'<div id="addCourseErr" style="display:none;font-size:12px;color:var(--danger);background:var(--danger-light);border-radius:8px;padding:9px 13px;margin-bottom:12px;"></div>'
+    +'<div style="display:flex;gap:8px;">'
+    +'<button class="btn btn-primary" onclick="submitAddCourse()" id="addCourseBtn">Submit Request</button>'
+    +'<button class="btn btn-secondary" onclick="closeAddCourseModal()">Cancel</button>'
+    +'</div></div>';
+
+  modal.addEventListener('click', function(e){ if(e.target===modal) modal.remove(); });
+  document.body.appendChild(modal);
+
+  // Fetch course amount
+  fetch(SUPA_URL+'/rest/v1/site_settings?key=eq.course_amount&select=value',
+    {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d&&d.length&&d[0].value){
+        var amt = parseInt(d[0].value)||5000;
+        var amtEl = document.getElementById('addCourseAmount');
+        if(amtEl) amtEl.textContent = '₦'+amt.toLocaleString();
+      }
+    }).catch(function(){});
+}
+
+var addCourseSelected = null;
+var addCourseFile = null;
+
+function selectAddCourse(el, courseId, title) {
+  document.querySelectorAll('#addCourseList > div').forEach(function(d){
+    d.style.borderColor='var(--border)'; d.style.background='white';
+  });
+  el.style.borderColor='var(--navy)'; el.style.background='var(--navy-pale)';
+  addCourseSelected = {id: courseId, title: title};
+  var msgEl = document.getElementById('addCoursePayMsg');
+  if(msgEl) msgEl.textContent = 'Pay for: '+title;
+}
+
+function closeAddCourseModal() {
+  var m = document.getElementById('addCourseModal');
+  if (m) m.remove();
+}
+function triggerReceiptInput() {
+  var el = document.getElementById('addCourseReceiptInput');
+  if (el) el.click();
+}
+function handleAddReceipt(input) {
+  if(input.files && input.files[0]){
+    addCourseFile = input.files[0];
+    var nameEl = document.getElementById('addReceiptName');
+    if(nameEl) nameEl.textContent = '📎 '+addCourseFile.name;
+    var box = document.getElementById('addReceiptBox');
+    if(box) box.style.borderColor = 'var(--ok)';
+  }
+}
+
+async function submitAddCourse() {
+  var errEl = document.getElementById('addCourseErr');
+  var btn = document.getElementById('addCourseBtn');
+  if(!addCourseSelected){ errEl.textContent='Please select a programme.'; errEl.style.display='block'; return; }
+  if(!addCourseFile){ errEl.textContent='Please upload your payment receipt.'; errEl.style.display='block'; return; }
+  btn.disabled=true; btn.textContent='Submitting...';
+  try {
+    var ref = 'CMA-ADD-'+Date.now().toString().slice(-6);
+    // Upload receipt
+    var ext = addCourseFile.name.split('.').pop();
+    var receiptPath = ref+'_receipt.'+ext;
+    var upRes = await fetch(SUPA_URL+'/storage/v1/object/receipts/'+receiptPath,{
+      method:'POST',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':addCourseFile.type||'application/octet-stream','x-upsert':'true'},
+      body:addCourseFile
+    });
+    if(!upRes.ok) throw new Error('Receipt upload failed');
+    // Submit as application with type=additional
+    await fetch(SUPA_URL+'/rest/v1/applications',{
+      method:'POST',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({
+        ref: ref,
+        first_name: currentStudent.first_name,
+        last_name: currentStudent.last_name,
+        email: currentStudent.email,
+        phone: currentStudent.phone||currentStudent.whatsapp||'',
+        programme: addCourseSelected.title,
+        background: 'Existing student — additional course request',
+        receipt_path: receiptPath,
+        receipt_name: addCourseFile.name,
+        status: 'pending',
+        type: 'additional',
+        existing_student_id: currentStudent.id
+      })
+    });
+    document.getElementById('addCourseModal').remove();
+    alert('Request submitted. The Academy will review your payment and add the course to your portal shortly.');
+    addCourseSelected=null; addCourseFile=null;
+  } catch(e){
+    errEl.textContent='Error: '+e.message; errEl.style.display='block';
+    btn.disabled=false; btn.textContent='Submit Request';
+  }
+}
+
 function renderOtherCourses() {
   var container = document.getElementById('otherCoursesList');
   if (!container || !CURRENT_COURSE) return;
@@ -758,7 +970,9 @@ async function doLogin() {
     CURRENT_COURSE = dbResult.course;
     MODULES = dbResult.modules;
 
-    // 8. Load progress
+    // 8. Load enrolments
+    await loadEnrolments();
+    // 9. Load progress
     await loadProgress();
 
     // 9. Save session (so refresh survives)
@@ -780,7 +994,7 @@ async function doLogin() {
       '📖 ' + MODULES.length + ' Module' + (MODULES.length !== 1 ? 's' : '') + ' &nbsp;·&nbsp; ✍ Assessment per module &nbsp;·&nbsp; 🎓 Final exam (in-person)', true);
 
     history.replaceState({ screen: 'dash' }, '', '#dash');
-    renderOtherCourses();
+    renderDashboard();
     showScreen('screen-dash');
     loadAnnouncements();
 
@@ -809,6 +1023,25 @@ function logout() {
   document.getElementById('loginBtn').textContent = 'Sign in →';
   history.pushState({},'','#');
   showScreen('screen-login');
+}
+
+// ── ENROLMENTS ───────────────────────────────────────────────────────────────
+var ALL_ENROLMENTS = []; // all active enrolments for this student
+
+async function loadEnrolments() {
+  if (!currentStudent) return;
+  try {
+    var rows = await sbGet('enrolments',
+      'student_id=eq.'+currentStudent.id+'&status=eq.active&order=enrolled_at.asc');
+    ALL_ENROLMENTS = rows || [];
+  } catch(e) {
+    // Table may not exist yet — fall back to single course from student record
+    ALL_ENROLMENTS = CURRENT_COURSE ? [{
+      course_id: CURRENT_COURSE.id,
+      programme: currentStudent.programme,
+      status: 'active'
+    }] : [];
+  }
 }
 
 // ── PROGRESS ─────────────────────────────────────────────────────────────────
@@ -1331,7 +1564,7 @@ function clearRememberMe() {
     safeSet('enrolledCourseDesc', '');
     safeSet('enrolledCourseMeta',
       '📖 ' + MODULES.length + ' Module' + (MODULES.length !== 1 ? 's' : '') + ' &nbsp;·&nbsp; ✍ Assessment per module &nbsp;·&nbsp; 🎓 Final exam (in-person)', true);
-    renderOtherCourses();
+    renderDashboard();
     history.replaceState({screen:'dash'},'','#dash');
     showScreen('screen-dash');
     loadAnnouncements();
