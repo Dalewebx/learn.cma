@@ -705,8 +705,8 @@ function renderDashboard() {
     var grid = document.getElementById('multiCourseGrid');
     if (grid) {
       grid.innerHTML = ALL_ENROLMENTS.map(function(e) {
-        var isCurrent = (CURRENT_COURSE && e.course_id === CURRENT_COURSE.id)
-          || (currentStudent && e.programme === currentStudent.programme && !e.course_id);
+        var isCurrent = (CURRENT_COURSE && (e.course_id === CURRENT_COURSE.id || e.programme === CURRENT_COURSE.title))
+          || (currentStudent && e.programme === currentStudent.programme);
         return '<div class="course-card" style="margin-bottom:12px;'+(isCurrent?'border-color:var(--navy);':'')+'" data-cid="'+e.course_id+'" data-prog="'+e.programme.replace(/"/g,'&quot;')+'" onclick="switchCourse(this.dataset.cid,this.dataset.prog)">'
           +'<div class="course-card-band"></div>'
           +'<div class="course-card-body">'
@@ -972,8 +972,20 @@ async function submitAddCourse() {
 
 function renderOtherCourses() {
   var container = document.getElementById('otherCoursesList');
-  if (!container || !CURRENT_COURSE) return;
-  var others = ALL_DB_COURSES.filter(function(c) { return c.id !== CURRENT_COURSE.id; });
+  if (!container) return;
+
+  // Build list of all enrolled programme titles (from all enrolments)
+  var enrolledTitles = ALL_ENROLMENTS.map(function(e){ return e.programme; });
+  // Also include current course and student's primary programme
+  if (CURRENT_COURSE) enrolledTitles.push(CURRENT_COURSE.title);
+  if (currentStudent && currentStudent.programme) enrolledTitles.push(currentStudent.programme);
+  // Deduplicate
+  enrolledTitles = enrolledTitles.filter(function(v,i,a){ return a.indexOf(v)===i; });
+
+  var others = ALL_DB_COURSES.filter(function(c){
+    return enrolledTitles.indexOf(c.title) === -1;
+  });
+
   if (!others.length) {
     container.innerHTML = '<p style="font-size:13px;color:var(--muted);">More courses coming soon.</p>';
     return;
@@ -1808,11 +1820,12 @@ function clearRememberMe() {
   var session = loadSession();
   if (session && session.student && session.student.status === 'active') {
     currentStudent = session.student;
-    // Re-load from DB so any admin changes (new modules, edits) are always fresh
+    // Always load primary programme first, then enrolments will show all courses
     var dbResult = await loadCourseAndModulesFromDB(session.student.programme);
     CURRENT_COURSE = dbResult.course;
     MODULES = dbResult.modules;
     completedModules = session.completedModules || [];
+    await loadEnrolments().catch(function(){});
     // Re-fetch progress from DB to stay current
     await loadProgress().catch(function(){});
     // Refresh session timestamp
