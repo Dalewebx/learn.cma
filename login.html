@@ -426,7 +426,7 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
     </div>
 
     <div style="margin-top:14px;" id="addProgBtnWrap">
-      <button class="btn btn-secondary" style="font-size:13px;" onclick="showAddCourseModal()">+ Add Another Programme</button>
+      <button class="btn btn-secondary" style="font-size:13px;" onclick="showAddCourseModal()">+ Enrol in Another Programme</button>
     </div>
 
     <div class="dash-section-label" style="margin-top:40px;">Other Courses Available</div>
@@ -511,16 +511,24 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
 <div class="screen" id="screen-complete">
   <div class="complete-wrap">
     <div class="complete-icon">🎓</div>
-    <div class="complete-title">Course Complete</div>
-    <div class="complete-sub">You have successfully completed all modules. Your instructor will be in touch with details for the final examination.</div>
+    <div class="complete-title">Congratulations!</div>
+    <div id="completeStudentName" style="font-family:DM Serif Display,serif;font-size:22px;color:var(--gold);margin-bottom:6px;"></div>
+    <div class="complete-sub">You have completed all online modules for</div>
+    <div id="completeCourseTitle" style="font-size:18px;font-weight:700;color:var(--navy);margin:6px 0 20px;"></div>
+
     <div class="complete-card">
-      <div class="complete-card-title">What happens next</div>
-      <div class="complete-card-item"><div>📋</div>Your completion is recorded</div>
-      <div class="complete-card-item"><div>📞</div>Your instructor will contact you with exam details</div>
-      <div class="complete-card-item"><div>🎓</div>Certificate issued upon passing the final examination</div>
+      <div class="complete-card-title">Completion Summary</div>
+      <div class="complete-card-item"><div>📖</div><span><strong id="completeModCount"></strong> completed</span></div>
+      <div class="complete-card-item"><div>📅</div><span>Completed on <strong id="completeDate"></strong></span></div>
+      <div class="complete-card-item"><div>📋</div>Your record has been updated</div>
     </div>
-    <button class="btn btn-amber" onclick="generateCertificate()" style="margin-right:10px;">🎓 Download Certificate</button>
-    <button class="btn btn-secondary" onclick="goDash()">← Back to Dashboard</button>
+
+    <div style="background:#F0F3FF;border-left:4px solid var(--navy);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;text-align:left;">
+      <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;">📋 Important — This is not your certificate</div>
+      <div style="font-size:13px;color:var(--text);line-height:1.7;">Your <strong>Certificate of Competence</strong> will be issued after you pass your final <strong>in-person examination</strong>. The Academy will contact you with exam details via WhatsApp or email.</div>
+    </div>
+
+    <button class="btn btn-secondary" onclick="goDash()" style="margin-top:8px;">← Back to Dashboard</button>
   </div>
 </div>
 
@@ -754,13 +762,20 @@ function renderDashboard() {
       grid.innerHTML = ALL_ENROLMENTS.map(function(e) {
         var isCurrent = (CURRENT_COURSE && (e.course_id === CURRENT_COURSE.id || e.programme === CURRENT_COURSE.title))
           || (currentStudent && e.programme === currentStudent.programme);
-        return '<div class="course-card" style="margin-bottom:12px;'+(isCurrent?'border-color:var(--navy);':'')+'" data-cid="'+e.course_id+'" data-prog="'+e.programme.replace(/"/g,'&quot;')+'" onclick="switchCourse(this.dataset.cid,this.dataset.prog)">'
-          +'<div class="course-card-band"></div>'
+        var isComplete = e.status === 'complete';
+        var statusPill = isComplete
+          ? '<div class="course-status-pill" style="background:#DCFCE7;color:#16A34A;">✓ Complete</div>'
+          : '<div class="course-status-pill">✓ '+(isCurrent?'Currently Open':'Enrolled &amp; Active')+'</div>';
+        var ctaText = isComplete ? 'Review Course →' : (isCurrent ? 'Continue Course →' : 'Open Course →');
+        var cardStyle = 'margin-bottom:12px;'+(isComplete?'border-color:#16A34A;':isCurrent?'border-color:var(--navy);':'');
+        var bandStyle = isComplete ? 'background:linear-gradient(90deg,#16A34A,#86EFAC);' : '';
+        return '<div class="course-card" style="'+cardStyle+'" data-cid="'+e.course_id+'" data-prog="'+e.programme.replace(/"/g,'&quot;')+'" onclick="switchCourse(this.dataset.cid,this.dataset.prog)">'
+          +'<div class="course-card-band" style="'+bandStyle+'"></div>'
           +'<div class="course-card-body">'
-          +'<div class="course-status-pill">✓ '+(isCurrent?'Currently Open':'Enrolled &amp; Active')+'</div>'
+          +statusPill
           +'<div class="course-card-title">'+e.programme+'</div>'
           +'</div>'
-          +'<div class="course-card-cta"><div class="course-card-cta-text">'+(isCurrent?'Continue Course →':'Open Course →')+'</div></div>'
+          +'<div class="course-card-cta" style="'+(isComplete?'background:#F0FDF4;':'')+'"><div class="course-card-cta-text" style="'+(isComplete?'color:#16A34A;':'')+'">'+ctaText+'</div></div>'
           +'</div>';
       }).join('');
     }
@@ -814,7 +829,7 @@ function showAddCourseModal() {
   modal.id = 'addCourseModal';
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;';
   modal.innerHTML = '<div style="background:white;border-radius:16px;padding:28px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;">'
-    +'<div style="font-family:DM Serif Display,serif;font-size:22px;color:var(--navy);margin-bottom:6px;">Add Another Programme</div>'
+    +'<div style="font-family:DM Serif Display,serif;font-size:22px;color:var(--navy);margin-bottom:6px;">Enrol in Another Programme</div>'
     +'<div style="font-size:13px;color:var(--muted);margin-bottom:20px;">Select a programme and upload your payment receipt. Your existing account details will be used.</div>'
 
     +'<div style="margin-bottom:14px;">'
@@ -1449,9 +1464,11 @@ function openMod(i) {
   if (m.videoUrl) {
     var embedUrl = toYouTubeEmbed(m.videoUrl);
     vw.innerHTML = '<iframe src="'+embedUrl+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="border:0;"></iframe>';
-    vs.style.display = 'block';
+    if (vs) vs.style.display = 'block';
   } else {
-    vs.style.display = 'none';
+    // No video — show placeholder, not black void
+    vw.innerHTML = '';
+    if (vs) vs.style.display = 'none';
   }
   // audio — only show if tracks exist
   var ap = document.getElementById('audioPlayer');
@@ -1524,6 +1541,7 @@ function startReadTimer() {
   var elapsed = 0;
   var bar = document.getElementById('timerBar');
   timerInterval = setInterval(() => {
+    if (document.hidden) return; // ← pause when tab is hidden
     elapsed++;
     bar.style.transition = 'width 1s linear';
     bar.style.width = Math.min(Math.round((elapsed/READ_TIME)*100),100)+'%';
@@ -1778,9 +1796,50 @@ function retryModFull() {
   }, 700); // 700ms covers the smooth scroll duration
 }
 
-function showComplete() {
+async function showComplete() {
   history.pushState({screen:'complete'},'','/portal/complete');
   showScreen('screen-complete');
+
+  // Populate completion screen with student/course info
+  var name = currentStudent ? (currentStudent.first_name+' '+currentStudent.last_name) : '';
+  var course = CURRENT_COURSE ? CURRENT_COURSE.title : '';
+  var mods = MODULES ? MODULES.length : 0;
+  var dateStr = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+
+  var nameEl = document.getElementById('completeStudentName');
+  var courseEl = document.getElementById('completeCourseTitle');
+  var dateEl = document.getElementById('completeDate');
+  var modsEl = document.getElementById('completeModCount');
+  if (nameEl) nameEl.textContent = name;
+  if (courseEl) courseEl.textContent = course;
+  if (dateEl) dateEl.textContent = dateStr;
+  if (modsEl) modsEl.textContent = mods + ' module' + (mods !== 1 ? 's' : '');
+
+  // Mark course complete in enrolments table
+  if (currentStudent && CURRENT_COURSE) {
+    try {
+      await fetch(SUPA_URL+'/rest/v1/enrolments?student_id=eq.'+currentStudent.id+'&course_id=eq.'+CURRENT_COURSE.id, {
+        method:'PATCH',
+        headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+        body: JSON.stringify({status:'complete', completed_at: new Date().toISOString()})
+      });
+    } catch(e){ console.warn('Could not mark enrolment complete', e); }
+  }
+
+  // Fire course-completed API (admin notification + student congratulatory email)
+  if (currentStudent && CURRENT_COURSE) {
+    fetch('/api/course-completed', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        studentName: (currentStudent.first_name+' '+currentStudent.last_name),
+        studentEmail: currentStudent.email,
+        course: CURRENT_COURSE.title,
+        modules: MODULES ? MODULES.length : 0,
+        date: dateStr
+      })
+    }).catch(function(e){ console.warn('course-completed API error', e); });
+  }
 }
 
 // ── SESSION PERSISTENCE ─────────────────────────────────────────────────────
