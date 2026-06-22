@@ -768,6 +768,24 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
     <button class="btn btn-primary" style="margin-top:14px;" onclick="saveSiteSettings('contact')">Save Contact Info</button>
   </div>
 
+  <!-- DIRECTOR PANEL -->
+  <div class="card" style="margin-top:20px;">
+    <div class="form-section-title" style="margin-bottom:6px;">&#9997;&#65039; Director Details</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Used automatically in completion cards, completion emails, and official documents. Update here when the Director changes — no code needed.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="ss-grid">
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Director Full Name</label>
+        <input class="form-input" id="ss_director_name" placeholder="Very Rev. Fr. Francis Adjagbara"/>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Director Title / Role</label>
+        <input class="form-input" id="ss_director_title" placeholder="Director, Catholic Music Academy"/>
+      </div>
+    </div>
+    <div id="ss_director_msg" style="display:none;background:var(--ok-light);border:1px solid #86EFAC;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--ok);margin-top:12px;"></div>
+    <button class="btn btn-primary" style="margin-top:14px;" onclick="saveSiteSettings('director')">Save Director Details</button>
+  </div>
+
 </div>
 
 
@@ -890,6 +908,7 @@ var currentPage = 'dashboard';
 var appTabFilter = 'pending';
 var allApplications = [];
 var allStudents = [];
+var allEnrolments = [];
 var allProgress = [];
 var allAttempts = [];
 var cohortSettings = {};
@@ -1109,12 +1128,13 @@ async function loadAllData() {
       ? 'course_id=eq.'+currentAdmin.assigned_course_id+'&select=*'
       : 'select=*';
 
-    var [apps,studs,prog,atts,coh] = await Promise.all([
+    var [apps,studs,prog,atts,coh,enrols] = await Promise.all([
       isMaster ? sb('applications','GET',null,'order=submitted_at.desc') : Promise.resolve([]),
       sb('students','GET',null,'status=eq.active&order=created_at.desc&select=*'),
       sb('progress','GET',null,progFilter),
       sb('assessment_attempts','GET',null,'select=*&order=attempted_at.desc'+courseFilter).catch(()=>[]),
-      sb('cohort_settings','GET',null,'limit=1')
+      sb('cohort_settings','GET',null,'limit=1'),
+      sb('enrolments','GET',null,'select=student_id,course_id,status,enrolled_at').catch(()=>[])
     ]);
     // For lecturer: filter students to only those in their assigned course
     if (!isMaster && currentAdmin.assigned_course_id) {
@@ -1124,7 +1144,7 @@ async function loadAllData() {
         });
       });
     }
-    allApplications=apps; allStudents=studs; allProgress=prog; allAttempts=atts;
+    allApplications=apps; allStudents=studs; allProgress=prog; allAttempts=atts; allEnrolments=enrols||[];
     cohortSettings=coh[0]||{name:'Cohort 1',deadline:'2026-07-13',pass_mark:100};
     // Load course content and update dynamic module/course counts
     await loadCourseContent();
@@ -1467,7 +1487,14 @@ async function renderStudents() {
       ?'<div class="prog-bg"><div class="prog-fill" style="width:0%;background:var(--border)"></div></div>'
       :'<div class="prog-bg"><div class="prog-fill'+(pct===100?' ok':'')+'" style="width:'+pct+'%"></div></div>';
     return '<tr class="tr-clickable" onclick="openStudentDetail(\''+s.id+'\')"><td><strong>'+s.first_name+' '+s.last_name+'</strong><br><span style="font-size:11px;color:var(--muted);">'+s.email+'</span></td>'
-      +'<td style="font-size:12px;color:var(--muted);">'+(s.programme||'—')+'</td>'
+      +'<td style="font-size:12px;color:var(--muted);">'+(function(){
+        var enrs = allEnrolments.filter(function(e){ return e.student_id === s.id; });
+        if (!enrs.length) return s.programme||'—';
+        return enrs.map(function(e){
+          var course = (cmCourses||[]).find(function(c){ return c.id === e.course_id; });
+          return course ? course.title : (s.programme||'—');
+        }).join('<br>');
+      }())+'</td>'
       +'<td>'+pb+'<span style="font-size:11px;color:var(--muted);margin-left:6px;">'+pct+'%</span></td>'
       +'<td style="font-size:12px;color:var(--muted);">'+fmtDateTime(s.last_login)+'</td>'
       +'<td style="font-size:12px;color:var(--muted);">'+fmtDateTime(s.created_at)+'</td>'
@@ -2443,6 +2470,10 @@ async function renderSiteSettings() {
   if(cEmail) cEmail.value = SS_CACHE['contact_email'] || 'musicacademywarri@gmail.com';
   if(cWa) cWa.value = SS_CACHE['contact_whatsapp'] || '';
   if(cLoc) cLoc.value = SS_CACHE['contact_location'] || 'Ozoro, Delta State, Nigeria';
+  var dName = document.getElementById('ss_director_name');
+  var dTitle = document.getElementById('ss_director_title');
+  if(dName) dName.value = SS_CACHE['director_name'] || 'Very Rev. Fr. Francis Adjagbara';
+  if(dTitle) dTitle.value = SS_CACHE['director_title'] || 'Director, Catholic Music Academy';
 
   // Populate portal card fields
   var pUrl = document.getElementById('ss_p_url');
@@ -2516,6 +2547,9 @@ async function saveSiteSettings(panel) {
     pairs.push({key:'contact_email', value:(document.getElementById('ss_contact_email')||{}).value||''});
     pairs.push({key:'contact_whatsapp', value:(document.getElementById('ss_contact_whatsapp')||{}).value||''});
     pairs.push({key:'contact_location', value:(document.getElementById('ss_contact_location')||{}).value||''});
+  } else if (panel === 'director') {
+    pairs.push({key:'director_name', value:(document.getElementById('ss_director_name')||{}).value||''});
+    pairs.push({key:'director_title', value:(document.getElementById('ss_director_title')||{}).value||''});
   } else {
     pairs.push({key:'mockup_portal_url', value:(document.getElementById('ss_p_url')||{}).value||''});
     SS_PORTAL_MODULE_DEFAULTS.forEach(function(_,i){
@@ -2577,18 +2611,35 @@ async function renderCourseProgress() {
       return;
     }
 
-    // Group by programme
+    // Group by course using enrolments table (not just primary programme)
     var groups = {};
-    students.forEach(function(s) {
-      var prog = s.programme || 'Unknown Programme';
-      if (!groups[prog]) groups[prog] = [];
-      groups[prog].push(s);
+    cmCourses.forEach(function(course) {
+      // Find all students enrolled in this course via enrolments table
+      var courseEnrols = allEnrolments.filter(function(e){ return e.course_id === course.id; });
+      if (!courseEnrols.length) {
+        // Fallback: also check students whose primary programme matches this course title
+        var fallbackStudents = students.filter(function(s){ return s.programme === course.title; });
+        if (fallbackStudents.length) groups[course.title] = { course: course, students: fallbackStudents };
+        return;
+      }
+      var courseStudents = courseEnrols.map(function(e){
+        return students.find(function(s){ return s.id === e.student_id; });
+      }).filter(Boolean);
+      if (courseStudents.length) groups[course.title] = { course: course, students: courseStudents };
+    });
+    // Include any students with programmes not matching any course (legacy)
+    students.forEach(function(s){
+      if (!allEnrolments.find(function(e){ return e.student_id === s.id; })) {
+        var prog = s.programme || 'Unknown Programme';
+        if (!groups[prog]) groups[prog] = { course: null, students: [] };
+        groups[prog].students.push(s);
+      }
     });
 
     el.innerHTML = Object.keys(groups).map(function(prog) {
-      var groupStudents = groups[prog];
-      // Find module count for this course
-      var mc = cmCourses.find(function(c){ return c.title === prog; });
+      var groupData = groups[prog];
+      var groupStudents = groupData.students;
+      var mc = groupData.course || cmCourses.find(function(c){ return c.title === prog; });
       var modCount = mc ? (mc.modules||[]).filter(function(m){ return m.published!==false; }).length : MODULE_COUNT;
 
       return '<div class="card" style="margin-bottom:20px;">'
@@ -2693,7 +2744,7 @@ async function renderGrading() {
             +'<div style="font-size:13px;color:var(--text);background:var(--surface);border-radius:8px;padding:10px 12px;line-height:1.65;margin-bottom:10px;white-space:pre-wrap;">'+escQ(w.response||'(No response)')+'</div>'
             +'<div style="display:flex;align-items:center;gap:8px;">'
             +'<label style="font-size:12px;font-weight:600;color:var(--muted);">Score:</label>'
-            +'<input type="number" min="0" max="'+w.marks+'" placeholder="0" id="wscore-'+r.id+'-'+wi+'" style="width:70px;border:1.5px solid var(--border);border-radius:7px;padding:6px 10px;font-size:13px;font-family:DM Sans,sans-serif;"/>'
+            +'<input type="number" min="0" max="'+w.marks+'" placeholder="0" id="wscore-'+r.id+'-'+wi+'" style="width:70px;border:1.5px solid var(--border);border-radius:7px;padding:6px 10px;font-size:13px;font-family:DM Sans,sans-serif;" oninput="updateGradingLive(\''+r.id+'\','+r.mcq_score+','+r.mcq_total+','+totalWrittenMarks+')"/>'
             +'<span style="font-size:12px;color:var(--muted);">/ '+w.marks+' marks</span>'
             +'</div>'
             +'</div>';
@@ -2721,6 +2772,7 @@ async function renderGrading() {
 
         // Action buttons
         +'<div style="display:flex;gap:10px;flex-wrap:wrap;" id="gbtn-'+r.id+'">'
+        +'<div id="glive-'+r.id+'" style="margin:10px 0 14px;padding:10px 14px;border-radius:8px;background:var(--surface);font-size:13px;color:var(--muted);">Enter written scores above to see combined result.</div>'
         +'<button class="btn btn-primary" style="background:var(--ok);" onclick="doGrade(this);" data-id="'+r.id+'" data-result="pass" data-mcq="'+r.mcq_score+'" data-mcqt="'+r.mcq_total+'" data-wt="'+totalWrittenMarks+'" data-email="'+studentEmail+'" data-phone="'+studentPhone+'" data-name="'+studentName+'" data-mod="'+r.module_index+'" data-sid="'+r.student_id+'" data-cid="'+r.course_id+'">✓ Pass Assessment</button>'
         +'<button class="btn btn-danger" style="background:var(--danger);" onclick="doGrade(this);" data-id="'+r.id+'" data-result="fail" data-mcq="'+r.mcq_score+'" data-mcqt="'+r.mcq_total+'" data-wt="'+totalWrittenMarks+'" data-email="'+studentEmail+'" data-phone="'+studentPhone+'" data-name="'+studentName+'" data-mod="'+r.module_index+'" data-sid="'+r.student_id+'" data-cid="'+r.course_id+'">✗ Fail Assessment</button>'
         +(studentPhone?'<button class="btn btn-wa" style="font-size:13px;" onclick="doWhatsApp(this);" data-id="'+r.id+'" data-phone="'+studentPhone+'" data-name="'+studentName+'" data-mod="'+r.module_index+'">💬 WhatsApp</button>':'')
@@ -2732,6 +2784,47 @@ async function renderGrading() {
   }
 }
 
+
+function updateGradingLive(id, mcqScore, mcqTotal, writtenTotal) {
+  // Sum all written score inputs for this submission
+  var writtenScore = 0, wi = 0;
+  while (document.getElementById('wscore-'+id+'-'+wi)) {
+    writtenScore += parseInt((document.getElementById('wscore-'+id+'-'+wi)||{}).value||0);
+    wi++;
+  }
+  var combined = mcqScore + writtenScore;
+  var total = mcqTotal + writtenTotal;
+  var pct = total > 0 ? Math.round((combined/total)*100) : 0;
+  var passMark = cohortSettings && cohortSettings.pass_mark ? cohortSettings.pass_mark : 50;
+  var isPassing = pct >= passMark;
+
+  // Update written total display
+  var wtEl = document.getElementById('wtotal-'+id);
+  if (wtEl) wtEl.textContent = writtenScore + ' / ' + writtenTotal;
+
+  // Show live combined score
+  var summaryEl = document.getElementById('glive-'+id);
+  if (summaryEl) {
+    summaryEl.textContent = 'Combined: ' + combined + ' / ' + total + ' (' + pct + '%) — ' + (isPassing ? '✓ PASS' : '✗ FAIL');
+    summaryEl.style.color = isPassing ? 'var(--ok)' : 'var(--danger)';
+    summaryEl.style.fontWeight = '700';
+  }
+
+  // Auto-update email template
+  var emailEl = document.getElementById('gemail-body-'+id);
+  if (emailEl) {
+    var body = emailEl.value;
+    var resultWord = isPassing ? 'PASSED' : 'NOT YET PASSED';
+    var comment = (document.getElementById('gcomment-'+id)||{}).value || '';
+    body = body.replace(/Result: .*/,'Result: ' + resultWord)
+               .replace(/Score: .* \/ .*/,'Score: ' + combined + ' / ' + total)
+               .replace(/\[Comments\]/, comment || '[Comments]')
+               .replace(/\[PASS\/FAIL\]/, resultWord)
+               .replace(/\[X\]/, combined)
+               .replace(/\[Total\]/, total);
+    emailEl.value = body;
+  }
+}
 
 function doGrade(btn) {
   var d = btn.dataset;
