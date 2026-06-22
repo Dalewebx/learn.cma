@@ -225,13 +225,13 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px
 
       <div class="field-group">
         <label class="field-label">Email Address <span class="req">*</span></label>
-        <input class="field-input" id="email" type="email" placeholder="yourname@example.com"/>
+        <input class="field-input" id="email" type="email" placeholder="yourname@example.com" onblur="checkEmailBlur()"/>
         <div class="field-err" id="err-email">Please enter a valid email address.</div>
       </div>
 
       <div class="field-group">
         <label class="field-label">Phone / WhatsApp <span class="req">*</span></label>
-        <input class="field-input" id="phone" type="tel" placeholder="e.g. 08012345678"/>
+        <input class="field-input" id="phone" type="tel" placeholder="e.g. 08012345678" onblur="checkPhoneBlur()"/>
         <div style="font-size:11px;color:var(--muted);margin-top:4px;">We may use this to reach you on WhatsApp about your application.</div>
         <div class="field-err" id="err-phone">Phone number is required.</div>
       </div>
@@ -240,7 +240,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px
         <div class="field-group">
           <label class="field-label">Password <span class="req">*</span></label>
           <div class="pass-wrap">
-            <input class="field-input" id="password" type="password" placeholder="Choose a password" oninput="checkStrength()"/>
+            <input class="field-input" id="password" type="password" placeholder="Choose a password" oninput="checkStrength()" autocomplete="new-password"/>
             <button class="pass-toggle" type="button" onclick="togglePass('password',this)">👁</button>
           </div>
           <div class="strength-bar-bg"><div class="strength-bar" id="strengthBar"></div></div>
@@ -250,7 +250,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px
         <div class="field-group">
           <label class="field-label">Confirm Password <span class="req">*</span></label>
           <div class="pass-wrap">
-            <input class="field-input" id="passwordConfirm" type="password" placeholder="Repeat your password"/>
+            <input class="field-input" id="passwordConfirm" type="password" placeholder="Repeat your password" autocomplete="new-password"/>
             <button class="pass-toggle" type="button" onclick="togglePass('passwordConfirm',this)">👁</button>
           </div>
           <div class="field-err" id="err-passwordConfirm">Passwords do not match.</div>
@@ -286,7 +286,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px
           </div>
           <div class="field-group" style="margin-bottom:0;">
             <label class="field-label">Your Answer <span class="req">*</span></label>
-            <input class="field-input" id="securityAnswer" type="text" placeholder="Your answer (not case-sensitive)"/>
+            <input class="field-input" id="securityAnswer" type="text" placeholder="Your answer (not case-sensitive)" autocomplete="off"/>
             <div class="field-err" id="err-securityAnswer">Please provide an answer.</div>
           </div>
         </div>
@@ -424,6 +424,9 @@ var selectedCourseForPayment = '';
 const SUPA_URL = 'https://ltqwofagofmvufvqsuyj.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0cXdvZmFnb2ZtdnVmdnFzdXlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjgyMTgsImV4cCI6MjA5NzMwNDIxOH0.7EkluJspwopQxxQmL7AuYxx4XHgchpYR7tsajyoXHaI';
 
+
+// Restore draft on page load
+document.addEventListener('DOMContentLoaded', function(){ restoreFormState(); });
 async function sbPost(table, body) {
   const res = await fetch(SUPA_URL + '/rest/v1/' + table, {
     method: 'POST',
@@ -434,11 +437,67 @@ async function sbPost(table, body) {
   return res.json();
 }
 
-async function hashPassword(password) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password + 'cma_salt_2026');
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2,'0')).join('');
+function generateSalt() {
+  return Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function hashPassword(password, salt) {
+  if (!salt) salt = generateSalt();
+  var enc = new TextEncoder();
+  var key = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
+  var bits = await crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(salt),iterations:100000,hash:'SHA-256'}, key, 256);
+  var hash = Array.from(new Uint8Array(bits)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  return {hash, salt};
+}
+
+// ── EMAIL BLUR CHECK ──────────────────────────────────────────────────────────
+async function checkEmailBlur() {
+  var emailEl = document.getElementById('email');
+  var errEl = document.getElementById('err-email');
+  if (!emailEl || !errEl) return;
+  var email = emailEl.value.trim().toLowerCase();
+  if (!email || !email.includes('@')) return;
+  try {
+    // Check active student account
+    var r1 = await fetch(SUPA_URL+'/rest/v1/students?email=eq.'+encodeURIComponent(email)+'&status=eq.active&select=id',
+      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    var students = await r1.json();
+    if (students && students.length) {
+      emailEl.classList.add('invalid');
+      errEl.textContent = 'An account already exists with this email. Log in to your portal instead.';
+      errEl.style.display = 'block'; return;
+    }
+    // Check pending application
+    var r2 = await fetch(SUPA_URL+'/rest/v1/applications?email=eq.'+encodeURIComponent(email)+'&status=eq.pending&select=id',
+      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    var apps = await r2.json();
+    if (apps && apps.length) {
+      emailEl.classList.add('invalid');
+      errEl.textContent = 'An application with this email is already pending review. Please wait to hear from the Academy.';
+      errEl.style.display = 'block'; return;
+    }
+    // All clear
+    emailEl.classList.remove('invalid');
+    errEl.style.display = 'none';
+  } catch(e) { /* silent — don't block form on network error */ }
+}
+
+// ── PHONE BLUR CHECK ──────────────────────────────────────────────────────────
+function checkPhoneBlur() {
+  var phoneEl = document.getElementById('phone');
+  var errEl = document.getElementById('err-phone');
+  if (!phoneEl || !errEl) return;
+  var phone = phoneEl.value.trim();
+  if (!phone) return;
+  var cleaned = phone.replace(/[\s\-\(\)]/g,'');
+  var valid = /^(\+?234|0)[7-9][0-1]\d{8}$/.test(cleaned);
+  if (!valid) {
+    phoneEl.classList.add('invalid');
+    errEl.textContent = 'Enter a valid Nigerian number, e.g. 08012345678 or +2348012345678.';
+    errEl.style.display = 'block';
+  } else {
+    phoneEl.classList.remove('invalid');
+    errEl.style.display = 'none';
+  }
 }
 
 // Fetch course amount and test mode from site_settings
@@ -524,10 +583,19 @@ function restoreFormState() {
       });
       updatePaymentBox();
     }
-    // Restore to correct step
+    // Restore to correct step — load courses first if needed
     if (state.step > 1) {
       currentStep = state.step;
-      showStep(currentStep);
+      if (state.step >= 2) {
+        // Load courses first so step 2 programme grid is populated, then show
+        loadCoursesForApply().then(function() {
+          showStep(currentStep);
+        }).catch(function() {
+          showStep(currentStep);
+        });
+      } else {
+        showStep(currentStep);
+      }
     }
   } catch(e){}
 }
