@@ -1788,6 +1788,7 @@ function clearRememberMe() {
           var dbResult = await loadCourseAndModulesFromDB(student.programme);
           CURRENT_COURSE = dbResult.course;
           MODULES = dbResult.modules;
+          await loadEnrolments().catch(function(){});
           await loadProgress().catch(function(){});
           saveSession(student, CURRENT_COURSE, completedModules);
           document.getElementById('topbar').style.display = 'flex';
