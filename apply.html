@@ -646,10 +646,11 @@ async function loadCoursesForApply() {
       }
     });
     if (!courses.length) throw new Error('no courses');
-    if (!selectedProg.length && courses.length) selectedProg = [courses[0].title];
-    grid.innerHTML = courses.map(function(c, i) {
+    // Don't pre-select any course — let student choose
+    grid.innerHTML = courses.map(function(c) {
       var val = c.title;
-      return '<div class="prog-option'+(i===0?' selected':'')+'" onclick="selectProg(this,\''+val.replace(/'/g,"\\'")+'\',\''+c.color+'\')">'
+      var isSelected = selectedProg.indexOf(val) !== -1;
+      return '<div class="prog-option'+(isSelected?' selected':'')+'" data-prog="'+val.replace(/"/g,'&quot;')+'" onclick="selectProg(this,this.dataset.prog)">'
         +'<div class="prog-check">&#10003;</div>'
         +'<div class="prog-dot" style="background:'+c.color+'"></div>'
         +'<div class="prog-title">'+val+'</div>'
