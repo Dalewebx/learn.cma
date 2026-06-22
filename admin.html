@@ -960,12 +960,28 @@ async function doAdminLogin() {
   err.style.display='none';
   try {
     // Hash password same way as students
-    var hash = await hashAdminPass(pass);
     // Look up in admins table
     var results = await sb('admins','GET',null,'email=eq.'+encodeURIComponent(email)+'&select=*');
     if (!results||!results.length) throw new Error('No admin account found with that email.');
     var admin = results[0];
-    if (admin.password_hash !== hash) throw new Error('Incorrect password.');
+
+    // Verify password — PBKDF2 (new) or legacy SHA-256
+    var adminPasswordMatch = false;
+    if (admin.hash_version === 'pbkdf2' && admin.salt) {
+      var hash = await hashPasswordPBKDF2(pass, admin.salt);
+      adminPasswordMatch = hash === admin.password_hash;
+    } else {
+      var legacyHash = await hashPasswordLegacy(pass);
+      if (legacyHash === admin.password_hash) {
+        adminPasswordMatch = true;
+        // Migrate to PBKDF2
+        var newSalt = await generateSalt();
+        var newHash = await hashPasswordPBKDF2(pass, newSalt);
+        sb('admins','PATCH',{password_hash:newHash, salt:newSalt, hash_version:'pbkdf2'},'id=eq.'+admin.id).catch(function(){});
+        admin.password_hash = newHash; admin.salt = newSalt; admin.hash_version = 'pbkdf2';
+      }
+    }
+    if (!adminPasswordMatch) throw new Error('Incorrect password.');
     // Login success
     currentAdmin = admin;
     var rememberCb = document.getElementById('adminRemember');
@@ -995,10 +1011,42 @@ async function doAdminLogin() {
   }
 }
 
-async function hashAdminPass(pass) {
-  var data = new TextEncoder().encode(pass + 'cma_salt_2026');
+
+// ── CRYPTO UTILITIES ─────────────────────────────────────────────────────────
+async function generateSalt() {
+  var arr = new Uint8Array(16);
+  crypto.getRandomValues(arr);
+  return Array.from(arr).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+}
+
+async function hashPasswordPBKDF2(password, salt) {
+  var saltBytes = new Uint8Array(salt.match(/.{2}/g).map(function(h){ return parseInt(h,16); }));
+  var keyMaterial = await crypto.subtle.importKey(
+    'raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']
+  );
+  var bits = await crypto.subtle.deriveBits(
+    {name:'PBKDF2', salt:saltBytes, iterations:100000, hash:'SHA-256'},
+    keyMaterial, 256
+  );
+  return Array.from(new Uint8Array(bits)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+}
+
+async function hashPasswordLegacy(password) {
+  var data = new TextEncoder().encode(password + 'cma_salt_2026');
   var buf = await crypto.subtle.digest('SHA-256', data);
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+}
+
+function generateSessionToken() {
+  var arr = new Uint8Array(32);
+  crypto.getRandomValues(arr);
+  return Array.from(arr).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function hashAdminPass(pass, salt) {
+  if (salt) return hashPasswordPBKDF2(pass, salt);
+  return hashPasswordLegacy(pass);
 }
 
 function applyRoleSidebar(role) {
@@ -2810,9 +2858,14 @@ async function saveAccountSettings() {
   if (newPass) {
     if (!currPass) { msg.textContent='Enter your current password to change it.'; msg.style.background='var(--danger-light)'; msg.style.color='var(--danger)'; msg.style.display='block'; return; }
     if (newPass !== confirmPass) { msg.textContent='New passwords do not match.'; msg.style.background='var(--danger-light)'; msg.style.color='var(--danger)'; msg.style.display='block'; return; }
-    var currHash = await hashAdminPass(currPass);
+    var currHash = currentAdmin.hash_version === 'pbkdf2' && currentAdmin.salt
+      ? await hashPasswordPBKDF2(currPass, currentAdmin.salt)
+      : await hashPasswordLegacy(currPass);
     if (currHash !== currentAdmin.password_hash) { msg.textContent='Current password is incorrect.'; msg.style.background='var(--danger-light)'; msg.style.color='var(--danger)'; msg.style.display='block'; return; }
-    updates.password_hash = await hashAdminPass(newPass);
+    var asSalt = await generateSalt();
+  updates.password_hash = await hashPasswordPBKDF2(newPass, asSalt);
+  updates.salt = asSalt;
+  updates.hash_version = 'pbkdf2';
   }
 
   try {
@@ -2969,11 +3022,14 @@ async function createAdminAccount() {
 
   btn.disabled=true; btn.textContent='Creating...';
   try {
-    var hash = await hashAdminPass(pass);
+    var aSalt = await generateSalt();
+    var hash = await hashPasswordPBKDF2(pass, aSalt);
     await sb('admins','POST',{
       name: name.trim(),
       email: email.trim().toLowerCase(),
       password_hash: hash,
+      salt: aSalt,
+      hash_version: 'pbkdf2',
       role: role,
       assigned_course_id: role==='master' ? null : courseId
     });
@@ -2991,8 +3047,9 @@ async function resetAdminPassword(id, name) {
   var newPass = prompt('Enter new password for '+name+':');
   if (!newPass||!newPass.trim()) return;
   try {
-    var hash = await hashAdminPass(newPass.trim());
-    await sb('admins','PATCH',{password_hash:hash},'id=eq.'+id);
+    var rSalt = await generateSalt();
+    var hash = await hashPasswordPBKDF2(newPass.trim(), rSalt);
+    await sb('admins','PATCH',{password_hash:hash, salt:rSalt, hash_version:'pbkdf2'},'id=eq.'+id);
     showToast('Password reset for '+name+'.');
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
