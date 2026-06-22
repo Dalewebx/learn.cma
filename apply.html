@@ -767,8 +767,12 @@ async function submitApplication() {
   btn.textContent = 'Submitting...';
   try {
     var ref = 'CMA-' + Date.now().toString().slice(-6);
-    var pwHash = await hashPassword(document.getElementById('password').value);
-    var ansHash = await hashPassword((v('securityAnswer')).toLowerCase().trim());
+    var pwResult = await hashPassword(document.getElementById('password').value);
+    var pwHash = pwResult.hash;
+    var pwSalt = pwResult.salt;
+    var ansResult = await hashPassword((v('securityAnswer')).toLowerCase().trim());
+    var ansHash = ansResult.hash;
+    var ansSalt = ansResult.salt;
     var receiptPath = null;
     if (selectedFile) {
       btn.textContent = 'Uploading receipt...';
@@ -805,6 +809,8 @@ async function submitApplication() {
         receipt_name: selectedFile ? selectedFile.name : null,
         receipt_path: receiptPath,
         password_hash: pwHash,
+          password_salt: pwSalt,
+          security_answer_salt: ansSalt,
         status: 'pending',
         type: 'new'
       });
