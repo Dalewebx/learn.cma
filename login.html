@@ -554,10 +554,57 @@ async function sbPatch(table, query, body) {
   return res.json();
 }
 
-async function hashPassword(password) {
+// ── CRYPTO: PBKDF2 with per-user salt (replaces SHA-256/static salt) ─────────
+async function hashPasswordLegacy(password) {
+  // Legacy SHA-256 — used ONLY for migration check on login
   const data = new TextEncoder().encode(password + 'cma_salt_2026');
   const buf = await crypto.subtle.digest('SHA-256', data);
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function generateSalt() {
+  return Array.from(crypto.getRandomValues(new Uint8Array(16)))
+    .map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+async function hashPasswordPBKDF2(password, salt) {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']
+  );
+  const bits = await crypto.subtle.deriveBits(
+    { name:'PBKDF2', salt: enc.encode(salt), iterations:100000, hash:'SHA-256' },
+    keyMaterial, 256
+  );
+  return Array.from(new Uint8Array(bits)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function generateSessionToken() {
+  return Array.from(crypto.getRandomValues(new Uint8Array(32)))
+    .map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+async function createSessionToken(studentId) {
+  const token = generateSessionToken();
+  const expires = new Date(Date.now() + 30*24*60*60*1000).toISOString(); // 30 days
+  try {
+    await fetch(SUPA_URL+'/rest/v1/sessions', {
+      method:'POST',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({ student_id: studentId, token: token, expires_at: expires })
+    });
+  } catch(e){ console.warn('Session token save failed', e); }
+  return token;
+}
+
+async function verifySessionToken(token) {
+  try {
+    const res = await fetch(SUPA_URL+'/rest/v1/sessions?token=eq.'+token+'&expires_at=gt.'+new Date().toISOString()+'&select=student_id', {
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+    });
+    const rows = await res.json();
+    return rows && rows.length ? rows[0].student_id : null;
+  } catch(e){ return null; }
 }
 
 function togglePass() {
@@ -1013,10 +1060,7 @@ async function doLogin() {
   document.getElementById('loginErr').style.display = 'none';
 
   try {
-    // 1. Hash password
-    var hash = await hashPassword(pass);
-
-    // 2. Fetch student record
+    // 1. Fetch student record
     var res = await fetch(SUPA_URL + '/rest/v1/students?email=eq.' + encodeURIComponent(email) + '&select=*', {
       headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
     });
@@ -1029,29 +1073,52 @@ async function doLogin() {
     }
     var student = results[0];
 
-    // 3. Check password
-    if (student.password_hash !== hash) {
+    // 2. Verify password — migrate legacy SHA-256 to PBKDF2 on first login
+    var passwordOk = false;
+    if (!student.salt || student.hash_version === 'sha256') {
+      // Legacy account — check with old SHA-256 first
+      var legacyHash = await hashPasswordLegacy(pass);
+      if (student.password_hash === legacyHash) {
+        // Migrate: generate per-user salt, rehash with PBKDF2, update DB
+        var newSalt = generateSalt();
+        var newHash = await hashPasswordPBKDF2(pass, newSalt);
+        fetch(SUPA_URL + '/rest/v1/students?id=eq.' + student.id, {
+          method: 'PATCH',
+          headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password_hash: newHash, salt: newSalt, hash_version: 'pbkdf2' })
+        }).catch(function(){});
+        student.password_hash = newHash; student.salt = newSalt; student.hash_version = 'pbkdf2';
+        passwordOk = true;
+      }
+    } else {
+      // PBKDF2 account
+      var pbkdf2Hash = await hashPasswordPBKDF2(pass, student.salt);
+      passwordOk = (student.password_hash === pbkdf2Hash);
+    }
+
+    if (!passwordOk) {
       showErr('Incorrect password. Please try again, or use Forgot password below.');
       btn.disabled = false; btn.textContent = 'Sign in →'; return;
     }
 
-    // 4. Check account status
+    // 3. Check account status
     if (student.status !== 'active') {
       showErr('Your account is pending approval. The Academy will contact you via WhatsApp once activated.');
       btn.disabled = false; btn.textContent = 'Sign in →'; return;
     }
 
-    // 5. Record login time (fire and forget — don't let this block login)
+    // 4. Record login time
     fetch(SUPA_URL + '/rest/v1/students?id=eq.' + student.id, {
       method: 'PATCH',
       headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' },
       body: JSON.stringify({ last_login: new Date().toISOString() })
     }).catch(function(){});
 
-    // 6. Handle Remember Me
+    // 5. Handle Remember Me — session token, not hash
     var rememberCb = document.getElementById('rememberMe');
     if (rememberCb && rememberCb.checked) {
-      saveRememberMe(email, hash); // store hash, not raw password
+      var sessionToken = await createSessionToken(student.id);
+      saveRememberMe(email, sessionToken);
     } else {
       clearRememberMe();
     }
@@ -1747,7 +1814,7 @@ function loadSession() {
   } catch(e){ return null; }
 }
 
-// Remember Me — store email + hash (never the raw password)
+// Remember Me — store email + session token (never the password or hash)
 function saveRememberMe(email, token) {
   try { localStorage.setItem('cma_remember', JSON.stringify({email:email, token:token})); } catch(e){}
 }
@@ -1781,16 +1848,20 @@ function clearRememberMe() {
     if (cb) cb.checked = true;
     // Show a subtle "signing you in..." state
     var loginBtn = document.getElementById('loginBtn');
-    if (loginBtn && remembered.passHash) {
+    if (loginBtn && remembered.token) {
       loginBtn.textContent = 'Signing you in...';
       loginBtn.disabled = true;
-      // Attempt auto-login with stored hash
+      // Attempt auto-login with session token
       try {
-        var res = await fetch(SUPA_URL + '/rest/v1/students?email=eq.' + encodeURIComponent(remembered.email) + '&select=*', {
-          headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
-        });
-        var results = await res.json();
-        if (results && results.length && results[0].password_hash === remembered.passHash && results[0].status === 'active') {
+        var studentId = await verifySessionToken(remembered.token);
+        var results = null;
+        if (studentId) {
+          var tokenRes = await fetch(SUPA_URL + '/rest/v1/students?id=eq.' + studentId + '&select=*', {
+            headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+          });
+          results = await tokenRes.json();
+        }
+        if (results && results.length && results[0].status === 'active') {
           var student = results[0];
           currentStudent = student;
           var dbResult = await loadCourseAndModulesFromDB(student.programme);
