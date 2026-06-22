@@ -1145,7 +1145,7 @@ async function loadAllData() {
       });
     }
     allApplications=apps; allStudents=studs; allProgress=prog; allAttempts=atts; allEnrolments=enrols||[];
-    cohortSettings=coh[0]||{name:'Cohort 1',deadline:'2026-07-13',pass_mark:100};
+    cohortSettings=coh[0]||{name:'Cohort 1',deadline:'2026-07-13',pass_mark:70};
     // Load course content and update dynamic module/course counts
     await loadCourseContent();
     // Rebuild MODULE_COUNT, MODULE_NAMES, COURSE_NAMES from loaded cmCourses
@@ -1507,25 +1507,66 @@ async function renderStudents() {
 function openStudentDetail(sid) {
   var s=allStudents.find(function(st){return st.id===sid;});
   if(!s) return;
+
+  // Get all enrolments for this student
+  var studentEnrols = allEnrolments.filter(function(e){ return e.student_id === sid; });
+  // Fall back to primary programme if no enrolments record
+  if (!studentEnrols.length && s.programme) {
+    var fallbackCourse = cmCourses.find(function(c){ return c.title === s.programme; });
+    if (fallbackCourse) studentEnrols = [{ course_id: fallbackCourse.id, student_id: sid }];
+  }
+
+  // Build per-course progress summary
+  var courseProgressSummary = studentEnrols.map(function(enr){
+    var course = cmCourses.find(function(c){ return c.id === enr.course_id; });
+    if (!course) return null;
+    var modCount = (course.modules||[]).filter(function(m){ return m.published!==false; }).length;
+    var courseProgress = allProgress.filter(function(p){ return p.student_id===sid && p.course_id===enr.course_id; });
+    var completed = courseProgress.length;
+    var pct = modCount > 0 ? Math.round((completed/modCount)*100) : 0;
+    var isComplete = completed >= modCount && modCount > 0;
+    return { course: course, modCount: modCount, completed: completed, pct: pct, isComplete: isComplete };
+  }).filter(Boolean);
+
   var comp=getStudentProgress(s.id);
   var attempts=getStudentAttempts(s.id);
-  var pct=Math.round((comp.length/MODULE_COUNT)*100);
+  var totalModules = courseProgressSummary.reduce(function(sum,c){ return sum+c.modCount; }, 0);
+  var totalCompleted = courseProgressSummary.reduce(function(sum,c){ return sum+c.completed; }, 0);
+  var overallPct = totalModules > 0 ? Math.round((totalCompleted/totalModules)*100) : 0;
+  var allComplete = courseProgressSummary.length > 0 && courseProgressSummary.every(function(c){ return c.isComplete; });
+
   var risk=isAtRisk(s);
   var app=allApplications.find(function(a){return a.email===s.email;})||{};
   var wn=s.whatsapp||s.phone;
-  var nudgeMsg='Hello '+s.first_name+', this is the Catholic Music Academy. You have '+(MODULE_COUNT-comp.length)+' module(s) remaining. Log in: catholicmusicacademy.net/login.html';
+  var nudgeMsg='Hello '+s.first_name+', this is the Catholic Music Academy. You have modules remaining. Log in: catholicmusicacademy.net';
+
+  // Enrolled courses list for overview
+  var enrolledCoursesList = courseProgressSummary.map(function(cp){
+    var badge = cp.isComplete
+      ? '<span style="font-size:11px;background:#DCFCE7;color:#16A34A;border-radius:4px;padding:2px 7px;font-weight:700;">✓ Complete</span>'
+      : '<span style="font-size:11px;background:#EFF6FF;color:#2563EB;border-radius:4px;padding:2px 7px;">'+cp.pct+'%</span>';
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--surface);">'
+      +'<span style="font-size:13px;color:var(--text);">'+cp.course.title+'</span>'
+      +'<span>'+badge+' <span style="font-size:11px;color:var(--muted);">'+cp.completed+'/'+cp.modCount+' modules</span></span>'
+      +'</div>';
+  }).join('');
 
   // Overview
   var ov='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:18px;">'
-    +'<div class="student-stat"><div class="student-stat-val">'+pct+'%</div><div class="student-stat-label">Progress</div></div>'
-    +'<div class="student-stat"><div class="student-stat-val">'+comp.length+'</div><div class="student-stat-label">Modules Done</div></div>'
+    +'<div class="student-stat"><div class="student-stat-val">'+overallPct+'%</div><div class="student-stat-label">Overall Progress</div></div>'
+    +'<div class="student-stat"><div class="student-stat-val">'+courseProgressSummary.length+'</div><div class="student-stat-label">Courses Enrolled</div></div>'
     +'<div class="student-stat"><div class="student-stat-val">'+attempts.length+'</div><div class="student-stat-label">Attempts</div></div>'
     +'<div class="student-stat"><div class="student-stat-val">'+attempts.filter(function(a){return a.passed;}).length+'</div><div class="student-stat-label">Passed</div></div>'
+    +'</div>'
+    +'<div class="card" style="margin-bottom:14px;">'
+    +'<div style="font-size:12px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Enrolled Courses</div>'
+    +enrolledCoursesList
+    +(allComplete ? '<div style="margin-top:10px;padding:10px;background:#DCFCE7;border-radius:8px;font-size:13px;font-weight:700;color:#16A34A;text-align:center;">🎓 All courses complete — Schedule Examination</div>' : '')
     +'</div>'
     +'<div class="card"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'
     +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Email</div><div style="font-size:13px;font-weight:600;">'+s.email+'</div></div>'
     +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Phone</div><div style="font-size:13px;font-weight:600;">'+(s.phone||'—')+'</div></div>'
-    +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Programme</div><div style="font-size:13px;font-weight:600;">'+(s.programme||'—')+'</div></div>'
+    +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Primary Programme</div><div style="font-size:13px;font-weight:600;">'+(s.programme||'—')+'</div></div>'
     +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">State</div><div style="font-size:13px;font-weight:600;">'+(s.state||'—')+'</div></div>'
     +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Joined</div><div style="font-size:13px;font-weight:600;">'+fmtDateTime(s.created_at)+'</div></div>'
     +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Last Login</div><div style="font-size:13px;font-weight:600;">'+fmtDateTime(s.last_login)+'</div></div>'
@@ -2334,13 +2375,13 @@ function renderCohort() {
     +'<div class="form-row">'
     +'<div class="form-group"><label class="form-label">Cohort Name</label><input class="form-input" id="cohortName" value="'+(cohortSettings.name||'')+'"/></div>'
     +'<div class="form-group"><label class="form-label">Deadline</label><input class="form-input" id="cohortDeadline" type="date" value="'+(cohortSettings.deadline||'')+'"/></div></div>'
-    +'<div class="form-group"><label class="form-label">Pass Mark (%)</label><input class="form-input" id="cohortPassMark" type="number" min="50" max="100" value="'+(cohortSettings.pass_mark||100)+'" style="max-width:120px;"/>'
+    +'<div class="form-group"><label class="form-label">Pass Mark (%)</label><input class="form-input" id="cohortPassMark" type="number" min="50" max="100" value="'+(cohortSettings.pass_mark||70)+'" style="max-width:120px;"/>'
     +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">100 = must get all correct. Lower value = standard pass mark.</div></div>'
     +'<button class="btn btn-primary" onclick="saveCohort()">Save Settings</button></div>';
 }
 async function saveCohort() {
   try{
-    var body={name:document.getElementById('cohortName').value,deadline:document.getElementById('cohortDeadline').value,pass_mark:parseInt(document.getElementById('cohortPassMark').value)||100,updated_at:new Date().toISOString()};
+    var body={name:document.getElementById('cohortName').value,deadline:document.getElementById('cohortDeadline').value,pass_mark:parseInt(document.getElementById('cohortPassMark').value)||70,updated_at:new Date().toISOString()};
     await sb('cohort_settings','PATCH',body,'id=eq.'+cohortSettings.id);
     showToast('Cohort settings saved.');
     await loadAllData();
