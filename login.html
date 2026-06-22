@@ -724,12 +724,19 @@ async function loadCourseAndModulesFromDB(programmeStr) {
       try { questions = JSON.parse(typeof r.questions === 'string' ? r.questions : '[]'); } catch(e){}
       try { audio = JSON.parse(typeof r.audio_tracks === 'string' ? r.audio_tracks : '[]'); } catch(e){}
       try { downloads = JSON.parse(typeof r.downloads === 'string' ? r.downloads : '[]'); } catch(e){}
+      var wordCount = (r.reading_html || '').replace(/<[^>]*>/g,'').split(/\s+/).filter(Boolean).length;
+      var readMins = Math.max(1, Math.ceil(wordCount / 200));
+      var hasVideo = !!(r.video_url);
+      var audioCount = 0;
+      try { audioCount = JSON.parse(typeof r.audio_tracks === 'string' ? r.audio_tracks : '[]').length; } catch(e){}
+      var totalMins = readMins + (hasVideo ? (r.video_duration_mins || 3) : 0) + (audioCount * 2);
       return {
         num: 'Module ' + String(r.module_index + 1).padStart(2, '0'),
         title: r.module_title || ('Module ' + (r.module_index + 1)),
         topic: r.module_topic || '',
-        duration: '~60 min',
+        duration: '~' + totalMins + ' min',
         videoUrl: r.video_url || '',
+        videoDurationMins: r.video_duration_mins || 0,
         audioTracks: audio,
         downloads: downloads,
         content: r.reading_html || '<p>Content coming soon.</p>',
@@ -1251,14 +1258,13 @@ async function loadProgress() {
   try {
     var rows = await sbGet('progress', 'student_id=eq.'+currentStudent.id+'&select=module_index,course_id');
     var courseId = CURRENT_COURSE ? CURRENT_COURSE.id : null;
-    // Try exact course match first
-    var courseRows = courseId ? rows.filter(function(r){ return r.course_id === courseId; }) : [];
-    if (courseRows.length) {
-      completedModules = courseRows.map(function(r){ return r.module_index; });
-    } else {
-      // Fallback: all rows for this student (handles legacy data)
-      completedModules = rows.map(function(r){ return r.module_index; });
-    }
+    // Include exact course match AND legacy null-course_id records for this student
+    var courseRows = rows.filter(function(r){
+      return r.course_id === courseId || r.course_id === null || r.course_id === 'unknown';
+    });
+    completedModules = courseRows.length
+      ? courseRows.map(function(r){ return r.module_index; })
+      : rows.map(function(r){ return r.module_index; });
     // Remove duplicates
     completedModules = completedModules.filter(function(v,i,a){ return a.indexOf(v)===i; });
     // Always sync session to DB state
@@ -1375,6 +1381,22 @@ function renderCourse() {
       +'<span class="mc-status '+(done?'s-done':locked?'s-locked':'s-open')+'">'+(done?'✓ Complete':locked?'🔒 Complete previous module':'▶ Open')+'</span>'
       +'</div>'+(locked?'':'<div class="mc-arrow">›</div>')+'</div>';
   }).join('');
+
+  // Show completion banner if all modules are done
+  var allDone = MODULES.length > 0 && MODULES.every(function(_,i){ return completedModules.includes(i); });
+  var existingBanner = document.getElementById('courseCompleteBanner');
+  if (existingBanner) existingBanner.remove();
+  if (allDone) {
+    var banner = document.createElement('div');
+    banner.id = 'courseCompleteBanner';
+    banner.style.cssText = 'background:linear-gradient(135deg,#0D1B3E,#1A2E6C);border-radius:14px;padding:24px;margin-bottom:20px;text-align:center;color:white;';
+    banner.innerHTML = '<div style="font-size:32px;margin-bottom:8px;">🎓</div>'
+      +'<div style="font-family:DM Serif Display,serif;font-size:20px;color:#C9A84C;margin-bottom:6px;">All Modules Complete</div>'
+      +'<div style="font-size:13px;color:rgba(255,255,255,0.8);line-height:1.65;margin-bottom:16px;">Congratulations! You have completed all online modules for this programme.<br>Your next step is the <strong style="color:#C9A84C;">final in-person examination</strong>. The Academy will contact you with details.</div>'
+      +'<button class="btn btn-amber" onclick="showComplete()">View Completion Details →</button>';
+    var modulesList = document.getElementById('modulesList');
+    if (modulesList) modulesList.before(banner);
+  }
 }
 
 // ── YOUTUBE URL NORMALISER ────────────────────────────────────────────────────
@@ -1527,7 +1549,12 @@ function openMod(i) {
   document.getElementById('modActions').innerHTML = '';
   document.getElementById('quizResult').innerHTML = '';
   document.getElementById('quizResult').classList.remove('show');
-  // reset timer
+  var wordCount = (m.content || '').replace(/<[^>]*>/g,'').split(/\s+/).filter(Boolean).length;
+  var readSecs = Math.max(30, Math.ceil(wordCount / 200) * 60);
+  var videoBonus = m.videoUrl ? ((m.videoDurationMins || 3) * 60) : 0;
+  var audioBonus = (m.audioTracks && m.audioTracks.length) ? (m.audioTracks.length * 120) : 0;
+  READ_TIME = readSecs + videoBonus + audioBonus;
+
   var rt = document.getElementById('readTimer');
   rt.className = 'read-timer';
   document.getElementById('timerMsg').textContent = 'Reading timer active';
@@ -1624,7 +1651,7 @@ function renderQuiz() {
         +'<div style="font-size:12px;color:var(--muted);margin-bottom:10px;">'+(isEssay?'Write a detailed response. Your instructor will review and grade this.':'Write a brief response. Your instructor will review this.')+'</div>'
         +(isEssay
           ?'<textarea id="wa-'+origIdx+'" oninput="writtenAnswers['+origIdx+']=this.value" placeholder="Write your response here..." style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;font-family:DM Sans,sans-serif;min-height:140px;outline:none;resize:vertical;"></textarea>'
-          :'<input id="wa-'+origIdx+'" oninput="writtenAnswers['+origIdx+']=this.value" type="text" placeholder="Your answer..." style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;font-family:DM Sans,sans-serif;outline:none;"/>'
+          :'<input id="wa-'+origIdx+'" oninput="writtenAnswers['+origIdx+']=this.value" type="text" autocomplete="off" placeholder="Your answer..." style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;font-family:DM Sans,sans-serif;outline:none;"/>'
         )+'</div>';
     }).join('');
   }
@@ -1725,9 +1752,22 @@ async function submitQuiz() {
       await saveAttempt(currentMod,mcqScore,mcqQs.length,true);
       var isLast=currentMod===MODULES.length-1;
       var sb=document.getElementById('submitBtn');if(sb)sb.remove();
-      document.getElementById('modActions').innerHTML=isLast
-        ?'<button class="btn btn-amber" onclick="showComplete()">🎓 Finish Course →</button><button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>'
-        :'<button class="btn btn-primary" onclick="openMod('+(currentMod+1)+')">Next Module →</button><button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>';
+      if (isLast) {
+        // Update in-memory enrolments so dashboard shows green badge immediately
+        if (CURRENT_COURSE && ALL_ENROLMENTS) {
+          var enr = ALL_ENROLMENTS.find(function(e){ return e.course_id === CURRENT_COURSE.id || e.programme === CURRENT_COURSE.title; });
+          if (enr) enr.status = 'complete';
+        }
+        document.getElementById('modActions').innerHTML =
+          '<button class="btn btn-amber" onclick="showComplete()" style="animation:pulse 1.5s infinite;">🎓 Finish Course →</button>'
+          +'<button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>';
+        // Auto-advance after short delay so student sees their pass result first
+        setTimeout(function(){ showComplete(); }, 2500);
+      } else {
+        document.getElementById('modActions').innerHTML=
+          '<button class="btn btn-primary" onclick="openMod('+(currentMod+1)+')">Next Module →</button>'
+          +'<button class="btn btn-secondary" onclick="goCourse()">← Back to Course</button>';
+      }
       resultEl.scrollIntoView({behavior:'smooth',block:'start'});
     } else {
       mcqQs.forEach(function(q,qi){
