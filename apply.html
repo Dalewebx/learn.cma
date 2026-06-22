@@ -475,12 +475,12 @@ function updatePaymentBox() {
   var msgEl = document.getElementById('paymentMsg');
   var count = Array.isArray(selectedProg) ? selectedProg.length : (selectedProg ? 1 : 0);
   var total = COURSE_AMOUNT * (count || 1);
-  var formatted = '&#8358;' + total.toLocaleString();
+  var formatted = '₦' + total.toLocaleString();
   if (amountEl) amountEl.textContent = formatted;
   if (msgEl) {
     if (count === 0) msgEl.textContent = 'Select a programme to see payment amount';
     else if (count === 1) msgEl.textContent = 'Pay ' + formatted + ' for ' + selectedProg[0];
-    else msgEl.textContent = 'Pay ' + formatted + ' for ' + count + ' programmes (₦'+COURSE_AMOUNT.toLocaleString()+' each)';
+    else msgEl.textContent = 'Pay ' + formatted + ' for ' + count + ' programmes (\u20A6' + COURSE_AMOUNT.toLocaleString() + ' each)';
   }
 }
 
