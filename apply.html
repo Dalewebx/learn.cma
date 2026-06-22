@@ -302,7 +302,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px
   <div id="step2" style="display:none;">
     <div class="card">
       <div class="card-title">Choose Your Programme</div>
-      <div class="card-sub">Select the course you would like to enrol in. Each programme leads to a nationally recognised qualification.</div>
+      <div class="card-sub">Select one or more programmes. Each leads to a nationally recognised qualification. Payment is ₦5,000 per programme selected.</div>
       <div class="prog-grid" id="progGrid">
         <div style="font-size:13px;color:var(--muted);">Loading programmes...</div>
       </div>
@@ -473,10 +473,15 @@ async function hashPassword(password) {
 function updatePaymentBox() {
   var amountEl = document.getElementById('paymentAmount');
   var msgEl = document.getElementById('paymentMsg');
-  var course = selectedProg || selectedCourseForPayment || 'your chosen programme';
-  var formatted = '&#8358;' + COURSE_AMOUNT.toLocaleString();
+  var count = Array.isArray(selectedProg) ? selectedProg.length : (selectedProg ? 1 : 0);
+  var total = COURSE_AMOUNT * (count || 1);
+  var formatted = '&#8358;' + total.toLocaleString();
   if (amountEl) amountEl.textContent = formatted;
-  if (msgEl) msgEl.textContent = 'Pay ' + formatted + ' for ' + course;
+  if (msgEl) {
+    if (count === 0) msgEl.textContent = 'Select a programme to see payment amount';
+    else if (count === 1) msgEl.textContent = 'Pay ' + formatted + ' for ' + selectedProg[0];
+    else msgEl.textContent = 'Pay ' + formatted + ' for ' + count + ' programmes (₦'+COURSE_AMOUNT.toLocaleString()+' each)';
+  }
 }
 
 var currentStep = 1;
@@ -492,7 +497,7 @@ function saveFormState() {
       phone: v('phone')||'',
       state: v('state')||'',
       background: (document.getElementById('f-background')||{}).value||'',
-      programme: selectedProg||''
+      programme: Array.isArray(selectedProg) ? selectedProg.join('||') : (selectedProg||'')
     };
     sessionStorage.setItem('cma_apply_draft',JSON.stringify(state));
   } catch(e){}
@@ -512,10 +517,12 @@ function restoreFormState() {
     setVal('f-state', state.state);
     setVal('f-background', state.background);
     if (state.programme) {
-      selectedProg = state.programme;
+      var progs = state.programme.split('||').filter(Boolean);
+      selectedProg = progs;
       document.querySelectorAll('.prog-option').forEach(function(p){
-        if(p.dataset.prog === state.programme) p.classList.add('selected');
+        if(progs.indexOf(p.dataset.prog) !== -1) p.classList.add('selected');
       });
+      updatePaymentBox();
     }
     // Restore to correct step
     if (state.step > 1) {
@@ -524,7 +531,7 @@ function restoreFormState() {
     }
   } catch(e){}
 }
-var selectedProg = '';
+var selectedProg = []; // now an array for multiple selection
 var selectedBg = 'No formal training — I sing but have not studied music formally';
 var selectedFile = null;
 var recoveryOpen = false;
@@ -639,7 +646,7 @@ async function loadCoursesForApply() {
       }
     });
     if (!courses.length) throw new Error('no courses');
-    if (!selectedProg) selectedProg = courses[0].title;
+    if (!selectedProg.length && courses.length) selectedProg = [courses[0].title];
     grid.innerHTML = courses.map(function(c, i) {
       var val = c.title;
       return '<div class="prog-option'+(i===0?' selected':'')+'" onclick="selectProg(this,\''+val.replace(/'/g,"\\'")+'\',\''+c.color+'\')">'
@@ -655,10 +662,16 @@ async function loadCoursesForApply() {
 }
 
 function selectProg(el, val) {
-  document.querySelectorAll('.prog-option').forEach(function(p){ p.classList.remove('selected'); });
-  el.classList.add('selected');
-  selectedProg = val;
-  selectedCourseForPayment = val;
+  var idx = selectedProg.indexOf(val);
+  if (idx === -1) {
+    // Add to selection
+    selectedProg.push(val);
+    el.classList.add('selected');
+  } else {
+    // Remove from selection
+    selectedProg.splice(idx, 1);
+    el.classList.remove('selected');
+  }
   document.getElementById('err-prog').style.display = 'none';
   updatePaymentBox();
 }
@@ -768,52 +781,66 @@ async function submitApplication() {
       if (!uploadRes.ok) throw new Error('Receipt upload failed: ' + await uploadRes.text());
     }
     btn.textContent = 'Submitting application...';
-    await sbPost('applications', {
-      ref: ref,
-      first_name: v('firstName'),
-      last_name: v('lastName'),
-      email: v('email'),
-      phone: v('phone'),
-      whatsapp: v('phone'),
-      security_question: v('securityQuestion'),
-      security_answer_hash: ansHash,
-      programme: selectedProg,
-      background: selectedBg,
-      receipt_name: selectedFile ? selectedFile.name : null,
-      receipt_path: receiptPath,
-      password_hash: pwHash,
-      status: 'pending'
-    });
+    var progList = Array.isArray(selectedProg) ? selectedProg : [selectedProg];
+    var firstName = v('firstName');
+    var lastName = v('lastName');
+    var email = v('email');
+    var phone = v('phone');
+
+    // Create one application row per selected programme
+    for (var pi = 0; pi < progList.length; pi++) {
+      var progRef = ref + (progList.length > 1 ? '-' + (pi+1) : '');
+      await sbPost('applications', {
+        ref: progRef,
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        phone: phone,
+        whatsapp: phone,
+        security_question: v('securityQuestion'),
+        security_answer_hash: ansHash,
+        programme: progList[pi],
+        background: selectedBg,
+        receipt_name: selectedFile ? selectedFile.name : null,
+        receipt_path: receiptPath,
+        password_hash: pwHash,
+        status: 'pending',
+        type: 'new'
+      });
+    }
+
     [1,2,3,4].forEach(function(i){ document.getElementById('step'+i).style.display='none'; });
     document.getElementById('stepSuccess').style.display = 'block';
     window.scrollTo({top:0,behavior:'smooth'});
     try { sessionStorage.removeItem('cma_apply_draft'); } catch(e){}
 
-    // Send confirmation email — fire and forget, don't block success screen
+    // Send one confirmation email listing all programmes
     fetch('/api/application-received', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        to: v('email'),
-        firstName: v('firstName'),
-        programme: selectedProg,
+        to: email,
+        firstName: firstName,
+        programme: progList.join(', '),
         ref: ref,
         testMode: IS_TEST_MODE
       })
     }).catch(function(e){ console.warn('Confirmation email failed:', e); });
 
-    // Notify admin of new application
-    fetch('/api/notify-admin', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        studentName: v('firstName')+' '+v('lastName'),
-        studentEmail: v('email'),
-        programme: selectedProg,
-        ref: ref,
-        type: 'new'
-      })
-    }).catch(function(e){ console.warn('Admin notification failed:', e); });
+    // Notify admin once per programme
+    progList.forEach(function(prog, pi2) {
+      fetch('/api/notify-admin', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          studentName: firstName+' '+lastName,
+          studentEmail: email,
+          programme: prog,
+          ref: ref + (progList.length > 1 ? '-'+(pi2+1) : ''),
+          type: 'new'
+        })
+      }).catch(function(){});
+    });
   } catch(e) {
     btn.disabled = false;
     btn.textContent = 'Submit Application →';
