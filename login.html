@@ -1103,6 +1103,14 @@ function showErr(msg) {
 }
 
 function logout() {
+  // Revoke session token in DB
+  var remembered = getRemembered();
+  if (remembered && remembered.token) {
+    fetch(SUPA_URL+'/rest/v1/sessions?token=eq.'+remembered.token, {
+      method:'DELETE',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+    }).catch(function(){});
+  }
   clearSession();
   currentStudent = null; completedModules = []; currentMod = 0;
   answers = {}; submitted = false; timerDone = false; scrollDone = false;
@@ -1740,8 +1748,8 @@ function loadSession() {
 }
 
 // Remember Me — store email + hash (never the raw password)
-function saveRememberMe(email, passHash) {
-  try { localStorage.setItem('cma_remember', JSON.stringify({email:email, passHash:passHash})); } catch(e){}
+function saveRememberMe(email, token) {
+  try { localStorage.setItem('cma_remember', JSON.stringify({email:email, token:token})); } catch(e){}
 }
 function getRemembered() {
   try { return JSON.parse(localStorage.getItem('cma_remember')||'null'); } catch(e){ return null; }
