@@ -1403,7 +1403,22 @@ async function doLogin() {
     }
 
     if (!passwordOk) {
-      showErr('Incorrect password. Please try again, or use Forgot password below.');
+      // Detect broken PBKDF2-without-salt state (old apply.html bug)
+      // These accounts have PBKDF2 hash but null salt — neither path can verify
+      var isBrokenPBKDF2 = (!student.salt && student.hash_version !== 'sha256');
+      if (isBrokenPBKDF2) {
+        // Show specific recovery message — not a wrong password, a broken account state
+        var errEl = document.getElementById('loginErr');
+        if (errEl) {
+          errEl.style.display = 'block';
+          errEl.innerHTML = '<strong>Password reset required.</strong><br>'
+            + 'Your account credentials need to be reset. This is a one-time fix — '
+            + 'click <a href="/forgot-password" style="color:var(--navy);font-weight:700;text-decoration:underline;">Reset Password</a> '
+            + 'below to set a new password. It only takes a minute.';
+        }
+      } else {
+        showErr('Incorrect password. Please try again, or use Forgot password below.');
+      }
       btn.disabled = false; btn.textContent = 'Sign in →'; return;
     }
 
