@@ -1064,22 +1064,37 @@ function renderOtherCourses() {
   var container = document.getElementById('otherCoursesList');
   if (!container) return;
 
-  // Build list of all enrolled programme titles (from all enrolments)
-  var enrolledTitles = ALL_ENROLMENTS.map(function(e){ return e.programme; });
-  // Also include current course and student's primary programme
-  if (CURRENT_COURSE) enrolledTitles.push(CURRENT_COURSE.title);
-  if (currentStudent && currentStudent.programme) enrolledTitles.push(currentStudent.programme);
+  // Build list of all enrolled programme titles and course_ids
+  var enrolledTitles = ALL_ENROLMENTS.map(function(e){ return (e.programme||'').trim().toLowerCase(); });
+  var enrolledIds = ALL_ENROLMENTS.map(function(e){ return e.course_id; }).filter(Boolean);
+  if (CURRENT_COURSE) {
+    enrolledTitles.push((CURRENT_COURSE.title||'').trim().toLowerCase());
+    if (CURRENT_COURSE.id) enrolledIds.push(CURRENT_COURSE.id);
+  }
+  if (currentStudent && currentStudent.programme) {
+    enrolledTitles.push(currentStudent.programme.trim().toLowerCase());
+  }
   // Deduplicate
   enrolledTitles = enrolledTitles.filter(function(v,i,a){ return a.indexOf(v)===i; });
+  enrolledIds = enrolledIds.filter(function(v,i,a){ return a.indexOf(v)===i; });
 
   var others = ALL_DB_COURSES.filter(function(c){
-    return enrolledTitles.indexOf(c.title) === -1;
+    // Exclude if title matches (case-insensitive) OR course_id matches
+    var titleMatch = enrolledTitles.indexOf((c.title||'').trim().toLowerCase()) !== -1;
+    var idMatch = c.id && enrolledIds.indexOf(c.id) !== -1;
+    return !titleMatch && !idMatch;
   });
 
   if (!others.length) {
-    container.innerHTML = '<p style="font-size:13px;color:var(--muted);">More courses coming soon.</p>';
+    container.innerHTML = '<p style="font-size:13px;color:var(--muted);">You are enrolled in all available courses. More courses coming soon.</p>';
+    // Hide the enrol button too
+    var enrolBtn = document.getElementById('addProgBtnWrap');
+    if (enrolBtn) enrolBtn.style.display = 'none';
     return;
   }
+  // Show enrol button if there are unenrolled courses
+  var enrolBtn = document.getElementById('addProgBtnWrap');
+  if (enrolBtn) enrolBtn.style.display = 'block';
   container.innerHTML = others.map(function(c, i) {
     return '<div class="other-course-card">'
       + '<div class="other-course-lock">🔒</div>'
