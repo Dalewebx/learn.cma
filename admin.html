@@ -1002,7 +1002,14 @@ function fmtDate(s) {
   return d.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]+' '+d.getFullYear();
 }
 function daysUntil(s) { return Math.ceil((new Date(s)-Date.now())/86400000); }
-function daysAgo(s) { if(!s) return 999; return Math.floor((Date.now()-new Date(s))/86400000); }
+function daysAgo(s) { if(!s) return null; return Math.floor((Date.now()-new Date(s))/86400000); }
+function lastSeenText(s) {
+  var da = daysAgo(s);
+  if (da === null) return 'Never logged in';
+  if (da === 0) return 'Today';
+  if (da === 1) return 'Yesterday';
+  return da + ' days ago';
+}
 function getStudentProgress(sid, courseId) {
   var indices = allProgress.filter(function(p){
     if (p.student_id !== sid) return false;
@@ -1354,7 +1361,7 @@ function renderDashboard() {
   riskStudents.slice(0,2).forEach(function(s){
     actions.push({
       icon:'⚠️', color:'#DC2626', bg:'#FEE2E2',
-      text: s.first_name+' '+s.last_name+' hasn\'t logged in for '+daysAgo(s.last_login)+' days',
+      text: s.first_name+' '+s.last_name+' — '+lastSeenText(s.last_login),
       cta:'Nudge', action:"openStudentDetail('"+s.id+"')"
     });
   });
@@ -1602,9 +1609,12 @@ async function approveApp(id) {
           application_id: id
         },'id=eq.'+existingId);
 
-        if (!hasSalt) {
-          showToast('⚠ Note: '+a.first_name+'\'s application has no password salt (old apply form). Ask them to reapply for best results, or use admin password reset.','warn');
-        }
+        // Force last_login to NULL via direct fetch (ensures null is written, not ignored)
+        await fetch(SUPA_URL+'/rest/v1/students?id=eq.'+existingId, {
+          method:'PATCH',
+          headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+          body: JSON.stringify({last_login: null})
+        }).catch(function(){});
 
         // If reactivating a revoked account, clear old progress and enrolments
         if (wasRevoked) {
@@ -1811,7 +1821,7 @@ async function renderStudents() {
     var examPassed = enrols.some(function(e){ return e.status==='exam_passed'; });
     var risk = isAtRisk(s) && !examReady;
     var da = daysAgo(s.last_login);
-    var lastSeen = da===0?'Today':da===1?'Yesterday':da<999?(da+' days ago'):'Never';
+    var lastSeen = lastSeenText(s.last_login);
 
     // Status pill
     var statusPill = examPassed
@@ -1885,7 +1895,7 @@ function exportStudentsCsv() {
     var cp=getStudentProgress(s.id).length;
     var status=er?'Exam Ready':isAtRisk(s)?'At Risk':cp===0?'Not Started':'In Progress';
     var da=daysAgo(s.last_login);
-    var lastSeen=da===0?'Today':da===1?'Yesterday':da<999?(da+' days ago'):'Never';
+    var lastSeen=lastSeenText(s.last_login);
     rows.push([s.first_name+' '+s.last_name,s.email,s.programme||'—',lastSeen,status]);
   });
   var csv=rows.map(function(r){return r.map(function(c){return '"'+(c||'').replace(/"/g,'""')+'"';}).join(',');}).join('\n');
@@ -1905,7 +1915,7 @@ function openStudentDetail(sid) {
   var app = allApplications.find(function(a){return a.email===s.email;})||{};
   var wn = s.whatsapp||s.phone||'';
   var da = daysAgo(s.last_login);
-  var lastSeen = da===0?'Today':da===1?'Yesterday':da<999?(da+' days ago'):'Never';
+  var lastSeen = lastSeenText(s.last_login);
   var examPassed = enrols.some(function(e){return e.status==='exam_passed';});
   var examReady = enrols.some(function(e){return ['complete','exam_scheduled','exam_passed'].includes(e.status);});
 
@@ -2043,6 +2053,31 @@ function openStudentDetail(sid) {
       +'</div>';
   }
 
+  // ── ADMIN ACTIONS ──
+  var adminActionsHtml = '<div class="card" style="margin-bottom:14px;">'
+    +'<div class="card-title" style="margin-bottom:12px;">Admin Actions</div>'
+    +'<div style="display:grid;grid-template-columns:1fr;gap:12px;">'
+    // Password reset
+    +'<div style="background:var(--surface);border-radius:10px;padding:14px;">'
+    +'<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;">Reset Password</div>'
+    +'<div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Set a temporary password for this student. They should change it on next login.</div>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap;">'
+    +'<input type="password" id="adminResetPw_'+sid+'" class="form-input" style="flex:1;min-width:160px;margin:0;" placeholder="Temporary password (min 8 chars)"/>'
+    +'<button class="btn btn-primary btn-sm" onclick="adminResetPassword(\''+sid+'\')">Set Password</button>'
+    +'</div></div>'
+    // Revoke
+    +(s.status==='active'
+      ? '<div style="background:#FEF2F2;border-radius:10px;padding:14px;">'
+        +'<div style="font-size:12px;font-weight:700;color:var(--danger);margin-bottom:6px;">Revoke Access</div>'
+        +'<div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Immediately block this student from logging in.</div>'
+        +'<button class="btn btn-danger btn-sm" onclick="revokeStudent(\''+sid+'\',\''+s.first_name+' '+s.last_name+'\')">Revoke Access</button>'
+        +'</div>'
+      : '<div style="background:#F0FDF4;border-radius:10px;padding:14px;">'
+        +'<div style="font-size:12px;font-weight:700;color:var(--ok);margin-bottom:6px;">Account Revoked</div>'
+        +'<div style="font-size:12px;color:var(--muted);">Reactivate via Applications tab.</div>'
+        +'</div>')
+    +'</div></div>';
+
   // ── TABS — hide nudge for passed students ──
   var showNudge = wn && !examPassed;
   document.getElementById('studentDetailContent').innerHTML = hdr
@@ -2050,10 +2085,12 @@ function openStudentDetail(sid) {
     + '<div class="tab active" onclick="showStudentTab(this,0)">Progress</div>'
     + '<div class="tab" onclick="showStudentTab(this,1)">Timeline</div>'
     + (showNudge?'<div class="tab" onclick="showStudentTab(this,2)">Nudge</div>':'')
+    + '<div class="tab" onclick="showStudentTab(this,'+(showNudge?3:2)+')">Admin</div>'
     + '</div>'
     + '<div id="sd0">'+coursesHtml+'</div>'
     + '<div id="sd1" style="display:none;">'+tlHtml+'</div>'
-    + (showNudge?'<div id="sd2" style="display:none;">'+nudgeHtml+'</div>':'');
+    + (showNudge?'<div id="sd2" style="display:none;">'+nudgeHtml+'</div>':'')
+    + '<div id="sd'+(showNudge?3:2)+'" style="display:none;">'+adminActionsHtml+'</div>';
 }
 
 
@@ -2077,7 +2114,49 @@ function switchStudentTab(el,tab) {
   if(target) target.style.display='block';
 }
 
-// ── PROGRESS RECORDS ─────────────────────────────────────────────────────────
+async function adminResetPassword(sid) {
+  var pwEl = document.getElementById('adminResetPw_'+sid);
+  if (!pwEl) return;
+  var pw = pwEl.value.trim();
+  if (!pw || pw.length < 8) { showToast('Password must be at least 8 characters.','warn'); return; }
+
+  var btn = pwEl.nextElementSibling;
+  if (btn) { btn.disabled=true; btn.textContent='Setting...'; }
+
+  try {
+    // Generate fresh PBKDF2 hash + salt
+    var salt = Array.from(crypto.getRandomValues(new Uint8Array(16))).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+    var enc = new TextEncoder();
+    var key = await crypto.subtle.importKey('raw', enc.encode(pw), 'PBKDF2', false, ['deriveBits']);
+    var bits = await crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(salt),iterations:100000,hash:'SHA-256'}, key, 256);
+    var hash = Array.from(new Uint8Array(bits)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+
+    await fetch(SUPA_URL+'/rest/v1/students?id=eq.'+sid, {
+      method:'PATCH',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({password_hash:hash, salt:salt, hash_version:'pbkdf2', last_login:null})
+    });
+
+    pwEl.value = '';
+    showToast('Password reset successfully. Student can now log in with the new password.','ok');
+  } catch(e) {
+    showToast('Error resetting password: '+e.message,'err');
+  } finally {
+    if (btn) { btn.disabled=false; btn.textContent='Set Password'; }
+  }
+}
+
+async function revokeStudent(sid, name) {
+  if (!confirm('Revoke access for '+name+'?\n\nThey will be unable to log in immediately. Their data is preserved.')) return;
+  try {
+    await sb('students','PATCH',{status:'inactive'},'id=eq.'+sid);
+    showToast(name+' access revoked.');
+    await loadAllData();
+    goTab('students');
+  } catch(e) { showToast('Error: '+e.message,'err'); }
+}
+
+
 function renderProgress() {
   var rows = allStudents.map(function(s) {
     var comp=getStudentProgress(s.id);
@@ -2170,7 +2249,7 @@ function renderAtrisk() {
       var pct=Math.min(100, Math.round((comp/MODULE_COUNT)*100));
       var da=daysAgo(s.last_login);
       var reasons=[];
-      if(da>=5) reasons.push('No login for '+(da<999?da+' days':'unknown'));
+      if(da!==null&&da>=5) reasons.push('No login for '+da+' days');
       if(du<=7&&comp<MODULE_COUNT) reasons.push('Deadline in '+du+' days');
       if(du<=14&&comp===0) reasons.push('Not started');
       var wn=s.whatsapp||s.phone;
