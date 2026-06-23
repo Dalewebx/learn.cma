@@ -758,39 +758,60 @@ async function loadCourseAndModulesFromDB(programmeStr) {
 function renderDashboard() {
   var multiSection = document.getElementById('multiCourseSection');
   var singleSection = document.getElementById('singleCourseSection');
-  var addProgWrap = document.getElementById('addProgBtnWrap');
 
-  if (ALL_ENROLMENTS.length > 1) {
-    // Show multiple courses
+  var activeEnrols = ALL_ENROLMENTS.filter(function(e){ return e.status !== 'complete'; });
+  var completedEnrols = ALL_ENROLMENTS.filter(function(e){ return e.status === 'complete'; });
+  var hasMultiple = ALL_ENROLMENTS.length > 1;
+  var singleIsComplete = ALL_ENROLMENTS.length === 1 && completedEnrols.length === 1;
+
+  if (hasMultiple || singleIsComplete) {
     if (multiSection) multiSection.style.display = 'block';
     if (singleSection) singleSection.style.display = 'none';
     var grid = document.getElementById('multiCourseGrid');
     if (grid) {
-      grid.innerHTML = ALL_ENROLMENTS.map(function(e) {
-        var isCurrent = (CURRENT_COURSE && (e.course_id === CURRENT_COURSE.id || e.programme === CURRENT_COURSE.title))
-          || (currentStudent && e.programme === currentStudent.programme);
-        var isComplete = e.status === 'complete';
-        var statusPill = isComplete
-          ? '<div class="course-status-pill" style="background:#DCFCE7;color:#16A34A;">✓ Complete</div>'
-          : '<div class="course-status-pill">✓ '+(isCurrent?'Currently Open':'Enrolled &amp; Active')+'</div>';
-        var ctaText = isComplete ? 'Review Course →' : (isCurrent ? 'Continue Course →' : 'Open Course →');
-        var cardStyle = 'margin-bottom:12px;'+(isComplete?'border-color:#16A34A;':isCurrent?'border-color:var(--navy);':'');
-        var bandStyle = isComplete ? 'background:linear-gradient(90deg,#16A34A,#86EFAC);' : '';
-        return '<div class="course-card" style="'+cardStyle+'" data-cid="'+e.course_id+'" data-prog="'+e.programme.replace(/"/g,'&quot;')+'" onclick="switchCourse(this.dataset.cid,this.dataset.prog)">'
-          +'<div class="course-card-band" style="'+bandStyle+'"></div>'
-          +'<div class="course-card-body">'
-          +statusPill
-          +'<div class="course-card-title">'+e.programme+'</div>'
-          +'</div>'
-          +'<div class="course-card-cta" style="'+(isComplete?'background:#F0FDF4;':'')+'"><div class="course-card-cta-text" style="'+(isComplete?'color:#16A34A;':'')+'">'+ctaText+'</div></div>'
-          +'</div>';
-      }).join('');
+      var html = '';
+
+      // Active courses section
+      if (activeEnrols.length) {
+        html += '<div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Enrolled Courses</div>';
+        html += activeEnrols.map(function(e) {
+          var isCurrent = (CURRENT_COURSE && (e.course_id === CURRENT_COURSE.id || e.programme === CURRENT_COURSE.title))
+            || (currentStudent && e.programme === currentStudent.programme);
+          var ctaText = isCurrent ? 'Continue Course →' : 'Open Course →';
+          var cardStyle = 'margin-bottom:12px;'+(isCurrent?'border-color:var(--navy);':'');
+          return '<div class="course-card" style="'+cardStyle+'" data-cid="'+e.course_id+'" data-prog="'+e.programme.replace(/"/g,'&quot;')+'" onclick="switchCourse(this.dataset.cid,this.dataset.prog)">'
+            +'<div class="course-card-band"></div>'
+            +'<div class="course-card-body">'
+            +'<div class="course-status-pill">✓ '+(isCurrent?'Currently Open':'Enrolled &amp; Active')+'</div>'
+            +'<div class="course-card-title">'+e.programme+'</div>'
+            +'</div>'
+            +'<div class="course-card-cta"><div class="course-card-cta-text">'+ctaText+'</div></div>'
+            +'</div>';
+        }).join('');
+      }
+
+      // Completed courses section
+      if (completedEnrols.length) {
+        html += '<div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#16A34A;margin:'+(activeEnrols.length?'20px':'0')+'px 0 10px;">🎓 Exam Ready</div>';
+        html += completedEnrols.map(function(e) {
+          return '<div class="course-card" style="margin-bottom:12px;border-color:#16A34A;" data-cid="'+e.course_id+'" data-prog="'+e.programme.replace(/"/g,'&quot;')+'" onclick="switchCourse(this.dataset.cid,this.dataset.prog)">'
+            +'<div class="course-card-band" style="background:linear-gradient(90deg,#16A34A,#86EFAC);"></div>'
+            +'<div class="course-card-body">'
+            +'<div class="course-status-pill" style="background:#DCFCE7;color:#16A34A;">🎓 Exam Ready</div>'
+            +'<div class="course-card-title">'+e.programme+'</div>'
+            +'<div style="font-size:12px;color:var(--muted);margin-top:4px;">All modules complete · Awaiting final examination</div>'
+            +'</div>'
+            +'<div class="course-card-cta" style="background:#F0FDF4;"><div class="course-card-cta-text" style="color:#16A34A;">Review Course →</div></div>'
+            +'</div>';
+        }).join('');
+      }
+
+      grid.innerHTML = html;
     }
   } else {
-    // Single enrolment
+    // Single active enrolment
     if (multiSection) multiSection.style.display = 'none';
     if (singleSection) singleSection.style.display = 'block';
-    // Update single course card
     var titleEl = document.getElementById('enrolledCourseTitle');
     if (titleEl && CURRENT_COURSE) titleEl.textContent = CURRENT_COURSE.title;
     var metaEl = document.getElementById('enrolledCourseMeta');
@@ -1221,10 +1242,10 @@ async function loadEnrolments() {
   if (!currentStudent) return;
   var enrolments = [];
 
-  // Layer 1: enrolments table
+  // Layer 1: enrolments table — fetch ALL statuses (active + complete)
   try {
     var rows = await sbGet('enrolments',
-      'student_id=eq.'+currentStudent.id+'&status=eq.active&order=enrolled_at.asc');
+      'student_id=eq.'+currentStudent.id+'&order=enrolled_at.asc');
     enrolments = rows || [];
   } catch(e) {}
 
@@ -1258,13 +1279,19 @@ async function loadProgress() {
   try {
     var rows = await sbGet('progress', 'student_id=eq.'+currentStudent.id+'&select=module_index,course_id');
     var courseId = CURRENT_COURSE ? CURRENT_COURSE.id : null;
-    // Include exact course match AND legacy null-course_id records for this student
-    var courseRows = rows.filter(function(r){
-      return r.course_id === courseId || r.course_id === null || r.course_id === 'unknown';
-    });
-    completedModules = courseRows.length
-      ? courseRows.map(function(r){ return r.module_index; })
-      : rows.map(function(r){ return r.module_index; });
+    // Exact course match
+    var exactRows = courseId ? rows.filter(function(r){ return r.course_id === courseId; }) : [];
+    // Legacy null/unknown records — only safe to use for single-course students
+    var nullRows = rows.filter(function(r){ return !r.course_id || r.course_id === 'unknown'; });
+    var isSingleCourse = ALL_ENROLMENTS.length <= 1;
+    if (exactRows.length) {
+      completedModules = exactRows.map(function(r){ return r.module_index; });
+    } else if (isSingleCourse && nullRows.length) {
+      // Single-course student with legacy null records — safe to use
+      completedModules = nullRows.map(function(r){ return r.module_index; });
+    } else {
+      completedModules = [];
+    }
     // Remove duplicates
     completedModules = completedModules.filter(function(v,i,a){ return a.indexOf(v)===i; });
     // Always sync session to DB state
@@ -1840,7 +1867,6 @@ async function showComplete() {
   history.pushState({screen:'complete'},'','/portal/complete');
   showScreen('screen-complete');
 
-  // Populate completion screen with student/course info
   var name = currentStudent ? (currentStudent.first_name+' '+currentStudent.last_name) : '';
   var course = CURRENT_COURSE ? CURRENT_COURSE.title : '';
   var mods = MODULES ? MODULES.length : 0;
@@ -1855,8 +1881,14 @@ async function showComplete() {
   if (dateEl) dateEl.textContent = dateStr;
   if (modsEl) modsEl.textContent = mods + ' module' + (mods !== 1 ? 's' : '');
 
-  // Mark course complete in enrolments table
-  if (currentStudent && CURRENT_COURSE) {
+  // Check if already marked complete in DB — only fire email + PATCH once
+  var enr = ALL_ENROLMENTS ? ALL_ENROLMENTS.find(function(e){
+    return e.course_id === (CURRENT_COURSE && CURRENT_COURSE.id) || e.programme === (CURRENT_COURSE && CURRENT_COURSE.title);
+  }) : null;
+  var alreadyComplete = enr && enr.status === 'complete';
+
+  if (!alreadyComplete && currentStudent && CURRENT_COURSE) {
+    // Mark complete in DB
     try {
       await fetch(SUPA_URL+'/rest/v1/enrolments?student_id=eq.'+currentStudent.id+'&course_id=eq.'+CURRENT_COURSE.id, {
         method:'PATCH',
@@ -1864,18 +1896,19 @@ async function showComplete() {
         body: JSON.stringify({status:'complete', completed_at: new Date().toISOString()})
       });
     } catch(e){ console.warn('Could not mark enrolment complete', e); }
-  }
 
-  // Fire course-completed API (admin notification + student congratulatory email)
-  if (currentStudent && CURRENT_COURSE) {
+    // Update in-memory enrolment
+    if (enr) enr.status = 'complete';
+
+    // Fire emails — admin notification + student congratulatory
     fetch('/api/course-completed', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        studentName: (currentStudent.first_name+' '+currentStudent.last_name),
+        studentName: name,
         studentEmail: currentStudent.email,
-        course: CURRENT_COURSE.title,
-        modules: MODULES ? MODULES.length : 0,
+        course: course,
+        modules: mods,
         date: dateStr
       })
     }).catch(function(e){ console.warn('course-completed API error', e); });
