@@ -1138,7 +1138,41 @@ function adminLogout() {
 }
 
 // ── NAVIGATION ───────────────────────────────────────────────────────────────
-var _examFilter = 'all';
+var _settingsPages = ['cohort','sitesettings','adminaccounts','accountsettings','paymentsettings','devtools'];
+
+function injectSettingsSubNav(activeId) {
+  _settingsPages.forEach(function(pid) {
+    var pg = document.getElementById('page-'+pid);
+    if (!pg) return;
+    var existing = pg.querySelector('.settings-sub-nav');
+    if (!existing) {
+      var nav = document.createElement('div');
+      nav.className = 'settings-sub-nav';
+      nav.style.cssText = 'display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;';
+      var tabs = [
+        ['cohort','Cohort'],['sitesettings','Site Settings'],
+        ['adminaccounts','Admin Accounts'],['accountsettings','My Account'],
+        ['paymentsettings','Payment'],['devtools','Dev Tools']
+      ];
+      tabs.forEach(function(t) {
+        var btn = document.createElement('button');
+        btn.className = 'tab' + (t[0]===activeId?' active':'');
+        btn.style.cssText = 'white-space:nowrap;flex-shrink:0;';
+        btn.textContent = t[1];
+        btn.onclick = (function(tabId){ return function(){ goTab(tabId); }; })(t[0]);
+        nav.appendChild(btn);
+      });
+      pg.insertBefore(nav, pg.firstChild);
+    } else {
+      // Update active state
+      existing.querySelectorAll('.tab').forEach(function(b){
+        b.classList.toggle('active', b.textContent === _settingsPages.map(function(x,i){ return [['cohort','Cohort'],['sitesettings','Site Settings'],['adminaccounts','Admin Accounts'],['accountsettings','My Account'],['paymentsettings','Payment'],['devtools','Dev Tools']][i]; }).find(function(t){ return t[0]===activeId; })?.[1]);
+      });
+    }
+  });
+}
+
+
 
 function goTab(id) {
   var settingPages = ['cohort','sitesettings','adminaccounts','accountsettings','paymentsettings','devtools'];
@@ -1164,34 +1198,13 @@ function goTab(id) {
   else if (id==='atrisk') renderAtrisk();
   else if (id==='announcements') renderAnnouncements();
   else if (id==='feedback') renderFeedback();
-  else if (id==='cohort') renderCohort();
-  else if (id==='sitesettings') renderSiteSettings();
-  else if (id==='adminaccounts') renderAdminAccounts();
-  else if (id==='accountsettings') renderAccountSettings();
-  else if (id==='paymentsettings') renderPaymentSettings();
+  else if (id==='cohort') { injectSettingsSubNav('cohort'); renderCohort(); }
+  else if (id==='sitesettings') { injectSettingsSubNav('sitesettings'); renderSiteSettings(); }
+  else if (id==='adminaccounts') { injectSettingsSubNav('adminaccounts'); renderAdminAccounts(); }
+  else if (id==='accountsettings') { injectSettingsSubNav('accountsettings'); renderAccountSettings(); }
+  else if (id==='paymentsettings') { injectSettingsSubNav('paymentsettings'); renderPaymentSettings(); }
   else if (id==='courseprogress') renderCourseProgress();
-  else if (id==='settings') {
-    // Show cohort by default, with sub-tab nav at top
-    var pg2 = document.getElementById('page-cohort');
-    if(pg2) pg2.classList.add('active');
-    // Inject settings sub-nav into cohort page if not already there
-    if(pg2 && !document.getElementById('settingsSubNav')) {
-      var subnav = document.createElement('div');
-      subnav.id = 'settingsSubNav';
-      subnav.style.cssText = 'display:flex;gap:4px;margin-bottom:20px;border-bottom:2px solid var(--border);';
-      var tabs = [['cohort','Cohort'],['sitesettings','Site Settings'],['adminaccounts','Admin Accounts'],['accountsettings','My Account'],['paymentsettings','Payment'],['devtools','Dev Tools']];
-      tabs.forEach(function(t){
-        var btn = document.createElement('button');
-        btn.className = 'tab' + (t[0]==='cohort'?' active':'');
-        btn.style.cssText = 'background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;';
-        btn.textContent = t[1];
-        btn.onclick = function(){ goTab(t[0]); document.querySelectorAll('#settingsSubNav .tab').forEach(function(b){b.classList.remove('active');}); btn.classList.add('active'); };
-        subnav.appendChild(btn);
-      });
-      pg2.insertBefore(subnav, pg2.firstChild);
-    }
-    renderCohort();
-  }
+  else if (id==='settings') { goTab('cohort'); }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
