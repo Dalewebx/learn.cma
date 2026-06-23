@@ -568,7 +568,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 <div class="admin-page" id="page-applications">
   <div class="page-header">
     <div><div class="page-title">Applications</div><div class="page-sub">Review and approve student applications.</div></div>
-    <button class="btn btn-ghost btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="clearApplicationBin()">🗑 Clear Bin</button>
+    <button class="btn btn-ghost btn-sm" id="clearBinBtn" style="color:var(--danger);border-color:var(--danger);display:none;" onclick="clearApplicationBin()">🗑 Clear Bin</button>
   </div>
   <div class="tabs">
     <div class="tab active" onclick="setAppTab('pending',this)">Pending <span id="pendingCount"></span></div>
@@ -1495,7 +1495,14 @@ function renderStatistics() {
 // ── APPLICATIONS ─────────────────────────────────────────────────────────────
 window._appMap={};
 var _appTabFilter='pending';
-function setAppTab(f,el){_appTabFilter=f;document.querySelectorAll('#page-applications .tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderApplications();}
+function setAppTab(f,el){
+  _appTabFilter=f;
+  document.querySelectorAll('#page-applications .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  var binBtn=document.getElementById('clearBinBtn');
+  if(binBtn) binBtn.style.display=f==='rejected'?'inline-flex':'none';
+  renderApplications();
+}
 function renderApplications() {
   allApplications.forEach(a=>{window._appMap[a.id]=a;});
   var list;
@@ -1576,11 +1583,10 @@ async function approveApp(id) {
           hash_version: 'pbkdf2',
           security_question: a.security_question || null,
           security_answer_hash: a.security_answer_hash || null,
-          security_answer_salt: a.security_answer_salt || null,
           phone: a.phone,
           whatsapp: a.whatsapp || a.phone,
           state: a.state,
-          last_login: null,  // reset — they haven't logged in on this new account
+          last_login: null,
           application_id: id
         },'id=eq.'+existingId);
 
@@ -1610,7 +1616,6 @@ async function approveApp(id) {
           state: a.state,
           security_question: a.security_question || null,
           security_answer_hash: a.security_answer_hash || null,
-          security_answer_salt: a.security_answer_salt || null,
           status: 'active'
         });
         newStudent = created && created[0] ? created[0] : {id: null};
