@@ -1957,16 +1957,17 @@ function openStudentDetail(sid) {
       +'</div>';
   }
 
-  // ── TABS ──
+  // ── TABS — hide nudge for passed students ──
+  var showNudge = wn && !examPassed;
   document.getElementById('studentDetailContent').innerHTML = hdr
     + '<div class="tabs" style="margin-bottom:16px;">'
     + '<div class="tab active" onclick="showStudentTab(this,0)">Progress</div>'
     + '<div class="tab" onclick="showStudentTab(this,1)">Timeline</div>'
-    + (wn?'<div class="tab" onclick="showStudentTab(this,2)">Nudge</div>':'')
+    + (showNudge?'<div class="tab" onclick="showStudentTab(this,2)">Nudge</div>':'')
     + '</div>'
     + '<div id="sd0">'+coursesHtml+'</div>'
     + '<div id="sd1" style="display:none;">'+tlHtml+'</div>'
-    + (wn?'<div id="sd2" style="display:none;">'+nudgeHtml+'</div>':'');
+    + (showNudge?'<div id="sd2" style="display:none;">'+nudgeHtml+'</div>':'');
 }
 
 
