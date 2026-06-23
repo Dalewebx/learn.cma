@@ -322,8 +322,13 @@ footer{background:var(--navy);padding:48px 24px 28px;}
 .footer-link:hover::after{opacity:1;margin-left:6px;}
 .footer-link-plain{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.4;padding:6px 0;display:flex;align-items:center;gap:10px;}
 .footer-link-icon{width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.footer-bottom{padding-top:22px;border-top:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
-.footer-copy,.footer-credit{font-size:11px;color:rgba(255,255,255,0.45);}
+.footer-bottom{margin-top:40px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.footer-copy{font-size:11px;color:rgba(255,255,255,0.35);letter-spacing:0.2px;}
+.footer-credit{font-size:11px;color:rgba(255,255,255,0.35);letter-spacing:0.2px;display:flex;align-items:center;gap:6px;}
+.footer-credit-name{color:#C9A84C;font-weight:600;}
+@media(max-width:600px){
+  .footer-bottom{flex-direction:column;align-items:flex-start;gap:8px;}
+}
 
 /* ════════════════════════════════════════════
    MOBILE FIRST — iPhone 13 (390px) primary
@@ -396,7 +401,7 @@ footer{background:var(--navy);padding:48px 24px 28px;}
   .footer-link-plain{font-size:14px!important;padding:10px 0;}
   .footer-col-title{font-size:11px!important;}
   .footer-brand-sub{font-size:12px!important;}
-  .footer-copy,.footer-credit{font-size:12px!important;}
+  .footer-copy{font-size:12px!important;}
 }
 
 /* Scroll animation */
@@ -871,9 +876,13 @@ footer{background:var(--navy);padding:48px 24px 28px;}
       </div>
     </div>
     <div class="footer-bottom">
-      <div class="footer-copy">© 2026 Music Academy, Catholic Diocese of Warri. All rights reserved.</div>
-      <div id="footerSignOut" style="display:none;"><button onclick="cmaLogout()" style="background:none;border:none;font-size:11px;color:rgba(255,255,255,0.35);cursor:pointer;font-family:DM Sans,sans-serif;padding:0;transition:color 0.15s;" onmouseover="this.style.color='#DC2626'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Sign Out</button></div>
-      <div class="footer-credit">CMA Online Learning Portal &nbsp;&middot;&nbsp; Built by DaleX</div>
+      <div class="footer-copy">© 2026 Catholic Music Academy, Diocese of Warri</div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div id="footerSignOut" style="display:none;">
+          <button onclick="cmaLogout()" style="background:none;border:none;font-size:11px;color:rgba(255,255,255,0.3);cursor:pointer;font-family:DM Sans,sans-serif;padding:0;transition:color 0.15s;" onmouseover="this.style.color='#DC2626'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">Sign Out</button>
+        </div>
+        <div class="footer-credit">Built by <span class="footer-credit-name">DaleX</span></div>
+      </div>
     </div>
   </div>
 </footer>
