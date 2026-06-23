@@ -329,7 +329,8 @@ footer{background:var(--navy);padding:48px 24px 28px;}
   .mk-mod-list .mk-mod-item:nth-child(n+5){display:none;}
   .mk-next{padding:10px 12px;}
   /* Accred strip compact */
-  /* accred strip handled in base CSS */
+  .why-sec{background:var(--white);}
+  .why-sec .sec-inner{padding-top:56px;padding-bottom:56px;}
   /* Section padding */
   .sec{padding:56px 20px;}
   .exp-sec{padding:56px 20px;}
@@ -341,12 +342,43 @@ footer{background:var(--navy);padding:48px 24px 28px;}
   .tl-content{padding:14px 16px;border-radius:12px;}
   .tl-title{font-size:16px;margin-bottom:4px;}
   .tl-desc{font-size:12px;line-height:1.6;}
-  .why-grid{margin-top:32px;gap:14px;}
+  .why-grid{margin-top:32px;gap:0;}
   .why-sec .sec-title{font-size:28px;}
-  .why-card{padding:18px 16px;display:flex;align-items:flex-start;gap:14px;border-radius:14px;}
-  .why-icon{font-size:26px;margin-bottom:0;flex-shrink:0;margin-top:2px;}
-  .why-title{font-size:17px;margin-bottom:4px;}
-  .why-desc{font-size:13px;}
+  .why-card{
+    padding:24px 0;
+    display:flex;
+    align-items:flex-start;
+    gap:20px;
+    border-radius:0;
+    border:none;
+    border-bottom:1px solid var(--border);
+    background:transparent;
+    box-shadow:none;
+    transform:none!important;
+  }
+  .why-card:first-child{border-top:1px solid var(--border);}
+  .why-card:hover{border-color:var(--border);transform:none;box-shadow:none;}
+  .why-icon{
+    font-size:0;
+    width:40px;
+    height:40px;
+    flex-shrink:0;
+    background:var(--navy);
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:0;
+    margin-top:2px;
+  }
+  .why-icon::after{
+    font-size:18px;
+  }
+  .why-card:nth-child(1) .why-icon::after{content:'🎵';}
+  .why-card:nth-child(2) .why-icon::after{content:'🏛️';}
+  .why-card:nth-child(3) .why-icon::after{content:'📱';}
+  .why-title{font-family:"DM Serif Display",serif;font-size:18px;color:var(--navy);margin-bottom:6px;line-height:1.25;}
+  .why-desc{font-size:13px;color:var(--muted);line-height:1.7;}
   .prog-hd{margin-bottom:28px;}
   .prog-hd .btn{width:100%;justify-content:center;}
   .prog-body{padding:18px;}
