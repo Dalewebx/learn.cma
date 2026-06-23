@@ -1323,16 +1323,16 @@ async function doAdminLogin() {
     } else {
       try { localStorage.removeItem('cma_admin_remember'); } catch(e){}
     }
-    // Update last_login
     sb('admins','PATCH',{last_login:new Date().toISOString()},'id=eq.'+admin.id).catch(function(){});
-    // Update sidebar
-    document.getElementById('sidebarName').textContent = admin.name;
-    document.getElementById('sidebarInitial').textContent = admin.name.charAt(0).toUpperCase();
-    document.getElementById('sidebarRole').textContent = admin.role === 'master' ? 'Master Admin' : 'Lecturer';
-    // Apply role-based sidebar
+    // Update new nav
+    var ni=document.getElementById('navInitial');
+    if(ni){ni.textContent=admin.name.charAt(0).toUpperCase();ni.title=admin.name;}
     applyRoleSidebar(admin.role);
     document.getElementById('loginScreen').style.display='none';
-    document.getElementById('adminShell').style.display='block';
+    document.getElementById('adminShell').style.display='flex';
+    document.getElementById('adminNav').style.display='flex';
+    document.getElementById('adminTabs').style.display='flex';
+    document.getElementById('adminMain').style.display='block';
     loadAllData();
   } catch(e) {
     err.textContent = e.message || 'Login failed.';
@@ -1493,8 +1493,10 @@ function renderCurrentPage() {
 // ── DASHBOARD ────────────────────────────────────────────────────────────────
 function renderDashboard() {
   var du=daysUntil(cohortSettings.deadline||'2099-01-01');
-  document.getElementById('dashSub').textContent=(cohortSettings.name||'Cohort 1')+' · Deadline: '+fmtDate(cohortSettings.deadline)+(du>0?' ('+du+' days remaining)':' (Deadline passed)');
-  var pending=allApplications.filter(a=>a.status==='pending').length;
+  var dashSubEl=document.getElementById('dashSub');
+  if(dashSubEl) dashSubEl.textContent=(cohortSettings.name||'Cohort 1')+' · Deadline: '+fmtDate(cohortSettings.deadline)+(du>0?' ('+du+' days remaining)':' (Deadline passed)');
+  var pendingCountEl=document.getElementById('pendingCount');
+  if(pendingCountEl) pendingCountEl.textContent=allApplications.filter(a=>a.status==='pending').length>0?'('+allApplications.filter(a=>a.status==='pending').length+')':'';  var pending=allApplications.filter(a=>a.status==='pending').length;
   var total=allStudents.length;
   var complete=allStudents.filter(s=>getStudentProgress(s.id).length>=MODULE_COUNT).length;
   var atRisk=allStudents.filter(isAtRisk).length;
@@ -1565,7 +1567,7 @@ function renderApplications() {
   if (_appTabFilter==='all') list=allApplications;
   else if (_appTabFilter==='additional') list=allApplications.filter(function(a){ return a.type==='additional'; });
   else list=allApplications.filter(function(a){ return a.status===_appTabFilter; }); // pending shows ALL pending incl additional
-  document.getElementById('pendingCount').textContent=allApplications.filter(a=>a.status==='pending').length>0?'('+allApplications.filter(a=>a.status==='pending').length+')':'';
+  var pcEl=document.getElementById('pendingCount');if(pcEl) pcEl.textContent=allApplications.filter(a=>a.status==='pending').length>0?'('+allApplications.filter(a=>a.status==='pending').length+')':'';
   if(!list.length){document.getElementById('appList').innerHTML='<div class="alert alert-info">No '+_appTabFilter+' applications.</div>';return;}
   document.getElementById('appList').innerHTML=list.map(a=>{
     var wn=a.whatsapp||a.phone;
@@ -3316,9 +3318,8 @@ async function saveAccountSettings() {
     currentAdmin.email = updates.email;
     if (updates.password_hash) currentAdmin.password_hash = updates.password_hash;
     saveAdminSession(currentAdmin);
-    document.getElementById('sidebarName').textContent = currentAdmin.name;
-    document.getElementById('sidebarInitial').textContent = currentAdmin.name.charAt(0).toUpperCase();
-    // Clear password fields
+    var ni=document.getElementById('navInitial');
+    if(ni){ni.textContent=currentAdmin.name.charAt(0).toUpperCase();ni.title=currentAdmin.name;}
     ['as_current_pass','as_new_pass','as_confirm_pass'].forEach(function(id){
       var el=document.getElementById(id); if(el) el.value='';
     });
