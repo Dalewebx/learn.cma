@@ -929,11 +929,13 @@ function fmtDate(s) {
 function daysUntil(s) { return Math.ceil((new Date(s)-Date.now())/86400000); }
 function daysAgo(s) { if(!s) return 999; return Math.floor((Date.now()-new Date(s))/86400000); }
 function getStudentProgress(sid, courseId) {
-  return allProgress.filter(function(p){
+  var indices = allProgress.filter(function(p){
     if (p.student_id !== sid) return false;
     if (courseId) return p.course_id === courseId;
     return true;
   }).map(function(p){ return p.module_index; });
+  // Deduplicate — each module counts once regardless of how many progress rows exist
+  return indices.filter(function(v, i, a){ return a.indexOf(v) === i; });
 }
 function getStudentAttempts(sid) { return allAttempts.filter(a=>a.student_id===sid); }
 function isAtRisk(s) {
@@ -1228,7 +1230,7 @@ function renderDashboard() {
     ?'<div style="font-size:13px;color:var(--dim);text-align:center;padding:20px;">No students yet.</div>'
     :allStudents.map(s=>{
       var comp=getStudentProgress(s.id).length;
-      var pct=Math.round((comp/MODULE_COUNT)*100);
+      var pct=Math.min(100, Math.round((comp/MODULE_COUNT)*100));
       var sid = s.id;
       return '<div style="margin-bottom:12px;cursor:pointer;" onclick="openStudentDetail(\''+sid+'\')">'
         +'<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:13px;font-weight:600;color:var(--navy);">'+s.first_name+' '+s.last_name+'</span><span style="font-size:12px;color:var(--muted);">'+pct+'%</span></div>'
@@ -1482,7 +1484,7 @@ async function renderStudents() {
   });
   var rows = list.map(function(s) {
     var comp=getStudentProgress(s.id).length;
-    var pct=Math.round((comp/MODULE_COUNT)*100);
+    var pct=Math.min(100, Math.round((comp/MODULE_COUNT)*100));
     var risk=isAtRisk(s);
     var status=comp>=MODULE_COUNT
       ?'<span class="pill pill-ok">Complete</span>'
@@ -1515,7 +1517,7 @@ function openStudentDetail(sid) {
   if(!s) return;
   var comp=getStudentProgress(s.id);
   var attempts=getStudentAttempts(s.id);
-  var pct=Math.round((comp.length/MODULE_COUNT)*100);
+  var pct=Math.min(100, Math.round((comp.length/MODULE_COUNT)*100));
   var risk=isAtRisk(s);
   var app=allApplications.find(function(a){return a.email===s.email;})||{};
   var wn=s.whatsapp||s.phone;
@@ -1531,11 +1533,14 @@ function openStudentDetail(sid) {
         var course = (cmCourses||[]).find(function(c){ return c.id === enr.course_id; });
         var title = course ? course.title : (s.programme||'—');
         var modCount = course ? (course.modules||[]).filter(function(m){ return m.published!==false; }).length : MODULE_COUNT;
-        var courseComp = allProgress.filter(function(p){ return p.student_id===sid && p.course_id===enr.course_id; }).length;
+        var rawComp = allProgress.filter(function(p){ return p.student_id===sid && p.course_id===enr.course_id; })
+          .map(function(p){ return p.module_index; })
+          .filter(function(v,i,a){ return a.indexOf(v)===i; }); // deduplicate
+        var courseComp = Math.min(rawComp.length, modCount); // never exceed module count
         var isComplete = courseComp >= modCount && modCount > 0;
         var badge = isComplete
           ? '<span style="font-size:11px;background:#DCFCE7;color:#16A34A;border-radius:4px;padding:2px 7px;font-weight:700;">✓ Complete</span>'
-          : '<span style="font-size:11px;background:#EFF6FF;color:#2563EB;border-radius:4px;padding:2px 7px;">'+Math.round((courseComp/modCount)*100)+'%</span>';
+          : '<span style="font-size:11px;background:#EFF6FF;color:#2563EB;border-radius:4px;padding:2px 7px;">'+Math.min(100,Math.round((courseComp/modCount)*100))+'%</span>';
         return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--surface);">'
           +'<span style="font-size:13px;">'+title+'</span>'
           +'<span>'+badge+' <span style="font-size:11px;color:var(--muted);">'+courseComp+'/'+modCount+' modules</span></span>'
@@ -1720,7 +1725,7 @@ function renderAtrisk() {
   document.getElementById('atriskList').innerHTML='<div class="alert alert-warn">⚠️ '+at.length+' student(s) need attention. Deadline: '+fmtDate(cohortSettings.deadline)+' ('+du+' days).</div>'
     +at.map(s=>{
       var comp=getStudentProgress(s.id).length;
-      var pct=Math.round((comp/MODULE_COUNT)*100);
+      var pct=Math.min(100, Math.round((comp/MODULE_COUNT)*100));
       var da=daysAgo(s.last_login);
       var reasons=[];
       if(da>=5) reasons.push('No login for '+(da<999?da+' days':'unknown'));
