@@ -1517,7 +1517,7 @@ function renderDashboard() {
     var pct=Math.round((comp/courseStudents.length)*100);
     return '<div class="course-health-item"><div class="ch-name">'+name+'<br><span style="font-size:11px;color:var(--muted);">'+courseStudents.length+' student(s)</span></div><div class="prog-bg" style="flex:1;"><div class="prog-fill'+(pct>=70?' ok':pct<40?' danger':'')+'" style="width:'+pct+'%"></div></div><div class="ch-pct">'+pct+'%</div></div>';
   }).filter(Boolean).join('');
-  document.getElementById('courseHealth').innerHTML=healthHtml||'<div style="font-size:13px;color:var(--dim);padding:12px 0;text-align:center;">No enrolled students yet.</div>';
+  var _courseHealth=document.getElementById('courseHealth');if(_courseHealth)_courseHealth.innerHTML=healthHtml||'<div style="font-size:13px;color:var(--dim);padding:12px 0;text-align:center;">No enrolled students yet.</div>';
 
   // Notifications
   var notifs=[];
@@ -1526,12 +1526,12 @@ function renderDashboard() {
   if(failsToday>0) notifs.push({icon:'❌',text:failsToday+' assessment failure'+(failsToday>1?'s':'')+' today',time:'Today'});
   var passesToday=allAttempts.filter(a=>{var d=new Date(a.attempted_at);return a.passed&&(Date.now()-d)<86400000;}).length;
   if(passesToday>0) notifs.push({icon:'✅',text:passesToday+' assessment'+(passesToday>1?'s':'')+' passed today',time:'Today'});
-  document.getElementById('dashNotifs').innerHTML=notifs.length===0
+  var _dashNotifs=document.getElementById('dashNotifs');if(_dashNotifs)_dashNotifs.innerHTML=notifs.length===0
     ?'<div style="font-size:13px;color:var(--dim);padding:12px 0;text-align:center;">No new notifications.</div>'
     :notifs.map(n=>'<div class="notif-item"><span class="notif-icon">'+n.icon+'</span><span class="notif-text">'+n.text+'</span><span class="notif-time">'+n.time+'</span></div>').join('');
 
   // Student progress
-  document.getElementById('dashProgress').innerHTML=allStudents.length===0
+  var _dashProgress=document.getElementById('dashProgress');if(_dashProgress)_dashProgress.innerHTML=allStudents.length===0
     ?'<div style="font-size:13px;color:var(--dim);text-align:center;padding:20px;">No students yet.</div>'
     :allStudents.map(s=>{
       var comp=getStudentProgress(s.id).length;
@@ -1552,7 +1552,7 @@ function renderDashboard() {
     acts.push({time:a.attempted_at,icon:a.passed?'✅':'❌',text:s.first_name+' '+s.last_name+' — Module '+(a.module_index+1)+': '+a.score+'/'+a.total+(a.passed?' (Passed)':' (Failed)')});
   });
   acts.sort((a,b)=>new Date(b.time)-new Date(a.time));
-  document.getElementById('dashActivity').innerHTML=acts.length===0
+  var _dashActivity=document.getElementById('dashActivity');if(_dashActivity)_dashActivity.innerHTML=acts.length===0
     ?'<div style="font-size:13px;color:var(--dim);text-align:center;padding:20px;">No activity yet.</div>'
     :acts.slice(0,12).map(a=>'<div style="display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--surface);align-items:flex-start;"><span style="font-size:15px;flex-shrink:0;">'+a.icon+'</span><div><div style="font-size:13px;">'+a.text+'</div><div style="font-size:11px;color:var(--dim);">'+fmtDateTime(a.time)+'</div></div></div>').join('');
 }
@@ -1813,7 +1813,7 @@ async function renderStudents() {
       +'<td style="font-size:12px;color:var(--muted);">'+fmtDateTime(s.created_at)+'</td>'
       +'<td>'+status+'</td></tr>';
   });
-  document.getElementById('studentsTable').innerHTML=rows.join('');
+  var _studentsTable=document.getElementById('studentsTable');if(_studentsTable)_studentsTable.innerHTML=rows.join('');
 }
 
 
@@ -3580,12 +3580,9 @@ function showToast(msg,type='ok'){
   var sess = loadAdminSession();
   if (sess && sess.user && sess.user.id) {
     currentAdmin = sess.user;
-    document.getElementById('sidebarName').textContent = currentAdmin.name || 'Admin';
-    document.getElementById('sidebarInitial').textContent = (currentAdmin.name||'A').charAt(0).toUpperCase();
-    var roleEl = document.getElementById('sidebarRole');
-    if (roleEl) roleEl.textContent = currentAdmin.role === 'master' ? 'Master Admin' : 'Lecturer';
+    var ni = document.getElementById('navInitial');
+    if(ni){ ni.textContent = (currentAdmin.name||'A').charAt(0).toUpperCase(); ni.title = currentAdmin.name||'Admin'; }
     applyRoleSidebar(currentAdmin.role || 'master');
-    // Pre-fill remembered email
     try {
       var rememberedEmail = localStorage.getItem('cma_admin_remember');
       if (rememberedEmail) {
@@ -3596,7 +3593,10 @@ function showToast(msg,type='ok'){
       }
     } catch(e){}
     document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminShell').style.display = 'block';
+    document.getElementById('adminShell').style.display = 'flex';
+    var an = document.getElementById('adminNav'); if(an) an.style.display = 'flex';
+    var at = document.getElementById('adminTabs'); if(at) at.style.display = 'flex';
+    var am = document.getElementById('adminMain'); if(am) am.style.display = 'block';
     loadAllData();
     return;
   }
@@ -3612,10 +3612,7 @@ function showToast(msg,type='ok'){
   } catch(e){}
   document.getElementById('adminUser').focus();
 })();
-</script>
-</body>
-</html>
-<script>
+
 // ── NEW DASHBOARD ─────────────────────────────────────────────────────────────
 var _dashOverrideSet = false;
 if (!_dashOverrideSet) {
@@ -3905,4 +3902,7 @@ function exportStudentsCsv(){
   URL.revokeObjectURL(url);
 }
 function showAddStudentModal(){showToast('Use Applications tab to enrol students via the approval flow.','warn');}
+
 </script>
+</body>
+</html>
