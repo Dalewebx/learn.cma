@@ -862,7 +862,9 @@ async function loadCourseAndModulesFromDB(programmeStr) {
         content: r.reading_html || '<p>Content coming soon.</p>',
         pool: questions,
         passMark: PASS_MARK,
-        maxAttempts: r.max_attempts || 0
+        maxAttempts: r.max_attempts || 0,
+        mcqWeight: r.mcq_weight || null,
+        writtenWeight: r.written_weight || null
       };
     });
 
@@ -2045,6 +2047,7 @@ async function submitQuiz() {
     });
     try {
       await saveAttempt(currentMod, mcqScore, mcqTotal, false);
+      var currentModData = MODULES[currentMod] || {};
       await fetch(SUPA_URL+'/rest/v1/assessment_submissions', {
         method:'POST',
         headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
@@ -2054,6 +2057,8 @@ async function submitQuiz() {
           mcq_score:mcqScore, mcq_total:mcqTotal,
           written_responses:JSON.stringify(writtenResponses),
           written_total:writtenTotal, combined_total:mcqTotal+writtenTotal,
+          mcq_weight: currentModData.mcqWeight || null,
+          written_weight: currentModData.writtenWeight || null,
           pass_mark:PASS_MARK, status:'pending', submitted_at:new Date().toISOString()
         })
       });
