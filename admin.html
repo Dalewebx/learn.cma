@@ -232,6 +232,13 @@ tr:hover td{background:var(--surface);cursor:pointer;}
 .test-mode-bar{background:#FEF2F2;border:2px solid #DC2626;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;}
 .test-mode-pill{background:#DC2626;color:white;font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:20px;flex-shrink:0;}
 /* ── NEW TOP NAV & TABS ── */
+/* Override old sidebar layout */
+:root{--sidebar:0px !important;}
+#adminShell{display:flex !important;flex-direction:column;min-height:100vh;}
+.sidebar{display:none !important;}
+.main{margin-left:0 !important;max-width:100% !important;padding:24px 20px !important;}
+@media(min-width:600px){.main{padding:28px 28px !important;}}
+@media(min-width:900px){.main{padding:32px 36px !important;}}
 .admin-nav{background:var(--navy);height:52px;display:flex;align-items:center;padding:0 16px;gap:10px;position:sticky;top:0;z-index:300;flex-shrink:0;}
 .admin-nav-logo{display:flex;align-items:center;gap:8px;flex-shrink:0;}
 .admin-nav-logo-icon{width:30px;height:30px;background:rgba(201,168,76,0.15);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -1119,7 +1126,28 @@ function goTab(id) {
   else if (id==='accountsettings') renderAccountSettings();
   else if (id==='paymentsettings') renderPaymentSettings();
   else if (id==='courseprogress') renderCourseProgress();
-  else if (id==='settings') renderCohort();
+  else if (id==='settings') {
+    // Show cohort by default, with sub-tab nav at top
+    var pg2 = document.getElementById('page-cohort');
+    if(pg2) pg2.classList.add('active');
+    // Inject settings sub-nav into cohort page if not already there
+    if(pg2 && !document.getElementById('settingsSubNav')) {
+      var subnav = document.createElement('div');
+      subnav.id = 'settingsSubNav';
+      subnav.style.cssText = 'display:flex;gap:4px;margin-bottom:20px;border-bottom:2px solid var(--border);';
+      var tabs = [['cohort','Cohort'],['sitesettings','Site Settings'],['adminaccounts','Admin Accounts'],['accountsettings','My Account'],['paymentsettings','Payment'],['devtools','Dev Tools']];
+      tabs.forEach(function(t){
+        var btn = document.createElement('button');
+        btn.className = 'tab' + (t[0]==='cohort'?' active':'');
+        btn.style.cssText = 'background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;';
+        btn.textContent = t[1];
+        btn.onclick = function(){ goTab(t[0]); document.querySelectorAll('#settingsSubNav .tab').forEach(function(b){b.classList.remove('active');}); btn.classList.add('active'); };
+        subnav.appendChild(btn);
+      });
+      pg2.insertBefore(subnav, pg2.firstChild);
+    }
+    renderCohort();
+  }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -3383,6 +3411,9 @@ async function scheduleExam(sid,cid,name,email,phone){
     var e=allEnrolments.find(function(en){return en.student_id===sid&&en.course_id===cid;});
     if(e){e.status='exam_scheduled';e.exam_date=d.value;}
     showToast('Exam scheduled.');
+    fetch('/api/exam-scheduled',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({studentName:name,studentEmail:email,studentPhone:phone,examDate:fmtDate(d.value)})
+    }).catch(function(){});
     renderExamReady();
   }catch(err){showToast('Error: '+err.message,'err');}
 }
@@ -3392,7 +3423,15 @@ async function markExamResult(sid,cid,result){
     await sb('enrolments','PATCH',upd,'student_id=eq.'+sid+'&course_id=eq.'+cid);
     var e=allEnrolments.find(function(en){return en.student_id===sid&&en.course_id===cid;});
     if(e)Object.assign(e,upd);
-    showToast(result==='passed'?'Marked Passed ✓':'Marked Failed');
+    var s=allStudents.find(function(st){return st.id===sid;});
+    var course=cmCourses.find(function(c){return c.id===cid;});
+    if(result==='passed'&&s){
+      var certNum='CMA/'+new Date().getFullYear()+'/'+String(Math.floor(Math.random()*9000)+1000);
+      fetch('/api/exam-passed',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({studentName:s.first_name+' '+s.last_name,studentEmail:s.email,courseName:course?course.title:s.programme,passDate:fmtDate(new Date().toISOString()),certNum:certNum})
+      }).catch(function(){});
+    }
+    showToast(result==='passed'?'Marked Passed ✓ — Email sent':'Marked Failed');
     if(result==='passed')openCertificate(sid,cid);else renderExamReady();
   }catch(err){showToast('Error: '+err.message,'err');}
 }
