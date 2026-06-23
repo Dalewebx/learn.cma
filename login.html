@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iI0M5QTg0QyIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iMi41IiBoZWlnaHQ9IjE2IiByeD0iMS4yIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iOSIgaGVpZ2h0PSIyLjUiIHJ4PSIxLjIiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMTAuNSIgY3k9IjIyIiByPSIzLjUiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg=="/>
-<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iI0M5QTg0QyIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iMi41IiBoZWlnaHQ9IjE2IiByeD0iMS4yIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iOSIgaGVpZ2h0PSIyLjUiIHJ4PSIxLjIiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMTAuNSIgY3k9IjIyIiByPSIzLjUiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg=="/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDxyZWN0IHg9IjE0LjUiIHk9IjUiIHdpZHRoPSIzIiBoZWlnaHQ9IjIyIiByeD0iMS41IiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iNyIgeT0iMTIiIHdpZHRoPSIxOCIgaGVpZ2h0PSIzIiByeD0iMS41IiBmaWxsPSIjQzlBODRDIi8+CiAgPGNpcmNsZSBjeD0iMTAiIGN5PSIyNCIgcj0iMi41IiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iMTIiIHk9IjE4IiB3aWR0aD0iMiIgaGVpZ2h0PSI4IiByeD0iMSIgZmlsbD0iI0M5QTg0QyIvPgo8L3N2Zz4="/>
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDxyZWN0IHg9IjE0LjUiIHk9IjUiIHdpZHRoPSIzIiBoZWlnaHQ9IjIyIiByeD0iMS41IiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iNyIgeT0iMTIiIHdpZHRoPSIxOCIgaGVpZ2h0PSIzIiByeD0iMS41IiBmaWxsPSIjQzlBODRDIi8+CiAgPGNpcmNsZSBjeD0iMTAiIGN5PSIyNCIgcj0iMi41IiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iMTIiIHk9IjE4IiB3aWR0aD0iMiIgaGVpZ2h0PSI4IiByeD0iMSIgZmlsbD0iI0M5QTg0QyIvPgo8L3N2Zz4="/>
+
 <title>Catholic Music Academy · Student Portal</title>
 
 
@@ -863,8 +864,9 @@ function renderDashboard() {
   var multiSection = document.getElementById('multiCourseSection');
   var singleSection = document.getElementById('singleCourseSection');
 
-  var activeEnrols = ALL_ENROLMENTS.filter(function(e){ return e.status !== 'complete'; });
-  var completedEnrols = ALL_ENROLMENTS.filter(function(e){ return e.status === 'complete'; });
+  var DONE_STATUSES = ['complete','exam_scheduled','exam_passed','exam_failed'];
+  var activeEnrols = ALL_ENROLMENTS.filter(function(e){ return !DONE_STATUSES.includes(e.status); });
+  var completedEnrols = ALL_ENROLMENTS.filter(function(e){ return DONE_STATUSES.includes(e.status); });
   var hasMultiple = ALL_ENROLMENTS.length > 1;
   var singleIsComplete = ALL_ENROLMENTS.length === 1 && completedEnrols.length === 1;
 
@@ -894,16 +896,41 @@ function renderDashboard() {
         }).join('');
       }
 
-      // Completed courses section
+      // Completed / exam courses section
       if (completedEnrols.length) {
-        html += '<div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#16A34A;margin:'+(activeEnrols.length?'20px':'0')+'px 0 10px;">🎓 Exam Ready</div>';
+        html += '<div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#16A34A;margin:'+(activeEnrols.length?'20px':'0')+'px 0 10px;">🎓 Completed</div>';
         html += completedEnrols.map(function(e) {
-          return '<div class="course-card" style="margin-bottom:12px;border-color:#16A34A;background:linear-gradient(135deg,#F0FDF4 0%,#DCFCE7 100%);" data-cid="'+e.course_id+'" data-prog="'+e.programme.replace(/"/g,'&quot;')+'" onclick="switchCourse(this.dataset.cid,this.dataset.prog)">'
+          var isPassed = e.status === 'exam_passed';
+          var isScheduled = e.status === 'exam_scheduled';
+          var isFailed = e.status === 'exam_failed';
+
+          var pillText = isPassed ? '🎓 Exam Passed'
+            : isScheduled ? '📅 Exam Scheduled'
+            : isFailed ? '✗ Exam Failed — Resit Required'
+            : '🎓 Modules Complete';
+          var pillStyle = isPassed ? 'background:#DCFCE7;color:#16A34A;'
+            : isScheduled ? 'background:#EEF2FF;color:#1A2E6C;'
+            : isFailed ? 'background:#FEE2E2;color:#DC2626;'
+            : 'background:#DCFCE7;color:#16A34A;';
+          var subText = isPassed ? 'Examination passed · Certificate available'
+            : isScheduled ? 'Exam scheduled — check WhatsApp for details'
+            : isFailed ? 'Contact the Academy to arrange a resit'
+            : 'All modules complete · Awaiting final examination';
+          var bgStyle = isPassed
+            ? 'background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border-color:#16A34A;'
+            : 'background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border-color:#16A34A;';
+
+          var certBtn = isPassed
+            ? '<button onclick="downloadPortalCertificate(\''+e.course_id+'\',\''+e.programme+'\')" style="margin-top:10px;display:inline-flex;align-items:center;gap:6px;background:#0D1B3E;color:white;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;">🏆 Download Certificate</button>'
+            : '';
+
+          return '<div class="course-card" style="'+bgStyle+'margin-bottom:12px;" data-cid="'+e.course_id+'" data-prog="'+e.programme.replace(/"/g,'&quot;')+'" onclick="switchCourse(this.dataset.cid,this.dataset.prog)">'
             +'<div class="course-card-band" style="background:linear-gradient(90deg,#16A34A,#86EFAC);"></div>'
             +'<div class="course-card-body">'
-            +'<div class="course-status-pill" style="background:#DCFCE7;color:#16A34A;">🎓 Exam Ready</div>'
+            +'<div class="course-status-pill" style="'+pillStyle+'">'+pillText+'</div>'
             +'<div class="course-card-title" style="color:#14532D;">'+e.programme+'</div>'
-            +'<div style="font-size:12px;color:#16A34A;margin-top:4px;">All modules complete · Awaiting final examination</div>'
+            +'<div style="font-size:12px;color:#16A34A;margin-top:4px;">'+subText+'</div>'
+            +certBtn
             +'</div>'
             +'<div class="course-card-cta" style="background:#BBF7D0;border-left-color:#16A34A;"><div class="course-card-cta-text" style="color:#15803D;">Review Course →</div></div>'
             +'</div>';
@@ -1163,6 +1190,98 @@ async function submitAddCourse() {
     btn.disabled=false; btn.textContent='Submit Request';
   }
 }
+
+async function downloadPortalCertificate(courseId, courseName) {
+  // Fetch director info
+  var dirName = 'Very Rev. Fr. Francis Adjagbara';
+  var dirTitle = 'Director, Catholic Music Academy';
+  try {
+    var ss = await fetch(SUPA_URL+'/rest/v1/site_settings?key=in.(director_name,director_title)&select=key,value', {
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+    });
+    var ssData = await ss.json();
+    (ssData||[]).forEach(function(r){
+      if(r.key==='director_name'&&r.value) dirName=r.value;
+      if(r.key==='director_title'&&r.value) dirTitle=r.value;
+    });
+  } catch(e){}
+
+  // Get exam passed date from enrolments
+  var passDate = '';
+  try {
+    var enrRes = await fetch(SUPA_URL+'/rest/v1/enrolments?student_id=eq.'+currentStudent.id+'&course_id=eq.'+courseId+'&select=exam_passed_at,exam_date', {
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+    });
+    var enrData = await enrRes.json();
+    if (enrData && enrData[0] && enrData[0].exam_passed_at) {
+      passDate = new Date(enrData[0].exam_passed_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+    }
+  } catch(e){}
+  if (!passDate) passDate = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+
+  var studentName = currentStudent.first_name + ' ' + currentStudent.last_name;
+  var certNum = 'CMA/' + new Date().getFullYear() + '/' + String(Math.floor(Math.random()*9000)+1000);
+
+  // Build certificate overlay
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  overlay.innerHTML = '<div style="background:white;border-radius:14px;padding:20px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">'
+    +'<div style="font-size:14px;font-weight:700;color:#0D1B3E;">Your Certificate</div>'
+    +'<div style="display:flex;gap:8px;">'
+    +'<button id="certDlBtn" onclick="triggerCertDownload()" style="background:#C9A84C;color:#0D1B3E;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;">↓ Download PNG</button>'
+    +'<button onclick="this.closest(\'[style*=fixed]\').remove()" style="background:#EEF2FF;color:#0D1B3E;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;">Close</button>'
+    +'</div></div>'
+    +'<div id="portalCertEl" style="font-family:Georgia,serif;">'
+    +'<div style="background:linear-gradient(135deg,#C9A84C,#E8C96A,#9A7A2E,#C9A84C);padding:5px;border-radius:5px;">'
+    +'<div style="background:#0B1530;padding:28px 32px 22px;position:relative;overflow:hidden;">'
+    +'<div style="position:absolute;top:10px;left:10px;width:28px;height:28px;border-top:2px solid rgba(201,168,76,0.5);border-left:2px solid rgba(201,168,76,0.5);"></div>'
+    +'<div style="position:absolute;top:10px;right:10px;width:28px;height:28px;border-top:2px solid rgba(201,168,76,0.5);border-right:2px solid rgba(201,168,76,0.5);"></div>'
+    +'<div style="position:absolute;bottom:10px;left:10px;width:28px;height:28px;border-bottom:2px solid rgba(201,168,76,0.5);border-left:2px solid rgba(201,168,76,0.5);"></div>'
+    +'<div style="position:absolute;bottom:10px;right:10px;width:28px;height:28px;border-bottom:2px solid rgba(201,168,76,0.5);border-right:2px solid rgba(201,168,76,0.5);"></div>'
+    +'<div style="text-align:center;margin-bottom:16px;">'
+    +'<div style="font-size:11px;font-weight:700;color:#C9A84C;letter-spacing:2.5px;">CATHOLIC MUSIC ACADEMY</div>'
+    +'<div style="font-size:9px;color:rgba(255,255,255,0.4);letter-spacing:2px;margin-top:2px;">CATHOLIC DIOCESE OF WARRI</div></div>'
+    +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;">'
+    +'<div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,#C9A84C);"></div>'
+    +'<span style="color:#C9A84C;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;">Certificate of Competence</span>'
+    +'<div style="flex:1;height:1px;background:linear-gradient(90deg,#C9A84C,transparent);"></div></div>'
+    +'<div style="text-align:center;margin-bottom:16px;">'
+    +'<div style="font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.45);margin-bottom:8px;">This is to certify that</div>'
+    +'<div style="font-size:24px;font-style:italic;font-weight:700;color:#C9A84C;letter-spacing:1px;line-height:1.2;">'+studentName+'</div>'
+    +'<div style="width:50%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent);margin:8px auto 12px;"></div>'
+    +'<div style="font-size:9px;letter-spacing:1.5px;color:rgba(255,255,255,0.45);margin-bottom:8px;">has successfully completed all requirements for</div>'
+    +'<div style="font-size:13px;font-weight:700;color:white;line-height:1.5;max-width:360px;margin:0 auto 10px;">'+courseName+'</div>'
+    +'<div style="font-size:9px;letter-spacing:2px;color:rgba(201,168,76,0.65);">'+passDate+'</div></div>'
+    +'<div style="height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);margin-bottom:14px;"></div>'
+    +'<div style="display:flex;justify-content:space-between;align-items:flex-end;">'
+    +'<div><div style="width:120px;height:1px;background:rgba(201,168,76,0.35);margin-bottom:4px;"></div>'
+    +'<div style="font-size:10px;font-weight:700;color:white;">'+dirName+'</div>'
+    +'<div style="font-size:8px;color:rgba(201,168,76,0.6);margin-top:2px;">'+dirTitle+'</div></div>'
+    +'<div style="text-align:right;">'
+    +'<div style="font-size:8px;color:rgba(255,255,255,0.3);margin-bottom:2px;">Certificate No.</div>'
+    +'<div style="font-size:11px;font-weight:700;color:rgba(201,168,76,0.7);letter-spacing:1px;">'+certNum+'</div>'
+    +'<div style="font-size:7px;color:rgba(255,255,255,0.2);margin-top:4px;">catholicmusicacademy.net</div>'
+    +'</div></div></div></div></div></div>';
+  document.body.appendChild(overlay);
+}
+
+window.triggerCertDownload = async function() {
+  if (typeof html2canvas === 'undefined') {
+    var sc=document.createElement('script');sc.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    document.head.appendChild(sc);sc.onload=function(){ window.triggerCertDownload(); };return;
+  }
+  var btn=document.getElementById('certDlBtn');
+  if(btn){btn.disabled=true;btn.textContent='Preparing...';}
+  try {
+    var el=document.getElementById('portalCertEl');
+    var canvas=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:null,logging:false});
+    var a=document.createElement('a');
+    a.download='CMA_Certificate_'+(currentStudent?currentStudent.first_name+'_'+currentStudent.last_name:'')+'_'+new Date().getFullYear()+'.png';
+    a.href=canvas.toDataURL('image/png');a.click();
+  } catch(e){ alert('Download failed. Please try again.'); }
+  finally{if(btn){btn.disabled=false;btn.textContent='↓ Download PNG';}}
+};
 
 function renderOtherCourses() {
   var container = document.getElementById('otherCoursesList');
@@ -2172,6 +2291,12 @@ function clearRememberMe() {
         if (results && results.length && results[0].status === 'active') {
           var student = results[0];
           currentStudent = student;
+          // Update last_login since session restore doesn't go through doLogin
+          fetch(SUPA_URL+'/rest/v1/students?id=eq.'+student.id, {
+            method:'PATCH',
+            headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+            body: JSON.stringify({last_login: new Date().toISOString()})
+          }).catch(function(){});
           var dbResult = await loadCourseAndModulesFromDB(student.programme);
           CURRENT_COURSE = dbResult.course;
           MODULES = dbResult.modules;
@@ -2208,6 +2333,12 @@ function clearRememberMe() {
   var session = loadSession();
   if (session && session.student && session.student.status === 'active') {
     currentStudent = session.student;
+    // Update last_login on session restore
+    fetch(SUPA_URL+'/rest/v1/students?id=eq.'+session.student.id, {
+      method:'PATCH',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({last_login: new Date().toISOString()})
+    }).catch(function(){});
     // Always load primary programme first, then enrolments will show all courses
     var dbResult = await loadCourseAndModulesFromDB(session.student.programme);
     CURRENT_COURSE = dbResult.course;
