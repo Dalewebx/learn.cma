@@ -15,10 +15,291 @@
   --gold:#C9A84C;--gold-light:#F5E6C0;--gold-dark:#9A7A2E;
   --text:#0F172A;--muted:#64748B;--dim:#94A3B8;--border:#E2E8F0;
   --surface:#FAFAF7;--white:#FFFFFF;--ok:#16A34A;--ok-light:#DCFCE7;
+  --ok-bg:#DCFCE7;
   --danger:#DC2626;--danger-light:#FEE2E2;--warn:#C9A84C;--warn-light:#F5E6C0;
-  --sidebar:256px;
 }
 body{background:var(--surface);color:var(--text);font-family:"DM Sans",sans-serif;min-height:100vh;}
+
+/* ── LOGIN ── */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;background:var(--navy);}
+.login-box{background:var(--white);border-radius:20px;padding:44px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.25);}
+.login-box-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.login-box-name{font-family:"DM Serif Display",serif;font-size:17px;color:var(--navy);}
+.login-box-sub{font-size:10px;color:var(--gold-dark);font-weight:700;letter-spacing:0.5px;}
+.f-label{font-size:12px;font-weight:700;color:var(--text);display:block;margin-bottom:5px;}
+.f-input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;font-size:14px;font-family:"DM Sans",sans-serif;color:var(--text);outline:none;margin-bottom:14px;transition:border-color 0.2s;}
+.f-input:focus{border-color:var(--navy);}
+.f-input.invalid{border-color:var(--danger);}
+
+/* ── TOP NAV ── */
+.admin-nav{background:var(--navy);height:56px;display:flex;align-items:center;padding:0 16px;gap:12px;position:sticky;top:0;z-index:200;flex-shrink:0;}
+.admin-nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
+.admin-nav-logo-icon{width:32px;height:32px;background:rgba(201,168,76,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.admin-nav-logo-name{font-family:"DM Serif Display",serif;font-size:13px;color:white;display:none;}
+@media(min-width:480px){.admin-nav-logo-name{display:block;}}
+.admin-nav-role{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:20px;background:rgba(201,168,76,0.2);color:var(--gold);}
+.admin-nav-spacer{flex:1;}
+.admin-nav-notif{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.7);font-size:13px;padding:6px 10px;border-radius:8px;display:flex;align-items:center;gap:5px;transition:background 0.15s;}
+.admin-nav-notif:hover{background:rgba(255,255,255,0.1);}
+.admin-nav-badge{background:var(--danger);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;}
+.admin-nav-avatar{width:32px;height:32px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer;flex-shrink:0;}
+.admin-nav-logout{background:none;border:1px solid rgba(255,255,255,0.2);border-radius:7px;color:rgba(255,255,255,0.65);font-size:11px;font-weight:600;padding:5px 10px;cursor:pointer;font-family:"DM Sans",sans-serif;transition:all 0.15s;white-space:nowrap;}
+.admin-nav-logout:hover{background:rgba(220,38,38,0.15);border-color:rgba(220,38,38,0.4);color:#FCA5A5;}
+
+/* ── TAB BAR ── */
+.admin-tabs{background:var(--white);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;position:sticky;top:56px;z-index:199;flex-shrink:0;}
+.admin-tabs::-webkit-scrollbar{display:none;}
+.admin-tab{display:flex;align-items:center;gap:6px;padding:0 16px;height:46px;font-size:12px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all 0.15s;flex-shrink:0;border-top:none;border-left:none;border-right:none;background:none;font-family:"DM Sans",sans-serif;}
+.admin-tab:hover{color:var(--navy);}
+.admin-tab.active{color:var(--navy);border-bottom-color:var(--navy);}
+.admin-tab-badge{background:var(--danger);color:white;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;min-width:16px;text-align:center;}
+.admin-tab-badge.gold{background:var(--gold);color:var(--navy);}
+.admin-tab-icon{font-size:15px;}
+@media(min-width:600px){.admin-tab{font-size:13px;padding:0 20px;}}
+
+/* ── MAIN CONTENT ── */
+.admin-main{max-width:1200px;margin:0 auto;padding:24px 16px 80px;}
+@media(min-width:600px){.admin-main{padding:28px 24px 40px;}}
+@media(min-width:900px){.admin-main{padding:32px 32px 40px;}}
+.admin-page{display:none;}
+.admin-page.active{display:block;animation:fadeIn 0.2s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── PAGE HEADER ── */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;}
+.page-title{font-family:"DM Serif Display",serif;font-size:26px;color:var(--text);margin-bottom:3px;}
+@media(min-width:600px){.page-title{font-size:30px;}}
+.page-sub{font-size:13px;color:var(--muted);}
+
+/* ── STAT CARDS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+@media(min-width:600px){.stat-grid{grid-template-columns:repeat(4,1fr);}}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px 20px;}
+.stat-val{font-family:"DM Serif Display",serif;font-size:30px;color:var(--navy);line-height:1;}
+@media(min-width:600px){.stat-val{font-size:34px;}}
+.stat-label{font-size:12px;color:var(--muted);margin-top:4px;}
+.warn-card{border-top:3px solid var(--warn);}
+.ok-card{border-top:3px solid var(--ok);}
+.danger-card{border-top:3px solid var(--danger);}
+.info-card{border-top:3px solid var(--navy);}
+
+/* ── CARDS ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:16px;}
+.card-title{font-family:"DM Serif Display",serif;font-size:18px;color:var(--navy);margin-bottom:14px;}
+.card-sub{font-size:13px;color:var(--muted);margin-top:4px;}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:9px;font-family:"DM Sans",sans-serif;font-weight:600;cursor:pointer;transition:all 0.16s;font-size:13px;padding:10px 18px;text-decoration:none;}
+.btn-primary{background:var(--navy);color:white;}
+.btn-primary:hover{background:var(--navy-mid);}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;}
+.btn-ghost{background:none;border:1.5px solid var(--border);color:var(--muted);}
+.btn-ghost:hover{border-color:var(--navy);color:var(--navy);}
+.btn-gold{background:var(--gold);color:var(--navy);font-weight:700;}
+.btn-ok{background:var(--ok);color:white;}
+.btn-ok:hover{background:#15803D;}
+.btn-danger{background:var(--danger);color:white;}
+.btn-xs{padding:5px 10px;font-size:11px;}
+.btn-sm{padding:7px 13px;font-size:12px;}
+.btn-amber{background:var(--gold);color:var(--navy);}
+
+/* ── FORM ── */
+.form-group{margin-bottom:14px;}
+.form-label{font-size:12px;font-weight:700;color:var(--text);display:block;margin-bottom:5px;}
+.form-input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:11px 13px;font-size:13px;font-family:"DM Sans",sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;background:var(--white);}
+.form-input:focus{border-color:var(--navy);}
+.form-row{display:grid;grid-template-columns:1fr;gap:14px;}
+@media(min-width:600px){.form-row{grid-template-columns:1fr 1fr;}}
+.form-section-title{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+
+/* ── PILLS / BADGES ── */
+.pill{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.pill-ok{background:var(--ok-light);color:var(--ok);}
+.pill-warn{background:var(--warn-light);color:var(--gold-dark);}
+.pill-danger{background:var(--danger-light);color:var(--danger);}
+.pill-blue{background:var(--navy-light);color:var(--navy-mid);}
+.pill-muted{background:var(--surface);color:var(--muted);border:1px solid var(--border);}
+
+/* ── TABLE ── */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;}
+th{text-align:left;font-size:11px;font-weight:700;letter-spacing:0.5px;color:var(--muted);padding:8px 12px;border-bottom:2px solid var(--border);white-space:nowrap;}
+td{padding:12px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+.tr-clickable{cursor:pointer;transition:background 0.12s;}
+.tr-clickable:hover{background:var(--navy-pale);}
+
+/* ── STUDENT TABLE (new) ── */
+.student-table-row{display:grid;grid-template-columns:1fr 80px;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.12s;align-items:center;}
+@media(min-width:640px){.student-table-row{grid-template-columns:2fr 1.2fr 1fr 1fr 60px;}}
+.student-table-row:hover{background:var(--navy-pale);}
+.student-table-row:last-child{border-bottom:none;}
+.student-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.student-name-cell{display:flex;align-items:center;gap:8px;min-width:0;}
+.student-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.student-email{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.prog-mini{display:flex;align-items:center;gap:5px;}
+.prog-mini-bar{height:4px;width:50px;background:var(--border);border-radius:2px;overflow:hidden;flex-shrink:0;}
+.prog-mini-fill{height:100%;background:var(--navy);border-radius:2px;}
+
+/* ── PROGRESS BAR ── */
+.prog-bg{height:6px;background:var(--border);border-radius:5px;overflow:hidden;margin-bottom:3px;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--navy-mid),var(--gold));border-radius:5px;transition:width 0.4s;}
+.prog-fill.ok{background:var(--ok);}
+.prog-fill.danger{background:var(--danger);}
+
+/* ── SEARCH ── */
+.search-wrap{position:relative;margin-bottom:14px;}
+.search-input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 14px 10px 38px;font-size:13px;font-family:"DM Sans",sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;background:var(--white);}
+.search-input:focus{border-color:var(--navy);}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:14px;}
+
+/* ── TABS (inner page tabs) ── */
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:16px;overflow-x:auto;}
+.tab{padding:8px 16px;font-size:13px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;margin-bottom:-2px;background:none;border-top:none;border-left:none;border-right:none;font-family:"DM Sans",sans-serif;}
+.tab:hover{color:var(--navy);}
+.tab.active{color:var(--navy);border-bottom-color:var(--navy);}
+
+/* ── ALERTS ── */
+.alert{padding:12px 16px;border-radius:10px;font-size:13px;margin-bottom:14px;}
+.alert-info{background:var(--navy-light);color:var(--navy-mid);border:1px solid #C7D2FE;}
+.alert-ok{background:var(--ok-light);color:var(--ok);border:1px solid #86EFAC;}
+.alert-warn{background:var(--warn-light);color:var(--gold-dark);border:1px solid var(--gold-light);}
+.alert-danger{background:var(--danger-light);color:var(--danger);border:1px solid #FECACA;}
+
+/* ── STUDENT DETAIL (slide panel) ── */
+.student-header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);border-radius:14px;padding:20px 22px;color:white;margin-bottom:16px;display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+.student-avatar-lg{width:52px;height:52px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"DM Serif Display",serif;font-size:20px;color:var(--navy);font-weight:700;flex-shrink:0;}
+.student-stat{background:rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;text-align:center;flex:1;min-width:80px;}
+.student-stat-val{font-family:"DM Serif Display",serif;font-size:22px;color:white;}
+.student-stat-label{font-size:10px;color:rgba(255,255,255,0.65);margin-top:2px;}
+
+/* ── GRADING ── */
+.grade-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:14px;}
+.grade-card-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+.q-item{background:var(--surface);border-radius:10px;padding:14px 16px;margin-bottom:10px;}
+.q-text{font-size:14px;color:var(--text);margin-bottom:10px;font-weight:500;}
+.q-opts{display:flex;flex-direction:column;gap:7px;}
+.q-opt{display:flex;align-items:center;gap:8px;background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:9px 13px;cursor:pointer;font-size:13px;transition:all 0.14s;}
+.q-opt.correct{background:#F0FDF4;border-color:var(--ok);color:var(--ok);}
+.q-opt.wrong{background:var(--danger-light);border-color:var(--danger);color:var(--danger);}
+
+/* ── EXAM READY ── */
+.exam-card{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;}
+.exam-card-hdr{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px;}
+.exam-card-body{padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.exam-status-chip{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.exam-status-unscheduled{background:var(--warn-light);color:var(--gold-dark);}
+.exam-status-scheduled{background:var(--navy-light);color:var(--navy-mid);}
+.exam-status-passed{background:var(--ok-light);color:var(--ok);}
+.exam-status-failed{background:var(--danger-light);color:var(--danger);}
+
+/* ── CERTIFICATE ── */
+#certCanvas{width:100%;max-width:640px;margin:0 auto 16px;display:block;border-radius:4px;box-shadow:0 8px 40px rgba(0,0,0,0.2);}
+.cert-outer{width:100%;max-width:640px;margin:0 auto 16px;border-radius:4px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.2);}
+
+/* ── COURSE MANAGER ── */
+.cm-layout{display:grid;grid-template-columns:1fr;gap:16px;align-items:start;}
+@media(min-width:768px){.cm-layout{grid-template-columns:240px 1fr;}}
+.cm-sidebar{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.cm-sidebar-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+.cm-course-grp{border-bottom:1px solid var(--border);}
+.cm-course-grp:last-child{border-bottom:none;}
+.cm-course-label{display:flex;align-items:center;gap:8px;padding:11px 14px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text);user-select:none;transition:background 0.15s;}
+.cm-course-label:hover{background:var(--navy-pale);}
+.cm-course-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.cm-course-chevron{font-size:10px;color:var(--dim);transition:transform 0.2s;margin-left:auto;}
+.cm-course-grp.open .cm-course-chevron{transform:rotate(90deg);}
+.cm-module-list{background:var(--surface);padding:4px 0 8px 0;display:none;}
+.cm-course-grp.open .cm-module-list{display:block;}
+.cm-module-item{display:flex;align-items:center;gap:7px;padding:8px 14px 8px 26px;font-size:12px;color:var(--muted);cursor:pointer;transition:all 0.12s;}
+.cm-module-item:hover{background:var(--navy-light);color:var(--navy);}
+.cm-module-item.active{background:var(--navy-light);color:var(--navy);font-weight:600;}
+.cm-module-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.cm-add-mod{padding:6px 14px 2px 26px;}
+.cm-empty-state{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:56px 32px;text-align:center;}
+.course-block{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:12px;}
+.course-block-hdr{display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;user-select:none;background:var(--surface);transition:background 0.15s;}
+.course-block-hdr:hover{background:var(--navy-pale);}
+.course-block-body{padding:10px 16px 14px;}
+.cb-chevron{font-size:10px;color:var(--dim);transition:transform 0.2s;flex-shrink:0;}
+.course-block.open .cb-chevron{transform:rotate(90deg);}
+.cb-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.cb-title{font-size:14px;font-weight:600;color:var(--text);flex:1;min-width:0;}
+.cb-mod-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.cb-mod-row:last-child{border-bottom:none;}
+.cb-mod-num{width:22px;height:22px;border-radius:50%;background:var(--navy-pale);font-size:10px;font-weight:700;color:var(--navy);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cb-mod-name{font-size:13px;color:var(--text);flex:1;font-weight:500;}
+.cb-mod-actions{display:flex;gap:6px;}
+
+/* ── MODULE EDITOR ── */
+.me-card{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.me-card-hdr{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--surface);}
+.me-card-body{padding:18px;}
+.me-section{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;margin-top:20px;}
+.me-section:first-child{margin-top:0;}
+.audio-item{display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:9px;padding:10px 13px;margin-bottom:8px;}
+.audio-label{font-size:13px;font-weight:600;color:var(--text);flex:1;}
+.download-item{display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:9px;padding:10px 13px;margin-bottom:8px;}
+
+/* ── QUESTION BANK ── */
+.qb-item{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin-bottom:10px;}
+.qb-item-q{font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px;}
+.qb-option{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);margin-bottom:4px;}
+.qb-option.correct-ans{color:var(--ok);font-weight:600;}
+.qb-marks-row{display:flex;align-items:center;gap:10px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+
+/* ── COHORT ── */
+.cohort-card{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);border-radius:14px;padding:22px;color:white;margin-bottom:18px;}
+.cohort-name{font-family:"DM Serif Display",serif;font-size:22px;margin-bottom:4px;}
+.cohort-stats{display:flex;gap:16px;margin-top:14px;flex-wrap:wrap;}
+.cohort-stat{background:rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;text-align:center;flex:1;min-width:70px;}
+.cohort-stat-val{font-size:22px;font-weight:700;}
+.cohort-stat-label{font-size:10px;color:rgba(255,255,255,0.65);margin-top:2px;}
+
+/* ── COURSE HEALTH ── */
+.course-health-item{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.ch-name{font-size:13px;color:var(--text);width:160px;flex-shrink:0;}
+.ch-pct{font-size:13px;font-weight:700;color:var(--navy);width:36px;text-align:right;}
+
+/* ── GRADING LIVE SCORE ── */
+.glive-box{background:var(--surface);border-radius:8px;padding:10px 14px;margin:10px 0 14px;font-size:13px;color:var(--muted);}
+
+/* ── SITE SETTINGS ── */
+.ss-grid{grid-template-columns:1fr!important;}
+@media(min-width:600px){.ss-grid{grid-template-columns:1fr 1fr!important;}}
+@media(min-width:900px){.ss-grid{grid-template-columns:1fr 1fr 1fr!important;}}
+
+/* ── MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(13,27,62,0.5);z-index:400;display:flex;align-items:center;justify-content:center;padding:16px;}
+.modal{background:var(--white);border-radius:18px;padding:32px;width:100%;max-width:480px;box-shadow:0 24px 80px rgba(0,0,0,0.2);}
+.modal-title{font-family:"DM Serif Display",serif;font-size:22px;color:var(--navy);margin-bottom:16px;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:white;border-radius:10px;padding:12px 20px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transform:translateY(12px);transition:all 0.25s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast.ok{background:var(--ok);}
+.toast.err{background:var(--danger);}
+.toast.warn{background:var(--warn);color:var(--navy);}
+
+/* ── MISC ── */
+.label{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.test-mode-banner{display:none;background:var(--danger);color:white;text-align:center;padding:8px 16px;font-size:12px;font-weight:700;letter-spacing:0.5px;position:sticky;top:56px;z-index:199;}
+.test-mode-banner.on{display:block;}
+.test-mode-bar{background:#FEF2F2;border:2px solid var(--danger);border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;}
+.test-mode-pill{background:var(--danger);color:white;font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:20px;flex-shrink:0;}
+.at-risk-card{border-left:3px solid var(--danger);}
+.nudge-msg{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:12px;font-family:"DM Sans",sans-serif;color:var(--text);resize:vertical;min-height:60px;outline:none;}
+.tl-wrap{position:relative;padding-left:28px;margin-top:14px;}
+.tl-wrap::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:1px;background:var(--border);}
+.tl-item{position:relative;margin-bottom:14px;}
+.tl-dot{position:absolute;left:-22px;top:3px;width:12px;height:12px;border-radius:50%;background:var(--navy);border:2px solid white;box-shadow:0 0 0 2px var(--navy);}
+.tl-meta{font-size:11px;color:var(--muted);margin-bottom:2px;}
+.tl-text{font-size:13px;color:var(--text);}
+.health-grid{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:600px){.health-grid{grid-template-columns:1fr 1fr;}}
+
 
 /* LOGIN */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;background:var(--navy);}
@@ -439,115 +720,68 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 <div id="adminShell" style="display:none;">
 <div class="admin-layout">
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-  <div class="sb-brand">
-    <div style="flex-shrink:0;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="36" height="36" aria-label="Catholic Music Academy">
-  <!-- Outer circle ring -->
-  <circle cx="60" cy="60" r="58" fill="white" stroke="#1A2E6C" stroke-width="3"/>
-  <circle cx="60" cy="60" r="52" fill="white" stroke="#1A2E6C" stroke-width="1"/>
-
-  <!-- Outer ring text paths -->
-  <path id="topArc" d="M 14,60 A 46,46 0 1,1 106,60" fill="none"/>
-  <path id="botArc" d="M 18,62 A 42,42 0 0,0 102,62" fill="none"/>
-  <text font-family="Georgia,serif" font-size="8.5" font-weight="700" fill="#1A2E6C" letter-spacing="2.8">
-    <textPath href="#topArc" startOffset="8%">MUSIC ACADEMY</textPath>
-  </text>
-  <text font-family="Georgia,serif" font-size="7.5" font-weight="700" fill="#1A2E6C" letter-spacing="1.8">
-    <textPath href="#botArc" startOffset="5%">CATHOLIC DIOCESE OF WARRI</textPath>
-  </text>
-
-  <!-- Inner circle -->
-  <circle cx="60" cy="52" r="32" fill="#f8f6f0" stroke="#1A2E6C" stroke-width="1.2"/>
-
-  <!-- Musical staff lines in upper portion -->
-  <g opacity="0.35" stroke="#1A2E6C" stroke-width="0.7">
-    <line x1="36" y1="36" x2="84" y2="36"/>
-    <line x1="36" y1="39" x2="84" y2="39"/>
-    <line x1="36" y1="42" x2="84" y2="42"/>
-    <line x1="36" y1="45" x2="84" y2="45"/>
-    <line x1="36" y1="48" x2="84" y2="48"/>
-  </g>
-
-  <!-- Treble clef -->
-  <text x="36" y="52" font-family="Georgia,serif" font-size="22" fill="#1A2E6C" opacity="0.8">𝄞</text>
-
-  <!-- Central figure: stylised Saint Cecilia (simplified woman with robe) -->
-  <!-- Head -->
-  <ellipse cx="68" cy="34" rx="6" ry="7" fill="#f5d5b0" stroke="#c4956a" stroke-width="0.5"/>
-  <!-- Hair -->
-  <path d="M62 32 Q64 26 68 27 Q72 26 74 32" fill="#8B6914" stroke="none"/>
-  <!-- Robe/body -->
-  <path d="M60 41 Q62 38 68 37 Q74 38 76 41 L78 62 L58 62 Z" fill="#1A2E6C"/>
-  <!-- Robe folds -->
-  <path d="M63 41 L62 62 M73 41 L74 62" stroke="#C9A84C" stroke-width="0.6" opacity="0.5"/>
-  <!-- Hands with instrument suggestion -->
-  <path d="M58 48 Q56 50 57 54 Q58 52 60 51" fill="#f5d5b0" stroke="#c4956a" stroke-width="0.3"/>
-  <path d="M78 48 Q80 50 79 54 Q78 52 76 51" fill="#f5d5b0" stroke="#c4956a" stroke-width="0.3"/>
-  <!-- Simple pipe organ suggestion -->
-  <rect x="72" y="44" width="2" height="10" rx="1" fill="#C9A84C" opacity="0.7"/>
-  <rect x="75" y="46" width="2" height="8" rx="1" fill="#C9A84C" opacity="0.7"/>
-  <rect x="78" y="48" width="2" height="6" rx="1" fill="#C9A84C" opacity="0.7"/>
-
-  <!-- Chevron/wing decorations on sides -->
-  <path d="M4 58 L14 52 L14 68 Z" fill="#1A2E6C"/>
-  <path d="M116 58 L106 52 L106 68 Z" fill="#1A2E6C"/>
-  <path d="M2 60 L12 58 L14 60 L12 62 Z" fill="#C9A84C"/>
-  <path d="M118 60 L108 58 L106 60 L108 62 Z" fill="#C9A84C"/>
-
-  <!-- Bottom banner -->
-  <path d="M24 76 Q60 85 96 76 L96 88 Q60 97 24 88 Z" fill="#1A2E6C"/>
-  <text x="60" y="85" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" font-style="italic" fill="#C9A84C" letter-spacing="0.5">Excellence In Sacred Arts</text>
-
-  <!-- Gold star decorations on banner sides -->
-  <text x="18" y="85" font-size="7" fill="#C9A84C">✦</text>
-  <text x="96" y="85" font-size="7" fill="#C9A84C">✦</text>
-</svg></div>
-    <div class="sb-brand-text"><div class="sb-name">Catholic Music Academy</div><div class="sb-sub">Admin Portal</div></div>
-  </div>
-  <div class="notif-btn" onclick="goPage('dashboard')" id="notifBell">🔔 <span id="notifCount" style="font-weight:700;"></span></div>
-  <div class="sb-section">Overview</div>
-  <div class="nav-item active" onclick="goPage('dashboard')">📊 Dashboard</div>
-  <div class="sb-section" id="sbSectionAdmissions">Admissions</div>
-  <div class="nav-item" onclick="goPage('applications')" id="navApplications">📋 Applications</div>
-  <div class="sb-section">Academics</div>
-  <div class="nav-item" onclick="goPage('courses')">📚 Courses & Modules</div>
-  <div class="nav-item" onclick="goPage('analytics')">📈 Assessment Analytics</div>
-  <div class="sb-section">Students</div>
-  <div class="nav-item" onclick="goPage('students')">👥 All Students</div>
-  <div class="nav-item" onclick="goPage('progress')">✅ Progress Records</div>
-  <div class="nav-item" onclick="goPage('atrisk')" id="navAtrisk">⚠️ At-Risk Students</div>
-  <div class="sb-section">Communication</div>
-  <div class="nav-item" onclick="goPage('announcements')">📢 Announcements</div>
-  <div class="nav-item" onclick="goPage('grading')" id="navGrading">📋 Grading Queue</div>
-    <div class="nav-item" onclick="goPage('feedback')">💬 Student Feedback</div>
-  <div class="sb-section" id="sbSectionSettings">Settings</div>
-  <div class="nav-item" onclick="goPage('cohort')" id="navCohort">📅 Cohort & Deadline</div>
-  <div class="nav-item" onclick="goPage('sitesettings')" id="navSiteSettings">🌐 Site Settings</div>
-  <div class="nav-item" onclick="goPage('adminaccounts')" id="navAdminAccounts">👤 Admin Accounts</div>
-  <div class="nav-item" onclick="goPage('accountsettings')" id="navAccountSettings">⚙️ Account Settings</div>
-  <div class="nav-item" onclick="goPage('paymentsettings')" id="navPaymentSettings">💳 Payment Settings</div>
-  <div class="nav-item" onclick="goPage('devtools')" id="navDevTools" style="color:rgba(255,165,0,0.6);">🛠 Dev Tools</div>
-  <div class="sb-footer">
-    <div class="sb-user">
-      <div class="sb-avatar" id="sidebarInitial">D</div>
-      <div><div class="sb-user-name" id="sidebarName">Admin</div><div class="sb-user-role" id="sidebarRole">Administrator</div></div>
+<!-- TOP NAV -->
+<nav class="admin-nav" id="adminNav" style="display:none;">
+  <div class="admin-nav-logo">
+    <div class="admin-nav-logo-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="18" height="18">
+        <path d="M7 4 L25 4 L25 22 Q16 28 7 22 Z" fill="none" stroke="#C9A84C" stroke-width="1.2"/>
+        <rect x="14.5" y="7" width="3" height="10" rx="1" fill="#C9A84C"/>
+        <rect x="9" y="11" width="14" height="2.5" rx="1" fill="#C9A84C"/>
+      </svg>
     </div>
-    <button class="sb-logout" onclick="adminLogout()">↩ Sign out</button>
+    <span class="admin-nav-logo-name">CMA Admin</span>
   </div>
+  <span class="admin-nav-role" id="navRoleChip">Master</span>
+  <div class="admin-nav-spacer"></div>
+  <button class="admin-nav-notif" onclick="goTab('dashboard')">
+    🔔 <span class="admin-nav-badge" id="notifCount" style="display:none;"></span>
+  </button>
+  <div class="admin-nav-avatar" id="navInitial" title="">D</div>
+  <button class="admin-nav-logout" onclick="adminLogout()">Sign out</button>
+</nav>
+
+<!-- TEST MODE BANNER -->
+<div class="test-mode-banner" id="testModeBanner">⚠ TEST MODE ACTIVE</div>
+
+<!-- TAB BAR -->
+<div class="admin-tabs" id="adminTabs" style="display:none;">
+  <button class="admin-tab active" id="tab-dashboard" onclick="goTab('dashboard')">
+    <span class="admin-tab-icon">📊</span> Dashboard
+  </button>
+  <button class="admin-tab" id="tab-students" onclick="goTab('students')">
+    <span class="admin-tab-icon">👥</span> Students
+  </button>
+  <button class="admin-tab" id="tab-examready" onclick="goTab('examready')" style="display:none;">
+    <span class="admin-tab-icon">🎓</span> Exam Ready <span class="admin-tab-badge gold" id="examReadyBadge" style="display:none;"></span>
+  </button>
+  <button class="admin-tab" id="tab-applications" onclick="goTab('applications')" style="display:none;">
+    <span class="admin-tab-icon">📋</span> Applications <span class="admin-tab-badge" id="appsBadge" style="display:none;"></span>
+  </button>
+  <button class="admin-tab" id="tab-grading" onclick="goTab('grading')">
+    <span class="admin-tab-icon">✏️</span> Grading <span class="admin-tab-badge" id="gradingBadge" style="display:none;"></span>
+  </button>
+  <button class="admin-tab" id="tab-courses" onclick="goTab('courses')">
+    <span class="admin-tab-icon">📚</span> Courses
+  </button>
+  <button class="admin-tab" id="tab-settings" onclick="goTab('settings')" style="display:none;">
+    <span class="admin-tab-icon">⚙️</span> Settings
+  </button>
 </div>
 
 <!-- MAIN -->
-<div class="main">
+<div class="admin-main" id="adminMain" style="display:none;">
 
 <!-- DASHBOARD -->
-<div class="page active" id="page-dashboard">
+<div class="admin-page active" id="page-dashboard">
   <div class="page-header">
     <div><div class="page-title">Dashboard</div><div class="page-sub" id="dashSub">Loading...</div></div>
-    <button class="btn btn-ghost" onclick="loadAllData();showToast('Refreshed')">↻ Refresh</button>
+    <button class="btn btn-ghost btn-sm" onclick="loadAllData();showToast('Refreshed')">↻ Refresh</button>
   </div>
   <div class="stat-grid" id="dashStats"></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
+  <div style="display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:16px;" id="dashGridTop"></div>
+  <div id="dashGridBottom"></div>
+</div>
     <div class="card"><div class="card-title">Course Health</div><div id="courseHealth">Loading...</div></div>
     <div class="card"><div class="card-title">Notifications</div><div id="dashNotifs">Loading...</div></div>
   </div>
@@ -558,7 +792,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 </div>
 
 <!-- APPLICATIONS -->
-<div class="page" id="page-applications">
+<div class="admin-page" id="page-applications">
   <div class="page-header"><div><div class="page-title">Applications</div><div class="page-sub">Review and approve student applications.</div></div></div>
   <div class="tabs">
     <div class="tab active" onclick="setAppTab('pending',this)">Pending <span id="pendingCount"></span></div>
@@ -570,7 +804,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 </div>
 
 <!-- COURSES & MODULES -->
-<div class="page" id="page-courses">
+<div class="admin-page" id="page-courses">
   <div class="page-header">
     <div><div class="page-title">Courses & Modules</div><div class="page-sub">Create courses, add modules, upload content, build question banks.</div></div>
     <button class="btn btn-primary" onclick="showAddCourseModal()">+ New Course</button>
@@ -589,35 +823,60 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 </div>
 
 <!-- ASSESSMENT ANALYTICS -->
-<div class="page" id="page-analytics">
+<div class="admin-page" id="page-analytics">
   <div class="page-header"><div><div class="page-title">Assessment Analytics</div><div class="page-sub">Performance data across all modules.</div></div></div>
   <div id="analyticsContent"></div>
 </div>
 
 <!-- ALL STUDENTS -->
-<div class="page" id="page-students">
-  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
-    <button class="tab active" onclick="setStudentView('active',this)">Active Students</button>
-    <button class="tab" onclick="setStudentView('inactive',this)">Archived / Revoked</button>
+<div class="admin-page" id="page-students">
+  <div class="page-header">
+    <div><div class="page-title">Students</div><div class="page-sub" id="studentsSub">Active students</div></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-ghost btn-sm" onclick="exportStudentsCsv()">↓ Export</button>
+      <button class="btn btn-primary btn-sm" onclick="showAddStudentModal()">+ Add Student</button>
+    </div>
   </div>
-  <div class="page-header"><div><div class="page-title">All Students</div><div class="page-sub">Click any student to view their full profile.</div></div></div>
-  <div class="search-bar"><input class="search-input" id="studentSearch" placeholder="Search by name or email..." oninput="renderStudents()"/></div>
-  <div class="card"><div class="table-wrap"><table>
-    <thead><tr><th>Student</th><th>Programme</th><th>Progress</th><th>Last Login</th><th>Applied</th><th>Status</th></tr></thead>
-    <tbody id="studentsTable"></tbody>
-  </table></div></div>
+  <!-- Filters -->
+  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+    <div class="search-wrap" style="flex:1;min-width:200px;margin-bottom:0;">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="studentSearch" placeholder="Search by name or email..." oninput="renderStudents()"/>
+    </div>
+    <select class="form-input" id="studentCourseFilter" style="width:auto;padding:9px 12px;margin-bottom:0;" onchange="renderStudents()">
+      <option value="">All programmes</option>
+    </select>
+    <select class="form-input" id="studentStatusFilter" style="width:auto;padding:9px 12px;margin-bottom:0;" onchange="renderStudents()">
+      <option value="">All statuses</option>
+      <option value="progress">In progress</option>
+      <option value="examready">Exam ready</option>
+      <option value="atrisk">At risk</option>
+      <option value="notstarted">Not started</option>
+    </select>
+  </div>
+  <!-- Table header -->
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div class="student-table-row" style="cursor:default;background:var(--surface);border-bottom:2px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:var(--muted);">Student</span></div>
+      <span class="hide-mobile" style="font-size:11px;font-weight:700;color:var(--muted);">Programme</span>
+      <span class="hide-mobile" style="font-size:11px;font-weight:700;color:var(--muted);">Progress</span>
+      <span class="hide-mobile" style="font-size:11px;font-weight:700;color:var(--muted);">Status</span>
+      <span></span>
+    </div>
+    <div id="studentsTableNew"></div>
+  </div>
 </div>
 
 <!-- STUDENT DETAIL -->
-<div class="page" id="page-student-detail">
+<div class="admin-page" id="page-student-detail">
   <div class="page-header">
-    <div><button class="btn btn-ghost" onclick="goPage('students')">← All Students</button></div>
+    <div><button class="btn btn-ghost btn-sm" onclick="goTab('students')">← All Students</button></div>
   </div>
   <div id="studentDetailContent"></div>
 </div>
 
 <!-- PROGRESS RECORDS -->
-<div class="page" id="page-progress">
+<div class="admin-page" id="page-progress">
   <div class="page-header"><div><div class="page-title">Progress Records</div><div class="page-sub">Module completion with attempt counts.</div></div></div>
   <div class="card"><div class="table-wrap"><table>
     <thead><tr><th>Student</th><th>Module 1</th><th>Module 2</th><th>Module 3</th><th>Complete</th><th>Last Activity</th></tr></thead>
@@ -626,13 +885,13 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 </div>
 
 <!-- AT RISK -->
-<div class="page" id="page-atrisk">
+<div class="admin-page" id="page-atrisk">
   <div class="page-header"><div><div class="page-title">At-Risk Students</div><div class="page-sub">Students flagged for intervention.</div></div></div>
   <div id="atriskList"></div>
 </div>
 
 <!-- ANNOUNCEMENTS -->
-<div class="page" id="page-announcements">
+<div class="admin-page" id="page-announcements">
   <div class="page-header"><div><div class="page-title">Announcements</div><div class="page-sub">Post notices visible to students in the portal.</div></div></div>
   <div class="card" style="margin-bottom:16px;">
     <div class="card-title">New Announcement</div>
@@ -649,7 +908,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 </div>
 
 <!-- COHORT -->
-<div class="page" id="page-cohort">
+<div class="admin-page" id="page-cohort">
   <div class="page-header"><div><div class="page-title">Cohort & Deadline</div><div class="page-sub">Manage cohort settings and pass mark.</div></div></div>
   <div id="cohortView"></div>
 </div>
@@ -657,7 +916,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 
 
 <!-- COURSE PROGRESS -->
-<div class="page" id="page-courseprogress">
+<div class="admin-page" id="page-courseprogress">
   <div class="page-header">
     <div><div class="page-title">Course Progress</div><div class="page-sub">View all enrolled students and their module completion for each course.</div></div>
     <button class="btn btn-ghost" onclick="renderCourseProgress()">↻ Refresh</button>
@@ -666,7 +925,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 </div>
 
 <!-- GRADING QUEUE -->
-<div class="page" id="page-grading">
+<div class="admin-page" id="page-grading">
   <div class="page-header">
     <div><div class="page-title">Grading Queue</div><div class="page-sub">Review and grade student written responses. MCQ scores are already calculated.</div></div>
     <button class="btn btn-ghost" onclick="renderGrading()">&#8635; Refresh</button>
@@ -675,14 +934,14 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 </div>
 
 <!-- STUDENT FEEDBACK -->
-<div class="page" id="page-feedback">
+<div class="admin-page" id="page-feedback">
   <div class="page-header"><div><div class="page-title">Student Feedback</div><div class="page-sub">Messages and flags submitted by students from the portal.</div></div></div>
   <div id="feedbackList"><div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Loading feedback...</div></div>
 </div>
 
 
 <!-- SITE SETTINGS -->
-<div class="page" id="page-sitesettings">
+<div class="admin-page" id="page-sitesettings">
   <div class="page-header">
     <div><div class="page-title">Site Settings</div><div class="page-sub">Edit the homepage mockup cards. Structure is fixed — all text content is editable here.</div></div>
   </div>
@@ -791,7 +1050,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 
 
 <!-- ACCOUNT SETTINGS -->
-<div class="page" id="page-accountsettings">
+<div class="admin-page" id="page-accountsettings">
   <div class="page-header">
     <div><div class="page-title">Account Settings</div><div class="page-sub">Update your admin name, email, and password.</div></div>
   </div>
@@ -826,7 +1085,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 </div>
 
 <!-- PAYMENT SETTINGS -->
-<div class="page" id="page-paymentsettings">
+<div class="admin-page" id="page-paymentsettings">
   <div class="page-header">
     <div><div class="page-title">Payment Settings</div><div class="page-sub">Manage bank details and course fees shown to applicants.</div></div>
   </div>
@@ -858,7 +1117,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 </div>
 
 <!-- ADMIN ACCOUNTS -->
-<div class="page" id="page-adminaccounts">
+<div class="admin-page" id="page-adminaccounts">
   <div class="page-header">
     <div><div class="page-title">Admin Accounts</div><div class="page-sub">Manage master admins and lecturers. Lecturers only see their assigned course.</div></div>
     <button class="btn btn-primary" onclick="showCreateAdminModal()">+ New Account</button>
@@ -867,7 +1126,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 </div>
 
 <!-- DEV TOOLS -->
-<div class="page" id="page-devtools">
+<div class="admin-page" id="page-devtools">
   <div class="page-header"><div><div class="page-title">Developer Tools</div><div class="page-sub">Clear test data before going live. Irreversible.</div></div></div>
   <div class="alert alert-warn">⚠️ Use with extreme caution. These actions cannot be undone.</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
@@ -878,9 +1137,53 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
   </div>
 </div>
 
-</div><!-- /main -->
-</div><!-- /admin-layout -->
-</div><!-- /adminShell -->
+<!-- ── EXAM READY ── -->
+<div class="admin-page" id="page-examready">
+  <div class="page-header">
+    <div><div class="page-title">Exam Ready</div><div class="page-sub">Students who have completed all online modules and are awaiting final examination.</div></div>
+    <button class="btn btn-ghost btn-sm" onclick="renderExamReady()">↻ Refresh</button>
+  </div>
+  <!-- Filter pills -->
+  <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;" id="examReadyFilters">
+    <button class="tab active" onclick="setExamFilter('all',this)">All</button>
+    <button class="tab" onclick="setExamFilter('unscheduled',this)">Unscheduled</button>
+    <button class="tab" onclick="setExamFilter('scheduled',this)">Scheduled</button>
+    <button class="tab" onclick="setExamFilter('passed',this)">Passed</button>
+    <button class="tab" onclick="setExamFilter('failed',this)">Failed</button>
+  </div>
+  <!-- Summary strip -->
+  <div class="stat-grid" id="examReadyStats" style="margin-bottom:20px;"></div>
+  <!-- Cards -->
+  <div id="examReadyList"><div style="text-align:center;padding:40px;color:var(--muted);">Loading...</div></div>
+</div>
+
+<!-- ── CERTIFICATE VIEW ── -->
+<div class="admin-page" id="page-certificate">
+  <div class="page-header">
+    <div><button class="btn btn-ghost btn-sm" onclick="goTab('examready')">← Exam Ready</button></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost btn-sm" id="certDownloadAdminBtn" onclick="downloadCertificate()">↓ Download PNG</button>
+    </div>
+  </div>
+  <div id="certCardWrap" style="max-width:680px;margin:0 auto;"></div>
+</div>
+
+<!-- ── SETTINGS (consolidated) ── -->
+<div class="admin-page" id="page-settings">
+  <div class="page-header">
+    <div><div class="page-title">Settings</div><div class="page-sub">Cohort, site settings, accounts, and payment.</div></div>
+  </div>
+  <div class="tabs" style="margin-bottom:20px;">
+    <div class="tab active" onclick="setSettingsTab('cohort',this)">Cohort</div>
+    <div class="tab" onclick="setSettingsTab('site',this)">Site Settings</div>
+    <div class="tab" onclick="setSettingsTab('accounts',this)">Admin Accounts</div>
+    <div class="tab" onclick="setSettingsTab('payment',this)">Payment</div>
+    <div class="tab" onclick="setSettingsTab('devtools',this)">Dev Tools</div>
+  </div>
+  <div id="settingsTabContent"></div>
+</div>
+
+</div><!-- /admin-main -->
 
 <script>
 const SUPA_URL = 'https://ltqwofagofmvufvqsuyj.supabase.co';
@@ -1142,7 +1445,7 @@ async function loadAllData() {
       sb('progress','GET',null,progFilter),
       sb('assessment_attempts','GET',null,'select=*&order=attempted_at.desc'+courseFilter).catch(()=>[]),
       sb('cohort_settings','GET',null,'limit=1'),
-      sb('enrolments','GET',null,'select=student_id,course_id,status,enrolled_at').catch(()=>[])
+      sb('enrolments','GET',null,'select=student_id,course_id,status,enrolled_at,completed_at,exam_date,exam_passed_at,exam_failed_at,programme').catch(()=>[])
     ]);
     // For lecturer: filter students to only those in their assigned course
     if (!isMaster && currentAdmin.assigned_course_id) {
@@ -3311,3 +3614,294 @@ function showToast(msg,type='ok'){
 </script>
 </body>
 </html>
+<script>
+// ── NEW DASHBOARD ─────────────────────────────────────────────────────────────
+var _dashOverrideSet = false;
+if (!_dashOverrideSet) {
+  _dashOverrideSet = true;
+  window._renderDashboard = window.renderDashboard;
+}
+
+function renderDashboard() {
+  var dashSubEl=document.getElementById('dashSub');
+  var du=daysUntil(cohortSettings.deadline||'2099-01-01');
+  if(dashSubEl) dashSubEl.textContent=(cohortSettings.name||'Cohort 1')+' · Deadline: '+fmtDate(cohortSettings.deadline)+(du>0?' ('+du+' days)':' (Passed)');
+  var pending=allApplications.filter(function(a){return a.status==='pending';}).length;
+  var total=allStudents.length;
+  var examReady=allEnrolments.filter(function(e){return ['complete','exam_scheduled','exam_passed'].includes(e.status);}).length;
+  var atRisk=allStudents.filter(isAtRisk).length;
+  var dashStats=document.getElementById('dashStats');
+  if(dashStats) dashStats.innerHTML=statCard(total,'Active Students','info-card')+statCard(examReady,'Exam Ready','ok-card')+statCard(pending,'Pending Applications','warn-card')+statCard(atRisk,'At Risk','danger-card');
+  var isMaster=!currentAdmin||currentAdmin.role==='master';
+  var html='<div class="card"><div class="card-title" style="margin-bottom:14px;">Recent Students</div>';
+  var recent=allStudents.slice(0,5);
+  if(!recent.length){html+='<p style="color:var(--muted);font-size:13px;">No students yet.</p>';}
+  else{recent.forEach(function(s){
+    var comp=getStudentProgress(s.id);var pct=Math.min(100,MODULE_COUNT>0?Math.round((comp.length/MODULE_COUNT)*100):0);
+    var er=allEnrolments.some(function(e){return e.student_id===s.id&&['complete','exam_scheduled','exam_passed'].includes(e.status);});
+    var pill=er?'<span class="pill pill-ok">Exam Ready</span>':isAtRisk(s)?'<span class="pill pill-danger">At Risk</span>':'<span class="pill pill-blue">Active</span>';
+    html+='<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick="openStudentDetail(\''+s.id+'\')">'
+      +'<div class="student-avatar" style="background:var(--navy-light);color:var(--navy);min-width:32px;font-size:11px;">'+s.first_name.charAt(0)+(s.last_name||'').charAt(0)+'</div>'
+      +'<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;">'+s.first_name+' '+s.last_name+'</div>'
+      +'<div style="display:flex;align-items:center;gap:5px;margin-top:3px;">'
+      +'<div style="width:60px;height:4px;background:var(--border);border-radius:2px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:var(--navy);border-radius:2px;"></div></div>'
+      +'<span style="font-size:11px;color:var(--muted);">'+pct+'%</span></div></div>'+pill+'</div>';
+  });}
+  html+='</div>';
+  if(isMaster&&examReady>0){
+    html+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;"><div class="card-title" style="margin-bottom:0;">Exam Ready</div><span class="pill pill-ok">'+examReady+' awaiting</span></div>';
+    allEnrolments.filter(function(e){return e.status==='complete';}).slice(0,3).forEach(function(enr){
+      var s=allStudents.find(function(st){return st.id===enr.student_id;});
+      var c=cmCourses.find(function(cc){return cc.id===enr.course_id;});
+      if(!s)return;
+      html+='<div style="border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;">'
+        +'<div><div style="font-size:13px;font-weight:600;">'+s.first_name+' '+s.last_name+'</div>'
+        +'<div style="font-size:11px;color:var(--muted);">'+(c?c.title:s.programme||'—')+'</div></div>'
+        +'<button class="btn btn-ghost btn-xs" onclick="goTab(\'examready\')">Schedule →</button></div>';
+    });
+    html+='</div>';
+  }
+  html+='<div class="card"><div class="card-title" style="margin-bottom:16px;">Course Completion</div>';
+  cmCourses.forEach(function(course){
+    var en=allEnrolments.filter(function(e){return e.course_id===course.id;}).length;
+    var co=allEnrolments.filter(function(e){return e.course_id===course.id&&['complete','exam_passed'].includes(e.status);}).length;
+    var p=en>0?Math.round((co/en)*100):0;
+    html+='<div style="margin-bottom:14px;">'
+      +'<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="font-weight:600;">'+course.title+'</span><span style="color:var(--muted);">'+co+' / '+en+'</span></div>'
+      +'<div class="prog-bg"><div class="prog-fill" style="width:'+p+'%;"></div></div></div>';
+  });
+  html+='</div>';
+  var gt=document.getElementById('dashGridTop');if(gt)gt.innerHTML='<div style="display:grid;gap:16px;">'+html+'</div>';
+  var gb=document.getElementById('dashGridBottom');if(gb)gb.innerHTML='';
+}
+
+// ── NEW STUDENTS RENDER ───────────────────────────────────────────────────────
+function renderStudents() {
+  var search=((document.getElementById('studentSearch')||{}).value||'').toLowerCase();
+  var cf=document.getElementById('studentCourseFilter');
+  if(cf&&cf.options.length<=1){cmCourses.forEach(function(c){var o=document.createElement('option');o.value=c.id;o.textContent=c.title;cf.appendChild(o);});}
+  var courseFilter=(cf||{}).value||'';
+  var statusFilter=((document.getElementById('studentStatusFilter')||{}).value)||'';
+  var filtered=allStudents.filter(function(s){
+    if(search&&!(s.first_name+' '+s.last_name+' '+(s.email||'')).toLowerCase().includes(search))return false;
+    if(courseFilter&&!allEnrolments.some(function(e){return e.student_id===s.id&&e.course_id===courseFilter;}))return false;
+    if(statusFilter){
+      var er=allEnrolments.some(function(e){return e.student_id===s.id&&['complete','exam_scheduled','exam_passed'].includes(e.status);});
+      var cp=getStudentProgress(s.id).length;
+      if(statusFilter==='examready'&&!er)return false;
+      if(statusFilter==='atrisk'&&(!isAtRisk(s)||er))return false;
+      if(statusFilter==='progress'&&(cp===0||er))return false;
+      if(statusFilter==='notstarted'&&cp>0)return false;
+    }
+    return true;
+  });
+  var sub=document.getElementById('studentsSub');
+  if(sub)sub.textContent=filtered.length+' student'+(filtered.length!==1?'s':'')+(search||courseFilter||statusFilter?' (filtered)':'');
+  var container=document.getElementById('studentsTableNew');
+  if(!container)return;
+  if(!filtered.length){container.innerHTML='<div style="text-align:center;padding:48px;color:var(--muted);font-size:13px;">No students found.</div>';return;}
+  container.innerHTML=filtered.map(function(s){
+    var comp=getStudentProgress(s.id);
+    var er=allEnrolments.some(function(e){return e.student_id===s.id&&['complete','exam_scheduled','exam_passed'].includes(e.status);});
+    var pct=Math.min(100,MODULE_COUNT>0?Math.round((comp.length/MODULE_COUNT)*100):0);
+    var pill=er?'<span class="pill pill-ok">Exam Ready</span>':isAtRisk(s)?'<span class="pill pill-danger">At Risk</span>':comp.length===0?'<span class="pill pill-muted">Not Started</span>':'<span class="pill pill-blue">In Progress</span>';
+    var ct=allEnrolments.filter(function(e){return e.student_id===s.id;}).map(function(e){var c=cmCourses.find(function(cc){return cc.id===e.course_id;});return c?c.title:(s.programme||'—');}).filter(Boolean);
+    if(!ct.length)ct=[s.programme||'—'];
+    return '<div class="student-table-row" onclick="openStudentDetail(\''+s.id+'\')">'
+      +'<div class="student-name-cell"><div class="student-avatar" style="background:var(--navy-light);color:var(--navy);min-width:32px;font-size:11px;">'+s.first_name.charAt(0)+(s.last_name||'').charAt(0)+'</div>'
+      +'<div style="min-width:0;"><div class="student-name">'+s.first_name+' '+s.last_name+'</div><div class="student-email">'+s.email+'</div></div></div>'
+      +'<div style="font-size:12px;color:var(--muted);">'+ct.join('<br>')+'</div>'
+      +'<div><div style="display:flex;align-items:center;gap:5px;">'
+      +'<div style="width:50px;height:4px;background:var(--border);border-radius:2px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:var(--navy);border-radius:2px;"></div></div>'
+      +'<span style="font-size:11px;color:var(--muted);">'+pct+'%</span></div></div>'
+      +'<div>'+pill+'</div>'
+      +'<div style="text-align:right;color:var(--dim);">›</div></div>';
+  }).join('');
+}
+
+// ── EXAM READY ────────────────────────────────────────────────────────────────
+var currentExamFilter='all';
+function setExamFilter(f,el){currentExamFilter=f;document.querySelectorAll('#examReadyFilters .tab').forEach(function(t){t.classList.remove('active');});if(el)el.classList.add('active');renderExamReady();}
+
+async function renderExamReady(){
+  var list=document.getElementById('examReadyList'),statsEl=document.getElementById('examReadyStats');
+  if(!list)return;
+  list.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);">Loading...</div>';
+  var statuses=['complete','exam_scheduled','exam_passed','exam_failed'];
+  var all=allEnrolments.filter(function(e){return statuses.includes(e.status);});
+  var filt=currentExamFilter==='all'?all:all.filter(function(e){
+    var m={unscheduled:'complete',scheduled:'exam_scheduled',passed:'exam_passed',failed:'exam_failed'};
+    return e.status===m[currentExamFilter];
+  });
+  var c={complete:0,exam_scheduled:0,exam_passed:0,exam_failed:0};
+  all.forEach(function(e){if(c[e.status]!==undefined)c[e.status]++;});
+  if(statsEl)statsEl.innerHTML=statCard(all.length,'Total','info-card')+statCard(c.complete,'Unscheduled','warn-card')+statCard(c.exam_scheduled,'Scheduled','info-card')+statCard(c.exam_passed,'Passed','ok-card');
+  if(!filt.length){list.innerHTML='<div style="text-align:center;padding:48px;color:var(--muted);font-size:13px;">No students here.</div>';return;}
+  list.innerHTML=filt.map(function(enr){
+    var s=allStudents.find(function(st){return st.id===enr.student_id;});if(!s)return '';
+    var course=cmCourses.find(function(cc){return cc.id===enr.course_id;});
+    var cName=course?course.title:(s.programme||'—');
+    var init=s.first_name.charAt(0)+(s.last_name||'').charAt(0);
+    var chip='',action='';
+    if(enr.status==='complete'){
+      chip='<span class="exam-status-chip exam-status-unscheduled">Unscheduled</span>';
+      action='<input type="date" id="examdate-'+enr.student_id+'-'+enr.course_id+'" class="form-input" style="width:auto;flex:1;min-width:140px;padding:8px 10px;margin:0;"/>'
+        +'<button class="btn btn-primary btn-sm" onclick="scheduleExam(\''+enr.student_id+'\',\''+enr.course_id+'\',\''+s.first_name+' '+s.last_name+'\',\''+s.email+'\',\''+(s.phone||s.whatsapp||'')+'\')" >Schedule &amp; Notify</button>'
+        +'<a class="btn btn-ghost btn-sm" href="'+waLink(s.phone||s.whatsapp||'','Hello '+s.first_name+', please contact the Catholic Music Academy to schedule your final examination.')+'" target="_blank">WhatsApp</a>';
+    }else if(enr.status==='exam_scheduled'){
+      chip='<span class="exam-status-chip exam-status-scheduled">Scheduled</span>';
+      action='<span style="font-size:13px;">📅 '+(enr.exam_date?fmtDate(enr.exam_date):'TBC')+'</span>'
+        +'<button class="btn btn-ok btn-sm" onclick="markExamResult(\''+enr.student_id+'\',\''+enr.course_id+'\',\'passed\',\''+s.first_name+' '+s.last_name+'\',\''+s.email+'\')" >Mark Passed ✓</button>'
+        +'<button class="btn btn-danger btn-sm" onclick="markExamResult(\''+enr.student_id+'\',\''+enr.course_id+'\',\'failed\',\''+s.first_name+' '+s.last_name+'\',\''+s.email+'\')" >Mark Failed</button>';
+    }else if(enr.status==='exam_passed'){
+      chip='<span class="exam-status-chip exam-status-passed">✓ Passed</span>';
+      action='<span style="font-size:13px;color:var(--muted);">Passed '+(enr.exam_passed_at?fmtDate(enr.exam_passed_at):'—')+'</span>'
+        +'<button class="btn btn-gold btn-sm" onclick="openCertificate(\''+enr.student_id+'\',\''+enr.course_id+'\')" >🎓 Generate Certificate</button>';
+    }else{
+      chip='<span class="exam-status-chip exam-status-failed">✗ Failed</span>';
+      action='<button class="btn btn-ghost btn-sm" onclick="rescheduleExam(\''+enr.student_id+'\',\''+enr.course_id+'\')" >Reschedule</button>'
+        +'<a class="btn btn-ghost btn-sm" href="'+waLink(s.phone||s.whatsapp||'','Hello '+s.first_name+', please contact the Academy to arrange a resit.')+'" target="_blank">WhatsApp</a>';
+    }
+    return '<div class="exam-card"><div class="exam-card-hdr">'
+      +'<div class="student-avatar" style="background:var(--navy-light);color:var(--navy);min-width:36px;width:36px;height:36px;font-size:12px;">'+init+'</div>'
+      +'<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;">'+s.first_name+' '+s.last_name+'</div>'
+      +'<div style="font-size:11px;color:var(--muted);">'+cName+'</div></div>'
+      +'<div style="text-align:right;flex-shrink:0;"><div style="font-size:10px;color:var(--muted);">Completed</div>'
+      +'<div style="font-size:12px;font-weight:600;">'+fmtDate(enr.completed_at||enr.enrolled_at)+'</div></div>'
+      +chip+'</div><div class="exam-card-body" style="gap:8px;flex-wrap:wrap;">'+action+'</div></div>';
+  }).join('');
+}
+
+async function scheduleExam(sid,cid,name,email,phone){
+  var d=document.getElementById('examdate-'+sid+'-'+cid);
+  if(!d||!d.value){showToast('Select an exam date first.','warn');return;}
+  try{
+    await sb('enrolments','PATCH',{status:'exam_scheduled',exam_date:d.value},'student_id=eq.'+sid+'&course_id=eq.'+cid);
+    var e=allEnrolments.find(function(en){return en.student_id===sid&&en.course_id===cid;});
+    if(e){e.status='exam_scheduled';e.exam_date=d.value;}
+    showToast('Exam scheduled.');
+    fetch('/api/exam-scheduled',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studentName:name,studentEmail:email,studentPhone:phone,examDate:fmtDate(d.value)})}).catch(function(){});
+    renderExamReady();
+  }catch(err){showToast('Error: '+err.message,'err');}
+}
+
+async function markExamResult(sid,cid,result,name,email){
+  try{
+    var upd=result==='passed'?{status:'exam_passed',exam_passed_at:new Date().toISOString()}:{status:'exam_failed',exam_failed_at:new Date().toISOString()};
+    await sb('enrolments','PATCH',upd,'student_id=eq.'+sid+'&course_id=eq.'+cid);
+    var e=allEnrolments.find(function(en){return en.student_id===sid&&en.course_id===cid;});
+    if(e)Object.assign(e,upd);
+    showToast(result==='passed'?'Marked Passed ✓':'Marked Failed');
+    if(result==='passed')openCertificate(sid,cid);else renderExamReady();
+  }catch(err){showToast('Error: '+err.message,'err');}
+}
+
+async function rescheduleExam(sid,cid){
+  await sb('enrolments','PATCH',{status:'complete',exam_date:null},'student_id=eq.'+sid+'&course_id=eq.'+cid).catch(function(){});
+  var e=allEnrolments.find(function(en){return en.student_id===sid&&en.course_id===cid;});
+  if(e){e.status='complete';e.exam_date=null;}
+  showToast('Reset for rescheduling.');renderExamReady();
+}
+
+// ── CERTIFICATE ───────────────────────────────────────────────────────────────
+var currentCertData=null;
+async function openCertificate(sid,cid){
+  goTab('certificate');
+  var s=allStudents.find(function(st){return st.id===sid;});
+  var course=cmCourses.find(function(c){return c.id===cid;});
+  var enr=allEnrolments.find(function(e){return e.student_id===sid&&e.course_id===cid;});
+  if(!s||!course)return;
+  var dn='Very Rev. Fr. Francis Adjagbara',dt='Director, Catholic Music Academy';
+  try{var ss=await sb('site_settings','GET',null,'key=in.(director_name,director_title)&select=key,value');(ss||[]).forEach(function(r){if(r.key==='director_name'&&r.value)dn=r.value;if(r.key==='director_title'&&r.value)dt=r.value;});}catch(e){}
+  var certNum='CMA/'+new Date().getFullYear()+'/'+String(Math.floor(Math.random()*9000)+1000);
+  var pd=enr&&enr.exam_passed_at?fmtDate(enr.exam_passed_at):fmtDate(new Date().toISOString());
+  currentCertData={studentName:s.first_name+' '+s.last_name,courseName:course.title,passDate:pd,certNum:certNum,dirName:dn,dirTitle:dt};
+  var w=document.getElementById('certCardWrap');if(!w)return;
+  var d=currentCertData;
+  w.innerHTML='<div id="certEl">'
+    +'<div style="background:linear-gradient(135deg,#C9A84C,#E8C96A,#9A7A2E,#C9A84C);padding:6px;border-radius:6px;">'
+    +'<div style="background:#0B1530;padding:32px 36px 24px;position:relative;overflow:hidden;font-family:Georgia,serif;">'
+    +'<div style="position:absolute;top:12px;left:12px;width:32px;height:32px;border-top:2px solid rgba(201,168,76,0.5);border-left:2px solid rgba(201,168,76,0.5);"></div>'
+    +'<div style="position:absolute;top:12px;right:12px;width:32px;height:32px;border-top:2px solid rgba(201,168,76,0.5);border-right:2px solid rgba(201,168,76,0.5);"></div>'
+    +'<div style="position:absolute;bottom:12px;left:12px;width:32px;height:32px;border-bottom:2px solid rgba(201,168,76,0.5);border-left:2px solid rgba(201,168,76,0.5);"></div>'
+    +'<div style="position:absolute;bottom:12px;right:12px;width:32px;height:32px;border-bottom:2px solid rgba(201,168,76,0.5);border-right:2px solid rgba(201,168,76,0.5);"></div>'
+    +'<div style="text-align:center;margin-bottom:18px;">'
+    +'<div style="font-size:12px;font-weight:700;color:#C9A84C;letter-spacing:2.5px;">CATHOLIC MUSIC ACADEMY</div>'
+    +'<div style="font-size:9px;color:rgba(255,255,255,0.4);letter-spacing:2px;margin-top:3px;">CATHOLIC DIOCESE OF WARRI</div></div>'
+    +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:18px;">'
+    +'<div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,#C9A84C);"></div>'
+    +'<span style="color:#C9A84C;font-size:9px;letter-spacing:3px;text-transform:uppercase;">Certificate of Competence</span>'
+    +'<div style="flex:1;height:1px;background:linear-gradient(90deg,#C9A84C,transparent);"></div></div>'
+    +'<div style="text-align:center;margin-bottom:18px;">'
+    +'<div style="font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.45);margin-bottom:10px;">This is to certify that</div>'
+    +'<div style="font-size:28px;font-style:italic;font-weight:700;color:#C9A84C;letter-spacing:1px;line-height:1.2;">'+d.studentName+'</div>'
+    +'<div style="width:50%;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent);margin:10px auto 14px;"></div>'
+    +'<div style="font-size:9px;letter-spacing:1.5px;color:rgba(255,255,255,0.45);margin-bottom:10px;">has successfully completed all requirements for</div>'
+    +'<div style="font-size:14px;font-weight:700;color:white;line-height:1.5;max-width:400px;margin:0 auto 12px;">'+d.courseName+'</div>'
+    +'<div style="font-size:9px;letter-spacing:2px;color:rgba(201,168,76,0.65);">'+d.passDate+'</div></div>'
+    +'<div style="height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);margin-bottom:16px;"></div>'
+    +'<div style="display:flex;justify-content:space-between;align-items:flex-end;">'
+    +'<div><div style="width:140px;height:1px;background:rgba(201,168,76,0.35);margin-bottom:5px;"></div>'
+    +'<div style="font-size:11px;font-weight:700;color:white;">'+d.dirName+'</div>'
+    +'<div style="font-size:9px;color:rgba(201,168,76,0.6);margin-top:2px;">'+d.dirTitle+'</div></div>'
+    +'<div style="text-align:right;">'
+    +'<div style="font-size:8px;color:rgba(255,255,255,0.3);margin-bottom:2px;">Certificate No.</div>'
+    +'<div style="font-size:12px;font-weight:700;color:rgba(201,168,76,0.7);letter-spacing:1px;">'+d.certNum+'</div>'
+    +'<div style="font-size:8px;color:rgba(255,255,255,0.2);margin-top:4px;">catholicmusicacademy.net</div>'
+    +'</div></div></div></div></div>';
+}
+
+async function downloadCertificate(){
+  if(!currentCertData){showToast('No certificate loaded.','warn');return;}
+  if(typeof html2canvas==='undefined'){
+    showToast('Loading...','warn');
+    var sc=document.createElement('script');sc.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    document.head.appendChild(sc);sc.onload=function(){downloadCertificate();};return;
+  }
+  var btn=document.getElementById('certDownloadAdminBtn');
+  if(btn){btn.disabled=true;btn.textContent='Preparing...';}
+  try{
+    var el=document.getElementById('certEl');
+    var canvas=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:null,logging:false});
+    var a=document.createElement('a');
+    a.download='CMA_Certificate_'+currentCertData.studentName.replace(/\s+/g,'_')+'_'+currentCertData.certNum.replace(/\//g,'-')+'.png';
+    a.href=canvas.toDataURL('image/png');a.click();
+  }catch(e){showToast('Download failed.','err');}
+  finally{if(btn){btn.disabled=false;btn.textContent='↓ Download PNG';}}
+}
+
+// ── SETTINGS SUB-TABS ─────────────────────────────────────────────────────────
+var currentSettingsTab='cohort';
+function setSettingsTab(tab,el){
+  currentSettingsTab=tab;
+  if(el){document.querySelectorAll('#page-settings .tab').forEach(function(t){t.classList.remove('active');});el.classList.add('active');}
+  var m={cohort:'cohort',site:'sitesettings',accounts:'adminaccounts',payment:'paymentsettings',devtools:'devtools'};
+  var pid=m[tab]||tab;
+  document.querySelectorAll('.admin-page').forEach(function(p){p.classList.remove('active');});
+  var target=document.getElementById('page-'+pid);if(target)target.classList.add('active');
+  document.querySelectorAll('.admin-tab').forEach(function(t){t.classList.remove('active');});
+  var st=document.getElementById('tab-settings');if(st)st.classList.add('active');
+  if(tab==='cohort')renderCohort();
+  else if(tab==='site')renderSiteSettings();
+  else if(tab==='accounts')renderAdminAccounts();
+  else if(tab==='payment')renderPaymentSettings();
+  else if(tab==='devtools'){
+    // dev tools content is already in page-devtools HTML
+  }
+}
+
+// ── EXPORT ────────────────────────────────────────────────────────────────────
+function exportStudentsCsv(){
+  var rows=[['Name','Email','Programme','Progress %','Last Login']];
+  allStudents.forEach(function(s){
+    var p=Math.min(100,MODULE_COUNT>0?Math.round((getStudentProgress(s.id).length/MODULE_COUNT)*100):0);
+    rows.push([s.first_name+' '+s.last_name,s.email,s.programme||'—',p+'%',fmtDate(s.last_login)]);
+  });
+  var csv=rows.map(function(r){return r.map(function(c){return '"'+(c||'').replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var b=new Blob([csv],{type:'text/csv'});
+  var url=URL.createObjectURL(b);
+  var a=document.createElement('a');a.href=url;a.download='CMA_Students_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+  URL.revokeObjectURL(url);
+}
+function showAddStudentModal(){showToast('Use Applications tab to enrol students via the approval flow.','warn');}
+</script>
