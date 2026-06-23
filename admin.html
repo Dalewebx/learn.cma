@@ -1546,8 +1546,15 @@ function renderApplications() {
 async function clearApplicationBin() {
   var binItems = allApplications.filter(function(a){ return a.status==='rejected'; });
   if (!binItems.length) { showToast('No rejected applications to clear.','warn'); return; }
-  if (!confirm('Delete '+binItems.length+' rejected application'+(binItems.length>1?'s':'')+' permanently? This cannot be undone.')) return;
+  if (!confirm('Permanently delete '+binItems.length+' rejected application'+(binItems.length>1?'s':'')+' from the bin?\n\nThis cannot be undone.')) return;
   try {
+    // First: null out application_id on any student records referencing these applications
+    // (foreign key constraint prevents deletion otherwise)
+    var binIds = binItems.map(function(a){ return a.id; });
+    for (var i=0; i<binIds.length; i++) {
+      await sb('students','PATCH',{application_id:null},'application_id=eq.'+binIds[i]).catch(function(){});
+    }
+    // Now safe to delete
     await sb('applications','DELETE',null,'status=eq.rejected');
     showToast('Bin cleared — '+binItems.length+' application'+(binItems.length>1?'s':'')+' deleted.');
     await loadAllData();
@@ -1574,13 +1581,18 @@ async function approveApp(id) {
         var existingId = existing[0].id;
         var wasRevoked = existing[0].status !== 'active';
 
+        // Determine hash version — if salt is missing from application (old apply.html bug),
+        // fall back to sha256 so login can still verify against the stored hash
+        var hasSalt = !!(a.salt);
+        var hashVersion = hasSalt ? 'pbkdf2' : 'sha256';
+
         // Full reactivation — update ALL credential fields from new application
         await sb('students','PATCH',{
           status: 'active',
           programme: a.programme,
           password_hash: a.password_hash,
           salt: a.salt || null,
-          hash_version: 'pbkdf2',
+          hash_version: hashVersion,
           security_question: a.security_question || null,
           security_answer_hash: a.security_answer_hash || null,
           phone: a.phone,
@@ -1589,6 +1601,10 @@ async function approveApp(id) {
           last_login: null,
           application_id: id
         },'id=eq.'+existingId);
+
+        if (!hasSalt) {
+          showToast('⚠ Note: '+a.first_name+'\'s application has no password salt (old apply form). Ask them to reapply for best results, or use admin password reset.','warn');
+        }
 
         // If reactivating a revoked account, clear old progress and enrolments
         if (wasRevoked) {
@@ -1602,6 +1618,7 @@ async function approveApp(id) {
         newStudent = {id: existingId};
       } else {
         // Brand new student
+        var hasSaltNew = !!(a.salt);
         var created = await sb('students','POST',{
           application_id: id,
           first_name: a.first_name,
@@ -1609,7 +1626,7 @@ async function approveApp(id) {
           email: a.email,
           password_hash: a.password_hash,
           salt: a.salt || null,
-          hash_version: 'pbkdf2',
+          hash_version: hasSaltNew ? 'pbkdf2' : 'sha256',
           phone: a.phone,
           whatsapp: a.whatsapp || a.phone,
           programme: a.programme,
