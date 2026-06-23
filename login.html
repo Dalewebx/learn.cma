@@ -1303,13 +1303,13 @@ async function saveProgress(modIndex) {
   if (!currentStudent) return;
   try {
     var courseId = CURRENT_COURSE ? CURRENT_COURSE.id : 'unknown';
-    var res = await fetch(SUPA_URL+'/rest/v1/progress', {
+    await fetch(SUPA_URL+'/rest/v1/progress', {
       method:'POST',
       headers:{
         'apikey':SUPA_KEY,
         'Authorization':'Bearer '+SUPA_KEY,
         'Content-Type':'application/json',
-        'Prefer':'return=minimal'
+        'Prefer':'resolution=ignore-duplicates,return=minimal'
       },
       body:JSON.stringify({
         student_id: currentStudent.id,
