@@ -545,6 +545,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
   <button class="admin-tab" id="tab-examready" onclick="goTab('examready')" style="display:none;">🎓 Exam Ready <span class="admin-tab-badge gold" id="examReadyBadge"></span></button>
   <button class="admin-tab" id="tab-applications" onclick="goTab('applications')" style="display:none;">📋 Applications <span class="admin-tab-badge" id="appsBadge"></span></button>
   <button class="admin-tab" id="tab-grading" onclick="goTab('grading')">✏️ Grading</button>
+  <button class="admin-tab" id="tab-statistics" onclick="goTab('statistics')">📈 Statistics</button>
   <button class="admin-tab" id="tab-courses" onclick="goTab('courses')">📚 Courses</button>
   <button class="admin-tab" id="tab-settings" onclick="goTab('settings')" style="display:none;">⚙️ Settings</button>
 </div>
@@ -556,17 +557,11 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 <div class="admin-page active" id="page-dashboard">
   <div class="page-header">
     <div><div class="page-title">Dashboard</div><div class="page-sub" id="dashSub">Loading...</div></div>
-    <button class="btn btn-ghost" onclick="loadAllData();showToast('Refreshed')">↻ Refresh</button>
+    <button class="btn btn-ghost btn-sm" onclick="loadAllData();showToast('Refreshed')">↻ Refresh</button>
   </div>
   <div class="stat-grid" id="dashStats"></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
-    <div class="card"><div class="card-title">Course Health</div><div id="courseHealth">Loading...</div></div>
-    <div class="card"><div class="card-title">Notifications</div><div id="dashNotifs">Loading...</div></div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
-    <div class="card"><div class="card-title">Student Progress</div><div id="dashProgress">Loading...</div></div>
-    <div class="card"><div class="card-title">Recent Activity</div><div id="dashActivity">Loading...</div></div>
-  </div>
+  <div id="dashGridTop"></div>
+  <div id="dashGridBottom"></div>
 </div>
 
 <!-- APPLICATIONS -->
@@ -890,6 +885,15 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
   </div>
 </div>
 
+<!-- STATISTICS -->
+<div class="admin-page" id="page-statistics">
+  <div class="page-header">
+    <div><div class="page-title">Statistics</div><div class="page-sub">Programme performance, enrolment history, and completion records.</div></div>
+    <button class="btn btn-ghost" onclick="renderStatistics()">↻ Refresh</button>
+  </div>
+  <div id="statisticsContent"><div style="text-align:center;padding:40px;color:var(--muted);">Loading...</div></div>
+</div>
+
 <!-- EXAM READY -->
 <div class="admin-page" id="page-examready">
   <div class="page-header">
@@ -1203,7 +1207,7 @@ function goTab(id) {
   else if (id==='adminaccounts') { injectSettingsSubNav('adminaccounts'); renderAdminAccounts(); }
   else if (id==='accountsettings') { injectSettingsSubNav('accountsettings'); renderAccountSettings(); }
   else if (id==='paymentsettings') { injectSettingsSubNav('paymentsettings'); renderPaymentSettings(); }
-  else if (id==='courseprogress') renderCourseProgress();
+  else if (id==='statistics') renderStatistics();
   else if (id==='settings') { goTab('cohort'); }
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -1274,67 +1278,182 @@ function renderCurrentPage() {
 
 // ── DASHBOARD ────────────────────────────────────────────────────────────────
 function renderDashboard() {
-  var du=daysUntil(cohortSettings.deadline||'2099-01-01');
-  document.getElementById('dashSub').textContent=(cohortSettings.name||'Cohort 1')+' · Deadline: '+fmtDate(cohortSettings.deadline)+(du>0?' ('+du+' days remaining)':' (Deadline passed)');
-  var pending=allApplications.filter(a=>a.status==='pending').length;
-  var total=allStudents.length;
-  var complete=allStudents.filter(s=>getStudentProgress(s.id).length>=MODULE_COUNT).length;
-  var atRisk=allStudents.filter(isAtRisk).length;
-  var failsToday=allAttempts.filter(a=>{var d=new Date(a.attempted_at);return !a.passed&&(Date.now()-d)<86400000;}).length;
-  var examReady=allEnrolments.filter(function(e){return ['complete','exam_scheduled','exam_passed'].includes(e.status);}).length;
-  document.getElementById('dashStats').innerHTML=
-    statCard(pending,'Pending Applications','warn-card')+
-    statCard(total,'Active Students','info-card')+
-    statCard(examReady,'Exam Ready','ok-card')+
-    statCard(atRisk,'At Risk',atRisk>0?'danger-card':'');
+  var du = daysUntil(cohortSettings.deadline||'2099-01-01');
+  var dashSubEl = document.getElementById('dashSub');
+  if (dashSubEl) dashSubEl.textContent = (cohortSettings.name||'Cohort 1') + ' · Deadline: ' + fmtDate(cohortSettings.deadline) + (du>0?' ('+du+' days)':' (Deadline passed)');
 
-  // Course health
-  var courseIds=[...new Set(allStudents.map(s=>{var c=s.programme||'';var m=c.match(/Course\s+0?(\d+)/i);return m?parseInt(m[1]):1;}))] ;
-  var healthHtml=COURSE_NAMES.map(function(name,i){
-    var courseStudents=allStudents.filter(s=>{var c=s.programme||'';var m=c.match(/Course\s+0?(\d+)/i);return m?parseInt(m[1])===i+1:i===0;});
-    if(!courseStudents.length) return '';
-    var comp=courseStudents.filter(s=>getStudentProgress(s.id).length>=MODULE_COUNT).length;
-    var pct=Math.round((comp/courseStudents.length)*100);
-    return '<div class="course-health-item"><div class="ch-name">'+name+'<br><span style="font-size:11px;color:var(--muted);">'+courseStudents.length+' student(s)</span></div><div class="prog-bg" style="flex:1;"><div class="prog-fill'+(pct>=70?' ok':pct<40?' danger':'')+'" style="width:'+pct+'%"></div></div><div class="ch-pct">'+pct+'%</div></div>';
-  }).filter(Boolean).join('');
-  document.getElementById('courseHealth').innerHTML=healthHtml||'<div style="font-size:13px;color:var(--dim);padding:12px 0;text-align:center;">No enrolled students yet.</div>';
+  // ── KPI CARDS — actionable only ──
+  var pending = allApplications.filter(function(a){return a.status==='pending';}).length;
+  var gradingQ = allAttempts.filter(function(a){return a.written_responses && !a.instructor_graded;}).length;
+  var examReady = allEnrolments.filter(function(e){return e.status==='complete';}).length;
+  var atRisk = allStudents.filter(isAtRisk).length;
+  var dashStats = document.getElementById('dashStats');
+  if (dashStats) dashStats.innerHTML =
+    statCard(pending, 'Pending Applications', 'warn-card') +
+    statCard(gradingQ, 'Grading Queue', gradingQ>0?'warn-card':'') +
+    statCard(examReady, 'Exam Ready', 'ok-card') +
+    statCard(atRisk, 'At Risk', atRisk>0?'danger-card':'');
 
-  // Notifications
-  var notifs=[];
-  if(pending>0) notifs.push({icon:'📋',text:pending+' pending application'+(pending>1?'s':'')+' awaiting review',time:'Now'});
-  if(atRisk>0) notifs.push({icon:'⚠️',text:atRisk+' student'+(atRisk>1?'s':'')+' flagged at-risk',time:'Now'});
-  if(failsToday>0) notifs.push({icon:'❌',text:failsToday+' assessment failure'+(failsToday>1?'s':'')+' today',time:'Today'});
-  var passesToday=allAttempts.filter(a=>{var d=new Date(a.attempted_at);return a.passed&&(Date.now()-d)<86400000;}).length;
-  if(passesToday>0) notifs.push({icon:'✅',text:passesToday+' assessment'+(passesToday>1?'s':'')+' passed today',time:'Today'});
-  document.getElementById('dashNotifs').innerHTML=notifs.length===0
-    ?'<div style="font-size:13px;color:var(--dim);padding:12px 0;text-align:center;">No new notifications.</div>'
-    :notifs.map(n=>'<div class="notif-item"><span class="notif-icon">'+n.icon+'</span><span class="notif-text">'+n.text+'</span><span class="notif-time">'+n.time+'</span></div>').join('');
-
-  // Student progress
-  document.getElementById('dashProgress').innerHTML=allStudents.length===0
-    ?'<div style="font-size:13px;color:var(--dim);text-align:center;padding:20px;">No students yet.</div>'
-    :allStudents.map(s=>{
-      var comp=getStudentProgress(s.id).length;
-      var pct=Math.min(100, Math.round((comp/MODULE_COUNT)*100));
-      var sid = s.id;
-      return '<div style="margin-bottom:12px;cursor:pointer;" onclick="openStudentDetail(\''+sid+'\')">'
-        +'<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:13px;font-weight:600;color:var(--navy);">'+s.first_name+' '+s.last_name+'</span><span style="font-size:12px;color:var(--muted);">'+pct+'%</span></div>'
-        +'<div class="prog-bg"><div class="prog-fill'+(pct===100?' ok':'')+'" style="width:'+pct+'%'+(pct===0?';background:var(--border)':'')+'"></div></div>'
-        +'<div style="font-size:11px;color:var(--dim);margin-top:2px;">Last login: '+fmtDateTime(s.last_login)+'</div></div>';
-    }).join('');
-
-  // Activity feed
-  var acts=[];
-  allStudents.filter(s=>s.last_login).forEach(s=>acts.push({time:s.last_login,icon:'🔑',text:s.first_name+' '+s.last_name+' logged in'}));
-  allAttempts.slice(0,30).forEach(a=>{
-    var s=allStudents.find(st=>st.id===a.student_id);
-    if(!s) return;
-    acts.push({time:a.attempted_at,icon:a.passed?'✅':'❌',text:s.first_name+' '+s.last_name+' — Module '+(a.module_index+1)+': '+a.score+'/'+a.total+(a.passed?' (Passed)':' (Failed)')});
+  // ── ACTION LIST — what to do right now ──
+  var actions = [];
+  if (pending > 0) actions.push({
+    icon:'📋', color:'#C9A84C', bg:'#FBF3DF',
+    text: pending + ' application' + (pending>1?'s':'')+' awaiting your review',
+    cta:'Review', action:"goTab('applications')"
   });
-  acts.sort((a,b)=>new Date(b.time)-new Date(a.time));
-  document.getElementById('dashActivity').innerHTML=acts.length===0
-    ?'<div style="font-size:13px;color:var(--dim);text-align:center;padding:20px;">No activity yet.</div>'
-    :acts.slice(0,12).map(a=>'<div style="display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--surface);align-items:flex-start;"><span style="font-size:15px;flex-shrink:0;">'+a.icon+'</span><div><div style="font-size:13px;">'+a.text+'</div><div style="font-size:11px;color:var(--dim);">'+fmtDateTime(a.time)+'</div></div></div>').join('');
+  // Grading queue
+  var ungraded = allAttempts.filter(function(a){ return a.written_responses && !a.instructor_graded; });
+  if (ungraded.length > 0) actions.push({
+    icon:'✏️', color:'#0D1B3E', bg:'#EEF2FF',
+    text: ungraded.length + ' written assessment' + (ungraded.length>1?'s':'')+' waiting to be graded',
+    cta:'Grade', action:"goTab('grading')"
+  });
+  if (examReady > 0) actions.push({
+    icon:'🎓', color:'#16A34A', bg:'#DCFCE7',
+    text: examReady + ' student' + (examReady>1?'s':'')+' completed all modules — schedule their exam',
+    cta:'Schedule', action:"goTab('examready')"
+  });
+  // At-risk students
+  var riskStudents = allStudents.filter(isAtRisk);
+  riskStudents.slice(0,2).forEach(function(s){
+    actions.push({
+      icon:'⚠️', color:'#DC2626', bg:'#FEE2E2',
+      text: s.first_name+' '+s.last_name+' hasn\'t logged in for '+daysAgo(s.last_login)+' days',
+      cta:'Nudge', action:"openStudentDetail('"+s.id+"')"
+    });
+  });
+  if (riskStudents.length > 2) actions.push({
+    icon:'⚠️', color:'#DC2626', bg:'#FEE2E2',
+    text: (riskStudents.length-2)+' more student'+(riskStudents.length-2>1?'s':'')+' at risk',
+    cta:'View All', action:"goTab('students')"
+  });
+
+  // ── COURSE PROGRESS ──
+  var courseProgressHtml = cmCourses.map(function(course){
+    var enrolled = allEnrolments.filter(function(e){return e.course_id===course.id;}).length;
+    var completed = allEnrolments.filter(function(e){return e.course_id===course.id && (e.status==='complete'||e.status==='exam_passed');}).length;
+    var pct = enrolled > 0 ? Math.round((completed/enrolled)*100) : 0;
+    return '<div style="margin-bottom:14px;">'
+      +'<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;">'
+      +'<span style="font-weight:600;color:var(--text);">'+course.title+'</span>'
+      +'<span style="color:var(--muted);">'+completed+'/'+enrolled+' complete</span>'
+      +'</div>'
+      +'<div class="prog-bg"><div class="prog-fill'+(pct===100?' ok':pct<30?' danger':'')+'" style="width:'+pct+'%;"></div></div>'
+      +'</div>';
+  }).join('') || '<div style="font-size:13px;color:var(--muted);text-align:center;padding:20px;">No courses yet.</div>';
+
+  // ── RECENT ACTIVITY ──
+  var acts = [];
+  allStudents.filter(function(s){return s.last_login;}).forEach(function(s){
+    acts.push({time:s.last_login, html:'<strong>'+s.first_name+' '+s.last_name+'</strong> logged in'});
+  });
+  allAttempts.slice(0,20).forEach(function(a){
+    var s=allStudents.find(function(st){return st.id===a.student_id;});
+    if(!s)return;
+    acts.push({time:a.attempted_at, html:'<strong>'+s.first_name+' '+s.last_name+'</strong> — Module '+(a.module_index+1)+' '+(a.passed?'<span style="color:var(--ok);">passed</span>':'<span style="color:var(--danger);">failed</span>')});
+  });
+  acts.sort(function(a,b){return new Date(b.time)-new Date(a.time);});
+  var activityHtml = acts.length ? acts.slice(0,8).map(function(a){
+    return '<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);align-items:flex-start;">'
+      +'<div style="width:6px;height:6px;border-radius:50%;background:var(--navy);margin-top:6px;flex-shrink:0;"></div>'
+      +'<div style="flex:1;min-width:0;"><div style="font-size:13px;color:var(--text);">'+a.html+'</div>'
+      +'<div style="font-size:11px;color:var(--muted);margin-top:2px;">'+fmtDateTime(a.time)+'</div></div></div>';
+  }).join('') : '<div style="font-size:13px;color:var(--muted);text-align:center;padding:20px;">No activity yet.</div>';
+
+  // ── RENDER ──
+  var dashTop = document.getElementById('dashGridTop');
+  if (dashTop) dashTop.innerHTML = '';
+  var dashBot = document.getElementById('dashGridBottom');
+  if (dashBot) dashBot.innerHTML = '';
+
+  // Main content grid
+  var mainHtml = '<div style="display:grid;grid-template-columns:1fr;gap:16px;">';
+
+  // Action list card
+  mainHtml += '<div class="card">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">'
+    +'<div class="card-title" style="margin-bottom:0;">Action Required</div>'
+    +(actions.length===0?'<span class="pill pill-ok">All clear ✓</span>':'<span style="font-size:12px;font-weight:700;color:var(--danger);">'+actions.length+' item'+(actions.length>1?'s':'')+'</span>')
+    +'</div>';
+  if (actions.length === 0) {
+    mainHtml += '<div style="text-align:center;padding:24px 0;"><div style="font-size:32px;margin-bottom:8px;">✅</div><div style="font-size:14px;color:var(--muted);">Nothing urgent right now. You\'re all caught up.</div></div>';
+  } else {
+    mainHtml += actions.map(function(a){
+      return '<div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;background:'+a.bg+';margin-bottom:8px;">'
+        +'<div style="font-size:20px;flex-shrink:0;">'+a.icon+'</div>'
+        +'<div style="flex:1;font-size:13px;color:var(--text);line-height:1.5;">'+a.text+'</div>'
+        +'<button class="btn btn-primary btn-sm" style="flex-shrink:0;" onclick="'+a.action+'">'+a.cta+' →</button>'
+        +'</div>';
+    }).join('');
+  }
+  mainHtml += '</div>';
+
+  // Two column: progress + activity
+  mainHtml += '<div style="display:grid;grid-template-columns:1fr;gap:16px;">';
+  mainHtml += '<div class="card"><div class="card-title" style="margin-bottom:16px;">Cohort Progress</div>'+courseProgressHtml+'</div>';
+  mainHtml += '<div class="card"><div class="card-title" style="margin-bottom:4px;">Recent Activity</div>'+activityHtml+'</div>';
+  mainHtml += '</div>';
+  mainHtml += '</div>';
+
+  if (dashTop) dashTop.innerHTML = mainHtml;
+}
+
+
+
+// ── STATISTICS ────────────────────────────────────────────────────────────────
+function renderStatistics() {
+  var el = document.getElementById('statisticsContent');
+  if (!el) return;
+  var total = allStudents.length;
+  var examReady = allEnrolments.filter(function(e){return ['complete','exam_scheduled'].includes(e.status);}).length;
+  var passed = allEnrolments.filter(function(e){return e.status==='exam_passed';}).length;
+  var totalAttempts = allAttempts.length;
+  var passedAttempts = allAttempts.filter(function(a){return a.passed;}).length;
+  var passRate = totalAttempts > 0 ? Math.round((passedAttempts/totalAttempts)*100) : 0;
+  var totalApps = allApplications.length;
+  var approvedApps = allApplications.filter(function(a){return a.status==='approved';}).length;
+  var convRate = totalApps > 0 ? Math.round((approvedApps/totalApps)*100) : 0;
+
+  var html = '<div class="stat-grid" style="grid-template-columns:repeat(2,1fr);">'
+    + statCard(total,'Enrolled Students','info-card')
+    + statCard(examReady,'Modules Complete','ok-card')
+    + statCard(passed,'Exams Passed','ok-card')
+    + statCard(totalApps,'Total Applications','')
+    + '</div>';
+
+  // Per-course breakdown
+  html += '<div class="health-grid" style="margin-top:16px;">';
+  cmCourses.forEach(function(course){
+    var enrolled = allEnrolments.filter(function(e){return e.course_id===course.id;}).length;
+    var complete = allEnrolments.filter(function(e){return e.course_id===course.id&&(e.status==='complete'||e.status==='exam_passed');}).length;
+    var examP = allEnrolments.filter(function(e){return e.course_id===course.id&&e.status==='exam_passed';}).length;
+    var pct = enrolled>0?Math.round((complete/enrolled)*100):0;
+    html += '<div class="card">'
+      +'<div class="card-title" style="font-size:14px;margin-bottom:12px;">'+course.title+'</div>'
+      +'<div class="prog-bg" style="margin-bottom:8px;"><div class="prog-fill" style="width:'+pct+'%;"></div></div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">'
+      +'<div><div style="font-size:20px;font-weight:700;color:var(--navy);">'+enrolled+'</div><div style="font-size:11px;color:var(--muted);">Enrolled</div></div>'
+      +'<div><div style="font-size:20px;font-weight:700;color:var(--ok);">'+complete+'</div><div style="font-size:11px;color:var(--muted);">Modules Done</div></div>'
+      +'<div><div style="font-size:20px;font-weight:700;color:#C9A84C;">'+examP+'</div><div style="font-size:11px;color:var(--muted);">Exams Passed</div></div>'
+      +'</div></div>';
+  });
+
+  // Assessment pass rate
+  html += '</div><div class="card" style="margin-top:16px;">'
+    +'<div class="card-title" style="margin-bottom:16px;">Assessment Performance</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">'
+    +'<div style="text-align:center;padding:16px;background:var(--surface);border-radius:10px;">'
+    +'<div style="font-size:32px;font-weight:700;color:var(--navy);">'+passRate+'%</div>'
+    +'<div style="font-size:12px;color:var(--muted);">Assessment Pass Rate</div>'
+    +'<div style="font-size:11px;color:var(--dim);margin-top:4px;">'+passedAttempts+' of '+totalAttempts+' attempts</div>'
+    +'</div>'
+    +'<div style="text-align:center;padding:16px;background:var(--surface);border-radius:10px;">'
+    +'<div style="font-size:32px;font-weight:700;color:var(--navy);">'+convRate+'%</div>'
+    +'<div style="font-size:12px;color:var(--muted);">Application Approval Rate</div>'
+    +'<div style="font-size:11px;color:var(--dim);margin-top:4px;">'+approvedApps+' of '+totalApps+' applications</div>'
+    +'</div></div></div>';
+
+  el.innerHTML = html;
 }
 
 // ── APPLICATIONS ─────────────────────────────────────────────────────────────
