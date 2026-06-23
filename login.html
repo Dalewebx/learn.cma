@@ -1379,13 +1379,28 @@ async function doLogin() {
     }
     var student = results[0];
 
-    // 2. Verify password — migrate legacy SHA-256 to PBKDF2 on first login
+    // 2. Verify password
     var passwordOk = false;
+
+    // Detect accounts marked as needing reset (broken PBKDF2-without-salt state)
+    if (student.hash_version === 'needs_reset') {
+      var errEl = document.getElementById('loginErr');
+      if (errEl) {
+        errEl.style.display = 'block';
+        errEl.innerHTML = '<strong>Password reset required.</strong><br>'
+          + 'Your account was set up before a system upgrade and needs a one-time password reset. '
+          + 'Click <a href="/forgot-password" style="color:var(--navy);font-weight:700;text-decoration:underline;">Reset Password</a> '
+          + 'to set a new one — it takes under a minute.';
+      }
+      btn.disabled = false; btn.textContent = 'Sign in →';
+      return;
+    }
+
     if (!student.salt || student.hash_version === 'sha256') {
-      // Legacy account — check with old SHA-256 first
+      // Legacy SHA-256 account
       var legacyHash = await hashPasswordLegacy(pass);
       if (student.password_hash === legacyHash) {
-        // Migrate: generate per-user salt, rehash with PBKDF2, update DB
+        // Migrate to PBKDF2 silently on successful login
         var newSalt = generateSalt();
         var newHash = await hashPasswordPBKDF2(pass, newSalt);
         fetch(SUPA_URL + '/rest/v1/students?id=eq.' + student.id, {
@@ -1403,22 +1418,7 @@ async function doLogin() {
     }
 
     if (!passwordOk) {
-      // Detect broken PBKDF2-without-salt state (old apply.html bug)
-      // These accounts have PBKDF2 hash but null salt — neither path can verify
-      var isBrokenPBKDF2 = (!student.salt && student.hash_version !== 'sha256');
-      if (isBrokenPBKDF2) {
-        // Show specific recovery message — not a wrong password, a broken account state
-        var errEl = document.getElementById('loginErr');
-        if (errEl) {
-          errEl.style.display = 'block';
-          errEl.innerHTML = '<strong>Password reset required.</strong><br>'
-            + 'Your account credentials need to be reset. This is a one-time fix — '
-            + 'click <a href="/forgot-password" style="color:var(--navy);font-weight:700;text-decoration:underline;">Reset Password</a> '
-            + 'below to set a new password. It only takes a minute.';
-        }
-      } else {
-        showErr('Incorrect password. Please try again, or use Forgot password below.');
-      }
+      showErr('Incorrect password. Please try again, or use Forgot password below.');
       btn.disabled = false; btn.textContent = 'Sign in →'; return;
     }
 
