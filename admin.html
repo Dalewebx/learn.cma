@@ -2332,16 +2332,26 @@ function renameCMModule(courseId, modIdx) {
   showToast('Module renamed.');
 }
 
-function renameCourse(courseId) {
+async function renameCourse(courseId) {
   var c = cmCourses.find(function(x){return x.id===courseId;});
   if (!c) return;
   var name = prompt('New course title:', c.title);
   if (!name||!name.trim()) return;
-  c.title = name.trim();
-  saveCourseLocally();
-  renderCMSidebar();
-  renderCMOverview();
-  showToast('Course renamed.');
+  var newTitle = name.trim();
+  try {
+    // Update all module rows in course_content for this course
+    await sb('course_content','PATCH',{course_title: newTitle},'course_id=eq.'+courseId);
+    // Update any student/enrolment records with the old title
+    await sb('students','PATCH',{programme: newTitle},'programme=eq.'+encodeURIComponent(c.title));
+    await sb('enrolments','PATCH',{programme: newTitle},'programme=eq.'+encodeURIComponent(c.title));
+    c.title = newTitle;
+    saveCourseLocally();
+    renderCMSidebar();
+    renderCMOverview();
+    showToast('Course renamed and saved.');
+  } catch(e) {
+    showToast('Error renaming: '+e.message, 'err');
+  }
 }
 
 // ── COHORT ────────────────────────────────────────────────────────────────────
