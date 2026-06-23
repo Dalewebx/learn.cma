@@ -234,11 +234,12 @@ tr:hover td{background:var(--surface);cursor:pointer;}
 /* ── NEW TOP NAV & TABS ── */
 /* Override old sidebar layout */
 :root{--sidebar:0px !important;}
-#adminShell{display:flex !important;flex-direction:column;min-height:100vh;}
+#adminShell{flex-direction:column !important;}
+.admin-layout{display:contents !important;}
 .sidebar{display:none !important;}
-.main{margin-left:0 !important;max-width:100% !important;padding:24px 20px !important;}
-@media(min-width:600px){.main{padding:28px 28px !important;}}
-@media(min-width:900px){.main{padding:32px 36px !important;}}
+.mob-menu-btn{display:none !important;}
+.mob-overlay{display:none !important;}
+.main{margin-left:0 !important;max-width:100% !important;padding:24px 16px !important;}
 .admin-nav{background:var(--navy);height:52px;display:flex;align-items:center;padding:0 16px;gap:10px;position:sticky;top:0;z-index:300;flex-shrink:0;}
 .admin-nav-logo{display:flex;align-items:center;gap:8px;flex-shrink:0;}
 .admin-nav-logo-icon{width:30px;height:30px;background:rgba(201,168,76,0.15);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -3307,10 +3308,12 @@ function showAdminShell(admin) {
   if(rc) rc.textContent=admin.role==='master'?'Master':'Lecturer';
   applyRoleSidebar(admin.role||'master');
   var ls=document.getElementById('loginScreen');if(ls)ls.style.display='none';
-  var sh=document.getElementById('adminShell');if(sh)sh.style.display='block';
-  var an=document.getElementById('adminNav');if(an)an.style.display='flex';
-  var at=document.getElementById('adminTabs');if(at)at.style.display='flex';
-  var am=document.getElementById('adminMain');if(am)am.style.display='block';
+  // Use flex column so nav+tabs+content stack vertically
+  var sh=document.getElementById('adminShell');
+  if(sh){sh.style.display='flex';sh.style.flexDirection='column';sh.style.minHeight='100vh';}
+  var an=document.getElementById('adminNav');if(an){an.style.display='flex';an.style.flexShrink='0';}
+  var at=document.getElementById('adminTabs');if(at){at.style.display='flex';at.style.flexShrink='0';}
+  var am=document.getElementById('adminMain');if(am){am.style.display='block';am.style.flex='1';}
 }
 
 (function(){
