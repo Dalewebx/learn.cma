@@ -194,15 +194,30 @@ nav{background:var(--white);border-bottom:1px solid var(--border);position:stick
 .tl-title{font-family:"DM Serif Display",serif;font-size:18px;color:var(--navy);margin-bottom:6px;}
 .tl-desc{font-size:13px;color:var(--muted);line-height:1.65;}
 
-/* ── WHY CMA — REWRITTEN: sacred-arts specific, not generic LMS copy ── */
-.why-sec{background:var(--gray);}
-.why-grid{display:grid;grid-template-columns:1fr;gap:20px;margin-top:48px;}
-@media(min-width:600px){.why-grid{grid-template-columns:1fr 1fr 1fr;}}
-.why-card{background:var(--white);border:1.5px solid var(--border);border-radius:18px;padding:36px 28px;transition:all 0.2s;}
-.why-card:hover{border-color:var(--navy);transform:translateY(-3px);box-shadow:0 8px 28px rgba(13,27,62,0.09);}
-.why-icon{font-size:36px;margin-bottom:20px;}
-.why-title{font-family:"DM Serif Display",serif;font-size:22px;color:var(--navy);margin-bottom:10px;}
-.why-desc{font-size:14px;color:var(--muted);line-height:1.7;}
+/* ── WHY CMA ── */
+.why-sec{background:#0B1530;}
+.why-sec .label{color:rgba(201,168,76,0.8);}
+.why-sec .sec-title{color:white;}
+.why-grid{display:grid;grid-template-columns:1fr;gap:0;margin-top:48px;border-top:1px solid rgba(255,255,255,0.08);}
+@media(min-width:600px){.why-grid{grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;}}
+.why-card{background:#0B1530;padding:32px 28px;display:flex;flex-direction:column;gap:0;transition:background 0.2s;}
+.why-card:hover{background:#0F2040;}
+@media(min-width:600px){.why-card{padding:36px 28px;}}
+.why-icon-wrap{width:44px;height:44px;border-radius:10px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);display:flex;align-items:center;justify-content:center;margin-bottom:20px;flex-shrink:0;}
+.why-body{flex:1;}
+.why-title{font-family:"DM Serif Display",serif;font-size:19px;color:white;margin-bottom:10px;line-height:1.25;}
+.why-desc{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.75;}
+/* Mobile: horizontal row layout — icon left, text right, all aligned */
+@media(max-width:599px){
+  .why-grid{gap:0;border:none;background:transparent;margin-top:32px;}
+  .why-card{flex-direction:row;align-items:flex-start;gap:16px;padding:24px 0;background:transparent;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .why-card:first-child{border-top:1px solid rgba(255,255,255,0.08);}
+  .why-card:hover{background:transparent;}
+  .why-icon-wrap{margin-bottom:0;flex-shrink:0;width:40px;height:40px;}
+  .why-body{padding-top:2px;}
+  .why-title{font-size:16px;margin-bottom:6px;}
+  .why-desc{font-size:13px;}
+}
 
 /* ── PROGRAMMES ── */
 .prog-sec{background:var(--white);}
@@ -329,7 +344,7 @@ footer{background:var(--navy);padding:48px 24px 28px;}
   .mk-mod-list .mk-mod-item:nth-child(n+5){display:none;}
   .mk-next{padding:10px 12px;}
   /* Accred strip compact */
-  .why-sec{background:var(--white);}
+  .why-sec{background:#0B1530;}
   .why-sec .sec-inner{padding-top:56px;padding-bottom:56px;}
   /* Section padding */
   .sec{padding:56px 20px;}
@@ -342,43 +357,6 @@ footer{background:var(--navy);padding:48px 24px 28px;}
   .tl-content{padding:14px 16px;border-radius:12px;}
   .tl-title{font-size:16px;margin-bottom:4px;}
   .tl-desc{font-size:12px;line-height:1.6;}
-  .why-grid{margin-top:32px;gap:0;}
-  .why-sec .sec-title{font-size:28px;}
-  .why-card{
-    padding:24px 0;
-    display:flex;
-    align-items:flex-start;
-    gap:20px;
-    border-radius:0;
-    border:none;
-    border-bottom:1px solid var(--border);
-    background:transparent;
-    box-shadow:none;
-    transform:none!important;
-  }
-  .why-card:first-child{border-top:1px solid var(--border);}
-  .why-card:hover{border-color:var(--border);transform:none;box-shadow:none;}
-  .why-icon{
-    font-size:0;
-    width:40px;
-    height:40px;
-    flex-shrink:0;
-    background:var(--navy);
-    border-radius:10px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin-bottom:0;
-    margin-top:2px;
-  }
-  .why-icon::after{
-    font-size:18px;
-  }
-  .why-card:nth-child(1) .why-icon::after{content:'🎵';}
-  .why-card:nth-child(2) .why-icon::after{content:'🏛️';}
-  .why-card:nth-child(3) .why-icon::after{content:'📱';}
-  .why-title{font-family:"DM Serif Display",serif;font-size:18px;color:var(--navy);margin-bottom:6px;line-height:1.25;}
-  .why-desc{font-size:13px;color:var(--muted);line-height:1.7;}
   .prog-hd{margin-bottom:28px;}
   .prog-hd .btn{width:100%;justify-content:center;}
   .prog-body{padding:18px;}
@@ -646,27 +624,49 @@ footer{background:var(--navy);padding:48px 24px 28px;}
 
 <!-- ── SECTION 3: WHY CMA — rewritten around the institution's actual identity ── -->
 <!-- FIXED: replaced generic "Learn Anywhere / Track Progress / Structured Learning" with
-     copy specific to sacred music education at Warri Diocese. These cards now say
-     something only CMA could say. -->
+<!-- ── WHY CMA ── -->
 <section class="sec why-sec">
   <div class="sec-inner">
-    <div class="label">Why CMA Online</div>
-    <h2 class="sec-title">Sacred music education, built for where you are</h2>
+    <div class="label" style="color:rgba(201,168,76,0.8);">Why CMA Online</div>
+    <h2 class="sec-title" style="color:white;">Sacred music education,<br>built for where you are</h2>
     <div class="why-grid">
       <div class="why-card">
-        <div class="why-icon">🎵</div>
-        <div class="why-title">Rooted in the Liturgy</div>
-        <div class="why-desc">Every module is built around the Catholic liturgical tradition — Gregorian chant, polyphony, choir direction, and the sacred calendar. This is not a generic music course adapted for the Church. It was designed for it.</div>
+        <div class="why-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="22" height="22">
+            <path d="M9 18V6l12-2v12" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="6" cy="18" r="3" stroke="#C9A84C" stroke-width="1.8"/>
+            <circle cx="18" cy="16" r="3" stroke="#C9A84C" stroke-width="1.8"/>
+          </svg>
+        </div>
+        <div class="why-body">
+          <div class="why-title">Rooted in the Liturgy</div>
+          <div class="why-desc">Every module is built around the Catholic liturgical tradition — Gregorian chant, polyphony, choir direction, and the sacred calendar. This is not a generic music course adapted for the Church. It was designed for it.</div>
+        </div>
       </div>
       <div class="why-card">
-        <div class="why-icon">🏛️</div>
-        <div class="why-title">A nationally recognised qualification</div>
-        <div class="why-desc">The Music Academy, Catholic Diocese of Warri, is approved by the Delta State Ministry of Higher Education to award the Certificate of Competence and National Diploma in Music, in affiliation with the Film and Broadcast Academy, Ozoro. Your credential is real and nationally recognised.</div>
+        <div class="why-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="22" height="22">
+            <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2Z" stroke="#C9A84C" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M8.5 12l2.5 2.5L15.5 9" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="why-body">
+          <div class="why-title">A nationally recognised qualification</div>
+          <div class="why-desc">Approved by the Delta State Ministry of Higher Education to award the Certificate of Competence and National Diploma in Music, in affiliation with the Film and Broadcast Academy, Ozoro. Your credential is real and nationally recognised.</div>
+        </div>
       </div>
       <div class="why-card">
-        <div class="why-icon">📱</div>
-        <div class="why-title">Designed for your phone</div>
-        <div class="why-desc">The portal is built mobile-first because that is how most students in Nigeria study. Your progress saves between sessions. The assessments, videos, and downloads all work on your handset without needing a computer.</div>
+        <div class="why-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="22" height="22">
+            <rect x="5" y="2" width="14" height="20" rx="2" stroke="#C9A84C" stroke-width="1.8"/>
+            <path d="M9 18h6" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round"/>
+            <circle cx="12" cy="18" r="0.5" fill="#C9A84C"/>
+          </svg>
+        </div>
+        <div class="why-body">
+          <div class="why-title">Designed for your phone</div>
+          <div class="why-desc">The portal is built mobile-first because that is how most students in Nigeria study. Your progress saves between sessions. Assessments, videos, and downloads all work on your handset — no computer needed.</div>
+        </div>
       </div>
     </div>
   </div>
