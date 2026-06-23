@@ -1483,16 +1483,17 @@ async function loadAllData() {
 }
 
 function updateBadges() {
-  var pending=allApplications.filter(a=>a.status==='pending').length;
+  var pending=allApplications.filter(function(a){return a.status==='pending';}).length;
   var atRisk=allStudents.filter(isAtRisk).length;
-  var navApp=document.getElementById('navApplications');
-  navApp.innerHTML='📋 Applications'+(pending>0?'<span class="nav-badge">'+pending+'</span>':'');
-  var navAt=document.getElementById('navAtrisk');
-  navAt.innerHTML='⚠️ At-Risk Students'+(atRisk>0?'<span class="nav-badge">'+atRisk+'</span>':'');
-  // Notif bell
-  var total=pending+atRisk;
+  var examReady=allEnrolments.filter(function(e){return ['complete','exam_scheduled','exam_passed'].includes(e.status);}).length;
+  // New tab badges
+  var appsBadge=document.getElementById('appsBadge');
+  if(appsBadge){if(pending>0){appsBadge.textContent=pending;appsBadge.style.display='inline';}else{appsBadge.style.display='none';}}
+  var erBadge=document.getElementById('examReadyBadge');
+  if(erBadge){if(examReady>0){erBadge.textContent=examReady;erBadge.style.display='inline';}else{erBadge.style.display='none';}}
   var bell=document.getElementById('notifCount');
-  if(bell) bell.textContent=total>0?total+' alerts':'';
+  var total=pending+examReady;
+  if(bell){if(total>0){bell.textContent=total;bell.style.display='inline';}else{bell.style.display='none';}}
 }
 function renderCurrentPage() {
   var r={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings,'grading':renderGrading,'adminaccounts':renderAdminAccounts,'accountsettings':renderAccountSettings,'paymentsettings':renderPaymentSettings,'courseprogress':renderCourseProgress};
