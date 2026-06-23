@@ -234,12 +234,14 @@ tr:hover td{background:var(--surface);cursor:pointer;}
 /* ── NEW TOP NAV & TABS ── */
 /* Override old sidebar layout */
 :root{--sidebar:0px !important;}
-#adminShell{flex-direction:column !important;}
+#adminShell{flex-direction:column !important;width:100% !important;max-width:100% !important;}
 .admin-layout{display:contents !important;}
 .sidebar{display:none !important;}
 .mob-menu-btn{display:none !important;}
 .mob-overlay{display:none !important;}
-.main{margin-left:0 !important;max-width:100% !important;padding:20px 14px !important;}
+.admin-nav{width:100% !important;box-sizing:border-box !important;}
+.admin-tabs{width:100% !important;box-sizing:border-box !important;}
+.main{margin-left:0 !important;max-width:100% !important;width:100% !important;box-sizing:border-box !important;padding:20px 14px !important;}
 @media(min-width:600px){.main{padding:24px 24px !important;}}
 @media(min-width:900px){.main{padding:28px 32px !important;}}
 
@@ -270,7 +272,9 @@ tr:hover td{background:var(--surface);cursor:pointer;}
 @media(min-width:600px){.ss-grid{grid-template-columns:1fr 1fr !important;}}
 @media(min-width:900px){.ss-grid{grid-template-columns:1fr 1fr 1fr !important;}}
 
-/* Course health grid */
+/* Settings sub-nav scrollable */
+#settingsSubNav{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap !important;}
+#settingsSubNav::-webkit-scrollbar{display:none;}
 .health-grid{grid-template-columns:1fr;}
 @media(min-width:600px){.health-grid{grid-template-columns:1fr 1fr;}}
 
