@@ -429,9 +429,11 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
       <button class="btn btn-secondary" style="font-size:13px;" onclick="showAddCourseModal()">+ Enrol in Another Programme</button>
     </div>
 
-    <div class="dash-section-label" style="margin-top:40px;">Other Courses Available</div>
+    <div id="otherCoursesSection" style="margin-top:40px;">
+    <div class="dash-section-label">Other Courses Available</div>
     <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Complete your current course and speak to your coordinator to enrol in any of the following programmes.</p>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;" id="otherCoursesList"></div>
+    </div>
   </div>
 </div>
 
@@ -1085,14 +1087,15 @@ function renderOtherCourses() {
     return !titleMatch && !idMatch;
   });
 
+  var otherSection = document.getElementById('otherCoursesSection');
   if (!others.length) {
-    container.innerHTML = '<p style="font-size:13px;color:var(--muted);">You are enrolled in all available courses. More courses coming soon.</p>';
-    // Hide the enrol button too
+    container.innerHTML = '';
+    if (otherSection) otherSection.style.display = 'none';
     var enrolBtn = document.getElementById('addProgBtnWrap');
     if (enrolBtn) enrolBtn.style.display = 'none';
     return;
   }
-  // Show enrol button if there are unenrolled courses
+  if (otherSection) otherSection.style.display = 'block';
   var enrolBtn = document.getElementById('addProgBtnWrap');
   if (enrolBtn) enrolBtn.style.display = 'block';
   container.innerHTML = others.map(function(c, i) {
