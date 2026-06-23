@@ -706,94 +706,13 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 <!-- SITE SETTINGS -->
 <div class="admin-page" id="page-sitesettings">
   <div class="page-header">
-    <div><div class="page-title">Site Settings</div><div class="page-sub">Edit the homepage mockup cards. Structure is fixed — all text content is editable here.</div></div>
+    <div><div class="page-title">Site Settings</div><div class="page-sub">Platform-wide settings. Changes take effect immediately.</div></div>
   </div>
 
-  <!-- TEST MODE TOGGLE -->
-  <div class="test-mode-bar" id="testModeBar">
-    <span class="test-mode-pill" id="testModePill">OFF</span>
-    <div style="flex:1;">
-      <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:2px;">Test / Demo Mode</div>
-      <div style="font-size:12px;color:var(--muted);">When ON — all emails carry a test disclaimer banner and [TEST] subject prefix. Student portal shows a test badge. Turn OFF before going live.</div>
-    </div>
-    <div class="pub-toggle" style="flex-shrink:0;">
-      <div class="pub-switch" id="testModeSwitch" onclick="toggleTestMode()"><div class="pub-switch-dot"></div></div>
-      <span style="font-size:12px;color:var(--muted);min-width:24px;" id="testModeLabel">Off</span>
-    </div>
-  </div>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;" class="ss-grid">
-
-    <!-- HERO MOCKUP PANEL -->
-    <div class="card">
-      <div class="form-section-title" style="margin-bottom:16px;">&#127968; Hero Card — CMA Student Portal</div>
-      <div class="alert alert-info" style="margin-bottom:16px;font-size:12px;">This is the dashboard mockup shown in the hero on the homepage. Edit the course name, progress, and each module row.</div>
-
-      <div class="form-group">
-        <label class="form-label">Course Name</label>
-        <input class="form-input" id="ss_h_course" placeholder="e.g. Liturgical Music Foundations"/>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Progress % (number only)</label>
-        <input class="form-input" id="ss_h_progress" type="number" min="0" max="100" placeholder="78"/>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Up Next Label</label>
-        <input class="form-input" id="ss_h_next" placeholder="e.g. Module 4 Quiz"/>
-      </div>
-
-      <div style="margin-bottom:8px;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:8px;">Module Rows (6)</div>
-      <div id="ss_hero_modules"></div>
-
-      <div id="ss_hero_msg" style="display:none;background:var(--ok-light);border:1px solid #86EFAC;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--ok);margin-top:12px;"></div>
-      <button class="btn btn-primary" style="margin-top:14px;width:100%;" onclick="saveSiteSettings('hero')">Save Hero Card</button>
-    </div>
-
-    <!-- PORTAL MOCKUP PANEL -->
-    <div class="card">
-      <div class="form-section-title" style="margin-bottom:16px;">&#128187; Portal Card — catholicmusicacademy.net</div>
-      <div class="alert alert-info" style="margin-bottom:16px;font-size:12px;">This is the portal mockup in the "Inside the Student Portal" section. Edit the URL shown and each module row.</div>
-
-      <div class="form-group">
-        <label class="form-label">URL shown in browser bar</label>
-        <input class="form-input" id="ss_p_url" placeholder="catholicmusicacademy.net"/>
-      </div>
-
-      <div style="margin-bottom:8px;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:8px;">Module Rows (4)</div>
-      <div id="ss_portal_modules"></div>
-
-      <div id="ss_portal_msg" style="display:none;background:var(--ok-light);border:1px solid #86EFAC;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--ok);margin-top:12px;"></div>
-      <button class="btn btn-primary" style="margin-top:14px;width:100%;" onclick="saveSiteSettings('portal')">Save Portal Card</button>
-    </div>
-
-  </div>
-
-  <!-- CONTACT DROPDOWN PANEL -->
-  <div class="card" style="margin-top:20px;">
-    <div class="form-section-title" style="margin-bottom:6px;">&#128222; Contact Dropdown</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">These values appear in the Contact dropdown in the top navigation of the homepage — on both desktop (hover) and mobile (tap). Update here and save.</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;" class="ss-grid">
-      <div class="form-group" style="margin-bottom:0;">
-        <label class="form-label">Email Address</label>
-        <input class="form-input" id="ss_contact_email" placeholder="musicacademywarri@gmail.com"/>
-      </div>
-      <div class="form-group" style="margin-bottom:0;">
-        <label class="form-label">WhatsApp / Phone</label>
-        <input class="form-input" id="ss_contact_whatsapp" placeholder="+234 801 234 5678"/>
-      </div>
-      <div class="form-group" style="margin-bottom:0;">
-        <label class="form-label">Location</label>
-        <input class="form-input" id="ss_contact_location" placeholder="Catholic Diocese of Warri, Ozoro"/>
-      </div>
-    </div>
-    <div id="ss_contact_msg" style="display:none;background:var(--ok-light);border:1px solid #86EFAC;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--ok);margin-top:12px;"></div>
-    <button class="btn btn-primary" style="margin-top:14px;" onclick="saveSiteSettings('contact')">Save Contact Info</button>
-  </div>
-
-  <!-- DIRECTOR PANEL -->
-  <div class="card" style="margin-top:20px;">
-    <div class="form-section-title" style="margin-bottom:6px;">&#9997;&#65039; Director Details</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Used automatically in completion cards, completion emails, and official documents. Update here when the Director changes — no code needed.</div>
+  <!-- DIRECTOR DETAILS — critical for certificates and emails -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title" style="margin-bottom:4px;">✍️ Director Details</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Used automatically in completion cards, emails, and certificates. Update when the Director changes — no code needed.</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="ss-grid">
       <div class="form-group" style="margin-bottom:0;">
         <label class="form-label">Director Full Name</label>
@@ -807,6 +726,73 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
     <div id="ss_director_msg" style="display:none;background:var(--ok-light);border:1px solid #86EFAC;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--ok);margin-top:12px;"></div>
     <button class="btn btn-primary" style="margin-top:14px;" onclick="saveSiteSettings('director')">Save Director Details</button>
   </div>
+
+  <!-- CONTACT INFO — shown on homepage and used in footer -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title" style="margin-bottom:4px;">📞 Contact Information</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Shown in the homepage footer and navigation contact dropdown.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;" class="ss-grid">
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" id="ss_contact_email" placeholder="musicacademywarri@gmail.com"/>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">WhatsApp Number</label>
+        <input class="form-input" id="ss_contact_whatsapp" placeholder="+2347019711157"/>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Location</label>
+        <input class="form-input" id="ss_contact_location" placeholder="Ozoro, Delta State, Nigeria"/>
+      </div>
+    </div>
+    <div id="ss_contact_msg" style="display:none;background:var(--ok-light);border:1px solid #86EFAC;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--ok);margin-top:12px;"></div>
+    <button class="btn btn-primary" style="margin-top:14px;" onclick="saveSiteSettings('contact')">Save Contact Info</button>
+  </div>
+
+  <!-- HOMEPAGE DISPLAY — developer/master only, collapsible -->
+  <details style="margin-top:4px;">
+    <summary style="font-size:12px;color:var(--muted);cursor:pointer;padding:10px 0;font-weight:600;">▸ Homepage Display Settings (advanced)</summary>
+    <div style="margin-top:12px;">
+      <div class="alert alert-info" style="margin-bottom:16px;font-size:12px;">These control the demo screenshots shown on the public homepage. The school typically only sets these once during setup.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;" class="ss-grid">
+
+        <!-- HERO MOCKUP -->
+        <div class="card">
+          <div class="form-section-title" style="margin-bottom:12px;">🏠 Hero Card — Student Portal Preview</div>
+          <div class="form-group">
+            <label class="form-label">Course Name</label>
+            <input class="form-input" id="ss_h_course" placeholder="e.g. Liturgical Music Foundations"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Progress %</label>
+            <input class="form-input" id="ss_h_progress" type="number" min="0" max="100" placeholder="78"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Up Next Label</label>
+            <input class="form-input" id="ss_h_next" placeholder="e.g. Module 4 Quiz"/>
+          </div>
+          <div style="margin-bottom:8px;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;">Module Rows (6)</div>
+          <div id="ss_hero_modules"></div>
+          <div id="ss_hero_msg" style="display:none;background:var(--ok-light);border:1px solid #86EFAC;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--ok);margin-top:12px;"></div>
+          <button class="btn btn-primary" style="margin-top:14px;width:100%;" onclick="saveSiteSettings('hero')">Save Hero Card</button>
+        </div>
+
+        <!-- PORTAL MOCKUP -->
+        <div class="card">
+          <div class="form-section-title" style="margin-bottom:12px;">💻 Portal Card — Inside the Portal Preview</div>
+          <div class="form-group">
+            <label class="form-label">URL shown in browser bar</label>
+            <input class="form-input" id="ss_p_url" placeholder="catholicmusicacademy.net"/>
+          </div>
+          <div style="margin-bottom:8px;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;">Module Rows (4)</div>
+          <div id="ss_portal_modules"></div>
+          <div id="ss_portal_msg" style="display:none;background:var(--ok-light);border:1px solid #86EFAC;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--ok);margin-top:12px;"></div>
+          <button class="btn btn-primary" style="margin-top:14px;width:100%;" onclick="saveSiteSettings('portal')">Save Portal Card</button>
+        </div>
+
+      </div>
+    </div>
+  </details>
 
 </div>
 
@@ -1705,8 +1691,8 @@ async function approveApp(id) {
     if (a.email) {
       var emailEndpoint = a.type === 'additional' ? '/api/course-added' : '/api/admission-approved';
       var emailBody = a.type === 'additional'
-        ? {to:a.email, firstName:a.first_name, programme:a.programme, testMode:SS_CACHE['testing_mode']==='true'}
-        : {to:a.email, firstName:a.first_name, programme:a.programme, ref:a.ref||('CMA-'+id.slice(-6).toUpperCase()), testMode:SS_CACHE['testing_mode']==='true'};
+        ? {to:a.email, firstName:a.first_name, programme:a.programme, testMode:false}
+        : {to:a.email, firstName:a.first_name, programme:a.programme, ref:a.ref||('CMA-'+id.slice(-6).toUpperCase()), testMode:false};
       fetch(emailEndpoint, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(emailBody)}).catch(function(){});
     }
 
@@ -1792,7 +1778,7 @@ async function confirmReject(id) {
           ref: a.ref || '',
           reason: finalReason,
           note: finalNote,
-          testMode: SS_CACHE['testing_mode'] === 'true'
+          testMode: false
         })
       }).catch(function(e){ console.warn('Rejection email failed:',e); });
     }
@@ -2508,7 +2494,10 @@ function renderCMEditor(courseId, modIdx, key, row) {
     +'<div class="me-section"><div class="me-section-title">🎬 01 — Video Lesson</div>'
     +'<div class="form-group"><label class="form-label">YouTube Embed URL</label>'
     +'<input class="form-input" id="cm_video" value="'+(row.video_url||'')+'" placeholder="https://www.youtube.com/embed/VIDEO_ID"/>'
-    +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">YouTube → Share → Embed → copy the src URL only</div></div></div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">YouTube → Share → Embed → copy the src URL only</div></div>'
+    +'<div class="form-group"><label class="form-label">Video Duration (minutes)</label>'
+    +'<input class="form-input" id="cm_videoDuration" type="number" min="0" step="0.5" value="'+(row.video_duration_mins||'')+'" placeholder="e.g. 12" style="max-width:140px;"/>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">Added to the student reading timer. Leave blank if no video.</div></div></div>'
 
     // SECTION 2: Audio Tracks
     +'<div class="me-section"><div class="me-section-title">🎵 02 — Audio Tracks</div>'
@@ -2540,14 +2529,27 @@ function renderCMEditor(courseId, modIdx, key, row) {
       return types.map(function(t){
         var sel=(row.assessment_type||'mcq')===t[0];
         return '<label style="display:flex;align-items:center;gap:6px;padding:8px 12px;border:1.5px solid '+(sel?'var(--navy)':'var(--border)')+';border-radius:8px;cursor:pointer;background:'+(sel?'var(--navy-pale)':'white')+';font-size:12px;font-weight:600;">'
-          +'<input type="radio" name="asmType" value="'+t[0]+'" '+(sel?'checked':'')+' onchange="cmState.assessmentType=this.value;renderCMQuestions();" style="accent-color:var(--navy);"/>'+t[1]+'</label>';
+          +'<input type="radio" name="asmType" value="'+t[0]+'" '+(sel?'checked':'')+' onchange="cmState.assessmentType=this.value;renderCMWeights();renderCMQuestions();" style="accent-color:var(--navy);"/>'+t[1]+'</label>';
       }).join('');
     })()
     +'</div>'
+    // Section weights — only for mixed type
+    +'<div id="cm_weightsPanel" style="display:'+(((row.assessment_type||'mcq')==='mixed')?'block':'none')+';background:var(--navy-pale);border-radius:10px;padding:14px;margin-bottom:14px;">'
+    +'<div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Section Weighting</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px;">'
+    +'<div class="form-group" style="margin-bottom:0;"><label class="form-label">MCQ Weight (%)</label>'
+    +'<input class="form-input" id="cm_mcqWeight" type="number" min="1" max="99" value="'+(row.mcq_weight||50)+'" oninput="updateWrittenWeight()" style="padding:8px 11px;font-size:15px;font-weight:700;"/>'
+    +'</div>'
+    +'<div class="form-group" style="margin-bottom:0;"><label class="form-label">Written Weight (%)</label>'
+    +'<div style="background:white;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:15px;font-weight:700;color:var(--navy);" id="cm_writtenWeightDisplay">'+(100-(row.mcq_weight||50))+'%</div>'
+    +'<input type="hidden" id="cm_writtenWeight" value="'+(100-(row.mcq_weight||50))+'"/>'
+    +'</div></div>'
+    +'<div style="font-size:11px;color:var(--muted);">Weights must total 100%. Written weight is calculated automatically. Example: MCQ 30% + Written 70%.</div>'
+    +'</div>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'
-    +'<div class="form-group" style="margin-bottom:0;"><label class="form-label">Pass Mark (%)</label>'
-    +'<input class="form-input" id="cm_passMark" type="number" min="1" max="100" value="'+(row.pass_mark||100)+'" style="padding:8px 11px;"/>'
-    +'<div style="font-size:11px;color:var(--muted);margin-top:3px;">Applies to combined MCQ + Written score</div></div>'
+    +'<div class="form-group" style="margin-bottom:0;"><label class="form-label">Pass Mark</label>'
+    +'<div style="background:var(--navy-pale);border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:15px;font-weight:700;color:var(--navy);">'+(cohortSettings&&cohortSettings.pass_mark?cohortSettings.pass_mark:70)+'%</div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">Platform standard — change in <a href="#" onclick="goTab(\'cohort\')" style="color:var(--navy);">Settings → Cohort</a></div></div>'
     +'<div class="form-group" style="margin-bottom:0;"><label class="form-label">Max Attempts</label>'
     +'<input class="form-input" id="cm_maxAttempts" type="number" min="0" value="'+(row.max_attempts||0)+'" style="padding:8px 11px;"/>'
     +'<div style="font-size:11px;color:var(--muted);margin-top:3px;">0 = unlimited</div></div>'
@@ -2576,11 +2578,27 @@ function rteExec(cmd, val) {
   document.execCommand(cmd, false, val||null);
 }
 
+function renderCMWeights() {
+  var panel = document.getElementById('cm_weightsPanel');
+  if (!panel) return;
+  panel.style.display = cmState.assessmentType === 'mixed' ? 'block' : 'none';
+}
+
+function updateWrittenWeight() {
+  var mcqW = parseInt((document.getElementById('cm_mcqWeight')||{}).value||50);
+  mcqW = Math.max(1, Math.min(99, mcqW));
+  var writtenW = 100 - mcqW;
+  var display = document.getElementById('cm_writtenWeightDisplay');
+  var hidden = document.getElementById('cm_writtenWeight');
+  if (display) display.textContent = writtenW + '%';
+  if (hidden) hidden.value = writtenW;
+}
+
+
 function toggleCMPublish() {
   cmState.published = !cmState.published;
   var sw = document.getElementById('cmPubSwitch');
   var lb = document.getElementById('cmPubLabel');
-  if (sw) sw.classList.toggle('on', cmState.published);
   if (lb) lb.textContent = cmState.published ? 'Published' : 'Draft';
 }
 
@@ -2772,9 +2790,12 @@ async function saveCMModule(key) {
   if (asmTypeRadio) assessmentType = asmTypeRadio.value;
 
   var videoUrl = (document.getElementById('cm_video')||{}).value||'';
+  var videoDuration = parseFloat((document.getElementById('cm_videoDuration')||{}).value)||null;
   var moduleTopic = (document.getElementById('cm_topic')||{}).value||'';
-  var passMark = parseInt((document.getElementById('cm_passMark')||{}).value)||100;
+  var passMark = cohortSettings && cohortSettings.pass_mark ? cohortSettings.pass_mark : 70;
   var maxAttempts = parseInt((document.getElementById('cm_maxAttempts')||{}).value)||0;
+  var mcqWeight = assessmentType === 'mixed' ? (parseInt((document.getElementById('cm_mcqWeight')||{}).value)||50) : null;
+  var writtenWeight = assessmentType === 'mixed' ? (100 - (mcqWeight||50)) : null;
   var audioTracks = collectAudioTracks();
   var downloads = collectDownloads();
 
@@ -2787,6 +2808,7 @@ async function saveCMModule(key) {
     module_title: m.title,
     module_topic: moduleTopic,
     video_url: videoUrl,
+    video_duration_mins: videoDuration,
     audio_tracks: JSON.stringify(audioTracks),
     downloads: JSON.stringify(downloads),
     reading_html: html,
@@ -2794,6 +2816,8 @@ async function saveCMModule(key) {
     assessment_type: assessmentType,
     pass_mark: passMark,
     max_attempts: maxAttempts,
+    mcq_weight: mcqWeight,
+    written_weight: writtenWeight,
     published: cmState.published,
     updated_at: new Date().toISOString()
   };
@@ -3172,18 +3196,7 @@ async function renderSiteSettings() {
   }
 
   // Load and apply testing mode state
-  var isTestMode = SS_CACHE['testing_mode'] === 'true';
-  var sw = document.getElementById('testModeSwitch');
-  var lbl = document.getElementById('testModeLabel');
-  var pill = document.getElementById('testModePill');
-  var banner = document.getElementById('testModeBanner');
-  var bar = document.getElementById('testModeBar');
-  if (sw) sw.classList.toggle('on', isTestMode);
-  if (lbl) lbl.textContent = isTestMode ? 'On' : 'Off';
   if (pill) { pill.textContent = isTestMode ? 'ON' : 'OFF'; pill.style.background = isTestMode ? '#DC2626' : '#94A3B8'; }
-  if (banner) banner.classList.toggle('on', isTestMode);
-  if (bar) bar.style.borderColor = isTestMode ? '#DC2626' : 'var(--border)';
-
   // Populate contact fields
   var cEmail = document.getElementById('ss_contact_email');
   var cWa = document.getElementById('ss_contact_whatsapp');
@@ -3220,37 +3233,6 @@ async function renderSiteSettings() {
   }
 }
 
-async function toggleTestMode() {
-  var current = SS_CACHE['testing_mode'] === 'true';
-  var next = !current;
-  try {
-    var res = await fetch(SUPA_URL + '/rest/v1/site_settings?on_conflict=key', {
-      method: 'POST',
-      headers: {
-        'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates,return=minimal'
-      },
-      body: JSON.stringify([{key:'testing_mode', value: String(next), updated_at: new Date().toISOString()}])
-    });
-    if (!res.ok) throw new Error(await res.text());
-    SS_CACHE['testing_mode'] = String(next);
-    // Update UI
-    var sw = document.getElementById('testModeSwitch');
-    var lbl = document.getElementById('testModeLabel');
-    var pill = document.getElementById('testModePill');
-    var banner = document.getElementById('testModeBanner');
-    var bar = document.getElementById('testModeBar');
-    if (sw) sw.classList.toggle('on', next);
-    if (lbl) lbl.textContent = next ? 'On' : 'Off';
-    if (pill) { pill.textContent = next ? 'ON' : 'OFF'; pill.style.background = next ? '#DC2626' : '#94A3B8'; }
-    if (banner) banner.classList.toggle('on', next);
-    if (bar) bar.style.borderColor = next ? '#DC2626' : 'var(--border)';
-    showToast(next ? 'Test Mode ON — emails will carry disclaimer.' : 'Test Mode OFF — emails are live.');
-  } catch(e) {
-    showToast('Error saving test mode: '+e.message, 'err');
-  }
-}
 
 async function saveSiteSettings(panel) {
   var pairs = [];
@@ -3465,7 +3447,7 @@ async function renderGrading() {
             +'<div style="font-size:13px;color:var(--text);background:var(--surface);border-radius:8px;padding:10px 12px;line-height:1.65;margin-bottom:10px;white-space:pre-wrap;">'+escQ(w.response||'(No response)')+'</div>'
             +'<div style="display:flex;align-items:center;gap:8px;">'
             +'<label style="font-size:12px;font-weight:600;color:var(--muted);">Score:</label>'
-            +'<input type="number" min="0" max="'+w.marks+'" placeholder="0" id="wscore-'+r.id+'-'+wi+'" style="width:70px;border:1.5px solid var(--border);border-radius:7px;padding:6px 10px;font-size:13px;font-family:DM Sans,sans-serif;" oninput="updateGradingLive(\''+r.id+'\','+r.mcq_score+','+r.mcq_total+','+totalWrittenMarks+')"/>'
+            +'<input type="number" min="0" max="'+w.marks+'" value="0" id="wscore-'+r.id+'-'+wi+'" style="width:70px;border:1.5px solid var(--border);border-radius:7px;padding:6px 10px;font-size:13px;font-family:DM Sans,sans-serif;" oninput="updateGradingLive(\''+r.id+'\','+r.mcq_score+','+r.mcq_total+','+totalWrittenMarks+','+(r.mcq_weight||50)+','+(r.written_weight||50)+')"/>'
             +'<span style="font-size:12px;color:var(--muted);">/ '+w.marks+' marks</span>'
             +'</div>'
             +'</div>';
@@ -3506,44 +3488,42 @@ async function renderGrading() {
 }
 
 
-function updateGradingLive(id, mcqScore, mcqTotal, writtenTotal) {
-  // Sum all written score inputs for this submission
+function updateGradingLive(id, mcqScore, mcqTotal, writtenTotal, mcqWeight, writtenWeight) {
   var writtenScore = 0, wi = 0;
   while (document.getElementById('wscore-'+id+'-'+wi)) {
     writtenScore += parseInt((document.getElementById('wscore-'+id+'-'+wi)||{}).value||0);
     wi++;
   }
-  var combined = mcqScore + writtenScore;
-  var total = mcqTotal + writtenTotal;
-  var pct = total > 0 ? Math.round((combined/total)*100) : 0;
-  var passMark = cohortSettings && cohortSettings.pass_mark ? cohortSettings.pass_mark : 50;
-  var isPassing = pct >= passMark;
 
-  // Update written total display
-  var wtEl = document.getElementById('wtotal-'+id);
-  if (wtEl) wtEl.textContent = writtenScore + ' / ' + writtenTotal;
-
-  // Show live combined score
   var summaryEl = document.getElementById('glive-'+id);
-  if (summaryEl) {
-    summaryEl.textContent = 'Combined: ' + combined + ' / ' + total + ' (' + pct + '%) — ' + (isPassing ? '✓ PASS' : '✗ FAIL');
-    summaryEl.style.color = isPassing ? 'var(--ok)' : 'var(--danger)';
-    summaryEl.style.fontWeight = '700';
+  var passMark = cohortSettings && cohortSettings.pass_mark ? cohortSettings.pass_mark : 70;
+
+  // Weighted scoring — only when both sections exist AND weights are defined
+  var isWeighted = mcqTotal > 0 && writtenTotal > 0 && mcqWeight > 0 && writtenWeight > 0;
+  var pct, displayText;
+
+  if (isWeighted) {
+    var mcqPct = mcqTotal > 0 ? (mcqScore / mcqTotal * 100) : 0;
+    var writtenPct = writtenTotal > 0 ? (writtenScore / writtenTotal * 100) : 0;
+    pct = Math.round((mcqPct * mcqWeight / 100) + (writtenPct * writtenWeight / 100));
+    displayText = 'MCQ: '+Math.round(mcqPct)+'% × '+mcqWeight+'% + Written: '+Math.round(writtenPct)+'% × '+writtenWeight+'% = '+pct+'% weighted';
+  } else {
+    // Fallback: raw marks combined
+    var combined = mcqScore + writtenScore;
+    var total = mcqTotal + writtenTotal;
+    pct = total > 0 ? Math.round((combined / total) * 100) : 0;
+    displayText = 'Combined: '+combined+' / '+total+' ('+pct+'%)';
   }
 
-  // Auto-update email template
-  var emailEl = document.getElementById('gemail-body-'+id);
-  if (emailEl) {
-    var body = emailEl.value;
-    var resultWord = isPassing ? 'PASSED' : 'NOT YET PASSED';
-    var comment = (document.getElementById('gcomment-'+id)||{}).value || '';
-    body = body.replace(/Result: .*/,'Result: ' + resultWord)
-               .replace(/Score: .* \/ .*/,'Score: ' + combined + ' / ' + total)
-               .replace(/\[Comments\]/, comment || '[Comments]')
-               .replace(/\[PASS\/FAIL\]/, resultWord)
-               .replace(/\[X\]/, combined)
-               .replace(/\[Total\]/, total);
-    emailEl.value = body;
+  var isPassing = pct >= passMark;
+  if (summaryEl) {
+    summaryEl.innerHTML = displayText + ' — <strong style="color:'+(isPassing?'var(--ok)':'var(--danger)')+';">'+(isPassing?'✓ PASS':'✗ FAIL')+'</strong>';
+    summaryEl.style.color = 'var(--text)';
+    summaryEl.style.fontWeight = '600';
+    summaryEl.style.background = isPassing ? 'var(--ok-light)' : '#FEF2F2';
+    summaryEl.style.border = '1.5px solid '+(isPassing?'#86EFAC':'#FECACA');
+    summaryEl.style.borderRadius = '8px';
+    summaryEl.style.padding = '10px 14px';
   }
 }
 
@@ -3571,8 +3551,28 @@ async function gradeSubmission(id, result, mcqScore, mcqTotal, writtenTotal, ema
     writtenScore += parseInt((document.getElementById('wscore-'+id+'-'+wi)||{}).value||0);
     wi++;
   }
-  var combinedScore = mcqScore + writtenScore;
-  var combinedTotal = mcqTotal + writtenTotal;
+  var combinedScore, combinedTotal, weightedPct;
+  var isWeighted = mcqTotal > 0 && writtenTotal > 0;
+
+  if (isWeighted) {
+    // Fetch weights from the submission record (stored when module was saved)
+    var subRecord = null;
+    try {
+      var subRes = await sb('assessment_submissions','GET',null,'id=eq.'+id+'&select=mcq_weight,written_weight');
+      subRecord = subRes && subRes[0] ? subRes[0] : null;
+    } catch(e){}
+    var mcqW = subRecord && subRecord.mcq_weight ? subRecord.mcq_weight : 50;
+    var wrtW = subRecord && subRecord.written_weight ? subRecord.written_weight : (100 - mcqW);
+    var mcqPct = mcqTotal > 0 ? (mcqScore / mcqTotal * 100) : 0;
+    var writtenPct = writtenTotal > 0 ? (writtenScore / writtenTotal * 100) : 0;
+    weightedPct = Math.round((mcqPct * mcqW / 100) + (writtenPct * wrtW / 100));
+    combinedScore = weightedPct; // store as weighted % for clarity
+    combinedTotal = 100;
+  } else {
+    combinedScore = mcqScore + writtenScore;
+    combinedTotal = mcqTotal + writtenTotal;
+    weightedPct = combinedTotal > 0 ? Math.round((combinedScore / combinedTotal) * 100) : 0;
+  }
   var comment = (document.getElementById('gcomment-'+id)||{}).value||'';
   var emailSubj = (document.getElementById('gemail-subj-'+id)||{}).value||'Your Assessment Result';
   var emailBody = (document.getElementById('gemail-body-'+id)||{}).value||'';
@@ -3622,7 +3622,7 @@ async function gradeSubmission(id, result, mcqScore, mcqTotal, writtenTotal, ema
             total: combinedTotal,
             moduleIndex: modIdx,
             comments: comment,
-            testMode: SS_CACHE['testing_mode'] === 'true'
+            testMode: false
           })
         });
       } catch(emailErr){ console.warn('Email send failed:', emailErr); }
