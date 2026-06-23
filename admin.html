@@ -2097,7 +2097,7 @@ function openStudentDetail(sid) {
 function showStudentTab(el, idx) {
   document.querySelectorAll('#page-student-detail .tab').forEach(function(t){t.classList.remove('active');});
   el.classList.add('active');
-  [0,1,2].forEach(function(i){
+  [0,1,2,3].forEach(function(i){
     var el2=document.getElementById('sd'+i);
     if(el2) el2.style.display=i===idx?'block':'none';
   });
