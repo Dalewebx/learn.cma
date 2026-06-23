@@ -794,14 +794,14 @@ function renderDashboard() {
       if (completedEnrols.length) {
         html += '<div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#16A34A;margin:'+(activeEnrols.length?'20px':'0')+'px 0 10px;">🎓 Exam Ready</div>';
         html += completedEnrols.map(function(e) {
-          return '<div class="course-card" style="margin-bottom:12px;border-color:#16A34A;" data-cid="'+e.course_id+'" data-prog="'+e.programme.replace(/"/g,'&quot;')+'" onclick="switchCourse(this.dataset.cid,this.dataset.prog)">'
+          return '<div class="course-card" style="margin-bottom:12px;border-color:#16A34A;background:linear-gradient(135deg,#F0FDF4 0%,#DCFCE7 100%);" data-cid="'+e.course_id+'" data-prog="'+e.programme.replace(/"/g,'&quot;')+'" onclick="switchCourse(this.dataset.cid,this.dataset.prog)">'
             +'<div class="course-card-band" style="background:linear-gradient(90deg,#16A34A,#86EFAC);"></div>'
             +'<div class="course-card-body">'
             +'<div class="course-status-pill" style="background:#DCFCE7;color:#16A34A;">🎓 Exam Ready</div>'
-            +'<div class="course-card-title">'+e.programme+'</div>'
-            +'<div style="font-size:12px;color:var(--muted);margin-top:4px;">All modules complete · Awaiting final examination</div>'
+            +'<div class="course-card-title" style="color:#14532D;">'+e.programme+'</div>'
+            +'<div style="font-size:12px;color:#16A34A;margin-top:4px;">All modules complete · Awaiting final examination</div>'
             +'</div>'
-            +'<div class="course-card-cta" style="background:#F0FDF4;"><div class="course-card-cta-text" style="color:#16A34A;">Review Course →</div></div>'
+            +'<div class="course-card-cta" style="background:#BBF7D0;border-left-color:#16A34A;"><div class="course-card-cta-text" style="color:#15803D;">Review Course →</div></div>'
             +'</div>';
         }).join('');
       }
