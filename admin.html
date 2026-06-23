@@ -1469,7 +1469,17 @@ async function loadAllData() {
     }
     updateBadges();
     renderCurrentPage();
-  } catch(e) { showToast('Error loading data: '+e.message,'err'); }
+  } catch(e) { 
+    var msg = 'Error loading data: ' + e.message;
+    if (e.stack) msg += '\n' + e.stack.split('\n').slice(0,4).join('\n');
+    showToast(msg, 'err');
+    // Also show on screen
+    var div = document.getElementById('_errDisplay') || document.createElement('div');
+    div.id = '_errDisplay';
+    div.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#DC2626;color:white;font-size:11px;font-family:monospace;padding:10px 14px;z-index:99999;max-height:50vh;overflow-y:auto;white-space:pre-wrap;';
+    div.textContent = msg;
+    document.body.appendChild(div);
+  }
 }
 
 function updateBadges() {
@@ -3574,6 +3584,20 @@ function showToast(msg,type='ok'){
   t.textContent=msg;document.body.appendChild(t);
   setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity 0.3s';setTimeout(()=>t.remove(),300);},3000);
 }
+
+// ── ON-SCREEN ERROR CATCHER (remove before production) ──────────────────────
+window.onerror = function(msg, src, line, col, err) {
+  var div = document.getElementById('_errDisplay');
+  if (!div) {
+    div = document.createElement('div');
+    div.id = '_errDisplay';
+    div.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#DC2626;color:white;font-size:12px;font-family:monospace;padding:10px 14px;z-index:99999;max-height:40vh;overflow-y:auto;';
+    document.body.appendChild(div);
+  }
+  var srcShort = (src||'').replace(/.*academy-management/,'admin');
+  div.innerHTML += '<div style="border-bottom:1px solid rgba(255,255,255,0.3);padding:4px 0;">⚠ ' + msg + ' — ' + srcShort + ':' + line + '</div>';
+  return false;
+};
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 (function(){
