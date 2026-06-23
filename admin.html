@@ -1413,20 +1413,48 @@ function adminLogout() {
 }
 
 // ── NAVIGATION ───────────────────────────────────────────────────────────────
-function goPage(id) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  currentPage=id;
-  document.querySelectorAll('.nav-item').forEach(n=>{
-    if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
-  });
-  var renders={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings,'grading':renderGrading,'adminaccounts':renderAdminAccounts,'accountsettings':renderAccountSettings,'paymentsettings':renderPaymentSettings,'courseprogress':renderCourseProgress};
-  if(id==='courses'){
-    cmState.selectedModule=null;
-    renderCourses();
-  } else if(renders[id]) { renders[id](); }
+var currentSettingsTabNav = 'cohort';
+
+function goTab(id) {
+  // Settings sub-pages keep Settings tab highlighted
+  var settingsPages = ['cohort','sitesettings','adminaccounts','accountsettings','paymentsettings','devtools'];
+  var tabId = settingsPages.includes(id) ? 'settings' : id;
+
+  // Hide all pages
+  document.querySelectorAll('.admin-page').forEach(function(p){ p.classList.remove('active'); });
+
+  // Show target page
+  var pageEl = document.getElementById('page-'+id);
+  if (pageEl) { pageEl.classList.add('active'); }
+
+  // Update tab highlights
+  document.querySelectorAll('.admin-tab').forEach(function(t){ t.classList.remove('active'); });
+  var tabEl = document.getElementById('tab-'+tabId);
+  if (tabEl) tabEl.classList.add('active');
+
+  currentPage = id;
+
+  // Render
+  var renders = {
+    'dashboard':renderDashboard,'students':renderStudents,'examready':renderExamReady,
+    'applications':renderApplications,'grading':renderGrading,'analytics':renderAnalytics,
+    'progress':renderProgress,'atrisk':renderAtrisk,'announcements':renderAnnouncements,
+    'feedback':renderFeedback,'courseprogress':renderCourseProgress,
+    'cohort':renderCohort,'sitesettings':renderSiteSettings,
+    'adminaccounts':renderAdminAccounts,'accountsettings':renderAccountSettings,
+    'paymentsettings':renderPaymentSettings
+  };
+  if (id === 'courses') { cmState.selectedModule=null; renderCourses(); }
+  else if (id === 'settings') { if(typeof setSettingsTab==='function') setSettingsTab(currentSettingsTabNav); else renderCohort(); }
+  else if (renders[id]) { renders[id](); }
+
+  window.scrollTo({top:0,behavior:'smooth'});
 }
+
+// Alias — old code uses goPage
+function goPage(id) { goTab(id); }
+
+
 
 // ── DATA LOAD ────────────────────────────────────────────────────────────────
 async function loadAllData() {
