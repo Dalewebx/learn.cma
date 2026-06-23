@@ -103,6 +103,10 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
 .module-card.mc-active:hover{border-color:var(--blue-mid);box-shadow:0 4px 16px rgba(26,46,108,0.14);transform:translateY(-1px);}
 .module-card.mc-done-card{border-color:rgba(22,163,74,0.3);background:var(--ok-light);}
 .module-card.mc-locked{opacity:0.4;cursor:not-allowed;background:var(--surface);border-color:var(--border);}
+.module-card.mc-pending-card{border-color:rgba(201,168,76,0.4);background:#FBF3DF;cursor:pointer;}
+.module-card.mc-pending-card:hover{border-color:var(--gold);box-shadow:0 4px 16px rgba(201,168,76,0.15);transform:translateY(-1px);}
+.mc-pending-num{background:var(--gold);color:var(--navy);}
+.s-pending{background:#FBF3DF;color:#92680A;border-color:rgba(201,168,76,0.4);}
 .mc-num{width:56px;background:var(--navy);display:flex;align-items:center;justify-content:center;font-family:DM Serif Display,serif;font-size:20px;color:white;flex-shrink:0;}
 .mc-num.mc-done{background:var(--ok);}
 .mc-locked .mc-num{background:var(--dim);}
@@ -727,6 +731,7 @@ function togglePass() {
 
 var currentStudent = null;
 var completedModules = [];
+var pendingModules = []; // modules submitted for grading, awaiting instructor review
 var currentMod = 0;
 var shownQuestions = [];
 var writtenAnswers = {};
@@ -1514,7 +1519,7 @@ function logout() {
     }).catch(function(){});
   }
   clearSession();
-  currentStudent = null; completedModules = []; currentMod = 0;
+  currentStudent = null; completedModules = []; pendingModules = []; currentMod = 0;
   answers = {}; submitted = false; timerDone = false; scrollDone = false;
   if (timerInterval) clearInterval(timerInterval);
   document.getElementById('topbar').style.display = 'none';
@@ -1588,7 +1593,20 @@ async function loadProgress() {
     completedModules = completedModules.filter(function(v,i,a){ return a.indexOf(v)===i; });
     // Always sync session to DB state
     saveSession(currentStudent, CURRENT_COURSE, completedModules);
-  } catch(e) { completedModules = []; }
+
+    // Also fetch pending written submissions — student is waiting for grading
+    try {
+      var courseId2 = CURRENT_COURSE ? CURRENT_COURSE.id : null;
+      var pendingQ = 'student_id=eq.'+currentStudent.id+'&status=eq.pending&select=module_index,course_id';
+      if (courseId2) pendingQ += '&course_id=eq.'+courseId2;
+      var pendingRows = await sbGet('assessment_submissions', pendingQ);
+      pendingModules = (pendingRows||[])
+        .map(function(r){ return r.module_index; })
+        .filter(function(v){ return !completedModules.includes(v); }); // exclude already completed
+      pendingModules = pendingModules.filter(function(v,i,a){ return a.indexOf(v)===i; });
+    } catch(e){ pendingModules = []; }
+
+  } catch(e) { completedModules = []; pendingModules = []; }
 }
 
 async function saveProgress(modIndex) {
@@ -1692,12 +1710,19 @@ function renderCourse() {
   document.getElementById('progressText').textContent = completedModules.length+' of '+MODULES.length+' complete';
   document.getElementById('modulesList').innerHTML = MODULES.map((m,i) => {
     var done = completedModules.includes(i);
-    var locked = i > 0 && !completedModules.includes(i-1);
-    return '<div class="module-card'+(done?' mc-done-card':locked?' mc-locked':' mc-active')+'"'+(locked?'':' onclick="openMod('+i+')"')+'>'
-      +'<div class="mc-num'+(done?' mc-done':'')+'">'+(done?'✓':(i+1))+'</div>'
+    var pending = !done && pendingModules.includes(i);
+    var prevOk = i === 0 || completedModules.includes(i-1) || pendingModules.includes(i-1);
+    var locked = !prevOk;
+    var cardClass = done ? ' mc-done-card' : pending ? ' mc-pending-card' : locked ? ' mc-locked' : ' mc-active';
+    var numClass = done ? ' mc-done' : pending ? ' mc-pending-num' : '';
+    var numLabel = done ? '✓' : pending ? '⏳' : (i+1);
+    var statusClass = done ? 's-done' : pending ? 's-pending' : locked ? 's-locked' : 's-open';
+    var statusLabel = done ? '✓ Complete' : pending ? '⏳ Awaiting Review' : locked ? '🔒 Complete previous module' : '▶ Open';
+    return '<div class="module-card'+cardClass+'"'+(locked?'':' onclick="openMod('+i+')"')+'>'
+      +'<div class="mc-num'+numClass+'">'+numLabel+'</div>'
       +'<div class="mc-body"><div class="mc-label">'+m.num+'</div><div class="mc-title">'+m.title+'</div>'
       +'<div class="mc-meta">📖 Reading · ⏱ '+m.duration+'</div>'
-      +'<span class="mc-status '+(done?'s-done':locked?'s-locked':'s-open')+'">'+(done?'✓ Complete':locked?'🔒 Complete previous module':'▶ Open')+'</span>'
+      +'<span class="mc-status '+statusClass+'">'+statusLabel+'</span>'
       +'</div>'+(locked?'':'<div class="mc-arrow">›</div>')+'</div>';
   }).join('');
 
