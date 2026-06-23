@@ -566,11 +566,14 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 
 <!-- APPLICATIONS -->
 <div class="admin-page" id="page-applications">
-  <div class="page-header"><div><div class="page-title">Applications</div><div class="page-sub">Review and approve student applications.</div></div></div>
+  <div class="page-header">
+    <div><div class="page-title">Applications</div><div class="page-sub">Review and approve student applications.</div></div>
+    <button class="btn btn-ghost btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="clearApplicationBin()">🗑 Clear Bin</button>
+  </div>
   <div class="tabs">
     <div class="tab active" onclick="setAppTab('pending',this)">Pending <span id="pendingCount"></span></div>
     <div class="tab" onclick="setAppTab('approved',this)">Approved</div>
-    <div class="tab" onclick="setAppTab('rejected',this)">Rejected</div>
+    <div class="tab" onclick="setAppTab('rejected',this)">Rejected / Revoked</div>
     <div class="tab" onclick="setAppTab('all',this)">All</div>
   </div>
   <div id="appList">Loading...</div>
@@ -633,8 +636,6 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
   <div style="margin-bottom:16px;">
     <button class="btn btn-ghost btn-sm" onclick="goTab('students')">← All Students</button>
   </div>
-  <div id="studentDetailContent"></div>
-</div>
   <div id="studentDetailContent"></div>
 </div>
 
@@ -1296,7 +1297,8 @@ async function loadAllData() {
 
 function updateBadges() {
   var pending=allApplications.filter(function(a){return a.status==='pending';}).length;
-  var examReady=allEnrolments.filter(function(e){return ['complete','exam_scheduled','exam_passed'].includes(e.status);}).length;
+  // Only count students actually awaiting action — not those who have passed
+  var examReady=allEnrolments.filter(function(e){return e.status==='complete'||e.status==='exam_scheduled';}).length;
   var ab=document.getElementById('appsBadge');
   if(ab){ab.textContent=pending||'';ab.style.display=pending>0?'inline':'none';}
   var eb=document.getElementById('examReadyBadge');
@@ -1534,6 +1536,18 @@ function renderApplications() {
   }).join('');
 }
 
+async function clearApplicationBin() {
+  var binItems = allApplications.filter(function(a){ return a.status==='rejected'; });
+  if (!binItems.length) { showToast('No rejected applications to clear.','warn'); return; }
+  if (!confirm('Delete '+binItems.length+' rejected application'+(binItems.length>1?'s':'')+' permanently? This cannot be undone.')) return;
+  try {
+    await sb('applications','DELETE',null,'status=eq.rejected');
+    showToast('Bin cleared — '+binItems.length+' application'+(binItems.length>1?'s':'')+' deleted.');
+    await loadAllData();
+    renderApplications();
+  } catch(e) { showToast('Error: '+e.message,'err'); }
+}
+
 async function approveApp(id) {
   var a=window._appMap[id];
   if(!a||!confirm('Approve application for '+a.first_name+' '+a.last_name+'?')) return;
@@ -1547,20 +1561,64 @@ async function approveApp(id) {
       newStudent = {id: a.existing_student_id};
       showToast('✓ Additional course approved for '+a.first_name);
     } else {
-      // New or re-activating student
-      var existing = await sb('students','GET',null,'email=eq.'+encodeURIComponent(a.email)+'&select=id');
+      // New or re-activating student — check by email
+      var existing = await sb('students','GET',null,'email=eq.'+encodeURIComponent(a.email)+'&select=id,status');
       if (existing && existing.length > 0) {
-        await sb('students','PATCH',{status:'active',programme:a.programme,password_hash:a.password_hash,application_id:id,phone:a.phone,whatsapp:a.whatsapp||a.phone,state:a.state,security_question:a.security_question||null,security_answer_hash:a.security_answer_hash||null},'id=eq.'+existing[0].id);
-        newStudent = {id: existing[0].id};
-        showToast('✓ Reactivated: '+a.first_name);
+        var existingId = existing[0].id;
+        var wasRevoked = existing[0].status !== 'active';
+
+        // Full reactivation — update ALL credential fields from new application
+        await sb('students','PATCH',{
+          status: 'active',
+          programme: a.programme,
+          password_hash: a.password_hash,
+          salt: a.salt || null,
+          hash_version: 'pbkdf2',
+          security_question: a.security_question || null,
+          security_answer_hash: a.security_answer_hash || null,
+          security_answer_salt: a.security_answer_salt || null,
+          phone: a.phone,
+          whatsapp: a.whatsapp || a.phone,
+          state: a.state,
+          last_login: null,  // reset — they haven't logged in on this new account
+          application_id: id
+        },'id=eq.'+existingId);
+
+        // If reactivating a revoked account, clear old progress and enrolments
+        if (wasRevoked) {
+          await sb('progress','DELETE',null,'student_id=eq.'+existingId).catch(function(){});
+          await sb('enrolments','DELETE',null,'student_id=eq.'+existingId).catch(function(){});
+          try { await sb('quiz_attempts','DELETE',null,'student_id=eq.'+existingId); } catch(e){}
+          showToast('✓ Account reactivated — old data cleared. Fresh start for '+a.first_name+'.');
+        } else {
+          showToast('✓ Updated existing account for '+a.first_name);
+        }
+        newStudent = {id: existingId};
       } else {
-        var created = await sb('students','POST',{application_id:id,first_name:a.first_name,last_name:a.last_name,email:a.email,password_hash:a.password_hash,phone:a.phone,whatsapp:a.whatsapp||a.phone,programme:a.programme,state:a.state,security_question:a.security_question||null,security_answer_hash:a.security_answer_hash||null,status:'active'});
+        // Brand new student
+        var created = await sb('students','POST',{
+          application_id: id,
+          first_name: a.first_name,
+          last_name: a.last_name,
+          email: a.email,
+          password_hash: a.password_hash,
+          salt: a.salt || null,
+          hash_version: 'pbkdf2',
+          phone: a.phone,
+          whatsapp: a.whatsapp || a.phone,
+          programme: a.programme,
+          state: a.state,
+          security_question: a.security_question || null,
+          security_answer_hash: a.security_answer_hash || null,
+          security_answer_salt: a.security_answer_salt || null,
+          status: 'active'
+        });
         newStudent = created && created[0] ? created[0] : {id: null};
-        showToast('✓ Approved: '+a.first_name+' account created');
+        showToast('✓ Approved: '+a.first_name+' — account created');
       }
     }
 
-    // Create enrolment row for all approvals
+    // Create fresh enrolment
     if (newStudent && newStudent.id) {
       var matchedCourse = cmCourses.find(function(c){ return c.title === a.programme; });
       var courseId = matchedCourse ? matchedCourse.id : a.programme;
@@ -1571,29 +1629,16 @@ async function approveApp(id) {
         status: 'active'
       }).catch(function(e){ console.warn('Enrolment insert failed:', e); });
     }
-    // Send appropriate email based on type
+
+    // Send approval email
     if (a.email) {
-      if (a.type === 'additional') {
-        fetch('/api/course-added', {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({
-            to:a.email, firstName:a.first_name, programme:a.programme,
-            testMode: SS_CACHE['testing_mode']==='true'
-          })
-        }).catch(function(e){ console.warn('Course added email failed:',e); });
-      } else {
-        fetch('/api/admission-approved', {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({
-            to:a.email, firstName:a.first_name, programme:a.programme,
-            ref:a.ref||('CMA-'+id.slice(-6).toUpperCase()),
-            testMode:SS_CACHE['testing_mode']==='true'
-          })
-        }).catch(function(e){ console.warn('Approval email failed:',e); });
-      }
+      var emailEndpoint = a.type === 'additional' ? '/api/course-added' : '/api/admission-approved';
+      var emailBody = a.type === 'additional'
+        ? {to:a.email, firstName:a.first_name, programme:a.programme, testMode:SS_CACHE['testing_mode']==='true'}
+        : {to:a.email, firstName:a.first_name, programme:a.programme, ref:a.ref||('CMA-'+id.slice(-6).toUpperCase()), testMode:SS_CACHE['testing_mode']==='true'};
+      fetch(emailEndpoint, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(emailBody)}).catch(function(){});
     }
+
     await loadAllData();
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
