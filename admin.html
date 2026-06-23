@@ -912,18 +912,37 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 <!-- EXAM READY -->
 <div class="admin-page" id="page-examready">
   <div class="page-header">
-    <div><div class="page-title">Exam Ready</div><div class="page-sub">Students who completed all modules — schedule and record their final examination.</div></div>
-    <button class="btn btn-ghost" onclick="renderExamReady()">↻ Refresh</button>
+    <div>
+      <div class="page-title">Exam Ready</div>
+      <div class="page-sub">Students awaiting scheduling, results, or resit. Certified students shown separately below.</div>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="renderExamReady()">↻ Refresh</button>
   </div>
+
+  <!-- Action KPIs -->
+  <div class="stat-grid" id="examReadyStats" style="margin-bottom:20px;"></div>
+
+  <!-- Filter pills — action states only, not passed -->
   <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;" id="examReadyFilters">
-    <button class="tab active" onclick="setExamFilter('all',this)">All</button>
+    <button class="tab active" onclick="setExamFilter('all',this)">All Pending</button>
     <button class="tab" onclick="setExamFilter('unscheduled',this)">Unscheduled</button>
     <button class="tab" onclick="setExamFilter('scheduled',this)">Scheduled</button>
-    <button class="tab" onclick="setExamFilter('passed',this)">Passed</button>
-    <button class="tab" onclick="setExamFilter('failed',this)">Failed</button>
+    <button class="tab" onclick="setExamFilter('failed',this)">Resit Required</button>
   </div>
-  <div class="stat-grid" id="examReadyStats" style="margin-bottom:20px;"></div>
+
+  <!-- Active exam cards -->
   <div id="examReadyList"><div style="text-align:center;padding:40px;color:var(--muted);">Loading...</div></div>
+
+  <!-- Certified archive — visually separated -->
+  <div id="certifiedSection" style="display:none;margin-top:36px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ok);white-space:nowrap;">🎓 Certified Students</div>
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">These students have passed their final examination. This is a read-only record.</div>
+    <div id="certifiedList"></div>
+  </div>
 </div>
 
 <!-- CERTIFICATE -->
@@ -3681,58 +3700,111 @@ function setExamFilter(f,el){
   if(el)el.classList.add('active');
   renderExamReady();
 }
+
 async function renderExamReady(){
   var list=document.getElementById('examReadyList');
   var statsEl=document.getElementById('examReadyStats');
+  var certSection=document.getElementById('certifiedSection');
+  var certList=document.getElementById('certifiedList');
   if(!list)return;
   list.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);">Loading...</div>';
-  var statuses=['complete','exam_scheduled','exam_passed','exam_failed'];
-  var all=allEnrolments.filter(function(e){return statuses.includes(e.status);});
-  var filt=_examFilter==='all'?all:all.filter(function(e){
-    var m={unscheduled:'complete',scheduled:'exam_scheduled',passed:'exam_passed',failed:'exam_failed'};
-    return e.status===m[_examFilter];
-  });
-  var c={complete:0,exam_scheduled:0,exam_passed:0,exam_failed:0};
-  all.forEach(function(e){if(c[e.status]!==undefined)c[e.status]++;});
+  var unscheduled=allEnrolments.filter(function(e){return e.status==='complete';});
+  var scheduled=allEnrolments.filter(function(e){return e.status==='exam_scheduled';});
+  var failed=allEnrolments.filter(function(e){return e.status==='exam_failed';});
+  var passed=allEnrolments.filter(function(e){return e.status==='exam_passed';});
+  var pending=unscheduled.concat(scheduled).concat(failed);
   if(statsEl) statsEl.innerHTML=
-    '<div class="stat-card info-card"><div class="stat-val">'+all.length+'</div><div class="stat-label">Total</div></div>'+
-    '<div class="stat-card warn-card"><div class="stat-val">'+c.complete+'</div><div class="stat-label">Unscheduled</div></div>'+
-    '<div class="stat-card info-card"><div class="stat-val">'+c.exam_scheduled+'</div><div class="stat-label">Scheduled</div></div>'+
-    '<div class="stat-card ok-card"><div class="stat-val">'+c.exam_passed+'</div><div class="stat-label">Passed</div></div>';
-  if(!filt.length){list.innerHTML='<div style="text-align:center;padding:48px;color:var(--muted);font-size:13px;">No students here.</div>';return;}
-  list.innerHTML=filt.map(function(enr){
-    var s=allStudents.find(function(st){return st.id===enr.student_id;});if(!s)return '';
-    var course=cmCourses.find(function(c){return c.id===enr.course_id;});
-    var cName=course?course.title:(s.programme||'—');
-    var init=s.first_name.charAt(0)+(s.last_name||'').charAt(0);
-    var chip='',action='';
-    if(enr.status==='complete'){
-      chip='<span class="exam-chip exam-chip-unsched">Unscheduled</span>';
-      action='<input type="date" id="examdate-'+enr.student_id+'-'+enr.course_id+'" class="form-input" style="width:auto;flex:1;min-width:140px;padding:8px 10px;margin:0;"/>'
-        +'<button class="btn btn-primary btn-sm" onclick="scheduleExam(\''+enr.student_id+'\',\''+enr.course_id+'\',\''+s.first_name+' '+s.last_name+'\',\''+s.email+'\',\''+(s.phone||s.whatsapp||'')+'\')" >Schedule &amp; Notify</button>'
-        +'<a class="btn btn-ghost btn-sm" href="'+waLink(s.phone||s.whatsapp||'','Hello '+s.first_name+', please contact the Catholic Music Academy to schedule your final examination.')+'" target="_blank">WhatsApp</a>';
-    }else if(enr.status==='exam_scheduled'){
-      chip='<span class="exam-chip exam-chip-sched">Scheduled</span>';
-      action='<span style="font-size:13px;">📅 '+(enr.exam_date?fmtDate(enr.exam_date):'TBC')+'</span>'
-        +'<button class="btn btn-ok btn-sm" onclick="markExamResult(\''+enr.student_id+'\',\''+enr.course_id+'\',\'passed\')" >✓ Passed</button>'
-        +'<button class="btn btn-danger btn-sm" onclick="markExamResult(\''+enr.student_id+'\',\''+enr.course_id+'\',\'failed\')" >✗ Failed</button>';
-    }else if(enr.status==='exam_passed'){
-      chip='<span class="exam-chip exam-chip-passed">✓ Passed</span>';
-      action='<span style="font-size:13px;color:var(--muted);">Passed '+(enr.exam_passed_at?fmtDate(enr.exam_passed_at):'—')+'</span>'
-        +'<button class="btn btn-gold btn-sm" onclick="openCertificate(\''+enr.student_id+'\',\''+enr.course_id+'\')" >🎓 Generate Certificate</button>';
-    }else{
-      chip='<span class="exam-chip exam-chip-failed">✗ Failed</span>';
-      action='<button class="btn btn-ghost btn-sm" onclick="rescheduleExam(\''+enr.student_id+'\',\''+enr.course_id+'\')" >Reschedule</button>';
-    }
-    return '<div class="exam-card"><div class="exam-card-hdr">'
-      +'<div style="width:36px;height:36px;border-radius:50%;background:var(--navy-light);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">'+init+'</div>'
-      +'<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;">'+s.first_name+' '+s.last_name+'</div>'
-      +'<div style="font-size:11px;color:var(--muted);">'+cName+'</div></div>'
-      +'<div style="text-align:right;flex-shrink:0;"><div style="font-size:10px;color:var(--muted);">Completed</div>'
-      +'<div style="font-size:12px;font-weight:600;">'+fmtDate(enr.completed_at||enr.enrolled_at)+'</div></div>'
-      +chip+'</div><div class="exam-card-body">'+action+'</div></div>';
-  }).join('');
+    statCard(unscheduled.length,'Unscheduled',unscheduled.length>0?'warn-card':'')+
+    statCard(scheduled.length,'Exam Scheduled','info-card')+
+    statCard(failed.length,'Resit Required',failed.length>0?'danger-card':'')+
+    statCard(passed.length,'Certified','ok-card');
+  var filtered;
+  if(_examFilter==='unscheduled') filtered=unscheduled;
+  else if(_examFilter==='scheduled') filtered=scheduled;
+  else if(_examFilter==='failed') filtered=failed;
+  else filtered=pending;
+  if(!filtered.length){
+    list.innerHTML='<div style="text-align:center;padding:48px;color:var(--muted);font-size:13px;">'
+      +(_examFilter==='pending'&&!pending.length?'No students awaiting examination - all clear':'No students in this category.')
+      +'</div>';
+  } else {
+    list.innerHTML=filtered.map(function(enr){
+      var s=allStudents.find(function(st){return st.id===enr.student_id;});if(!s)return '';
+      var course=cmCourses.find(function(c){return c.id===enr.course_id;});
+      var cName=course?course.title:(enr.programme||s.programme||'N/A');
+      var init=s.first_name.charAt(0)+(s.last_name||'').charAt(0);
+      var wn=s.phone||s.whatsapp||'';
+      var chip='',action='';
+      if(enr.status==='complete'){
+        chip='<span class="exam-chip exam-chip-unsched">Needs Scheduling</span>';
+        action='<input type="date" id="examdate-'+enr.student_id+'-'+enr.course_id+'" class="form-input" style="width:auto;flex:1;min-width:140px;padding:8px 10px;margin:0;"/>'
+          +'<button class="btn btn-primary btn-sm" onclick="scheduleExam(\''+enr.student_id+'\',' +
+          '\''+enr.course_id+'\',' +
+          '\''+s.first_name+' '+s.last_name+'\',' +
+          '\''+s.email+'\',' +
+          '\''+wn+'\')" >Schedule &amp; Notify</button>'
+          +(wn?'<a class="btn btn-ghost btn-sm" href="'+waLink(wn,'Hello '+s.first_name+', please contact CMA to schedule your final exam.')+'" target="_blank">WhatsApp</a>':'');
+      } else if(enr.status==='exam_scheduled'){
+        chip='<span class="exam-chip exam-chip-sched">Exam Scheduled</span>';
+        action='<span style="font-size:13px;font-weight:500;">Date: '+(enr.exam_date?fmtDate(enr.exam_date):'TBC')+'</span>'
+          +'<button class="btn btn-ok btn-sm" onclick="markExamResult(\''+enr.student_id+'\',' +
+          '\''+enr.course_id+'\',' +
+          '\'passed\')">Mark Passed</button>'
+          +'<button class="btn btn-danger btn-sm" onclick="markExamResult(\''+enr.student_id+'\',' +
+          '\''+enr.course_id+'\',' +
+          '\'failed\')">Mark Failed</button>'
+          +(wn?'<a class="btn btn-ghost btn-sm" href="'+waLink(wn,'Hello '+s.first_name+', reminder of your upcoming exam.')+'" target="_blank">Remind</a>':'');
+      } else if(enr.status==='exam_failed'){
+        chip='<span class="exam-chip exam-chip-failed">Resit Required</span>';
+        action='<span style="font-size:12px;color:var(--muted);">Failed '+(enr.exam_failed_at?fmtDate(enr.exam_failed_at):'N/A')+'</span>'
+          +'<input type="date" id="examdate-'+enr.student_id+'-'+enr.course_id+'" class="form-input" style="width:auto;flex:1;min-width:140px;padding:8px 10px;margin:0;"/>'
+          +'<button class="btn btn-primary btn-sm" onclick="scheduleExam(\''+enr.student_id+'\',' +
+          '\''+enr.course_id+'\',' +
+          '\''+s.first_name+' '+s.last_name+'\',' +
+          '\''+s.email+'\',' +
+          '\''+wn+'\')" >Schedule Resit</button>'
+          +(wn?'<a class="btn btn-ghost btn-sm" href="'+waLink(wn,'Hello '+s.first_name+', please contact Academy to arrange your resit.')+'" target="_blank">WhatsApp</a>':'');
+      }
+      return '<div class="exam-card"><div class="exam-card-hdr">'
+        +'<div style="width:38px;height:38px;border-radius:50%;background:var(--navy-light);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">'+init+'</div>'
+        +'<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;">'+s.first_name+' '+s.last_name+'</div>'
+        +'<div style="font-size:11px;color:var(--muted);">'+cName+'</div></div>'
+        +'<div style="text-align:right;flex-shrink:0;"><div style="font-size:10px;color:var(--muted);">Modules completed</div>'
+        +'<div style="font-size:12px;font-weight:600;">'+fmtDate(enr.completed_at||enr.enrolled_at)+'</div></div>'
+        +chip+'</div><div class="exam-card-body" style="gap:8px;flex-wrap:wrap;">'+action+'</div></div>';
+    }).join('');
+  }
+  if(passed.length){
+    if(certSection) certSection.style.display='block';
+    if(certList) certList.innerHTML=passed.map(function(enr){
+      var s=allStudents.find(function(st){return st.id===enr.student_id;});if(!s)return '';
+      var course=cmCourses.find(function(c){return c.id===enr.course_id;});
+      var cName=course?course.title:(enr.programme||s.programme||'N/A');
+      var init=s.first_name.charAt(0)+(s.last_name||'').charAt(0);
+      var pd=enr.exam_passed_at?fmtDate(enr.exam_passed_at):'—';
+      var da=enr.exam_passed_at?Math.floor((Date.now()-new Date(enr.exam_passed_at))/(86400000)):null;
+      var timeAgo=da===0?'Today':da===1?'Yesterday':da!==null?(da+' days ago'):'—';
+      return '<div style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:1px solid #BBF7D0;border-radius:12px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">'
+        +'<div style="width:38px;height:38px;border-radius:50%;background:#16A34A;color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">'+init+'</div>'
+        +'<div style="flex:1;min-width:0;">'
+        +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'
+        +'<div style="font-size:13px;font-weight:600;color:#14532D;">'+s.first_name+' '+s.last_name+'</div>'
+        +'<span style="font-size:10px;background:#16A34A;color:white;padding:2px 8px;border-radius:20px;font-weight:700;">🎓 Certified</span>'
+        +'</div>'
+        +'<div style="font-size:11px;color:#16A34A;margin-top:3px;">'+cName+'</div>'
+        +'<div style="font-size:11px;color:var(--muted);margin-top:1px;">Passed '+pd+' · '+timeAgo+'</div>'
+        +'</div>'
+        +'<div style="display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;">'
+        +(s.phone||s.whatsapp?'<a class="btn btn-ghost btn-sm" href="'+waLink(s.phone||s.whatsapp,'Hello '+s.first_name+', congratulations on passing your examination at the Catholic Music Academy!')+'" target="_blank">WhatsApp</a>':'')
+        +'<button class="btn btn-sm" style="background:#0D1B3E;color:white;" onclick="openCertificate(\''+enr.student_id+'\',\''+enr.course_id+'\')" >🏆 Certificate</button>'
+        +'</div>'
+        +'</div>';
+    }).join('');
+  } else {
+    if(certSection) certSection.style.display='none';
+  }
 }
+
 async function scheduleExam(sid,cid,name,email,phone){
   var d=document.getElementById('examdate-'+sid+'-'+cid);
   if(!d||!d.value){showToast('Select an exam date first.','warn');return;}
