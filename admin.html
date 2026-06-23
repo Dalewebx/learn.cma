@@ -928,7 +928,13 @@ function fmtDate(s) {
 }
 function daysUntil(s) { return Math.ceil((new Date(s)-Date.now())/86400000); }
 function daysAgo(s) { if(!s) return 999; return Math.floor((Date.now()-new Date(s))/86400000); }
-function getStudentProgress(sid) { return allProgress.filter(p=>p.student_id===sid).map(p=>p.module_index); }
+function getStudentProgress(sid, courseId) {
+  return allProgress.filter(function(p){
+    if (p.student_id !== sid) return false;
+    if (courseId) return p.course_id === courseId;
+    return true;
+  }).map(function(p){ return p.module_index; });
+}
 function getStudentAttempts(sid) { return allAttempts.filter(a=>a.student_id===sid); }
 function isAtRisk(s) {
   var du=daysUntil(cohortSettings.deadline||'2099-01-01');
@@ -1525,7 +1531,7 @@ function openStudentDetail(sid) {
         var course = (cmCourses||[]).find(function(c){ return c.id === enr.course_id; });
         var title = course ? course.title : (s.programme||'—');
         var modCount = course ? (course.modules||[]).filter(function(m){ return m.published!==false; }).length : MODULE_COUNT;
-        var courseComp = allProgress.filter(function(p){ return p.student_id===sid; }).length;
+        var courseComp = allProgress.filter(function(p){ return p.student_id===sid && p.course_id===enr.course_id; }).length;
         var isComplete = courseComp >= modCount && modCount > 0;
         var badge = isComplete
           ? '<span style="font-size:11px;background:#DCFCE7;color:#16A34A;border-radius:4px;padding:2px 7px;font-weight:700;">✓ Complete</span>'
