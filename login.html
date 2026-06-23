@@ -737,7 +737,7 @@ var scrollDone = false;
 var timerInterval = null;
 var SHOW_COUNT = 4;
 var READ_TIME = 90;
-var PASS_MARK = 100; // overridden per module
+var PASS_MARK = 70; // set from cohort_settings on load
 var MAX_ATTEMPTS = 0; // overridden per module; 0 = unlimited
 var currentAttemptCount = 0; // attempts on current module this session
 
@@ -754,6 +754,16 @@ var ALL_DB_COURSES = []; // populated on login — used for "other courses" pane
 async function loadCourseAndModulesFromDB(programmeStr) {
   var result = { course: null, modules: [] };
   try {
+    // Fetch cohort pass mark first — used for all module assessments
+    try {
+      var cohRes = await fetch(SUPA_URL+'/rest/v1/cohort_settings?select=pass_mark&limit=1',
+        {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+      var cohData = await cohRes.json();
+      if (cohData && cohData[0] && cohData[0].pass_mark) {
+        PASS_MARK = parseInt(cohData[0].pass_mark) || 70;
+      }
+    } catch(e){ /* use default */ }
+
     var res = await fetch(
       SUPA_URL + '/rest/v1/course_content?order=course_order.asc,module_index.asc',
       { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
@@ -834,7 +844,7 @@ async function loadCourseAndModulesFromDB(programmeStr) {
       var hasVideo = !!(r.video_url);
       var audioCount = 0;
       try { audioCount = JSON.parse(typeof r.audio_tracks === 'string' ? r.audio_tracks : '[]').length; } catch(e){}
-      var totalMins = readMins + (hasVideo ? (r.video_duration_mins || 3) : 0) + (audioCount * 2);
+      var totalMins = readMins + (hasVideo ? ((r.video_duration_mins || 3) / 2) : 0) + (audioCount * 2);
       return {
         num: 'Module ' + String(r.module_index + 1).padStart(2, '0'),
         title: r.module_title || ('Module ' + (r.module_index + 1)),
@@ -846,7 +856,7 @@ async function loadCourseAndModulesFromDB(programmeStr) {
         downloads: downloads,
         content: r.reading_html || '<p>Content coming soon.</p>',
         pool: questions,
-        passMark: r.pass_mark || 100,
+        passMark: PASS_MARK,
         maxAttempts: r.max_attempts || 0
       };
     });
@@ -1424,7 +1434,11 @@ async function doLogin() {
 
     // 3. Check account status
     if (student.status !== 'active') {
-      showErr('Your account is pending approval. The Academy will contact you via WhatsApp once activated.');
+      if (student.status === 'inactive') {
+        showErr('Your account access has been suspended. Please contact the Academy or reapply at catholicmusicacademy.net/apply.');
+      } else {
+        showErr('Your account is pending approval. The Academy will contact you via WhatsApp once activated.');
+      }
       btn.disabled = false; btn.textContent = 'Sign in →'; return;
     }
 
@@ -1739,7 +1753,7 @@ function openMod(i) {
   timerDone = false; scrollDone = false;
   if (timerInterval) clearInterval(timerInterval);
   var m = MODULES[i];
-  PASS_MARK = m.passMark || 100;
+  PASS_MARK = m.passMark || PASS_MARK; // cohort standard — set on load
   MAX_ATTEMPTS = m.maxAttempts || 0;
   // Count existing attempts for this module from DB
   currentAttemptCount = 0;
@@ -1856,7 +1870,7 @@ function openMod(i) {
   document.getElementById('quizResult').classList.remove('show');
   var wordCount = (m.content || '').replace(/<[^>]*>/g,'').split(/\s+/).filter(Boolean).length;
   var readSecs = Math.max(30, Math.ceil(wordCount / 200) * 60);
-  var videoBonus = m.videoUrl ? ((m.videoDurationMins || 3) * 60) : 0;
+  var videoBonus = m.videoUrl ? ((m.videoDurationMins || 3) / 2 * 60) : 0;
   var audioBonus = (m.audioTracks && m.audioTracks.length) ? (m.audioTracks.length * 120) : 0;
   READ_TIME = readSecs + videoBonus + audioBonus;
 
