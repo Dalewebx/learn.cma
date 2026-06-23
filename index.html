@@ -1177,6 +1177,10 @@ footer{background:#0B1530;padding:48px 24px 32px;}
   } catch(e){}
 })();
 
+function cmaLogout() {
+  try { localStorage.removeItem('cma_session'); localStorage.removeItem('cma_remember'); } catch(e){}
+  window.location.reload();
+}
 function toggleDrawer() {
   var d = document.getElementById('mobDrawer');
   var b = document.getElementById('hamBtn');
