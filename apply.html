@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iI0M5QTg0QyIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iMi41IiBoZWlnaHQ9IjE2IiByeD0iMS4yIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iOSIgaGVpZ2h0PSIyLjUiIHJ4PSIxLjIiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMTAuNSIgY3k9IjIyIiByPSIzLjUiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg=="/>
-<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iI0M5QTg0QyIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iMi41IiBoZWlnaHQ9IjE2IiByeD0iMS4yIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjEyIiB5PSI2IiB3aWR0aD0iOSIgaGVpZ2h0PSIyLjUiIHJ4PSIxLjIiIGZpbGw9IndoaXRlIi8+CiAgPGNpcmNsZSBjeD0iMTAuNSIgY3k9IjIyIiByPSIzLjUiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg=="/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDxyZWN0IHg9IjE0LjUiIHk9IjUiIHdpZHRoPSIzIiBoZWlnaHQ9IjIyIiByeD0iMS41IiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iNyIgeT0iMTIiIHdpZHRoPSIxOCIgaGVpZ2h0PSIzIiByeD0iMS41IiBmaWxsPSIjQzlBODRDIi8+CiAgPGNpcmNsZSBjeD0iMTAiIGN5PSIyNCIgcj0iMi41IiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iMTIiIHk9IjE4IiB3aWR0aD0iMiIgaGVpZ2h0PSI4IiByeD0iMSIgZmlsbD0iI0M5QTg0QyIvPgo8L3N2Zz4="/>
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDxyZWN0IHg9IjE0LjUiIHk9IjUiIHdpZHRoPSIzIiBoZWlnaHQ9IjIyIiByeD0iMS41IiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iNyIgeT0iMTIiIHdpZHRoPSIxOCIgaGVpZ2h0PSIzIiByeD0iMS41IiBmaWxsPSIjQzlBODRDIi8+CiAgPGNpcmNsZSBjeD0iMTAiIGN5PSIyNCIgcj0iMi41IiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iMTIiIHk9IjE4IiB3aWR0aD0iMiIgaGVpZ2h0PSI4IiByeD0iMSIgZmlsbD0iI0M5QTg0QyIvPgo8L3N2Zz4="/>
 <title>Apply — Catholic Music Academy</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
 <style>
@@ -614,8 +614,8 @@ function toggleRecovery() {
 }
 
 // ── STEP NAVIGATION ──
-function goStep(n) {
-  if (n > currentStep && !validateStep(currentStep)) return;
+async function goStep(n) {
+  if (n > currentStep && !await validateStep(currentStep)) return;
   currentStep = n;
   [1,2,3,4].forEach(function(i) {
     document.getElementById('step'+i).style.display = i===n ? 'block' : 'none';
@@ -648,7 +648,7 @@ function updateProgress(n) {
 }
 
 // ── VALIDATION ──
-function validateStep(n) {
+async function validateStep(n) {
   var ok = true;
   function req(id, errId, msg) {
     var el = document.getElementById(id);
@@ -685,8 +685,33 @@ function validateStep(n) {
     else document.getElementById('err-securityAnswer').style.display='none';
   }
   if (n===2) {
-    if (!selectedProg) { document.getElementById('err-prog').style.display='block'; ok=false; }
-    else document.getElementById('err-prog').style.display='none';
+    if (!selectedProg || !selectedProg.length) { document.getElementById('err-prog').style.display='block'; ok=false; }
+    else {
+      document.getElementById('err-prog').style.display='none';
+      // Check if student is already enrolled/completed in the selected programme
+      var email = (document.getElementById('email')||{}).value||'';
+      if (email && Array.isArray(selectedProg) && selectedProg.length) {
+        try {
+          var sr = await fetch(SUPA_URL+'/rest/v1/students?email=eq.'+encodeURIComponent(email.trim().toLowerCase())+'&select=id',
+            {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+          var sr2 = await sr.json();
+          if (sr2 && sr2.length) {
+            var sid = sr2[0].id;
+            var er = await fetch(SUPA_URL+'/rest/v1/enrolments?student_id=eq.'+sid+'&select=programme',
+              {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+            var enrolled = await er.json();
+            var enrolledTitles = (enrolled||[]).map(function(e){ return e.programme; });
+            var alreadyIn = selectedProg.filter(function(p){ return enrolledTitles.includes(p); });
+            if (alreadyIn.length) {
+              var errEl = document.getElementById('err-prog');
+              errEl.textContent = 'You are already enrolled in: '+alreadyIn.join(', ')+'. Log in to your portal to access it.';
+              errEl.style.display = 'block';
+              ok = false;
+            }
+          }
+        } catch(e){ /* silent — don't block on network error */ }
+      }
+    }
   }
   if (n===3) {
     if (!selectedBg) { document.getElementById('err-bg').style.display='block'; ok=false; }
@@ -877,8 +902,8 @@ async function submitApplication() {
         receipt_name: selectedFile ? selectedFile.name : null,
         receipt_path: receiptPath,
         password_hash: pwHash,
-          password_salt: pwSalt,
-          security_answer_salt: ansSalt,
+        salt: pwSalt,
+        security_answer_salt: ansSalt,
         status: 'pending',
         type: 'new'
       });
