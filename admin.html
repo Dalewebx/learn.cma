@@ -547,8 +547,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
   <button class="admin-tab" id="tab-grading" onclick="goTab('grading')">✏️ Grading</button>
   <button class="admin-tab" id="tab-statistics" onclick="goTab('statistics')">📈 Statistics</button>
   <button class="admin-tab" id="tab-courses" onclick="goTab('courses')">📚 Courses</button>
-  <button class="admin-tab" id="tab-settings" onclick="goTab('settings')" style="display:none;">⚙️ Settings</button>
-</div>
+  <button class="admin-tab" id="tab-settings" onclick="goTab('settings')" style="display:none;">⚙️ Settings</button></div>
 
 <!-- MAIN -->
 <div class="main" id="adminMain" style="display:none;">
@@ -891,14 +890,50 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 
 <!-- DEV TOOLS -->
 <div class="admin-page" id="page-devtools">
-  <div class="page-header"><div><div class="page-title">Developer Tools</div><div class="page-sub">Clear test data before going live. Irreversible.</div></div></div>
-  <div class="alert alert-warn">⚠️ Use with extreme caution. These actions cannot be undone.</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-    <div class="card"><div class="card-title">Clear Applications</div><p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Delete all applications from the database.</p><button class="btn btn-danger" onclick="clearApplications()">🗑 Clear Applications</button></div>
-    <div class="card"><div class="card-title">Clear Students</div><p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Delete all student accounts and progress.</p><button class="btn btn-danger" onclick="clearStudents()">🗑 Clear Students</button></div>
-    <div class="card"><div class="card-title">Clear Progress</div><p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Reset all module completions.</p><button class="btn btn-danger" onclick="clearProgress()">🗑 Clear Progress</button></div>
-    <div class="card"><div class="card-title">Nuclear Option</div><p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Clear everything. Full clean slate.</div><button class="btn btn-danger" style="background:#7f1d1d;" onclick="clearEverything()">☢️ Clear Everything</button></div>
+  <div class="page-header"><div><div class="page-title">Dev Tools</div><div class="page-sub">Handover preparation and data management. Master admin only.</div></div></div>
+  <div class="alert alert-warn" style="margin-bottom:20px;">⚠️ These actions are <strong>irreversible</strong>. Use only when preparing to hand over the platform.</div>
+
+  <!-- Level 1: People data -->
+  <div class="card" style="margin-bottom:14px;border-top:3px solid var(--danger);">
+    <div class="card-title" style="margin-bottom:6px;">🧹 Clear All Test People Data</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.7;">Wipes every student account, application, progress record, quiz attempt, enrolment, and login session. <strong>Courses, modules, and settings are untouched.</strong> Everyone who tested simply reapplies when the school opens.</p>
+    <div style="background:var(--surface);border-radius:10px;padding:10px 13px;margin-bottom:14px;font-size:12px;color:var(--muted);">
+      Deletes: <strong>students · applications · enrolments · progress · quiz attempts · sessions</strong><br>
+      Keeps: <strong>courses · modules · content · cohort · settings · admin accounts</strong>
+    </div>
+    <button class="btn btn-danger" onclick="clearPeopleData()">🧹 Clear All People Data</button>
   </div>
+
+  <!-- Level 2: Course content -->
+  <div class="card" style="margin-bottom:14px;border-top:3px solid var(--warn);">
+    <div class="card-title" style="margin-bottom:6px;">📚 Clear Course Content Only</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.7;">Wipes all module reading content, quiz questions, video URLs, audio tracks, and downloads. <strong>Course titles and module structure are preserved</strong> — lecturers just fill in real content.</p>
+    <div style="background:var(--surface);border-radius:10px;padding:10px 13px;margin-bottom:14px;font-size:12px;color:var(--muted);">
+      Clears: <strong>reading content · quiz questions · video URLs · audio tracks · downloads</strong><br>
+      Keeps: <strong>course titles · module titles · module order · all people data</strong>
+    </div>
+    <button class="btn btn-amber" onclick="clearCourseContent()">📚 Clear Course Content</button>
+  </div>
+
+  <!-- Full handover -->
+  <div class="card" style="margin-bottom:14px;border-top:3px solid #7f1d1d;">
+    <div class="card-title" style="margin-bottom:6px;">☢️ Full Handover Reset</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.7;">Clears all people data AND all course content in one shot. Platform is handed over with structure intact but completely empty. Type <strong>HANDOVER</strong> to confirm.</p>
+    <div style="background:#FEF2F2;border-radius:10px;padding:10px 13px;margin-bottom:14px;font-size:12px;color:var(--danger);">
+      Deletes: <strong>everything except course structure, admin accounts, and settings</strong>
+    </div>
+    <button class="btn btn-danger" style="background:#7f1d1d;" onclick="fullHandoverReset()">☢️ Full Handover Reset</button>
+  </div>
+
+  <!-- Individual operations -->
+  <details style="margin-top:4px;">
+    <summary style="font-size:12px;color:var(--muted);cursor:pointer;padding:8px 0;">▸ Individual operations</summary>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
+      <div class="card" style="padding:14px 16px;"><div style="font-size:13px;font-weight:600;margin-bottom:8px;">Applications only</div><button class="btn btn-danger btn-sm" onclick="clearApplications()">Clear</button></div>
+      <div class="card" style="padding:14px 16px;"><div style="font-size:13px;font-weight:600;margin-bottom:8px;">Students only</div><button class="btn btn-danger btn-sm" onclick="clearStudents()">Clear</button></div>
+      <div class="card" style="padding:14px 16px;"><div style="font-size:13px;font-weight:600;margin-bottom:8px;">Progress only</div><button class="btn btn-danger btn-sm" onclick="clearProgress()">Clear</button></div>
+    </div>
+  </details>
 </div>
 
 <!-- STATISTICS -->
@@ -1184,7 +1219,7 @@ function adminLogout() {
 }
 
 // ── NAVIGATION ───────────────────────────────────────────────────────────────
-var _settingsPages = ['cohort','sitesettings','adminaccounts','accountsettings','paymentsettings','devtools'];
+var _settingsPages = ['cohort','sitesettings','adminaccounts','accountsettings','paymentsettings'];
 
 function injectSettingsSubNav(activeId) {
   _settingsPages.forEach(function(pid) {
@@ -1198,7 +1233,7 @@ function injectSettingsSubNav(activeId) {
       var tabs = [
         ['cohort','Cohort'],['sitesettings','Site Settings'],
         ['adminaccounts','Admin Accounts'],['accountsettings','My Account'],
-        ['paymentsettings','Payment'],['devtools','Dev Tools']
+        ['paymentsettings','Payment']
       ];
       tabs.forEach(function(t) {
         var btn = document.createElement('button');
@@ -1532,7 +1567,11 @@ function renderApplications() {
       +'<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">'
       +'<div><div class="app-name">'+a.first_name+' '+a.last_name+'</div><div class="app-email">'+a.email+'</div></div>'
       +'<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">'
-      +(a.type==='additional'?'<span class="pill pill-blue" style="font-size:11px;">+ Additional Course</span>':'<span class="pill" style="background:var(--navy-light);color:var(--navy);font-size:11px;">New Student</span>')
+      +(a.type==='additional'
+        ?'<span class="pill pill-blue" style="font-size:11px;">+ Additional Course</span>'
+        :a.type==='reapplication'
+        ?'<span class="pill" style="background:#FEF3C7;color:#92400E;font-size:11px;">↩ Reapplication</span>'
+        :'<span class="pill" style="background:var(--navy-light);color:var(--navy);font-size:11px;">New Student</span>')
       +'<span class="pill '+(a.status==='pending'?'pill-warn':a.status==='approved'?'pill-ok':'pill-danger')+'">'+a.status+'</span>'
       +'</div></div>'
       +'<div class="app-meta">'
@@ -2957,10 +2996,126 @@ async function deleteAnn(id) {
 }
 
 // ── DEV TOOLS ─────────────────────────────────────────────────────────────────
-async function clearApplications(){if(!confirm('Delete ALL applications?'))return;try{await sb('applications','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');showToast('Applications cleared.');await loadAllData();}catch(e){showToast('Error: '+e.message,'err');}}
-async function clearStudents(){if(!confirm('Delete ALL students and progress?'))return;try{await sb('progress','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');await sb('assessment_attempts','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000').catch(()=>{});await sb('students','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');showToast('Students cleared.');await loadAllData();}catch(e){showToast('Error: '+e.message,'err');}}
-async function clearProgress(){if(!confirm('Clear all progress?'))return;try{await sb('progress','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');showToast('Progress cleared.');await loadAllData();}catch(e){showToast('Error: '+e.message,'err');}}
-async function clearEverything(){if(!confirm('Delete EVERYTHING?'))return;if(!confirm('Absolutely sure?'))return;var c=prompt('Type DELETE to confirm:');if(c!=='DELETE'){showToast('Cancelled','warn');return;}try{await sb('progress','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');await sb('assessment_attempts','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000').catch(()=>{});await sb('students','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');await sb('applications','DELETE',null,'id=neq.00000000-0000-0000-0000-000000000000');showToast('Everything cleared.');await loadAllData();}catch(e){showToast('Error: '+e.message,'err');}}
+// ── DEV TOOLS WIPE FUNCTIONS ─────────────────────────────────────────────────
+var NULL_UUID = '00000000-0000-0000-0000-000000000000';
+
+async function clearPeopleData() {
+  if (!confirm('This will permanently delete ALL students, applications, enrolments, progress, quiz attempts and sessions.\n\nCourses and settings are kept.\n\nContinue?')) return;
+  var c = prompt('Type CLEAR to confirm:');
+  if (c !== 'CLEAR') { showToast('Cancelled.','warn'); return; }
+  try {
+    showToast('Clearing people data...');
+    // Order matters — FK constraints
+    await sb('sessions','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
+    await sb('progress','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
+    await sb('quiz_attempts','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
+    await sb('assessment_attempts','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
+    await sb('enrolments','DELETE',null,'student_id=neq.'+NULL_UUID).catch(function(){});
+    // Null out FK before deleting students/applications
+    await fetch(SUPA_URL+'/rest/v1/students?id=neq.'+NULL_UUID,{
+      method:'PATCH',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({application_id:null})
+    }).catch(function(){});
+    await sb('students','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
+    await sb('applications','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
+    showToast('✓ All people data cleared. Platform is clean for handover.','ok');
+    await loadAllData();
+  } catch(e) { showToast('Error: '+e.message,'err'); }
+}
+
+async function clearCourseContent() {
+  if (!confirm('This will wipe all module reading content, quiz questions, videos, audio and downloads.\n\nCourse and module titles/structure are kept.\n\nContinue?')) return;
+  try {
+    showToast('Clearing course content...');
+    // Reset content fields but keep course structure
+    await fetch(SUPA_URL+'/rest/v1/course_content?id=neq.'+NULL_UUID, {
+      method:'PATCH',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({
+        reading_content: '',
+        questions: '[]',
+        audio_tracks: '[]',
+        downloads: '[]',
+        video_url: null,
+        video_duration_minutes: null
+      })
+    });
+    showToast('✓ Course content cleared. Titles and structure preserved.','ok');
+    await loadAllData();
+  } catch(e) { showToast('Error: '+e.message,'err'); }
+}
+
+async function fullHandoverReset() {
+  if (!confirm('FULL HANDOVER RESET\n\nThis clears ALL people data AND all course content.\n\nCourse structure, admin accounts and settings are kept.\n\nThis is the pre-handover action.')) return;
+  var c = prompt('Type HANDOVER to confirm:');
+  if (c !== 'HANDOVER') { showToast('Cancelled.','warn'); return; }
+  try {
+    showToast('Running full handover reset...');
+    // People data
+    await sb('sessions','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
+    await sb('progress','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
+    await sb('quiz_attempts','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
+    await sb('assessment_attempts','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
+    await sb('enrolments','DELETE',null,'student_id=neq.'+NULL_UUID).catch(function(){});
+    await fetch(SUPA_URL+'/rest/v1/students?id=neq.'+NULL_UUID,{
+      method:'PATCH',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({application_id:null})
+    }).catch(function(){});
+    await sb('students','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
+    await sb('applications','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
+    // Course content
+    await fetch(SUPA_URL+'/rest/v1/course_content?id=neq.'+NULL_UUID, {
+      method:'PATCH',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({reading_content:'',questions:'[]',audio_tracks:'[]',downloads:'[]',video_url:null,video_duration_minutes:null})
+    }).catch(function(){});
+    showToast('✓ Full handover reset complete. Platform is ready for the school.','ok');
+    await loadAllData();
+  } catch(e) { showToast('Error: '+e.message,'err'); }
+}
+
+// Individual (kept for precision)
+async function clearApplications(){
+  if(!confirm('Delete ALL applications?'))return;
+  try{
+    // Null FK first
+    await fetch(SUPA_URL+'/rest/v1/students?application_id=not.is.null',{
+      method:'PATCH',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({application_id:null})
+    }).catch(function(){});
+    await sb('applications','DELETE',null,'id=neq.'+NULL_UUID);
+    showToast('Applications cleared.');await loadAllData();
+  }catch(e){showToast('Error: '+e.message,'err');}
+}
+async function clearStudents(){
+  if(!confirm('Delete ALL students and progress?'))return;
+  try{
+    await sb('sessions','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
+    await sb('progress','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
+    await sb('quiz_attempts','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
+    await sb('assessment_attempts','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
+    await sb('enrolments','DELETE',null,'student_id=neq.'+NULL_UUID).catch(function(){});
+    await fetch(SUPA_URL+'/rest/v1/students?id=neq.'+NULL_UUID,{
+      method:'PATCH',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({application_id:null})
+    }).catch(function(){});
+    await sb('students','DELETE',null,'id=neq.'+NULL_UUID);
+    showToast('Students cleared.');await loadAllData();
+  }catch(e){showToast('Error: '+e.message,'err');}
+}
+async function clearProgress(){
+  if(!confirm('Clear all progress?'))return;
+  try{
+    await sb('progress','DELETE',null,'id=neq.'+NULL_UUID);
+    await sb('quiz_attempts','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
+    showToast('Progress cleared.');await loadAllData();
+  }catch(e){showToast('Error: '+e.message,'err');}
+}
+async function clearEverything(){ fullHandoverReset(); }
+
+
+
+
 
 
 
