@@ -603,23 +603,38 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 
 <!-- ALL STUDENTS -->
 <div class="admin-page" id="page-students">
-  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
-    <button class="tab active" onclick="setStudentView('active',this)">Active Students</button>
-    <button class="tab" onclick="setStudentView('inactive',this)">Archived / Revoked</button>
+  <div class="page-header">
+    <div><div class="page-title">Students</div><div class="page-sub" id="studentsSub">Loading...</div></div>
+    <button class="btn btn-ghost btn-sm" onclick="exportStudentsCsv()">↓ Export CSV</button>
   </div>
-  <div class="page-header"><div><div class="page-title">All Students</div><div class="page-sub">Click any student to view their full profile.</div></div></div>
-  <div class="search-bar"><input class="search-input" id="studentSearch" placeholder="Search by name or email..." oninput="renderStudents()"/></div>
-  <div class="card"><div class="table-wrap"><table>
-    <thead><tr><th>Student</th><th>Programme</th><th>Progress</th><th>Last Login</th><th>Applied</th><th>Status</th></tr></thead>
-    <tbody id="studentsTable"></tbody>
-  </table></div></div>
+  <!-- Search + filters -->
+  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:180px;position:relative;">
+      <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:14px;">🔍</span>
+      <input class="search-input" id="studentSearch" style="padding-left:34px;" placeholder="Search name or email…" oninput="renderStudents()"/>
+    </div>
+    <select class="form-input" id="studentCourseFilter" style="width:auto;padding:9px 12px;margin:0;" onchange="renderStudents()">
+      <option value="">All programmes</option>
+    </select>
+    <select class="form-input" id="studentStatusFilter" style="width:auto;padding:9px 12px;margin:0;" onchange="renderStudents()">
+      <option value="">All statuses</option>
+      <option value="examready">Exam Ready</option>
+      <option value="progress">In Progress</option>
+      <option value="atrisk">At Risk</option>
+      <option value="notstarted">Not Started</option>
+    </select>
+  </div>
+  <!-- Student cards list -->
+  <div id="studentsTable"></div>
 </div>
 
 <!-- STUDENT DETAIL -->
 <div class="admin-page" id="page-student-detail">
-  <div class="page-header">
-    <div><button class="btn btn-ghost" onclick="goPage('students')">← All Students</button></div>
+  <div style="margin-bottom:16px;">
+    <button class="btn btn-ghost btn-sm" onclick="goTab('students')">← All Students</button>
   </div>
+  <div id="studentDetailContent"></div>
+</div>
   <div id="studentDetailContent"></div>
 </div>
 
@@ -1665,159 +1680,295 @@ async function viewReceipt(id) {
 
 // ── STUDENTS ─────────────────────────────────────────────────────────────────
 var _studentView = 'active';
-function setStudentView(view, el) {
-  _studentView = view;
-  document.querySelectorAll('#page-students .tab').forEach(function(t){ t.classList.remove('active'); });
-  if (el) el.classList.add('active');
-  renderStudents();
-}
+function setStudentView(v,el){ _studentView=v; renderStudents(); }
 
 async function renderStudents() {
-  var q=(document.getElementById('studentSearch')||{}).value||'';
-  var list;
-  if (_studentView === 'inactive') {
-    // Fetch inactive students fresh from DB
-    try {
-      list = await sb('students','GET',null,'status=eq.inactive&order=created_at.desc&select=*');
-    } catch(e) { list = []; }
-  } else {
-    list = allStudents;
+  var q = ((document.getElementById('studentSearch')||{}).value||'').toLowerCase();
+  var courseFilter = ((document.getElementById('studentCourseFilter')||{}).value)||'';
+  var statusFilter = ((document.getElementById('studentStatusFilter')||{}).value)||'';
+
+  // Populate course filter once
+  var cf = document.getElementById('studentCourseFilter');
+  if (cf && cf.options.length <= 1) {
+    cmCourses.forEach(function(c){
+      var o = document.createElement('option'); o.value=c.id; o.textContent=c.title; cf.appendChild(o);
+    });
   }
-  list = list.filter(function(s){
-    return !q||[s.first_name,s.last_name,s.email].join(' ').toLowerCase().includes(q.toLowerCase());
+
+  var list = allStudents;
+  if (q) list = list.filter(function(s){ return (s.first_name+' '+s.last_name+' '+s.email).toLowerCase().includes(q); });
+  if (courseFilter) list = list.filter(function(s){ return allEnrolments.some(function(e){ return e.student_id===s.id&&e.course_id===courseFilter; }); });
+  if (statusFilter) list = list.filter(function(s){
+    var er = allEnrolments.some(function(e){ return e.student_id===s.id&&['complete','exam_scheduled','exam_passed'].includes(e.status); });
+    var cp = getStudentProgress(s.id).length;
+    if (statusFilter==='examready') return er;
+    if (statusFilter==='atrisk') return isAtRisk(s)&&!er;
+    if (statusFilter==='progress') return cp>0&&!er;
+    if (statusFilter==='notstarted') return cp===0&&!er;
+    return true;
   });
-  var rows = list.map(function(s) {
-    var comp=getStudentProgress(s.id).length;
-    var pct=Math.min(100, Math.round((comp/MODULE_COUNT)*100));
-    var risk=isAtRisk(s);
-    var status=comp>=MODULE_COUNT
-      ?'<span class="pill pill-ok">Complete</span>'
-      :risk?'<span class="pill pill-danger">At Risk</span>'
-      :comp>0?'<span class="pill pill-blue">In Progress</span>'
-      :'<span class="pill pill-dim">Not Started</span>';
-    var pb = pct===0
-      ?'<div class="prog-bg"><div class="prog-fill" style="width:0%;background:var(--border)"></div></div>'
-      :'<div class="prog-bg"><div class="prog-fill'+(pct===100?' ok':'')+'" style="width:'+pct+'%"></div></div>';
-    return '<tr class="tr-clickable" onclick="openStudentDetail(\''+s.id+'\')"><td><strong>'+s.first_name+' '+s.last_name+'</strong><br><span style="font-size:11px;color:var(--muted);">'+s.email+'</span></td>'
-      +'<td style="font-size:12px;color:var(--muted);">'+(function(){
-        var enrs = allEnrolments.filter(function(e){ return e.student_id === s.id; });
-        if (!enrs.length) return s.programme||'—';
-        return enrs.map(function(e){
-          var course = (cmCourses||[]).find(function(c){ return c.id === e.course_id; });
-          return course ? course.title : (s.programme||'—');
-        }).join('<br>');
-      }())+'</td>'
-      +'<td>'+pb+'<span style="font-size:11px;color:var(--muted);margin-left:6px;">'+pct+'%</span></td>'
-      +'<td style="font-size:12px;color:var(--muted);">'+fmtDateTime(s.last_login)+'</td>'
-      +'<td style="font-size:12px;color:var(--muted);">'+fmtDateTime(s.created_at)+'</td>'
-      +'<td>'+status+'</td></tr>';
+
+  var sub = document.getElementById('studentsSub');
+  if (sub) sub.textContent = list.length+' student'+(list.length!==1?'s':'')+(q||courseFilter||statusFilter?' — filtered':'');
+
+  var container = document.getElementById('studentsTable');
+  if (!container) return;
+
+  if (!list.length) {
+    container.innerHTML = '<div style="text-align:center;padding:56px 20px;color:var(--muted);">No students found.</div>';
+    return;
+  }
+
+  container.innerHTML = list.map(function(s) {
+    var enrols = allEnrolments.filter(function(e){ return e.student_id===s.id; });
+    var examReady = enrols.some(function(e){ return ['complete','exam_scheduled','exam_passed'].includes(e.status); });
+    var examPassed = enrols.some(function(e){ return e.status==='exam_passed'; });
+    var risk = isAtRisk(s) && !examReady;
+    var da = daysAgo(s.last_login);
+    var lastSeen = da===0?'Today':da===1?'Yesterday':da<999?(da+' days ago'):'Never';
+
+    // Status pill
+    var statusPill = examPassed
+      ? '<span class="pill pill-ok">🎓 Passed</span>'
+      : examReady
+      ? '<span class="pill" style="background:#DCFCE7;color:#15803D;">Exam Ready</span>'
+      : risk
+      ? '<span class="pill pill-danger">At Risk</span>'
+      : getStudentProgress(s.id).length===0
+      ? '<span class="pill pill-muted">Not Started</span>'
+      : '<span class="pill pill-blue">In Progress</span>';
+
+    // Per-course progress bars
+    var coursesBars = '';
+    if (enrols.length) {
+      coursesBars = enrols.map(function(enr){
+        var course = cmCourses.find(function(c){ return c.id===enr.course_id; });
+        var title = course ? course.title : (s.programme||'—');
+        // Shorten title
+        var shortTitle = title.split(':')[0] || title;
+        var modCount = course ? (course.modules||[]).filter(function(m){return m.published!==false;}).length : MODULE_COUNT;
+        var done = allProgress.filter(function(p){ return p.student_id===s.id&&p.course_id===enr.course_id; })
+          .map(function(p){return p.module_index;}).filter(function(v,i,a){return a.indexOf(v)===i;}).length;
+        var pct = modCount>0?Math.min(100,Math.round((done/modCount)*100)):0;
+        return '<div style="margin-bottom:4px;">'
+          +'<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:2px;">'
+          +'<span>'+shortTitle+'</span><span>'+pct+'%</span></div>'
+          +'<div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;">'
+          +'<div style="height:100%;width:'+pct+'%;background:'+(pct===100?'var(--ok)':'var(--navy)')+';border-radius:2px;"></div>'
+          +'</div></div>';
+      }).join('');
+    } else {
+      var totalProg = getStudentProgress(s.id).length;
+      var pct2 = MODULE_COUNT>0?Math.min(100,Math.round((totalProg/MODULE_COUNT)*100)):0;
+      coursesBars = '<div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;">'
+        +'<div style="height:100%;width:'+pct2+'%;background:var(--navy);border-radius:2px;"></div></div>'
+        +'<div style="font-size:10px;color:var(--muted);margin-top:2px;">'+pct2+'%</div>';
+    }
+
+    return '<div onclick="openStudentDetail(\''+s.id+'\')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;background:white;transition:background 0.1s;" onmouseover="this.style.background=\'var(--navy-pale)\'" onmouseout="this.style.background=\'white\'">'
+      // Avatar
+      +'<div style="width:40px;height:40px;border-radius:50%;background:var(--navy-light);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">'+s.first_name.charAt(0)+(s.last_name||'').charAt(0)+'</div>'
+      // Name + email
+      +'<div style="flex:1;min-width:0;">'
+      +'<div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+s.first_name+' '+s.last_name+'</div>'
+      +'<div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+s.email+'</div>'
+      +'</div>'
+      // Progress bars (hide on very small screens)
+      +'<div style="min-width:100px;max-width:140px;display:none;" class="student-prog-col">'+coursesBars+'</div>'
+      // Status + last seen
+      +'<div style="text-align:right;flex-shrink:0;">'
+      +statusPill
+      +'<div style="font-size:10px;color:var(--muted);margin-top:4px;">'+lastSeen+'</div>'
+      +'</div>'
+      +'<div style="color:var(--dim);font-size:14px;flex-shrink:0;">›</div>'
+      +'</div>';
+  }).join('');
+
+  // Show progress column on wider screens
+  if (!document.getElementById('_studProgStyle')) {
+    var s2=document.createElement('style');s2.id='_studProgStyle';
+    s2.textContent='@media(min-width:500px){.student-prog-col{display:block!important;}}';
+    document.head.appendChild(s2);
+  }
+}
+
+function exportStudentsCsv() {
+  var rows=[['Name','Email','Programme','Last Seen','Status']];
+  allStudents.forEach(function(s){
+    var er=allEnrolments.some(function(e){return e.student_id===s.id&&['complete','exam_scheduled','exam_passed'].includes(e.status);});
+    var cp=getStudentProgress(s.id).length;
+    var status=er?'Exam Ready':isAtRisk(s)?'At Risk':cp===0?'Not Started':'In Progress';
+    var da=daysAgo(s.last_login);
+    var lastSeen=da===0?'Today':da===1?'Yesterday':da<999?(da+' days ago'):'Never';
+    rows.push([s.first_name+' '+s.last_name,s.email,s.programme||'—',lastSeen,status]);
   });
-  document.getElementById('studentsTable').innerHTML=rows.join('');
+  var csv=rows.map(function(r){return r.map(function(c){return '"'+(c||'').replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var blob=new Blob([csv],{type:'text/csv'});var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='CMA_Students_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+  URL.revokeObjectURL(url);
 }
 
 
 function openStudentDetail(sid) {
-  var s=allStudents.find(function(st){return st.id===sid;});
-  if(!s) return;
-  var comp=getStudentProgress(s.id);
-  var attempts=getStudentAttempts(s.id);
-  var pct=Math.min(100, Math.round((comp.length/MODULE_COUNT)*100));
-  var risk=isAtRisk(s);
-  var app=allApplications.find(function(a){return a.email===s.email;})||{};
-  var wn=s.whatsapp||s.phone;
-  var nudgeMsg='Hello '+s.first_name+', this is the Catholic Music Academy. You have '+(MODULE_COUNT-comp.length)+' module(s) remaining. Log in: catholicmusicacademy.net/login.html';
+  var s = allStudents.find(function(st){return st.id===sid;});
+  if (!s) return;
+  goTab('student-detail');
 
-  // Build enrolled courses list from enrolments table
-  var studentEnrols = allEnrolments.filter(function(e){ return e.student_id === sid; });
-  var enrolledCoursesHtml = '';
-  if (studentEnrols.length) {
-    enrolledCoursesHtml = '<div class="card" style="margin-bottom:14px;">'
-      +'<div style="font-size:12px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Enrolled Courses</div>'
-      +studentEnrols.map(function(enr){
-        var course = (cmCourses||[]).find(function(c){ return c.id === enr.course_id; });
-        var title = course ? course.title : (s.programme||'—');
-        var modCount = course ? (course.modules||[]).filter(function(m){ return m.published!==false; }).length : MODULE_COUNT;
-        var rawComp = allProgress.filter(function(p){ return p.student_id===sid && p.course_id===enr.course_id; })
-          .map(function(p){ return p.module_index; })
-          .filter(function(v,i,a){ return a.indexOf(v)===i; }); // deduplicate
-        var courseComp = Math.min(rawComp.length, modCount); // never exceed module count
-        var isComplete = courseComp >= modCount && modCount > 0;
-        var badge = isComplete
-          ? '<span style="font-size:11px;background:#DCFCE7;color:#16A34A;border-radius:4px;padding:2px 7px;font-weight:700;">✓ Complete</span>'
-          : '<span style="font-size:11px;background:#EFF6FF;color:#2563EB;border-radius:4px;padding:2px 7px;">'+Math.min(100,Math.round((courseComp/modCount)*100))+'%</span>';
-        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--surface);">'
-          +'<span style="font-size:13px;">'+title+'</span>'
-          +'<span>'+badge+' <span style="font-size:11px;color:var(--muted);">'+courseComp+'/'+modCount+' modules</span></span>'
+  var enrols = allEnrolments.filter(function(e){return e.student_id===sid;});
+  var attempts = getStudentAttempts(sid);
+  var app = allApplications.find(function(a){return a.email===s.email;})||{};
+  var wn = s.whatsapp||s.phone||'';
+  var da = daysAgo(s.last_login);
+  var lastSeen = da===0?'Today':da===1?'Yesterday':da<999?(da+' days ago'):'Never';
+  var examPassed = enrols.some(function(e){return e.status==='exam_passed';});
+  var examReady = enrols.some(function(e){return ['complete','exam_scheduled','exam_passed'].includes(e.status);});
+
+  // ── HEADER ──
+  var statusBadge = examPassed
+    ? '<span class="pill pill-ok">🎓 Exam Passed</span>'
+    : examReady ? '<span class="pill" style="background:#DCFCE7;color:#15803D;">Exam Ready</span>'
+    : isAtRisk(s) ? '<span class="pill pill-danger">At Risk</span>'
+    : '<span class="pill pill-blue">In Progress</span>';
+
+  var hdr = '<div style="background:linear-gradient(135deg,var(--navy),var(--navy-mid));border-radius:14px;padding:20px;color:white;margin-bottom:16px;">'
+    +'<div style="display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;">'
+    +'<div style="width:52px;height:52px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--navy);flex-shrink:0;">'+s.first_name.charAt(0)+(s.last_name||'').charAt(0)+'</div>'
+    +'<div style="flex:1;min-width:0;">'
+    +'<div style="font-size:18px;font-weight:700;margin-bottom:3px;">'+s.first_name+' '+s.last_name+'</div>'
+    +'<div style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:8px;">'+s.email+(s.phone?' · '+s.phone:'')+'</div>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">'+statusBadge
+    +'<span style="font-size:11px;color:rgba(255,255,255,0.55);">Last seen: '+lastSeen+'</span>'
+    +'<span style="font-size:11px;color:rgba(255,255,255,0.55);">Joined: '+fmtDate(s.created_at)+'</span>'
+    +'</div></div>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;">'
+    +(wn?'<a class="btn btn-gold btn-sm" href="'+waLink(wn,'Hello '+s.first_name+', this is the Catholic Music Academy.')+'" target="_blank">💬 WhatsApp</a>':'')
+    +'<a class="btn btn-ghost btn-sm" style="border-color:rgba(255,255,255,0.3);color:white;" href="mailto:'+s.email+'">✉ Email</a>'
+    +'</div></div></div>';
+
+  // ── PER-COURSE PROGRESS ──
+  var coursesHtml = '<div class="card" style="margin-bottom:14px;">'
+    +'<div class="card-title" style="margin-bottom:14px;">Course Progress</div>';
+  if (!enrols.length) {
+    coursesHtml += '<div style="font-size:13px;color:var(--muted);">No enrolments found.</div>';
+  } else {
+    enrols.forEach(function(enr){
+      var course = cmCourses.find(function(c){return c.id===enr.course_id;});
+      var title = course ? course.title : (s.programme||'—');
+      var modules = course ? (course.modules||[]).filter(function(m){return m.published!==false;}) : [];
+      var modCount = modules.length || MODULE_COUNT;
+      var courseProgress = allProgress.filter(function(p){return p.student_id===sid&&p.course_id===enr.course_id;})
+        .map(function(p){return p.module_index;}).filter(function(v,i,a){return a.indexOf(v)===i;});
+      var done = Math.min(courseProgress.length, modCount);
+      var pct = modCount>0?Math.min(100,Math.round((done/modCount)*100)):0;
+
+      // Enrolment status badge
+      var enrBadge = {
+        'complete':'<span class="pill" style="background:#DCFCE7;color:#15803D;font-size:10px;">Modules Done</span>',
+        'exam_scheduled':'<span class="pill pill-blue" style="font-size:10px;">Exam Scheduled</span>',
+        'exam_passed':'<span class="pill pill-ok" style="font-size:10px;">🎓 Passed</span>',
+        'exam_failed':'<span class="pill pill-danger" style="font-size:10px;">Exam Failed</span>',
+        'active':'<span class="pill pill-blue" style="font-size:10px;">Active</span>'
+      }[enr.status]||'<span class="pill pill-muted" style="font-size:10px;">'+enr.status+'</span>';
+
+      // Module breakdown
+      var moduleRows = '';
+      for (var mi=0; mi<modCount; mi++) {
+        var modName = modules[mi] ? modules[mi].title : ('Module '+(mi+1));
+        var modDone = courseProgress.includes(mi);
+        var modAtts = attempts.filter(function(a){return a.module_index===mi&&a.course_id===enr.course_id;});
+        var passes = modAtts.filter(function(a){return a.passed;}).length;
+        var fails = modAtts.filter(function(a){return !a.passed;}).length;
+        var bestScore = modAtts.length ? Math.max.apply(null, modAtts.map(function(a){return a.score||0;})) : null;
+        var totalQ = modAtts.length ? (modAtts[0].total||0) : null;
+
+        moduleRows += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--surface);">'
+          +'<div style="width:24px;height:24px;border-radius:6px;background:'+(modDone?'var(--ok)':'var(--border)')+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0;">'+(modDone?'✓':(mi+1))+'</div>'
+          +'<div style="flex:1;min-width:0;">'
+          +'<div style="font-size:12px;font-weight:600;color:var(--text);">'+modName+'</div>'
+          +(modAtts.length>0
+            ? '<div style="font-size:10px;color:var(--muted);">'
+              +modAtts.length+' attempt'+(modAtts.length>1?'s':'')+' · '
+              +(passes>0?'<span style="color:var(--ok);">'+passes+' passed</span>':'')
+              +(fails>0?'<span style="color:var(--danger);margin-left:4px;">'+fails+' failed</span>':'')
+              +(bestScore!==null?' · Best: '+bestScore+(totalQ?'/'+totalQ:''):'')
+              +'</div>'
+            : '<div style="font-size:10px;color:var(--dim);">Not yet attempted</div>')
+          +'</div>'
+          +'<span class="pill '+(modDone?'pill-ok':'pill-muted')+'" style="font-size:10px;">'+(modDone?'Done':'Pending')+'</span>'
           +'</div>';
-      }).join('')
+      }
+
+      coursesHtml += '<div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:12px;">'
+        +'<div style="padding:12px 14px;background:var(--surface);display:flex;align-items:center;justify-content:space-between;gap:8px;">'
+        +'<div><div style="font-size:13px;font-weight:600;">'+title+'</div>'
+        +'<div style="font-size:11px;color:var(--muted);margin-top:2px;">Enrolled '+fmtDate(enr.enrolled_at)+'</div></div>'
+        +enrBadge+'</div>'
+        +'<div style="padding:4px 14px 4px;">'
+        +'<div style="display:flex;align-items:center;gap:8px;padding:8px 0;">'
+        +'<div style="height:6px;flex:1;background:var(--border);border-radius:3px;overflow:hidden;">'
+        +'<div style="height:100%;width:'+pct+'%;background:'+(pct===100?'var(--ok)':'var(--navy)')+';border-radius:3px;"></div></div>'
+        +'<span style="font-size:12px;font-weight:600;color:var(--navy);flex-shrink:0;">'+done+'/'+modCount+' modules</span></div>'
+        +moduleRows
+        +'</div></div>';
+    });
+  }
+  coursesHtml += '</div>';
+
+  // ── TIMELINE ──
+  var tlEvents = [];
+  if (app.submitted_at) tlEvents.push({time:app.submitted_at,color:'#0D1B3E',text:'Applied to Academy',sub:fmtDate(app.submitted_at)});
+  if (app.reviewed_at) tlEvents.push({time:app.reviewed_at,color:app.status==='approved'?'#16A34A':'#DC2626',text:app.status==='approved'?'Application approved':'Application rejected',sub:fmtDate(app.reviewed_at)});
+  attempts.forEach(function(a){
+    tlEvents.push({time:a.attempted_at,color:a.passed?'#16A34A':'#DC2626',
+      text:(a.passed?'✓ Passed':'✗ Failed')+' Module '+(a.module_index+1),
+      sub:(a.score||0)+'/'+(a.total||0)+' correct · '+fmtDate(a.attempted_at)});
+  });
+  allProgress.filter(function(p){return p.student_id===sid;}).forEach(function(p){
+    var mn = MODULE_NAMES[p.module_index]||('Module '+(p.module_index+1));
+    tlEvents.push({time:p.completed_at||'',color:'#C9A84C',text:'Completed: '+mn,sub:fmtDate(p.completed_at)});
+  });
+  enrols.forEach(function(e){
+    if(e.exam_passed_at) tlEvents.push({time:e.exam_passed_at,color:'#16A34A',text:'🎓 Exam Passed',sub:fmtDate(e.exam_passed_at)});
+    if(e.exam_failed_at) tlEvents.push({time:e.exam_failed_at,color:'#DC2626',text:'Exam Failed',sub:fmtDate(e.exam_failed_at)});
+    if(e.exam_date&&e.status==='exam_scheduled') tlEvents.push({time:e.exam_date,color:'#0D1B3E',text:'Exam Scheduled',sub:'Scheduled for '+fmtDate(e.exam_date)});
+  });
+  tlEvents.sort(function(a,b){return new Date(a.time)-new Date(b.time);});
+
+  var tlHtml = '<div class="card">'
+    +'<div class="card-title" style="margin-bottom:14px;">Timeline</div>'
+    +'<div style="position:relative;padding-left:24px;">'
+    +'<div style="position:absolute;left:7px;top:0;bottom:0;width:2px;background:var(--border);border-radius:1px;"></div>'
+    +( tlEvents.length ? tlEvents.map(function(e){
+      return '<div style="position:relative;margin-bottom:14px;">'
+        +'<div style="position:absolute;left:-21px;top:3px;width:12px;height:12px;border-radius:50%;background:'+e.color+';border:2px solid white;box-shadow:0 0 0 2px '+e.color+';"></div>'
+        +'<div style="font-size:13px;font-weight:500;color:var(--text);">'+e.text+'</div>'
+        +'<div style="font-size:11px;color:var(--muted);margin-top:1px;">'+e.sub+'</div>'
+        +'</div>';
+    }).join('') : '<div style="font-size:13px;color:var(--muted);padding:16px 0;">No activity yet.</div>')
+    +'</div></div>';
+
+  // ── NUDGE SECTION ──
+  var nudgeHtml = '';
+  if (wn) {
+    nudgeHtml = '<div class="card" style="margin-bottom:14px;">'
+      +'<div class="card-title" style="margin-bottom:12px;">Send Nudge</div>'
+      +'<textarea id="nudgeMsg_'+sid+'" class="form-input" rows="3" style="resize:vertical;margin-bottom:10px;">Hello '+s.first_name+', this is the Catholic Music Academy. Please log in and continue your studies. God bless.</textarea>'
+      +'<a class="btn btn-primary btn-sm" href="'+waLink(wn, 'Hello '+s.first_name+', this is the Catholic Music Academy. Please log in and continue your studies. God bless.')+'" target="_blank">💬 Send via WhatsApp</a>'
       +'</div>';
   }
 
-  // Overview
-  var ov=enrolledCoursesHtml
-    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:18px;">'
-    +'<div class="student-stat"><div class="student-stat-val">'+pct+'%</div><div class="student-stat-label">Progress</div></div>'
-    +'<div class="student-stat"><div class="student-stat-val">'+comp.length+'</div><div class="student-stat-label">Modules Done</div></div>'
-    +'<div class="student-stat"><div class="student-stat-val">'+attempts.length+'</div><div class="student-stat-label">Attempts</div></div>'
-    +'<div class="student-stat"><div class="student-stat-val">'+attempts.filter(function(a){return a.passed;}).length+'</div><div class="student-stat-label">Passed</div></div>'
-    +'</div>'
-    +'<div class="card"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'
-    +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Email</div><div style="font-size:13px;font-weight:600;">'+s.email+'</div></div>'
-    +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Phone</div><div style="font-size:13px;font-weight:600;">'+(s.phone||'—')+'</div></div>'
-    +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Programme</div><div style="font-size:13px;font-weight:600;">'+(s.programme||'—')+'</div></div>'
-    +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">State</div><div style="font-size:13px;font-weight:600;">'+(s.state||'—')+'</div></div>'
-    +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Joined</div><div style="font-size:13px;font-weight:600;">'+fmtDateTime(s.created_at)+'</div></div>'
-    +'<div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Last Login</div><div style="font-size:13px;font-weight:600;">'+fmtDateTime(s.last_login)+'</div></div>'
-    +'</div></div>';
-
-  // Progress tab
-  var pr='<div class="card">'+MODULE_NAMES.map(function(name,i){
-    var done=comp.includes(i);
-    var modAtts=attempts.filter(function(a){return a.module_index===i;});
-    return '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--surface);">'
-      +'<div style="width:30px;height:30px;border-radius:7px;background:'+(done?'var(--ok)':'var(--border)')+';display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0;">'+(done?'✓':(i+1))+'</div>'
-      +'<div style="flex:1;"><div style="font-size:13px;font-weight:600;">Module '+(i+1)+': '+name+'</div>'
-      +'<div style="font-size:11px;color:var(--muted);">'+modAtts.length+' attempt(s) · '+modAtts.filter(function(a){return a.passed;}).length+' pass · '+modAtts.filter(function(a){return !a.passed;}).length+' fail</div></div>'
-      +'<span class="pill '+(done?'pill-ok':'pill-dim')+'">'+(done?'Done':'Pending')+'</span></div>';
-  }).join('')+'</div>';
-
-  // Timeline
-  var tlEvents=[];
-  if(app.submitted_at) tlEvents.push({time:app.submitted_at,type:'navy',text:'Applied',sub:fmtDateTime(app.submitted_at)});
-  if(app.reviewed_at) tlEvents.push({time:app.reviewed_at,type:app.status==='approved'?'ok':'danger',text:app.status==='approved'?'Approved':'Rejected',sub:'By admin · '+fmtDateTime(app.reviewed_at)});
-  attempts.forEach(function(a){
-    tlEvents.push({time:a.attempted_at,type:a.passed?'ok':'danger',text:(a.passed?'Passed':'Failed')+' Module '+(a.module_index+1),sub:a.score+'/'+a.total+' correct · '+fmtDateTime(a.attempted_at)});
-  });
-  allProgress.filter(function(p){return p.student_id===sid;}).forEach(function(p){
-    tlEvents.push({time:p.completed_at||'',type:'gold',text:'Completed Module '+(p.module_index+1),sub:MODULE_NAMES[p.module_index]});
-  });
-  tlEvents.sort(function(a,b){return new Date(a.time)-new Date(b.time);});
-  var tl='<div class="card"><div class="timeline">'+tlEvents.map(function(e){
-    return '<div class="tl-item"><div class="tl-dot '+e.type+'"></div><div class="tl-time">'+fmtDateTime(e.time)+'</div><div class="tl-text">'+e.text+'</div><div class="tl-sub">'+e.sub+'</div></div>';
-  }).join('')+(tlEvents.length===0?'<div style="font-size:13px;color:var(--dim);padding:20px;text-align:center;">No activity yet.</div>':'')+'</div></div>';
-
-  // Build header
-  var hdr='<div class="student-header">'
-    +'<div class="student-avatar-lg">'+s.first_name.charAt(0)+s.last_name.charAt(0)+'</div>'
-    +'<div style="flex:1;"><div class="student-detail-name">'+s.first_name+' '+s.last_name+'</div>'
-    +'<div class="student-detail-meta">'+(s.programme||'—')+' · '+s.email+'</div>'
-    +(wn?'<div style="margin-top:10px;"><a class="btn btn-wa" href="'+waLink(wn,nudgeMsg)+'" target="_blank" style="font-size:12px;padding:7px 14px;">💬 WhatsApp</a></div>':'')
-    +'</div>'
-    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">'
-    +'<div class="student-stat"><div class="student-stat-val">'+pct+'%</div><div class="student-stat-label">Progress</div></div>'
-    +'<div class="student-stat"><div class="student-stat-val">'+attempts.length+'</div><div class="student-stat-label">Attempts</div></div>'
-    +'<div class="student-stat"><div class="student-stat-val">'+daysAgo(s.last_login)+'d</div><div class="student-stat-label">Since Login</div></div>'
-    +'</div></div>';
-
-  document.getElementById('studentDetailContent').innerHTML=hdr
-    +'<div class="tabs"><div class="tab active" onclick="showStudentTab(this,0)">Overview</div>'
-    +'<div class="tab" onclick="showStudentTab(this,1)">Progress</div>'
-    +'<div class="tab" onclick="showStudentTab(this,2)">Timeline</div></div>'
-    +'<div id="sd0">'+ov+'</div>'
-    +'<div id="sd1" style="display:none;">'+pr+'</div>'
-    +'<div id="sd2" style="display:none;">'+tl+'</div>';
-  goPage('student-detail');
+  // ── TABS ──
+  document.getElementById('studentDetailContent').innerHTML = hdr
+    + '<div class="tabs" style="margin-bottom:16px;">'
+    + '<div class="tab active" onclick="showStudentTab(this,0)">Progress</div>'
+    + '<div class="tab" onclick="showStudentTab(this,1)">Timeline</div>'
+    + (wn?'<div class="tab" onclick="showStudentTab(this,2)">Nudge</div>':'')
+    + '</div>'
+    + '<div id="sd0">'+coursesHtml+'</div>'
+    + '<div id="sd1" style="display:none;">'+tlHtml+'</div>'
+    + (wn?'<div id="sd2" style="display:none;">'+nudgeHtml+'</div>':'');
 }
+
 
 function showStudentTab(el, idx) {
   document.querySelectorAll('#page-student-detail .tab').forEach(function(t){t.classList.remove('active');});
