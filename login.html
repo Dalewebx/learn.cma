@@ -530,10 +530,60 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
       <div style="font-size:13px;color:var(--text);line-height:1.7;">Your <strong>Certificate of Competence</strong> will be issued after you pass your final <strong>in-person examination</strong>. The Academy will contact you with exam details via WhatsApp or email.</div>
     </div>
 
-    <button class="btn btn-secondary" onclick="goDash()" style="margin-top:8px;">← Back to Dashboard</button>
+    <!-- Completion Card Preview -->
+    <div style="margin:24px 0 8px;text-align:left;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Your Completion Card</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Download and share on WhatsApp or social media.</div>
+
+    <!-- The card itself — this gets captured by html2canvas -->
+    <div id="completionCardEl" style="width:100%;max-width:600px;margin:0 auto 16px;border-radius:10px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.15);">
+      <div style="background:#0D1B3E;height:10px;"></div>
+      <div style="background:linear-gradient(135deg,#0D1B3E 0%,#1A2E6C 100%);padding:28px 32px 20px;">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+          <!-- Academy seal SVG -->
+          <div style="width:52px;height:52px;background:#C9A84C;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="30" height="30">
+              <path d="M7 5 L25 5 L25 21 Q16 27 7 21 Z" fill="none" stroke="white" stroke-width="1.2"/>
+              <rect x="14.5" y="7" width="3" height="9" rx="1" fill="white"/>
+              <rect x="9" y="10" width="14" height="2.5" rx="1" fill="white"/>
+              <circle cx="11" cy="18" r="2.5" fill="white"/>
+            </svg>
+          </div>
+          <div>
+            <div style="font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#C9A84C;margin-bottom:3px;">Catholic Music Academy</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:1px;">Catholic Diocese of Warri</div>
+          </div>
+        </div>
+        <div style="border-top:1px solid rgba(201,168,76,0.4);border-bottom:1px solid rgba(201,168,76,0.4);padding:6px 0;margin-bottom:16px;text-align:center;">
+          <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#C9A84C;">Completion of Online Modules</div>
+        </div>
+        <div style="text-align:center;margin-bottom:16px;">
+          <div style="font-size:11px;color:rgba(255,255,255,0.65);margin-bottom:8px;">This is to certify that</div>
+          <div id="cardStudentName" style="font-family:Georgia,serif;font-size:24px;font-weight:700;color:#C9A84C;letter-spacing:1px;margin-bottom:8px;"></div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.65);margin-bottom:8px;">has successfully completed all online modules of</div>
+          <div id="cardCourseName" style="font-family:Georgia,serif;font-size:15px;font-weight:700;color:white;line-height:1.4;max-width:380px;margin:0 auto 10px;"></div>
+          <div id="cardDate" style="font-size:12px;color:rgba(255,255,255,0.65);"></div>
+        </div>
+        <div style="border-top:1px solid rgba(255,255,255,0.15);padding-top:14px;display:flex;justify-content:space-between;align-items:flex-end;">
+          <div>
+            <div id="cardDirectorName" style="font-size:12px;font-weight:700;color:white;margin-bottom:2px;"></div>
+            <div id="cardDirectorTitle" style="font-size:10px;color:rgba(255,255,255,0.6);"></div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:9px;color:rgba(201,168,76,0.8);font-style:italic;max-width:180px;line-height:1.5;">Not a Certificate of Competence. Final in-person examination required.</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#C9A84C;height:6px;"></div>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;">
+      <button class="btn btn-primary" id="downloadCardBtn" onclick="downloadCompletionCard()" style="background:var(--gold);color:var(--navy);">⬇ Download Card (PNG)</button>
+      <button class="btn btn-secondary" onclick="goDash()">← Back to Dashboard</button>
+    </div>
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 const SUPA_URL = 'https://ltqwofagofmvufvqsuyj.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0cXdvZmFnb2ZtdnVmdnFzdXlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjgyMTgsImV4cCI6MjA5NzMwNDIxOH0.7EkluJspwopQxxQmL7AuYxx4XHgchpYR7tsajyoXHaI';
@@ -1108,6 +1158,30 @@ function renderOtherCourses() {
   }).join('');
 }
 
+
+async function downloadCompletionCard() {
+  var btn = document.getElementById('downloadCardBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Preparing...'; }
+  try {
+    var card = document.getElementById('completionCardEl');
+    var canvas = await html2canvas(card, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: null,
+      logging: false
+    });
+    var link = document.createElement('a');
+    var studentName = (currentStudent ? currentStudent.first_name+'_'+currentStudent.last_name : 'completion').replace(/\s+/g,'_');
+    var courseName = (CURRENT_COURSE ? CURRENT_COURSE.title : 'course').replace(/[^a-zA-Z0-9]/g,'_').substring(0,30);
+    link.download = 'CMA_Completion_'+studentName+'_'+courseName+'.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } catch(e) {
+    alert('Download failed. Please screenshot the card manually.');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '⬇ Download Card (PNG)'; }
+  }
+}
 
 async function doLogin() {
   var emailEl = document.getElementById('loginEmail');
@@ -1898,6 +1972,38 @@ async function showComplete() {
   if (courseEl) courseEl.textContent = course;
   if (dateEl) dateEl.textContent = dateStr;
   if (modsEl) modsEl.textContent = mods + ' module' + (mods !== 1 ? 's' : '');
+
+  // Populate card fields
+  var cn = document.getElementById('cardStudentName');
+  var cc = document.getElementById('cardCourseName');
+  var cd = document.getElementById('cardDate');
+  if (cn) cn.textContent = name.toUpperCase();
+  if (cc) cc.textContent = course;
+  if (cd) cd.textContent = dateStr;
+
+  // Fetch director name from site_settings
+  try {
+    var sr = await fetch(SUPA_URL+'/rest/v1/site_settings?key=in.(director_name,director_title)&select=key,value',
+      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    var settings = await sr.json();
+    var dirName = 'Very Rev. Fr. Francis Adjagbara';
+    var dirTitle = 'Director, Catholic Music Academy';
+    if (Array.isArray(settings)) {
+      settings.forEach(function(s){
+        if (s.key==='director_name' && s.value) dirName = s.value;
+        if (s.key==='director_title' && s.value) dirTitle = s.value;
+      });
+    }
+    var dn = document.getElementById('cardDirectorName');
+    var dt = document.getElementById('cardDirectorTitle');
+    if (dn) dn.textContent = dirName;
+    if (dt) dt.textContent = dirTitle;
+  } catch(e) {
+    var dn = document.getElementById('cardDirectorName');
+    var dt = document.getElementById('cardDirectorTitle');
+    if (dn) dn.textContent = 'Very Rev. Fr. Francis Adjagbara';
+    if (dt) dt.textContent = 'Director, Catholic Music Academy';
+  }
 
   // Check if already marked complete in DB — only fire email + PATCH once
   var enr = ALL_ENROLMENTS ? ALL_ENROLMENTS.find(function(e){
