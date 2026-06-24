@@ -648,17 +648,19 @@ function updateProgress(n) {
   });
 }
 
+// ── FORM ERROR HELPERS ──
+function showFormErr(msg) {
+  var el = document.getElementById('applySubmitErr');
+  if (el) { el.innerHTML = msg; el.style.display = 'block'; el.scrollIntoView({behavior:'smooth',block:'center'}); }
+}
+function hideFormErr() {
+  var el = document.getElementById('applySubmitErr');
+  if (el) el.style.display = 'none';
+}
+
 // ── VALIDATION ──
 async function validateStep(n) {
   var ok = true;
-  function showFormErr(msg) {
-    var el = document.getElementById('applySubmitErr');
-    if (el) { el.innerHTML = msg; el.style.display = 'block'; el.scrollIntoView({behavior:'smooth',block:'center'}); }
-  }
-  function hideFormErr() {
-    var el = document.getElementById('applySubmitErr');
-    if (el) el.style.display = 'none';
-  }
   window._isReapplication = false;
 
   function req(id, errId, msg) {
