@@ -2349,19 +2349,27 @@ function renderCMSidebar() {
   cmCourses.forEach(function(c) {
     var isOpen = cmState.selectedCourse === c.id;
     html += '<div class="cm-course-grp'+(isOpen?' open':'')+'" id="cmcg-'+c.id+'">'
-      +'<div class="cm-course-label" onclick="toggleCMCourse(\''+c.id+'\')">'
+      +'<div class="cm-course-label" onclick="toggleCMCourse(\''+c.id+'\')" style="position:relative;">'
       +'<div class="cm-course-dot" style="background:'+c.color+';"></div>'
       +'<span style="flex:1;font-size:12px;">'+c.title+'</span>'
       +'<span class="cm-course-chevron">▶</span>'
+      +'<span onclick="event.stopPropagation();deleteCourse(\''+c.id+'\',\''+c.title.replace(/'/g,"\\'")+'\')" '
+        +'title="Delete course" '
+        +'style="margin-left:4px;color:var(--danger);font-size:13px;padding:2px 5px;border-radius:4px;cursor:pointer;opacity:0.6;" '
+        +'onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">✕</span>'
       +'</div>'
       +(isOpen ? '<div class="cm-module-list">'
         +(c.modules||[]).map(function(m,i){
           var key = c.id+'-'+i;
           var dot = cmContent[key] ? 'var(--ok)' : 'var(--border)';
           var isActive = cmState.selectedModule === key;
-          return '<div class="cm-module-item'+(isActive?' active':'')+'" onclick="selectCMModule(\''+c.id+'\','+i+')">'
-            +'<div class="cm-module-dot" style="background:'+dot+';"></div>'
-            +(m.title.length>28?m.title.substring(0,26)+'…':m.title)
+          return '<div class="cm-module-item'+(isActive?' active':'')+'" onclick="selectCMModule(\''+c.id+'\','+i+')" style="display:flex;align-items:center;gap:0;">'
+            +'<div class="cm-module-dot" style="background:'+dot+';flex-shrink:0;"></div>'
+            +'<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+(m.title.length>24?m.title.substring(0,22)+'…':m.title)+'</span>'
+            +'<span onclick="event.stopPropagation();deleteModule(\''+c.id+'\','+i+',\''+m.title.replace(/'/g,"\\'")+'\')" '
+              +'title="Delete module" '
+              +'style="color:var(--danger);font-size:11px;padding:2px 4px;border-radius:3px;cursor:pointer;opacity:0.5;flex-shrink:0;" '
+              +'onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">✕</span>'
             +'</div>';
         }).join('')
         +'<div class="cm-add-mod"><button class="btn btn-ghost btn-xs" style="width:100%;font-size:11px;" onclick="addNewModule(\''+c.id+'\')">+ Module</button></div>'
@@ -2371,6 +2379,64 @@ function renderCMSidebar() {
   });
   html += '</div>';
   el.innerHTML = html;
+}
+
+async function deleteCourse(courseId, courseTitle) {
+  if (!confirm('Delete "'+courseTitle+'" and ALL its modules?\n\nThis removes all content, questions, videos, and audio for this course. Student progress and enrolments are NOT deleted.\n\nThis cannot be undone.')) return;
+  try {
+    // Delete all course_content rows for this course
+    await sb('course_content','DELETE',null,'course_id=eq.'+courseId);
+    // Remove from local state
+    cmCourses = cmCourses.filter(function(c){ return c.id !== courseId; });
+    Object.keys(cmContent).forEach(function(k){
+      if (k.startsWith(courseId+'-')) delete cmContent[k];
+    });
+    if (cmState.selectedCourse === courseId) {
+      cmState.selectedCourse = null;
+      cmState.selectedModule = null;
+    }
+    saveCourseLocally();
+    showToast('"'+courseTitle+'" deleted.');
+    renderCMSidebar();
+    renderCMOverview();
+  } catch(e) { showToast('Error: '+e.message,'err'); }
+}
+
+async function deleteModule(courseId, modIdx, moduleTitle) {
+  if (!confirm('Delete module "'+moduleTitle+'"?\n\nAll content, questions, video, audio and downloads for this module will be removed.\n\nThis cannot be undone.')) return;
+  try {
+    var key = courseId+'-'+modIdx;
+    var row = cmContent[key];
+    // Delete from DB if it exists there
+    if (row && row.id) {
+      await sb('course_content','DELETE',null,'id=eq.'+row.id);
+    }
+    // Remove from local state
+    var c = cmCourses.find(function(x){ return x.id === courseId; });
+    if (c && c.modules) {
+      c.modules.splice(modIdx, 1);
+      // Re-key all subsequent modules
+      var newContent = {};
+      Object.keys(cmContent).forEach(function(k){
+        if (!k.startsWith(courseId+'-')) { newContent[k] = cmContent[k]; return; }
+        var idx = parseInt(k.split('-')[1]);
+        if (idx < modIdx) { newContent[k] = cmContent[k]; }
+        else if (idx > modIdx) { newContent[courseId+'-'+(idx-1)] = cmContent[k]; }
+        // idx === modIdx is deleted
+      });
+      cmContent = newContent;
+    }
+    if (cmState.selectedModule === key) {
+      cmState.selectedModule = null;
+    }
+    saveCourseLocally();
+    showToast('"'+moduleTitle+'" deleted.');
+    renderCMSidebar();
+    renderCMOverview();
+    // Clear editor
+    var editorEl = document.getElementById('cm-editor-wrap');
+    if (editorEl) editorEl.innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);">Select a module to edit.</div>';
+  } catch(e) { showToast('Error: '+e.message,'err'); }
 }
 
 function toggleCMCourse(id) {
