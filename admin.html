@@ -1380,7 +1380,7 @@ function renderDashboard() {
 
   // ── KPI CARDS ──
   var pending = isMaster() ? myApplications.filter(function(a){return a.status==='pending';}).length : 0;
-  var gradingQ = (allSubmissions||[]).filter(function(s){
+  var gradingQ = (allAttempts||[]).filter(function(s){
     if (!isMaster() && s.course_id !== lecturerCourseId()) return false;
     return s.status === 'pending';
   }).length;
@@ -4490,9 +4490,9 @@ function visibleApplications() {
 
 // Returns submissions visible to current admin
 function visibleSubmissions() {
-  if (isMaster()) return allSubmissions || [];
+  if (isMaster()) return allAttempts || [];
   var cid = lecturerCourseId();
-  return (allSubmissions || []).filter(function(s){ return s.course_id === cid; });
+  return (allAttempts || []).filter(function(s){ return s.course_id === cid; });
 }
 
 // ── LOGIN SUCCESS (override old fn reference) ─────────────────────────────────
