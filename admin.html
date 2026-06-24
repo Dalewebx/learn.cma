@@ -3816,7 +3816,7 @@ async function gradeSubmission(id, result, mcqScore, mcqTotal, writtenTotal, ema
       card.style.opacity = '0.4';
       card.style.pointerEvents = 'none';
     }
-    setTimeout(function(){ renderGrading(); }, 1500);
+    setTimeout(async function(){ await loadAllData(); renderGrading(); updateBadges(); }, 1500);
   } catch(e) { showToast('Error grading: '+e.message,'err'); }
 }
 
