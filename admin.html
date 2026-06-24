@@ -1302,13 +1302,14 @@ async function loadAllData() {
       ? 'course_id=eq.'+currentAdmin.assigned_course_id+'&select=*'
       : 'select=*';
 
-    var [apps,studs,prog,atts,coh,enrols] = await Promise.all([
+    var [apps,studs,prog,atts,coh,enrols,pendingSubs] = await Promise.all([
       isMaster ? sb('applications','GET',null,'order=submitted_at.desc') : Promise.resolve([]),
       sb('students','GET',null,'order=created_at.desc&select=*'),
       sb('progress','GET',null,progFilter),
       sb('assessment_attempts','GET',null,'select=*&order=attempted_at.desc'+courseFilter).catch(()=>[]),
       sb('cohort_settings','GET',null,'limit=1'),
-      sb('enrolments','GET',null,'select=student_id,course_id,status,enrolled_at,completed_at,exam_date,exam_passed_at,exam_failed_at,programme').catch(()=>[])
+      sb('enrolments','GET',null,'select=student_id,course_id,status,enrolled_at,completed_at,exam_date,exam_passed_at,exam_failed_at,programme').catch(()=>[]),
+      sb('assessment_submissions','GET',null,'status=eq.pending&select=id,course_id'+courseFilter).catch(()=>[])
     ]);
     // Deduplicate enrolments — keep most advanced status per student+course
     var STATUS_RANK = {'exam_passed':5,'exam_failed':4,'exam_scheduled':3,'complete':2,'active':1};
@@ -1327,6 +1328,7 @@ async function loadAllData() {
       }
     });
     allApplications=apps; allStudents=studs; allProgress=prog; allAttempts=atts; allEnrolments=enrolDeduped;
+    window.allPendingSubmissions = pendingSubs || [];
     cohortSettings=coh[0]||{name:'Cohort 1',deadline:'2026-07-13',pass_mark:70};
     // Load course content and update dynamic module/course counts
     await loadCourseContent();
@@ -1345,13 +1347,14 @@ async function loadAllData() {
 
 function updateBadges() {
   var pending = isMaster() ? allApplications.filter(function(a){return a.status==='pending';}).length : 0;
+  var gradingQ = (window.allPendingSubmissions||[]).length;
   var examReady = visibleEnrolments().filter(function(e){return e.status==='complete'||e.status==='exam_scheduled';}).length;
   var ab=document.getElementById('appsBadge');
   if(ab){ab.textContent=pending||'';ab.style.display=pending>0?'inline':'none';}
   var eb=document.getElementById('examReadyBadge');
   if(eb){eb.textContent=examReady||'';eb.style.display=examReady>0?'inline':'none';}
   var bell=document.getElementById('notifCount');
-  if(bell){var t=pending+examReady;bell.textContent=t>0?t:'';bell.style.display=t>0?'inline':'none';}
+  if(bell){var t=pending+examReady+gradingQ;bell.textContent=t>0?t:'';bell.style.display=t>0?'inline':'none';}
 }
 function renderCurrentPage() {
   var r={'dashboard':renderDashboard,'applications':renderApplications,'students':renderStudents,'progress':renderProgress,'atrisk':renderAtrisk,'cohort':renderCohort,'announcements':renderAnnouncements,'analytics':renderAnalytics,'feedback':renderFeedback,'sitesettings':renderSiteSettings,'grading':renderGrading,'adminaccounts':renderAdminAccounts,'accountsettings':renderAccountSettings,'paymentsettings':renderPaymentSettings,'courseprogress':renderCourseProgress};
@@ -1372,9 +1375,9 @@ function renderDashboard() {
 
   // ── KPI CARDS ──
   var pending = isMaster() ? myApplications.filter(function(a){return a.status==='pending';}).length : 0;
-  var gradingQ = (allAttempts||[]).filter(function(s){
+  var gradingQ = (window.allPendingSubmissions||[]).filter(function(s){
     if (!isMaster() && s.course_id !== lecturerCourseId()) return false;
-    return s.status === 'pending';
+    return true;
   }).length;
   var examReady = myEnrolments.filter(function(e){return e.status==='complete';}).length;
   var atRisk = myStudents.filter(isAtRisk).length;
@@ -3676,32 +3679,29 @@ async function renderGrading() {
         }).join('')
         +'</div>' : '')
 
-        // Comments + score summary
+        // Score summary + comments
         +'<div style="background:var(--surface);border-radius:10px;padding:14px;margin-bottom:14px;">'
-        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">'
-        +'<div><div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">MCQ Score</div>'
-        +'<div style="font-size:18px;font-weight:700;color:var(--navy);">'+(r.mcq_score||0)+' / '+(r.mcq_total||0)+'</div></div>'
-        +'<div><div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">Written Score</div>'
-        +'<div style="font-size:18px;font-weight:700;color:var(--navy);" id="wtotal-'+r.id+'">— / '+totalWrittenMarks+'</div></div>'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;text-align:center;">'
+        +'<div><div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">MCQ</div>'
+        +'<div style="font-size:20px;font-weight:700;color:var(--navy);">'+(r.mcq_score||0)+' / '+(r.mcq_total||0)+'</div></div>'
+        +'<div><div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">Written</div>'
+        +'<div style="font-size:20px;font-weight:700;color:var(--navy);" id="wtotal-'+r.id+'">— / '+totalWrittenMarks+'</div></div>'
+        +'<div><div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">Result</div>'
+        +'<div style="font-size:16px;font-weight:700;" id="wresult-'+r.id+'">—</div></div>'
         +'</div>'
-        +'<label class="form-label">Instructor Comments (sent to student)</label>'
+        +'<label class="form-label">Feedback to student <span style="font-weight:400;color:var(--muted);">(required if failing)</span></label>'
         +'<textarea class="form-textarea" id="gcomment-'+r.id+'" placeholder="e.g. Good understanding of Gregorian Chant. Expand on the modal system in future." style="min-height:80px;"></textarea>'
         +'</div>'
 
-        // Email template
-        +'<div style="margin-bottom:14px;">'
-        +'<div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Email to Student (editable)</div>'
-        +'<input class="form-input" id="gemail-subj-'+r.id+'" value="Your Assessment Result — Catholic Music Academy" style="margin-bottom:8px;"/>'
-        +'<textarea class="form-textarea" id="gemail-body-'+r.id+'" style="min-height:160px;font-size:12px;line-height:1.7;">Dear '+studentName.split(' ')[0]+',\n\nYour assessment for Module '+(r.module_index+1)+' has been reviewed by your instructor.\n\nResult: [PASS/FAIL]\nScore: [X] / [Total]\n\n[Comments]\n\nLog in to continue your studies:\nhttps://catholicmusicacademy.net\n\nGod bless,\nCatholic Music Academy\nCatholic Diocese of Warri</textarea>'
+        // Single submit button — system decides pass/fail
+        +'<div id="gbtn-'+r.id+'">'
+        +'<div id="glive-'+r.id+'" style="margin:10px 0 14px;padding:10px 14px;border-radius:8px;background:var(--surface);font-size:13px;color:var(--muted);">'+
+          (written.length ? 'Enter written scores above — result calculated automatically.' : 'Click Submit Grade to record the MCQ result.')
         +'</div>'
-
-        // Action buttons
-        +'<div style="display:flex;gap:10px;flex-wrap:wrap;" id="gbtn-'+r.id+'">'
-        +'<div id="glive-'+r.id+'" style="margin:10px 0 14px;padding:10px 14px;border-radius:8px;background:var(--surface);font-size:13px;color:var(--muted);">Enter written scores above to see combined result.</div>'
-        +'<button class="btn btn-primary" style="background:var(--ok);" onclick="doGrade(this);" data-id="'+r.id+'" data-result="pass" data-mcq="'+r.mcq_score+'" data-mcqt="'+r.mcq_total+'" data-wt="'+totalWrittenMarks+'" data-email="'+studentEmail+'" data-phone="'+studentPhone+'" data-name="'+studentName+'" data-mod="'+r.module_index+'" data-sid="'+r.student_id+'" data-cid="'+r.course_id+'">✓ Pass Assessment</button>'
-        +'<button class="btn btn-danger" style="background:var(--danger);" onclick="doGrade(this);" data-id="'+r.id+'" data-result="fail" data-mcq="'+r.mcq_score+'" data-mcqt="'+r.mcq_total+'" data-wt="'+totalWrittenMarks+'" data-email="'+studentEmail+'" data-phone="'+studentPhone+'" data-name="'+studentName+'" data-mod="'+r.module_index+'" data-sid="'+r.student_id+'" data-cid="'+r.course_id+'">✗ Fail Assessment</button>'
+        +'<div style="display:flex;gap:10px;flex-wrap:wrap;">'
+        +'<button class="btn btn-primary" onclick="doGrade(this);" data-id="'+r.id+'" data-result="auto" data-mcq="'+r.mcq_score+'" data-mcqt="'+r.mcq_total+'" data-wt="'+totalWrittenMarks+'" data-email="'+studentEmail+'" data-phone="'+studentPhone+'" data-name="'+studentName+'" data-mod="'+r.module_index+'" data-sid="'+r.student_id+'" data-cid="'+r.course_id+'">Submit Grade</button>'
         +(studentPhone?'<button class="btn btn-wa" style="font-size:13px;" onclick="doWhatsApp(this);" data-id="'+r.id+'" data-phone="'+studentPhone+'" data-name="'+studentName+'" data-mod="'+r.module_index+'">💬 WhatsApp</button>':'')
-        +'</div>'
+        +'</div></div>'
         +'</div>';
     }).join('');
   } catch(e) {
@@ -3747,6 +3747,15 @@ function updateGradingLive(id, mcqScore, mcqTotal, writtenTotal, mcqWeight, writ
     summaryEl.style.borderRadius = '8px';
     summaryEl.style.padding = '10px 14px';
   }
+  // Update the result column in the score grid
+  var resultEl = document.getElementById('wresult-'+id);
+  if (resultEl) {
+    resultEl.textContent = isPassing ? '✓ PASS' : '✗ FAIL';
+    resultEl.style.color = isPassing ? 'var(--ok)' : 'var(--danger)';
+  }
+  // Update written score display
+  var wEl = document.getElementById('wtotal-'+id);
+  if (wEl) wEl.textContent = writtenScore + ' / ' + writtenTotal;
 }
 
 function doGrade(btn) {
@@ -3754,7 +3763,7 @@ function doGrade(btn) {
   var card = btn.closest('[id^="gq-"]');
   if (card) card.querySelectorAll('button').forEach(function(b){ b.disabled=true; });
   var d = btn.dataset;
-  gradeSubmission(d.id, d.result, parseInt(d.mcq)||0, parseInt(d.mcqt)||0, parseInt(d.wt)||0,
+  gradeSubmission(d.id, 'auto', parseInt(d.mcq)||0, parseInt(d.mcqt)||0, parseInt(d.wt)||0,
     d.email, d.phone, d.name, parseInt(d.mod)||0, d.sid, d.cid);
 }
 function doWhatsApp(btn) {
@@ -3768,7 +3777,7 @@ function openWhatsApp(subId, phone, name, modIdx) {
   window.open(waLink(phone, msg), '_blank');
 }
 
-async function gradeSubmission(id, result, mcqScore, mcqTotal, writtenTotal, email, phone, name, modIdx, studentId, courseId) {
+async function gradeSubmission(id, resultArg, mcqScore, mcqTotal, writtenTotal, email, phone, name, modIdx, studentId, courseId) {
   // Collect written scores
   var writtenScore = 0, wi = 0;
   while (document.getElementById('wscore-'+id+'-'+wi)) {
@@ -3777,18 +3786,7 @@ async function gradeSubmission(id, result, mcqScore, mcqTotal, writtenTotal, ema
   }
   var comment = (document.getElementById('gcomment-'+id)||{}).value||'';
 
-  // Comment required on fail
-  if (result === 'fail' && !comment.trim()) {
-    var commentEl = document.getElementById('gcomment-'+id);
-    if (commentEl) {
-      commentEl.style.borderColor = 'var(--danger)';
-      commentEl.focus();
-      commentEl.placeholder = '⚠ Comment required when failing a student';
-    }
-    showToast('Please add feedback before failing this assessment.','warn');
-    return;
-  }
-
+  // Calculate combined score
   var combinedScore, combinedTotal;
   var isWeighted = mcqTotal > 0 && writtenTotal > 0;
   if (isWeighted) {
@@ -3803,9 +3801,32 @@ async function gradeSubmission(id, result, mcqScore, mcqTotal, writtenTotal, ema
     var writtenPct = writtenTotal > 0 ? (writtenScore / writtenTotal * 100) : 0;
     combinedScore = Math.round((mcqPct * mcqW / 100) + (writtenPct * wrtW / 100));
     combinedTotal = 100;
+  } else if (writtenTotal > 0) {
+    combinedScore = writtenScore;
+    combinedTotal = writtenTotal;
   } else {
-    combinedScore = mcqScore + writtenScore;
-    combinedTotal = mcqTotal + writtenTotal;
+    combinedScore = mcqScore;
+    combinedTotal = mcqTotal;
+  }
+
+  // Auto-determine result based on pass mark
+  var passMark = cohortSettings && cohortSettings.pass_mark ? cohortSettings.pass_mark : 50;
+  var passPct = combinedTotal > 0 ? (combinedScore / combinedTotal * 100) : 0;
+  var result = passPct >= passMark ? 'pass' : 'fail';
+
+  // Comment required on fail
+  if (result === 'fail' && !comment.trim()) {
+    var commentEl = document.getElementById('gcomment-'+id);
+    if (commentEl) {
+      commentEl.style.borderColor = 'var(--danger)';
+      commentEl.focus();
+      commentEl.placeholder = '⚠ Feedback required when the student fails';
+    }
+    // Re-enable buttons
+    var card = document.getElementById('gq-'+id);
+    if (card) card.querySelectorAll('button').forEach(function(b){ b.disabled=false; });
+    showToast('Please add feedback — student scored '+Math.round(passPct)+'% (below '+passMark+'% pass mark).','warn');
+    return;
   }
 
   try {
