@@ -2641,7 +2641,7 @@ function clearRememberMe() {
     var dbResult = await loadCourseAndModulesFromDB(session.student.programme);
     CURRENT_COURSE = dbResult.course;
     MODULES = dbResult.modules;
-    completedModules = session.completedModules || [];
+    completedModules = (session.completedModules || []).filter(function(v,i,a){ return a.indexOf(v)===i; });
     await loadEnrolments().catch(function(){});
     // Re-fetch progress from DB to stay current
     await loadProgress().catch(function(){});
