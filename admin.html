@@ -1536,6 +1536,19 @@ function renderStatistics() {
       +'</div></div>';
   });
 
+  var totalAttempts = allAttempts.filter(function(a){
+    if (!isMaster()) return allEnrolments.some(function(e){ return e.student_id===a.student_id&&e.course_id===lecturerCourseId(); });
+    return true;
+  }).length;
+  var passedAttempts = allAttempts.filter(function(a){
+    if (!isMaster()) return a.passed && allEnrolments.some(function(e){ return e.student_id===a.student_id&&e.course_id===lecturerCourseId(); });
+    return a.passed;
+  }).length;
+  var passRate = totalAttempts > 0 ? Math.round((passedAttempts/totalAttempts)*100) : 0;
+  var totalAppsNum = isMaster() ? myApplications.length : 0;
+  var approvedAppsNum = isMaster() ? myApplications.filter(function(a){return a.status==='approved';}).length : 0;
+  var convRate = totalAppsNum > 0 ? Math.round((approvedAppsNum/totalAppsNum)*100) : 0;
+
   // Assessment pass rate
   html += '</div><div class="card" style="margin-top:16px;">'
     +'<div class="card-title" style="margin-bottom:16px;">Assessment Performance</div>'
@@ -1548,7 +1561,7 @@ function renderStatistics() {
     +'<div style="text-align:center;padding:16px;background:var(--surface);border-radius:10px;">'
     +'<div style="font-size:32px;font-weight:700;color:var(--navy);">'+convRate+'%</div>'
     +'<div style="font-size:12px;color:var(--muted);">Application Approval Rate</div>'
-    +'<div style="font-size:11px;color:var(--dim);margin-top:4px;">'+approvedApps+' of '+totalApps+' applications</div>'
+    +'<div style="font-size:11px;color:var(--dim);margin-top:4px;">'+approvedAppsNum+' of '+totalAppsNum+' applications</div>'
     +'</div></div></div>';
 
   el.innerHTML = html;
@@ -4468,7 +4481,10 @@ function lecturerCourseId() { return currentAdmin && currentAdmin.assigned_cours
 function visibleStudents() {
   if (isMaster()) return allStudents;
   var cid = lecturerCourseId();
-  var enrolled = allEnrolments.filter(function(e){ return e.course_id === cid; }).map(function(e){ return e.student_id; });
+  // Include all students ever enrolled in lecturer's course regardless of status
+  var enrolled = allEnrolments
+    .filter(function(e){ return e.course_id === cid; })
+    .map(function(e){ return e.student_id; });
   return allStudents.filter(function(s){ return enrolled.indexOf(s.id) > -1; });
 }
 
