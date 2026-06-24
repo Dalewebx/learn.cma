@@ -1942,7 +1942,24 @@ async function loadAnnouncements() {
   } catch(e){}
 }
 async function goCourse() {
-  // Always re-fetch progress from DB so module states are current after refresh
+  // If CURRENT_COURSE not set, try to load it from enrolments
+  if (!CURRENT_COURSE && currentStudent) {
+    try {
+      var enr = ALL_ENROLMENTS.find(function(e){ return e.status==='active'; }) || ALL_ENROLMENTS[0];
+      var courseId = enr ? enr.course_id : null;
+      var prog = (enr && enr.programme) || currentStudent.programme;
+      var r = await loadCourseAndModulesFromDB(prog, courseId);
+      CURRENT_COURSE = r.course;
+      MODULES = r.modules;
+    } catch(e) {
+      showToast('Could not load course: '+e.message,'err');
+      return;
+    }
+  }
+  if (!CURRENT_COURSE) {
+    showToast('Course not found. Please contact the Academy.','warn');
+    return;
+  }
   await loadProgress().catch(function(){});
   renderCourse();
   history.pushState({screen:'course'},'','/portal');
