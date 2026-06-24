@@ -221,21 +221,11 @@ async function deleteSelectedStudents(){
   var btns=document.querySelectorAll('.btn');btns.forEach(b=>b.disabled=true);
   addLog('=== DELETING '+selected.length+' STUDENTS ===','info');
   try{
-    var idFilter=selected.length===1?'student_id=eq.'+selected[0]:'student_id=in.('+selected.join(',')+')';
-    var idFilterOwn=selected.length===1?'id=eq.'+selected[0]:'id=in.('+selected.join(',')+')';
-    await dbDel('sessions',idFilter);
-    await dbDel('progress',idFilter);
-    await dbDel('assessment_attempts',idFilter);
-    await dbDel('assessment_submissions',idFilter);
-    await dbDel('enrolments',idFilter);
-    // Null FK, then delete students
-    await dbPatch('students',idFilterOwn,{application_id:null});
-    await dbDel('students',idFilterOwn);
-    // Delete their applications
-    for(const sid of selected){
-      const apps=await dbGet('applications?select=id&email=in.(select email from students)');
-    }
-    addLog('=== DONE ===','ok');
+    const r=await fetch('/api/handover',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'delete_students',studentIds:selected})});
+    const d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Delete failed');
+    addLog('✓ '+selected.length+' student'+(selected.length>1?'s':'')+' and all their data deleted','ok');
     setStatus('peopleStatus',['✓ '+selected.length+' student'+(selected.length>1?'s':'')+' deleted','✓ Progress, enrolments and sessions cleared']);
     await loadStudents();
   }catch(e){addLog('ERROR: '+e.message,'err');setStatus('peopleStatus',['Error: '+e.message],true);}
@@ -274,12 +264,10 @@ async function clearSelectedContent(){
   var btns=document.querySelectorAll('.btn');btns.forEach(b=>b.disabled=true);
   addLog('=== CLEARING CONTENT FOR '+selected.length+' COURSES ===','info');
   try{
-    var filter=selected.length===1?'course_id=eq.'+selected[0]:'course_id=in.('+selected.join(',')+')';
-    const r=await fetch(SUPA_URL+'/rest/v1/course_content?'+filter,{
-      method:'PATCH',headers:H,
-      body:JSON.stringify({reading_html:'',questions:'[]',audio_tracks:'[]',downloads:'[]',video_url:null,video_duration_mins:null})
-    });
-    if(!r.ok)throw new Error(await r.text());
+    const r=await fetch('/api/handover',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'clear_content',courseIds:selected})});
+    const d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Clear failed');
     addLog('✓ Content cleared for '+selected.length+' course'+(selected.length>1?'s':''),'ok');
     setStatus('contentStatus',['✓ Reading content cleared','✓ Quiz questions cleared','✓ Video URLs cleared','✓ Audio tracks cleared','✓ Downloads cleared','— Course titles and module structure preserved']);
   }catch(e){addLog('ERROR: '+e.message,'err');setStatus('contentStatus',['Error: '+e.message],true);}
@@ -294,19 +282,10 @@ async function fullReset(){
   var btns=document.querySelectorAll('.btn');btns.forEach(b=>b.disabled=true);
   addLog('=== FULL HANDOVER RESET ===','info');
   try{
-    await dbDel('sessions','id=neq.'+NULL_UUID);
-    await dbDel('progress','id=neq.'+NULL_UUID);
-    await dbDel('assessment_attempts','id=neq.'+NULL_UUID);
-    await dbDel('assessment_submissions','id=neq.'+NULL_UUID);
-    await dbDel('enrolments','student_id=neq.'+NULL_UUID);
-    await dbPatch('students','id=neq.'+NULL_UUID,{application_id:null});
-    await dbDel('students','id=neq.'+NULL_UUID);
-    await dbDel('applications','id=neq.'+NULL_UUID);
-    const r=await fetch(SUPA_URL+'/rest/v1/course_content?id=neq.'+NULL_UUID,{
-      method:'PATCH',headers:H,
-      body:JSON.stringify({reading_html:'',questions:'[]',audio_tracks:'[]',downloads:'[]',video_url:null,video_duration_mins:null})
-    });
-    if(!r.ok)throw new Error(await r.text());
+    const r=await fetch('/api/handover',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'full_reset'})});
+    const d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Reset failed');
     addLog('=== HANDOVER RESET COMPLETE ===','ok');
     setStatus('fullStatus',['✓ All students deleted','✓ All applications deleted','✓ All enrolments deleted','✓ All progress and attempts deleted','✓ All sessions cleared','✓ All course content cleared','— Admin accounts preserved','— Settings preserved','PLATFORM IS READY FOR HANDOVER']);
   }catch(e){addLog('ERROR: '+e.message,'err');setStatus('fullStatus',['Error: '+e.message],true);}
