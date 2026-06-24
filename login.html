@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDxyZWN0IHg9IjE0LjUiIHk9IjUiIHdpZHRoPSIzIiBoZWlnaHQ9IjIyIiByeD0iMS41IiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iNyIgeT0iMTIiIHdpZHRoPSIxOCIgaGVpZ2h0PSIzIiByeD0iMS41IiBmaWxsPSIjQzlBODRDIi8+CiAgPGNpcmNsZSBjeD0iMTAiIGN5PSIyNCIgcj0iMi41IiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iMTIiIHk9IjE4IiB3aWR0aD0iMiIgaGVpZ2h0PSI4IiByeD0iMSIgZmlsbD0iI0M5QTg0QyIvPgo8L3N2Zz4="/>
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBEMUIzRSIvPgogIDxyZWN0IHg9IjE0LjUiIHk9IjUiIHdpZHRoPSIzIiBoZWlnaHQ9IjIyIiByeD0iMS41IiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iNyIgeT0iMTIiIHdpZHRoPSIxOCIgaGVpZ2h0PSIzIiByeD0iMS41IiBmaWxsPSIjQzlBODRDIi8+CiAgPGNpcmNsZSBjeD0iMTAiIGN5PSIyNCIgcj0iMi41IiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iMTIiIHk9IjE4IiB3aWR0aD0iMiIgaGVpZ2h0PSI4IiByeD0iMSIgZmlsbD0iI0M5QTg0QyIvPgo8L3N2Zz4="/>
 
@@ -1562,16 +1562,15 @@ async function doLogin() {
       clearRememberMe();
     }
 
-    // 7. Set state — load course + modules from Supabase
+    // 7. Set state — load course + modules, enrolments and progress IN PARALLEL
     currentStudent = student;
-    var dbResult = await loadCourseAndModulesFromDB(student.programme);
+    var [dbResult] = await Promise.all([
+      loadCourseAndModulesFromDB(student.programme),
+      loadEnrolments(),
+      loadProgress()
+    ]);
     CURRENT_COURSE = dbResult.course;
     MODULES = dbResult.modules;
-
-    // 8. Load enrolments
-    await loadEnrolments();
-    // 9. Load progress
-    await loadProgress();
 
     // 9. Save session (so refresh survives)
     saveSession(student, CURRENT_COURSE, completedModules);
@@ -1813,7 +1812,7 @@ function goDash() {
 }
 
 function showAccountScreen() {
-  history.pushState({screen:'account'},'','/portal/account');
+  history.pushState({screen:'account'},'','/portal');
   showScreen('screen-account');
   if (currentStudent) {
     document.getElementById('acctName').textContent = currentStudent.first_name + ' ' + currentStudent.last_name;
@@ -1928,7 +1927,7 @@ async function goCourse() {
   // Always re-fetch progress from DB so module states are current after refresh
   await loadProgress().catch(function(){});
   renderCourse();
-  history.pushState({screen:'course'},'','/portal/course');
+  history.pushState({screen:'course'},'','/portal');
   showScreen('screen-course');
 }
 
@@ -2014,7 +2013,7 @@ function toYouTubeEmbed(url) {
 
 // ── MODULE ────────────────────────────────────────────────────────────────────
 function openMod(i) {
-  history.pushState({screen:'module',mod:i},'','/portal/module-'+(i+1));
+  history.pushState({screen:'module',mod:i},'','/portal');
   currentMod = i; answers = {}; writtenAnswers = {}; submitted = false;
   timerDone = false; scrollDone = false;
   if (timerInterval) clearInterval(timerInterval);
@@ -2198,7 +2197,7 @@ function checkUnlock() {
     document.getElementById('quizLockBadge').style.display = 'none';
     renderQuiz();
     document.getElementById('modActions').innerHTML = '<button class="btn btn-primary" id="submitBtn" onclick="submitQuiz()">Submit Assessment →</button>';
-    document.getElementById('quizCard').scrollIntoView({behavior:'smooth',block:'start'});
+    // Assessment unlocked — don't auto-scroll, student may still be reading
   }
 }
 
@@ -2255,19 +2254,50 @@ function pick(qi, oi) {
 }
 
 async function submitQuiz() {
+  var btn = document.getElementById('submitBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Submitting...'; }
+
   var mcqQs = shownQuestions.filter(function(q){ return !q.type || q.type === 'mcq'; });
   var writtenQs = shownQuestions.filter(function(q){ return q.type === 'short' || q.type === 'essay'; });
 
-  // Validate MCQ
+  // Validate MCQ — use inline error not alert (alert causes iOS radio deselection)
   var mcqAnswered = mcqQs.every(function(q, qi){ return answers[qi] !== undefined; });
-  if (!mcqAnswered && mcqQs.length) { alert('Please answer all multiple choice questions.'); return; }
+  if (!mcqAnswered && mcqQs.length) {
+    var errEl = document.getElementById('quizValidationErr');
+    if (!errEl) {
+      errEl = document.createElement('div');
+      errEl.id = 'quizValidationErr';
+      errEl.style.cssText = 'background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;padding:12px 16px;font-size:13px;color:#DC2626;margin-bottom:12px;font-weight:600;';
+      var qc = document.getElementById('quizCard');
+      if (qc) qc.insertBefore(errEl, qc.firstChild);
+    }
+    errEl.textContent = '⚠ Please answer all multiple choice questions before submitting.';
+    errEl.scrollIntoView({behavior:'smooth', block:'center'});
+    if (btn) { btn.disabled = false; btn.textContent = 'Submit Assessment →'; }
+    return;
+  }
+  var errEl2 = document.getElementById('quizValidationErr');
+  if (errEl2) errEl2.remove();
 
   // Validate written
   var writtenAnswered = writtenQs.every(function(q){
     var origIdx = shownQuestions.indexOf(q);
     return writtenAnswers[origIdx] && writtenAnswers[origIdx].trim().length > 0;
   });
-  if (!writtenAnswered && writtenQs.length) { alert('Please answer all written questions.'); return; }
+  if (!writtenAnswered && writtenQs.length) {
+    var errEl3 = document.getElementById('quizValidationErr');
+    if (!errEl3) {
+      errEl3 = document.createElement('div');
+      errEl3.id = 'quizValidationErr';
+      errEl3.style.cssText = 'background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;padding:12px 16px;font-size:13px;color:#DC2626;margin-bottom:12px;font-weight:600;';
+      var qc2 = document.getElementById('quizCard');
+      if (qc2) qc2.insertBefore(errEl3, qc2.firstChild);
+    }
+    errEl3.textContent = '⚠ Please answer all written questions before submitting.';
+    errEl3.scrollIntoView({behavior:'smooth', block:'center'});
+    if (btn) { btn.disabled = false; btn.textContent = 'Submit Assessment →'; }
+    return;
+  }
 
   submitted = true;
   currentAttemptCount++;
@@ -2425,7 +2455,7 @@ function retryModFull() {
 }
 
 async function showComplete() {
-  history.pushState({screen:'complete'},'','/portal/complete');
+  history.pushState({screen:'complete'},'','/portal');
   showScreen('screen-complete');
 
   var name = currentStudent ? (currentStudent.first_name+' '+currentStudent.last_name) : '';
@@ -2595,11 +2625,13 @@ function clearRememberMe() {
             headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
             body: JSON.stringify({last_login: new Date().toISOString()})
           }).catch(function(){});
-          var dbResult = await loadCourseAndModulesFromDB(student.programme);
-          CURRENT_COURSE = dbResult.course;
+          var [dbResult2] = await Promise.all([
+            loadCourseAndModulesFromDB(student.programme),
+            loadEnrolments().catch(function(){}),
+            loadProgress().catch(function(){})
+          ]);
+          var dbResult = dbResult2;CURRENT_COURSE = dbResult.course;
           MODULES = dbResult.modules;
-          await loadEnrolments().catch(function(){});
-          await loadProgress().catch(function(){});
           saveSession(student, CURRENT_COURSE, completedModules);
           document.getElementById('topbar').style.display = 'flex';
           document.getElementById('topbarName').textContent = student.first_name;
@@ -2642,9 +2674,7 @@ function clearRememberMe() {
     CURRENT_COURSE = dbResult.course;
     MODULES = dbResult.modules;
     completedModules = (session.completedModules || []).filter(function(v,i,a){ return a.indexOf(v)===i; });
-    await loadEnrolments().catch(function(){});
-    // Re-fetch progress from DB to stay current
-    await loadProgress().catch(function(){});
+    await Promise.all([loadEnrolments().catch(function(){}), loadProgress().catch(function(){})]);
     // Refresh session timestamp
     saveSession(currentStudent, CURRENT_COURSE, completedModules);
     document.getElementById('topbar').style.display = 'flex';
