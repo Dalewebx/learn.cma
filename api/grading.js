@@ -14,7 +14,7 @@ async function db(path, method, body) {
       'apikey': SERVICE_KEY,
       'Authorization': 'Bearer ' + SERVICE_KEY,
       'Content-Type': 'application/json',
-      'Prefer': method === 'POST' ? 'return=representation' : 'return=minimal'
+      'Prefer': (!method || method === 'GET') ? '' : (method === 'POST' ? 'return=representation' : 'return=minimal')
     }
   };
   if (body !== undefined) opts.body = JSON.stringify(body);
@@ -88,20 +88,46 @@ module.exports = async function handler(req, res) {
                 status: 'complete'
               });
 
-              // Send course-completed email
-              if (studentEmail && studentName) {
-                const courseInfo = allModules && allModules[0] ? allModules[0] : {};
-                await fetch(process.env.VERCEL_URL
-                  ? 'https://' + process.env.VERCEL_URL + '/api/course-completed'
-                  : 'http://localhost:3000/api/course-completed', {
+              // Send course-completed email inline
+              if (studentEmail && studentName && RESEND_KEY) {
+                const firstName = studentName.split(' ')[0];
+                const completionDate = new Date().toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'});
+                // Fetch course title
+                const courseRows = await db('course_content?course_id=eq.' + courseId + '&select=course_title&limit=1', 'GET').catch(() => []);
+                const courseName = courseRows && courseRows[0] ? courseRows[0].course_title : 'your programme';
+                const emailHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"/></head>
+<body style="margin:0;padding:0;background:#F7F7F5;font-family:Arial,sans-serif;">
+<div style="max-width:560px;margin:32px auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+  <div style="background:linear-gradient(135deg,#0D1B3E,#1A2E6C);padding:40px 32px;text-align:center;">
+    <div style="font-size:48px;margin-bottom:12px;">🎓</div>
+    <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#C9A84C;margin-bottom:8px;">Catholic Music Academy</div>
+    <div style="font-size:26px;font-weight:700;color:white;line-height:1.2;">Congratulations, ${firstName}!</div>
+  </div>
+  <div style="background:linear-gradient(135deg,#C9A84C,#9A7A2E);padding:12px 32px;text-align:center;">
+    <div style="font-size:13px;font-weight:700;color:white;">You have completed all online modules</div>
+  </div>
+  <div style="padding:32px;">
+    <p style="font-size:15px;color:#0F172A;line-height:1.7;margin-bottom:20px;">
+      Dear <strong>${firstName}</strong>, you have successfully completed all <strong>${totalModules} module${totalModules!==1?'s':''}</strong> of <strong>${courseName}</strong>.
+    </p>
+    <div style="background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:12px;padding:18px 22px;margin-bottom:24px;">
+      <div style="font-size:13px;font-weight:700;color:#16A34A;margin-bottom:6px;">What happens next</div>
+      <div style="font-size:13px;color:#0F172A;line-height:1.7;">Your completion has been recorded. The Academy will contact you to schedule your final in-person examination. Upon passing, you will receive your Certificate of Competence.</div>
+    </div>
+    <div style="text-align:center;margin:28px 0;">
+      <a href="https://catholicmusicacademy.net/portal" style="display:inline-block;background:#C9A84C;color:#0D1B3E;text-decoration:none;padding:14px 36px;border-radius:10px;font-size:15px;font-weight:700;">Go to My Portal →</a>
+    </div>
+    <p style="font-size:14px;color:#0F172A;line-height:1.7;">Well done and God bless,<br><strong>Catholic Music Academy</strong></p>
+  </div>
+</div></body></html>`;
+                await fetch('https://api.resend.com/emails', {
                   method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
+                  headers: { 'Authorization': 'Bearer ' + RESEND_KEY, 'Content-Type': 'application/json' },
                   body: JSON.stringify({
-                    to: studentEmail,
-                    firstName: studentName.split(' ')[0],
-                    course: courseId,
-                    modules: totalModules,
-                    date: new Date().toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'})
+                    from: FROM, to: [studentEmail],
+                    subject: '🎓 Congratulations ' + firstName + ' — All Modules Complete!',
+                    html: emailHtml,
+                    text: `Dear ${firstName}, congratulations! You have completed all ${totalModules} modules of ${courseName}. The Academy will contact you to schedule your final examination. God bless, Catholic Music Academy.`
                   })
                 }).catch(() => {});
               }
