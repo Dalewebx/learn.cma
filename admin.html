@@ -1304,7 +1304,7 @@ async function loadAllData() {
 
     var [apps,studs,prog,atts,coh,enrols] = await Promise.all([
       isMaster ? sb('applications','GET',null,'order=submitted_at.desc') : Promise.resolve([]),
-      sb('students','GET',null,'status=eq.active&order=created_at.desc&select=*'),
+      sb('students','GET',null,'order=created_at.desc&select=*'),
       sb('progress','GET',null,progFilter),
       sb('assessment_attempts','GET',null,'select=*&order=attempted_at.desc'+courseFilter).catch(()=>[]),
       sb('cohort_settings','GET',null,'limit=1'),
@@ -1881,12 +1881,18 @@ async function renderStudents() {
   var courseFilter = ((document.getElementById('studentCourseFilter')||{}).value)||'';
   var statusFilter = ((document.getElementById('studentStatusFilter')||{}).value)||'';
 
-  // Populate course filter once
+  // Populate course filter — lecturers only see their course, hide the dropdown entirely
   var cf = document.getElementById('studentCourseFilter');
-  if (cf && cf.options.length <= 1) {
-    cmCourses.forEach(function(c){
-      var o = document.createElement('option'); o.value=c.id; o.textContent=c.title; cf.appendChild(o);
-    });
+  if (cf) {
+    if (!isMaster()) {
+      // Hide course filter for lecturers — they only have one course
+      cf.closest('div') && (cf.closest('div').style.display = 'none');
+      cf.style.display = 'none';
+    } else if (cf.options.length <= 1) {
+      cmCourses.forEach(function(c){
+        var o = document.createElement('option'); o.value=c.id; o.textContent=c.title; cf.appendChild(o);
+      });
+    }
   }
 
   var list = visibleStudents(); // filtered by role
