@@ -1352,9 +1352,8 @@ async function loadAllData() {
 }
 
 function updateBadges() {
-  var pending=allApplications.filter(function(a){return a.status==='pending';}).length;
-  // Only count students actually awaiting action — not those who have passed
-  var examReady=allEnrolments.filter(function(e){return e.status==='complete'||e.status==='exam_scheduled';}).length;
+  var pending = isMaster() ? allApplications.filter(function(a){return a.status==='pending';}).length : 0;
+  var examReady = visibleEnrolments().filter(function(e){return e.status==='complete'||e.status==='exam_scheduled';}).length;
   var ab=document.getElementById('appsBadge');
   if(ab){ab.textContent=pending||'';ab.style.display=pending>0?'inline':'none';}
   var eb=document.getElementById('examReadyBadge');
@@ -1374,30 +1373,36 @@ function renderDashboard() {
   var dashSubEl = document.getElementById('dashSub');
   if (dashSubEl) dashSubEl.textContent = (cohortSettings.name||'Cohort 1') + ' · Deadline: ' + fmtDate(cohortSettings.deadline) + (du>0?' ('+du+' days)':' (Deadline passed)');
 
-  // ── KPI CARDS — actionable only ──
-  var pending = allApplications.filter(function(a){return a.status==='pending';}).length;
-  var gradingQ = allAttempts.filter(function(a){return a.written_responses && !a.instructor_graded;}).length;
-  var examReady = allEnrolments.filter(function(e){return e.status==='complete';}).length;
-  var atRisk = allStudents.filter(isAtRisk).length;
+  // Use role-filtered data
+  var myStudents = visibleStudents();
+  var myEnrolments = visibleEnrolments();
+  var myApplications = visibleApplications();
+
+  // ── KPI CARDS ──
+  var pending = isMaster() ? myApplications.filter(function(a){return a.status==='pending';}).length : 0;
+  var gradingQ = (allSubmissions||[]).filter(function(s){
+    if (!isMaster() && s.course_id !== lecturerCourseId()) return false;
+    return s.status === 'pending';
+  }).length;
+  var examReady = myEnrolments.filter(function(e){return e.status==='complete';}).length;
+  var atRisk = myStudents.filter(isAtRisk).length;
   var dashStats = document.getElementById('dashStats');
   if (dashStats) dashStats.innerHTML =
-    statCard(pending, 'Pending Applications', 'warn-card') +
+    (isMaster() ? statCard(pending, 'Pending Applications', 'warn-card') : '') +
     statCard(gradingQ, 'Grading Queue', gradingQ>0?'warn-card':'') +
     statCard(examReady, 'Exam Ready', 'ok-card') +
     statCard(atRisk, 'At Risk', atRisk>0?'danger-card':'');
 
-  // ── ACTION LIST — what to do right now ──
+  // ── ACTION LIST ──
   var actions = [];
-  if (pending > 0) actions.push({
+  if (isMaster() && pending > 0) actions.push({
     icon:'📋', color:'#C9A84C', bg:'#FBF3DF',
     text: pending + ' application' + (pending>1?'s':'')+' awaiting your review',
     cta:'Review', action:"goTab('applications')"
   });
-  // Grading queue
-  var ungraded = allAttempts.filter(function(a){ return a.written_responses && !a.instructor_graded; });
-  if (ungraded.length > 0) actions.push({
+  if (gradingQ > 0) actions.push({
     icon:'✏️', color:'#0D1B3E', bg:'#EEF2FF',
-    text: ungraded.length + ' written assessment' + (ungraded.length>1?'s':'')+' waiting to be graded',
+    text: gradingQ + ' written assessment' + (gradingQ>1?'s':'')+' waiting to be graded',
     cta:'Grade', action:"goTab('grading')"
   });
   if (examReady > 0) actions.push({
@@ -1405,8 +1410,7 @@ function renderDashboard() {
     text: examReady + ' student' + (examReady>1?'s':'')+' completed all modules — schedule their exam',
     cta:'Schedule', action:"goTab('examready')"
   });
-  // At-risk students
-  var riskStudents = allStudents.filter(isAtRisk);
+  var riskStudents = myStudents.filter(isAtRisk);
   riskStudents.slice(0,2).forEach(function(s){
     actions.push({
       icon:'⚠️', color:'#DC2626', bg:'#FEE2E2',
@@ -1420,10 +1424,11 @@ function renderDashboard() {
     cta:'View All', action:"goTab('students')"
   });
 
-  // ── COURSE PROGRESS ──
-  var courseProgressHtml = cmCourses.map(function(course){
-    var enrolled = allEnrolments.filter(function(e){return e.course_id===course.id;}).length;
-    var completed = allEnrolments.filter(function(e){return e.course_id===course.id && (e.status==='complete'||e.status==='exam_passed');}).length;
+  // ── COURSE PROGRESS — only show lecturer's course for lecturers ──
+  var visibleCourses = isMaster() ? cmCourses : cmCourses.filter(function(c){ return c.id === lecturerCourseId(); });
+  var courseProgressHtml = visibleCourses.map(function(course){
+    var enrolled = myEnrolments.filter(function(e){return e.course_id===course.id;}).length;
+    var completed = myEnrolments.filter(function(e){return e.course_id===course.id && (e.status==='complete'||e.status==='exam_passed');}).length;
     var pct = enrolled > 0 ? Math.round((completed/enrolled)*100) : 0;
     return '<div style="margin-bottom:14px;">'
       +'<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;">'
@@ -1496,29 +1501,30 @@ function renderDashboard() {
 function renderStatistics() {
   var el = document.getElementById('statisticsContent');
   if (!el) return;
-  var total = allStudents.length;
-  var examReady = allEnrolments.filter(function(e){return ['complete','exam_scheduled'].includes(e.status);}).length;
-  var passed = allEnrolments.filter(function(e){return e.status==='exam_passed';}).length;
-  var totalAttempts = allAttempts.length;
-  var passedAttempts = allAttempts.filter(function(a){return a.passed;}).length;
-  var passRate = totalAttempts > 0 ? Math.round((passedAttempts/totalAttempts)*100) : 0;
-  var totalApps = allApplications.length;
-  var approvedApps = allApplications.filter(function(a){return a.status==='approved';}).length;
-  var convRate = totalApps > 0 ? Math.round((approvedApps/totalApps)*100) : 0;
+  var myStudents = visibleStudents();
+  var myEnrolments = visibleEnrolments();
+  var myApplications = visibleApplications();
+  var visibleCourses = isMaster() ? cmCourses : cmCourses.filter(function(c){ return c.id === lecturerCourseId(); });
+
+  var total = myStudents.length;
+  var examReady = myEnrolments.filter(function(e){return ['complete','exam_scheduled'].includes(e.status);}).length;
+  var passed = myEnrolments.filter(function(e){return e.status==='exam_passed';}).length;
+  var totalApps = isMaster() ? myApplications.length : null;
+  var approvedApps = isMaster() ? myApplications.filter(function(a){return a.status==='approved';}).length : null;
 
   var html = '<div class="stat-grid" style="grid-template-columns:repeat(2,1fr);">'
     + statCard(total,'Enrolled Students','info-card')
     + statCard(examReady,'Modules Complete','ok-card')
     + statCard(passed,'Exams Passed','ok-card')
-    + statCard(totalApps,'Total Applications','')
+    + (isMaster() ? statCard(totalApps,'Total Applications','') : '')
     + '</div>';
 
   // Per-course breakdown
   html += '<div class="health-grid" style="margin-top:16px;">';
-  cmCourses.forEach(function(course){
-    var enrolled = allEnrolments.filter(function(e){return e.course_id===course.id;}).length;
-    var complete = allEnrolments.filter(function(e){return e.course_id===course.id&&(e.status==='complete'||e.status==='exam_passed');}).length;
-    var examP = allEnrolments.filter(function(e){return e.course_id===course.id&&e.status==='exam_passed';}).length;
+  visibleCourses.forEach(function(course){
+    var enrolled = myEnrolments.filter(function(e){return e.course_id===course.id;}).length;
+    var complete = myEnrolments.filter(function(e){return e.course_id===course.id&&(e.status==='complete'||e.status==='exam_passed');}).length;
+    var examP = myEnrolments.filter(function(e){return e.course_id===course.id&&e.status==='exam_passed';}).length;
     var pct = enrolled>0?Math.round((complete/enrolled)*100):0;
     html += '<div class="card">'
       +'<div class="card-title" style="font-size:14px;margin-bottom:12px;">'+course.title+'</div>'
@@ -1870,7 +1876,7 @@ async function renderStudents() {
     });
   }
 
-  var list = allStudents;
+  var list = visibleStudents(); // filtered by role
   if (q) list = list.filter(function(s){ return (s.first_name+' '+s.last_name+' '+s.email).toLowerCase().includes(q); });
   if (courseFilter) list = list.filter(function(s){ return allEnrolments.some(function(e){ return e.student_id===s.id&&e.course_id===courseFilter; }); });
   if (statusFilter) list = list.filter(function(s){
@@ -2157,19 +2163,21 @@ function openStudentDetail(sid) {
         +'</div>')
     +'</div></div>';
 
-  // ── TABS — hide nudge for passed students ──
+  // ── TABS — hide nudge for passed students, hide admin tab for lecturers ──
   var showNudge = wn && !examPassed;
+  var showAdminTab = isMaster();
+  var adminTabIdx = showNudge ? 3 : 2;
   document.getElementById('studentDetailContent').innerHTML = hdr
     + '<div class="tabs" style="margin-bottom:16px;">'
     + '<div class="tab active" onclick="showStudentTab(this,0)">Progress</div>'
     + '<div class="tab" onclick="showStudentTab(this,1)">Timeline</div>'
     + (showNudge?'<div class="tab" onclick="showStudentTab(this,2)">Nudge</div>':'')
-    + '<div class="tab" onclick="showStudentTab(this,'+(showNudge?3:2)+')">Admin</div>'
+    + (showAdminTab?'<div class="tab" onclick="showStudentTab(this,'+adminTabIdx+')">Admin</div>':'')
     + '</div>'
     + '<div id="sd0">'+coursesHtml+'</div>'
     + '<div id="sd1" style="display:none;">'+tlHtml+'</div>'
     + (showNudge?'<div id="sd2" style="display:none;">'+nudgeHtml+'</div>':'')
-    + '<div id="sd'+(showNudge?3:2)+'" style="display:none;">'+adminActionsHtml+'</div>';
+    + (showAdminTab?'<div id="sd'+adminTabIdx+'" style="display:none;">'+adminActionsHtml+'</div>':'');
 }
 
 
@@ -4224,10 +4232,11 @@ async function renderExamReady(){
   var certList=document.getElementById('certifiedList');
   if(!list)return;
   list.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);">Loading...</div>';
-  var unscheduled=allEnrolments.filter(function(e){return e.status==='complete';});
-  var scheduled=allEnrolments.filter(function(e){return e.status==='exam_scheduled';});
-  var failed=allEnrolments.filter(function(e){return e.status==='exam_failed';});
-  var passed=allEnrolments.filter(function(e){return e.status==='exam_passed';});
+  var myEnrolments = visibleEnrolments();
+  var unscheduled=myEnrolments.filter(function(e){return e.status==='complete';});
+  var scheduled=myEnrolments.filter(function(e){return e.status==='exam_scheduled';});
+  var failed=myEnrolments.filter(function(e){return e.status==='exam_failed';});
+  var passed=myEnrolments.filter(function(e){return e.status==='exam_passed';});
   var pending=unscheduled.concat(scheduled).concat(failed);
   if(statsEl) statsEl.innerHTML=
     statCard(unscheduled.length,'Unscheduled',unscheduled.length>0?'warn-card':'')+
@@ -4432,13 +4441,58 @@ async function downloadCertificate(){
 // ── ROLE TABS (override old sidebar fn) ──────────────────────────────────────
 function applyRoleSidebar(role) {
   var isMaster = role === 'master';
-  var masterOnly = ['tab-examready','tab-applications','tab-settings'];
-  masterOnly.forEach(function(id){
-    var el=document.getElementById(id);
-    if(el) el.style.display=isMaster?'flex':'none';
+
+  // Applications and Settings: master only
+  ['tab-applications','tab-settings'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.style.display = isMaster ? 'flex' : 'none';
   });
-  var rc=document.getElementById('navRoleChip');
-  if(rc) rc.textContent=isMaster?'Master':'Lecturer';
+
+  // Exam Ready: both roles see it (lecturer needs to schedule + mark their students)
+  var er = document.getElementById('tab-examready');
+  if (er) er.style.display = 'flex';
+
+  // Create Student button: master only
+  var createBtn = document.querySelector('[onclick="showCreateStudentModal()"]');
+  if (createBtn) createBtn.style.display = isMaster ? '' : 'none';
+
+  var rc = document.getElementById('navRoleChip');
+  if (rc) rc.textContent = isMaster ? 'Master' : 'Lecturer';
+}
+
+// ── ROLE HELPERS ─────────────────────────────────────────────
+function isMaster() { return !currentAdmin || currentAdmin.role === 'master'; }
+function lecturerCourseId() { return currentAdmin && currentAdmin.assigned_course_id; }
+
+// Returns students visible to current admin
+function visibleStudents() {
+  if (isMaster()) return allStudents;
+  var cid = lecturerCourseId();
+  var enrolled = allEnrolments.filter(function(e){ return e.course_id === cid; }).map(function(e){ return e.student_id; });
+  return allStudents.filter(function(s){ return enrolled.indexOf(s.id) > -1; });
+}
+
+// Returns enrolments visible to current admin
+function visibleEnrolments() {
+  if (isMaster()) return allEnrolments;
+  var cid = lecturerCourseId();
+  return allEnrolments.filter(function(e){ return e.course_id === cid; });
+}
+
+// Returns applications visible to current admin
+function visibleApplications() {
+  if (isMaster()) return allApplications;
+  var cid = lecturerCourseId();
+  var course = cmCourses.find(function(c){ return c.id === cid; });
+  var title = course ? course.title : '';
+  return allApplications.filter(function(a){ return a.programme === title; });
+}
+
+// Returns submissions visible to current admin
+function visibleSubmissions() {
+  if (isMaster()) return allSubmissions || [];
+  var cid = lecturerCourseId();
+  return (allSubmissions || []).filter(function(s){ return s.course_id === cid; });
 }
 
 // ── LOGIN SUCCESS (override old fn reference) ─────────────────────────────────
