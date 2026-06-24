@@ -2727,7 +2727,11 @@ function renderCMEditor(courseId, modIdx, key, row) {
     // SECTION 2: Audio Tracks
     +'<div class="me-section"><div class="me-section-title">🎵 02 — Audio Tracks</div>'
     +'<div id="cm_audioList">'+renderCMAudioTracks(audioTracks)+'</div>'
-    +'<button class="btn btn-ghost btn-sm" style="margin-top:6px;" onclick="addCMAudioTrack()">+ Add Track</button></div>'
+    +'<div style="display:flex;gap:8px;margin-top:6px;">'
+    +'<button class="btn btn-ghost btn-sm" onclick="addCMAudioTrack()">+ Add Track</button>'
+    +'</div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.6;">Use YouTube URLs — upload audio as an unlisted YouTube video (static image + audio). Students see a play strip, not a video player.</div>'
+    +'</div>'
 
     // SECTION 3: Reading Content
     +'<div class="me-section"><div class="me-section-title">📖 03 — Reading Content</div>'
