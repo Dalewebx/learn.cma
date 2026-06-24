@@ -1310,14 +1310,6 @@ async function loadAllData() {
       sb('cohort_settings','GET',null,'limit=1'),
       sb('enrolments','GET',null,'select=student_id,course_id,status,enrolled_at,completed_at,exam_date,exam_passed_at,exam_failed_at,programme').catch(()=>[])
     ]);
-    // For lecturer: filter students to only those in their assigned course
-    if (!isMaster && currentAdmin.assigned_course_id) {
-      studs = studs.filter(function(s){
-        return s.programme && cmCourses.some(function(c){
-          return c.id === currentAdmin.assigned_course_id && s.programme === c.title;
-        });
-      });
-    }
     // Deduplicate enrolments — keep most advanced status per student+course
     var STATUS_RANK = {'exam_passed':5,'exam_failed':4,'exam_scheduled':3,'complete':2,'active':1};
     var enrolSeen = {};
