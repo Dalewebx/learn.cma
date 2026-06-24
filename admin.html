@@ -1748,14 +1748,6 @@ function showCreateStudentModal() {
     return '<option value="'+c.id+'" data-title="'+c.title+'">'+c.title+'</option>';
   }).join('');
 
-  var secQuestions = [
-    'What is the name of your first primary school?',
-    'What is your mother\'s maiden name?',
-    'What was the name of your first pet?',
-    'What is the name of the street you grew up on?',
-    'What was your childhood nickname?'
-  ];
-
   var modal = document.createElement('div');
   modal.id = 'createStudentModal';
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto;';
@@ -1788,17 +1780,7 @@ function showCreateStudentModal() {
     // Password
     +'<div class="form-group"><label class="form-label">Temporary Password <span style="color:var(--danger);">*</span></label>'
     +'<input class="form-input" id="cs_password" type="text" placeholder="e.g. CMA2024! (tell the student this)"/>'
-    +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">Student should change this on first login via My Account.</div></div>'
-
-    // Security question
-    +'<div class="form-group"><label class="form-label">Security Question</label>'
-    +'<select class="form-input" id="cs_secQ">'
-    +secQuestions.map(function(q){ return '<option value="'+q+'">'+q+'</option>'; }).join('')
-    +'</select></div>'
-
-    +'<div class="form-group"><label class="form-label">Security Answer</label>'
-    +'<input class="form-input" id="cs_secA" placeholder="Answer (case-insensitive)"/>'
-    +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">Used for password recovery. Tell the student to remember this.</div></div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">Student logs in with this, then sets their own permanent password and security question via My Account.</div></div>'
 
     // Error
     +'<div id="cs_err" style="display:none;background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--danger);margin-bottom:14px;"></div>'
@@ -1822,8 +1804,6 @@ async function createStudentDirectly() {
   var courseId  = courseEl.value;
   var courseName= courseEl.options[courseEl.selectedIndex] ? courseEl.options[courseEl.selectedIndex].text : '';
   var password  = (document.getElementById('cs_password').value||'').trim();
-  var secQ      = (document.getElementById('cs_secQ').value||'').trim();
-  var secA      = (document.getElementById('cs_secA').value||'').trim().toLowerCase();
   var errEl     = document.getElementById('cs_err');
   var btn       = document.getElementById('cs_submitBtn');
 
@@ -1837,17 +1817,9 @@ async function createStudentDirectly() {
   btn.disabled=true; btn.textContent='Creating...';
 
   try {
-    // Hash password
     var salt = generateSalt();
     var passwordHash = await hashPasswordPBKDF2(password, salt);
 
-    // Hash security answer if provided
-    var secAnswerHash = null;
-    if (secA) {
-      secAnswerHash = await hashPasswordPBKDF2(secA, salt);
-    }
-
-    // Call serverless function
     var res = await fetch('/api/students', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -1863,9 +1835,8 @@ async function createStudentDirectly() {
           password_hash: passwordHash,
           salt: salt,
           hash_version: 'pbkdf2',
-          security_question: secQ || null,
-          security_answer_hash: secAnswerHash,
-          hash_version: 'pbkdf2'
+          security_question: null,
+          security_answer_hash: null
         }
       })
     });
@@ -1873,7 +1844,7 @@ async function createStudentDirectly() {
     if (!res.ok) throw new Error(json.error || 'Could not create account');
 
     document.getElementById('createStudentModal').remove();
-    showToast('✓ Account created for '+firstName+' '+lastName+'. They can log in with the email and password you set.');
+    showToast('✓ Account created for '+firstName+' '+lastName+'. Share the temp password with them — they set their own via My Account.');
     await loadAllData();
     renderStudents();
   } catch(e) {
