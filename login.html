@@ -1477,7 +1477,7 @@ async function doLogin() {
   var pass    = passEl.value;
 
   if (!email || !pass) { showErr('Please enter your email and password.'); return; }
-  btn.disabled = true; btn.textContent = 'Signing in...';
+  btn.disabled = true; btn.textContent = 'Checking account...';
   document.getElementById('loginErr').style.display = 'none';
 
   try {
@@ -1493,6 +1493,8 @@ async function doLogin() {
       btn.disabled = false; btn.textContent = 'Sign in →'; return;
     }
     var student = results[0];
+
+    btn.textContent = 'Verifying...'; // shown during PBKDF2 computation
 
     // 2. Verify password
     var passwordOk = false;
@@ -1537,7 +1539,7 @@ async function doLogin() {
       btn.disabled = false; btn.textContent = 'Sign in →'; return;
     }
 
-    // 3. Check account status
+    btn.textContent = 'Loading your courses...';
     if (student.status !== 'active') {
       if (student.status === 'inactive') {
         showErr('Your account access has been suspended. Please contact the Academy or reapply at catholicmusicacademy.net/apply.');
@@ -2011,27 +2013,44 @@ function renderCourse() {
 function toYouTubeEmbed(url) {
   if (!url) return '';
   url = url.trim();
-  // Already an embed URL
   if (url.indexOf('youtube.com/embed/') !== -1) {
-    // Strip any extra params that cause issues and add rel=0
     var base = url.split('?')[0];
-    return base + '?rel=0&modestbranding=1';
+    return base + '?rel=0&modestbranding=1&autoplay=1';
   }
-  var videoId = null;
-  // youtu.be/VIDEO_ID
-  var m = url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
-  if (m) videoId = m[1];
-  // youtube.com/watch?v=VIDEO_ID
-  if (!videoId) { m = url.match(/[?&]v=([A-Za-z0-9_-]{11})/); if (m) videoId = m[1]; }
-  // youtube.com/shorts/VIDEO_ID
-  if (!videoId) { m = url.match(/shorts\/([A-Za-z0-9_-]{11})/); if (m) videoId = m[1]; }
-  // youtube.com/v/VIDEO_ID
-  if (!videoId) { m = url.match(/youtube\.com\/v\/([A-Za-z0-9_-]{11})/); if (m) videoId = m[1]; }
-  // youtube.com/embed/VIDEO_ID (already caught above but just in case)
-  if (!videoId) { m = url.match(/embed\/([A-Za-z0-9_-]{11})/); if (m) videoId = m[1]; }
-  if (videoId) return 'https://www.youtube.com/embed/' + videoId + '?rel=0&modestbranding=1';
-  // Not a YouTube URL — return as-is (could be a direct video file)
+  var videoId = toYouTubeId(url);
+  if (videoId) return 'https://www.youtube.com/embed/' + videoId + '?rel=0&modestbranding=1&autoplay=1';
   return url;
+}
+
+function toYouTubeId(url) {
+  if (!url) return null;
+  url = url.trim();
+  var m;
+  m = url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/); if (m) return m[1];
+  m = url.match(/[?&]v=([A-Za-z0-9_-]{11})/); if (m) return m[1];
+  m = url.match(/shorts\/([A-Za-z0-9_-]{11})/); if (m) return m[1];
+  m = url.match(/youtube\.com\/v\/([A-Za-z0-9_-]{11})/); if (m) return m[1];
+  m = url.match(/embed\/([A-Za-z0-9_-]{11})/); if (m) return m[1];
+  return null;
+}
+
+function renderVideoFacade(videoUrl, wrapEl) {
+  if (!videoUrl || !wrapEl) return;
+  var videoId = toYouTubeId(videoUrl);
+  if (!videoId) {
+    // Not YouTube — direct video file
+    wrapEl.innerHTML = '<video controls preload="none" style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:12px;background:#000;"><source src="'+videoUrl+'"/></video>';
+    return;
+  }
+  // Facade: show thumbnail + play button, load iframe only on click
+  var thumb = 'https://img.youtube.com/vi/'+videoId+'/hqdefault.jpg';
+  var embedUrl = 'https://www.youtube.com/embed/'+videoId+'?rel=0&modestbranding=1&autoplay=1';
+  wrapEl.innerHTML = '<div style="position:absolute;inset:0;cursor:pointer;border-radius:12px;overflow:hidden;" onclick="this.parentElement.innerHTML=\'<iframe src=\\\"'+embedUrl+'\\\" style=\\\"position:absolute;top:0;left:0;width:100%;height:100%;border:0;\\\" allow=\\\"accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture\\\" allowfullscreen></iframe>\'">'
+    +'<img src="'+thumb+'" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.background=\'#0D1B3E\';this.style.display=\'block\'"/>'
+    +'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.25);">'
+    +'<div style="width:68px;height:68px;background:rgba(255,0,0,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.5);transition:transform 0.15s;" onmouseover="this.style.transform=\'scale(1.1)\'" onmouseout="this.style.transform=\'scale(1)\'">'
+    +'<div style="width:0;height:0;border-style:solid;border-width:13px 0 13px 24px;border-color:transparent transparent transparent white;margin-left:5px;"></div>'
+    +'</div></div></div>';
 }
 
 // ── MODULE ────────────────────────────────────────────────────────────────────
@@ -2091,9 +2110,7 @@ function openMod(i) {
   var vw = document.getElementById('videoWrap');
   var vs = document.getElementById('videoSection');
   if (m.videoUrl) {
-    var embedUrl = toYouTubeEmbed(m.videoUrl);
-    vw.innerHTML = '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0D1B3E;color:rgba(255,255,255,0.5);gap:10px;z-index:1;" id="videoLoader"><div style="width:36px;height:36px;border:3px solid rgba(201,168,76,0.3);border-top-color:#C9A84C;border-radius:50%;animation:spin 1s linear infinite;"></div><div style="font-size:12px;">Loading video...</div></div>'
-      +'<iframe src="'+embedUrl+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="border:0;position:absolute;top:0;left:0;width:100%;height:100%;z-index:2;" onload="var l=document.getElementById(\'videoLoader\');if(l)l.remove();"></iframe>';
+    renderVideoFacade(m.videoUrl, vw);
     if (vs) vs.style.display = 'block';
   } else {
     // No video — show placeholder, not black void
