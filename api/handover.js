@@ -44,6 +44,10 @@ module.exports = async function handler(req, res) {
         ? 'id=eq.' + studentIds[0]
         : 'id=in.(' + studentIds.join(',') + ')';
 
+      // Fetch emails first so we can delete matching applications
+      const students = await db('students?' + idFilter + '&select=email', 'GET').catch(() => []);
+      const emails = (students || []).map(s => s.email).filter(Boolean);
+
       await db('sessions?' + filter, 'DELETE').catch(() => {});
       await db('progress?' + filter, 'DELETE').catch(() => {});
       await db('assessment_attempts?' + filter, 'DELETE').catch(() => {});
@@ -52,6 +56,13 @@ module.exports = async function handler(req, res) {
       // Null FK before deleting students
       await db('students?' + idFilter, 'PATCH', { application_id: null }).catch(() => {});
       await db('students?' + idFilter, 'DELETE');
+      // Delete their applications by email
+      if (emails.length) {
+        const emailFilter = emails.length === 1
+          ? 'email=eq.' + encodeURIComponent(emails[0])
+          : 'email=in.(' + emails.map(e => encodeURIComponent(e)).join(',') + ')';
+        await db('applications?' + emailFilter, 'DELETE').catch(() => {});
+      }
 
       return res.status(200).json({ ok: true, deleted: studentIds.length });
     }
