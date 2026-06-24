@@ -1089,17 +1089,13 @@ async function doAdminLogin() {
   if (btn) { btn.disabled=true; btn.textContent='Signing in...'; }
   err.style.display='none';
   try {
-    // Fetch admin record via serverless function (admins table locked to anon)
-    var res = await fetch('/api/admin-login', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({email})
-    });
-    var json = await res.json();
-    if (!res.ok) throw new Error(json.error || 'No admin account found with that email.');
-    var admin = json.admin;
+    // Hash password same way as students
+    // Look up in admins table
+    var results = await sb('admins','GET',null,'email=eq.'+encodeURIComponent(email)+'&select=*');
+    if (!results||!results.length) throw new Error('No admin account found with that email.');
+    var admin = results[0];
 
-    // Verify password client-side with PBKDF2
+    // Verify password — PBKDF2 (new) or legacy SHA-256
     var adminPasswordMatch = false;
     if (admin.hash_version === 'pbkdf2' && admin.salt) {
       var hash = await hashPasswordPBKDF2(pass, admin.salt);
@@ -1108,31 +1104,26 @@ async function doAdminLogin() {
       var legacyHash = await hashPasswordLegacy(pass);
       if (legacyHash === admin.password_hash) {
         adminPasswordMatch = true;
-        // Migrate to PBKDF2 via serverless
-        var newSalt = generateSalt();
+        // Migrate to PBKDF2
+        var newSalt = await generateSalt();
         var newHash = await hashPasswordPBKDF2(pass, newSalt);
-        fetch('/api/admin-data', {method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({action:'update_password',id:admin.id,data:{password_hash:newHash,salt:newSalt,hash_version:'pbkdf2'}})
-        }).catch(function(){});
+        sb('admins','PATCH',{password_hash:newHash, salt:newSalt, hash_version:'pbkdf2'},'id=eq.'+admin.id).catch(function(){});
         admin.password_hash = newHash; admin.salt = newSalt; admin.hash_version = 'pbkdf2';
       }
     }
     if (!adminPasswordMatch) throw new Error('Incorrect password.');
-
     // Login success
     currentAdmin = admin;
     var rememberCb = document.getElementById('adminRemember');
     var remember = rememberCb && rememberCb.checked;
     saveAdminSession(admin, remember);
+    // Save email for prefill
     if (remember) {
       try { localStorage.setItem('cma_admin_remember', email); } catch(e){}
     } else {
       try { localStorage.removeItem('cma_admin_remember'); } catch(e){}
     }
-    // Update last_login via serverless
-    fetch('/api/admin-data', {method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'update_last_login',id:admin.id})
-    }).catch(function(){});
+    sb('admins','PATCH',{last_login:new Date().toISOString()},'id=eq.'+admin.id).catch(function(){});
     showAdminShell(admin);
     loadAllData();
   } catch(e) {
@@ -3692,10 +3683,7 @@ async function saveAccountSettings() {
   }
 
   try {
-    var res2 = await fetch('/api/admin-data', {method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'update_password', id:currentAdmin.id, data:{password_hash:newHashVal, salt:newSaltVal, hash_version:'pbkdf2'}})
-    });
-    if (!res2.ok) throw new Error((await res2.json()).error || 'Update failed');
+    await sb('admins','PATCH',updates,'id=eq.'+currentAdmin.id);
     // Update local session
     currentAdmin.name = updates.name;
     currentAdmin.email = updates.email;
@@ -3770,9 +3758,7 @@ async function renderAdminAccounts() {
   if (!el) return;
   el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);">Loading...</div>';
   try {
-    var adminsRes = await fetch('/api/admin-data', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'list'})});
-  var adminsJson = await adminsRes.json();
-  var admins = adminsJson.admins || [];
+    var admins = await sb('admins','GET',null,'order=created_at.asc&select=id,name,email,role,assigned_course_id,last_login,created_at');
     if (!admins.length) { el.innerHTML='<div class="alert alert-info">No admin accounts yet. Create the first one above.</div>'; return; }
     el.innerHTML = '<div style="display:grid;gap:12px;">'
       + admins.map(function(a) {
@@ -3850,17 +3836,17 @@ async function createAdminAccount() {
 
   btn.disabled=true; btn.textContent='Creating...';
   try {
-    var aSalt = generateSalt();
+    var aSalt = await generateSalt();
     var hash = await hashPasswordPBKDF2(pass, aSalt);
-    var res = await fetch('/api/admin-data', {method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'create', data:{
-        name: name.trim(), email: email.trim().toLowerCase(),
-        password_hash: hash, salt: aSalt, hash_version: 'pbkdf2',
-        role: role, assigned_course_id: role==='master' ? null : courseId
-      }})
+    await sb('admins','POST',{
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      password_hash: hash,
+      salt: aSalt,
+      hash_version: 'pbkdf2',
+      role: role,
+      assigned_course_id: role==='master' ? null : courseId
     });
-    var json = await res.json();
-    if (!res.ok) throw new Error(json.error || 'Could not create account');
     document.getElementById('createAdminModal').remove();
     showToast('Account created for '+name+'. They can now log in.');
     renderAdminAccounts();
@@ -3875,12 +3861,9 @@ async function resetAdminPassword(id, name) {
   var newPass = prompt('Enter new password for '+name+':');
   if (!newPass||!newPass.trim()) return;
   try {
-    var rSalt = generateSalt();
+    var rSalt = await generateSalt();
     var hash = await hashPasswordPBKDF2(newPass.trim(), rSalt);
-    var res = await fetch('/api/admin-data', {method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'reset_password', id, data:{password_hash:hash, salt:rSalt}})
-    });
-    if (!res.ok) throw new Error((await res.json()).error);
+    await sb('admins','PATCH',{password_hash:hash, salt:rSalt, hash_version:'pbkdf2'},'id=eq.'+id);
     showToast('Password reset for '+name+'.');
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
@@ -3888,10 +3871,7 @@ async function resetAdminPassword(id, name) {
 async function deleteAdminAccount(id, name) {
   if (!confirm('Remove admin account for '+name+'? This cannot be undone.')) return;
   try {
-    var res = await fetch('/api/admin-data', {method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'remove', id})
-    });
-    if (!res.ok) throw new Error((await res.json()).error);
+    await sb('admins','DELETE',null,'id=eq.'+id);
     showToast(name+' account removed.');
     renderAdminAccounts();
   } catch(e) { showToast('Error: '+e.message,'err'); }
