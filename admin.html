@@ -1572,7 +1572,7 @@ function renderApplications() {
     var acts='';
     if(a.status==='pending') { acts='<button class="btn btn-ok" onclick="approveApp(this.dataset.id)" data-id="'+aid+'">✓ Approve</button> <button class="btn btn-danger" onclick="rejectApp(this.dataset.id)" data-id="'+aid+'">✕ Reject</button>'; }
     else if(a.status==='approved') { acts='<button class="btn btn-danger" onclick="rejectApp(this.dataset.id)" data-id="'+aid+'">Revoke</button>'; }
-    else { acts='<button class="btn btn-ok" onclick="approveApp(this.dataset.id)" data-id="'+aid+'">Re-approve</button>'; }
+    else { acts='<button class="btn btn-ok" onclick="approveApp(this.dataset.id)" data-id="'+aid+'">Re-approve</button> <button class="btn btn-ghost btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="deleteOneApplication(\''+aid+'\',\''+a.first_name+' '+a.last_name+'\')">🗑 Delete</button>'; }
     if(wn) acts+=' <a class="btn btn-wa" href="'+waLink(wn,acceptMsg)+'" target="_blank">💬 WhatsApp</a>';
     return '<div class="app-card '+a.status+'">'
       +'<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">'
@@ -1598,6 +1598,18 @@ function renderApplications() {
       +'</div>'
       +'<div class="app-actions">'+acts+'</div></div>';
   }).join('');
+}
+
+async function deleteOneApplication(id, name) {
+  if (!confirm('Permanently delete the application for '+name+'?\n\nThis cannot be undone.')) return;
+  try {
+    // Null FK on student record first
+    await sb('students','PATCH',{application_id:null},'application_id=eq.'+id).catch(function(){});
+    await sb('applications','DELETE',null,'id=eq.'+id);
+    showToast('Application for '+name+' deleted.');
+    await loadAllData();
+    renderApplications();
+  } catch(e) { showToast('Error: '+e.message,'err'); }
 }
 
 async function clearApplicationBin() {
@@ -2382,60 +2394,142 @@ function renderCMSidebar() {
 }
 
 async function deleteCourse(courseId, courseTitle) {
-  if (!confirm('Delete "'+courseTitle+'" and ALL its modules?\n\nThis removes all content, questions, videos, and audio for this course. Student progress and enrolments are NOT deleted.\n\nThis cannot be undone.')) return;
+  // Master admin only
+  if (!currentAdmin || currentAdmin.role !== 'master') {
+    showToast('Only the master admin can delete courses.','warn'); return;
+  }
+
+  // Check enrolled students
+  var enrolled = allEnrolments.filter(function(e){ return e.course_id === courseId; });
+  var enrolledStudents = enrolled.map(function(e){
+    var s = allStudents.find(function(st){ return st.id === e.student_id; });
+    return s ? s.first_name+' '+s.last_name : 'Unknown';
+  });
+
+  var c = cmCourses.find(function(x){ return x.id === courseId; });
+  var modules = c ? (c.modules||[]) : [];
+
+  // Build modal
+  var modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  modal.innerHTML = '<div style="background:white;border-radius:16px;padding:28px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,0.2);">'
+    +'<div style="font-family:DM Serif Display,serif;font-size:20px;color:var(--navy);margin-bottom:4px;">Delete Course</div>'
+    +'<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:16px;">'+courseTitle+'</div>'
+
+    // Enrolled students warning
+    +(enrolledStudents.length
+      ?'<div style="background:#FEF2F2;border:1.5px solid #FECACA;border-radius:10px;padding:12px 14px;margin-bottom:16px;">'
+        +'<div style="font-size:12px;font-weight:700;color:var(--danger);margin-bottom:6px;">⚠ '+enrolledStudents.length+' student'+(enrolledStudents.length>1?'s are':' is')+' enrolled</div>'
+        +'<div style="font-size:12px;color:#0F172A;line-height:1.7;">'+enrolledStudents.join(', ')+'</div>'
+        +'<div style="font-size:11px;color:var(--muted);margin-top:6px;">Their progress and enrolment records are NOT deleted — only the course content.</div>'
+        +'</div>'
+      :'<div style="background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#16A34A;">✓ No students are currently enrolled in this course.</div>')
+
+    // Module checklist
+    +(modules.length
+      ?'<div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Select modules to delete</div>'
+        +'<div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;">'
+        +'<div style="padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;">'
+        +'<input type="checkbox" id="selectAllMods" checked onchange="document.querySelectorAll(\'.mod-del-cb\').forEach(function(cb){cb.checked=this.checked;}.bind(this))" style="cursor:pointer;accent-color:var(--navy);"/>'
+        +'<label for="selectAllMods" style="font-size:12px;font-weight:600;cursor:pointer;">Select all</label></div>'
+        +modules.map(function(m,i){
+          return '<div style="padding:10px 14px;border-bottom:1px solid var(--surface);display:flex;align-items:center;gap:8px;">'
+            +'<input type="checkbox" class="mod-del-cb" value="'+i+'" checked style="cursor:pointer;accent-color:var(--navy);"/>'
+            +'<span style="font-size:13px;">'+(m.title||'Module '+(i+1))+'</span>'
+            +(cmContent[courseId+'-'+i]?'<span style="font-size:10px;background:#DCFCE7;color:#16A34A;padding:2px 6px;border-radius:4px;margin-left:auto;">Has content</span>':'')
+            +'</div>';
+        }).join('')
+        +'</div>'
+      :'<div style="font-size:13px;color:var(--muted);margin-bottom:16px;">No modules found — deleting the course record only.</div>')
+
+    +'<div style="display:flex;gap:8px;">'
+    +'<button class="btn btn-danger" style="flex:2;" onclick="confirmDeleteCourse(\''+courseId+'\',\''+courseTitle.replace(/'/g,"\\'")+'\')">Delete Selected</button>'
+    +'<button class="btn btn-ghost" style="flex:1;" onclick="this.closest(\'[style*=fixed]\').remove()">Cancel</button>'
+    +'</div></div>';
+  modal.addEventListener('click', function(e){ if(e.target===modal) modal.remove(); });
+  document.body.appendChild(modal);
+}
+
+async function confirmDeleteCourse(courseId, courseTitle) {
+  var modal = document.querySelector('[style*="position:fixed"][style*="z-index:9999"]');
+  var selectedMods = Array.from(document.querySelectorAll('.mod-del-cb:checked')).map(function(cb){ return parseInt(cb.value); });
+  var c = cmCourses.find(function(x){ return x.id === courseId; });
+  var totalMods = c ? (c.modules||[]).length : 0;
+  var deleteAll = selectedMods.length === totalMods;
+
+  if (modal) modal.remove();
+
   try {
-    // Delete all course_content rows for this course
-    await sb('course_content','DELETE',null,'course_id=eq.'+courseId);
-    // Remove from local state
-    cmCourses = cmCourses.filter(function(c){ return c.id !== courseId; });
-    Object.keys(cmContent).forEach(function(k){
-      if (k.startsWith(courseId+'-')) delete cmContent[k];
-    });
-    if (cmState.selectedCourse === courseId) {
-      cmState.selectedCourse = null;
-      cmState.selectedModule = null;
+    if (deleteAll) {
+      // Delete all content rows for this course
+      await sb('course_content','DELETE',null,'course_id=eq.'+courseId);
+      cmCourses = cmCourses.filter(function(x){ return x.id !== courseId; });
+      Object.keys(cmContent).forEach(function(k){
+        if (k.startsWith(courseId+'-')) delete cmContent[k];
+      });
+      if (cmState.selectedCourse === courseId) { cmState.selectedCourse=null; cmState.selectedModule=null; }
+      showToast('"'+courseTitle+'" deleted.');
+    } else {
+      // Delete only selected modules
+      for (var i=0; i<selectedMods.length; i++) {
+        var key = courseId+'-'+selectedMods[i];
+        var row = cmContent[key];
+        if (row && row.id) await sb('course_content','DELETE',null,'id=eq.'+row.id);
+      }
+      // Remove from local modules array (highest index first to avoid shifting)
+      selectedMods.sort(function(a,b){return b-a;}).forEach(function(idx){
+        if (c && c.modules) c.modules.splice(idx,1);
+        delete cmContent[courseId+'-'+idx];
+      });
+      // Re-key remaining
+      var newContent = {};
+      Object.keys(cmContent).forEach(function(k){
+        if (!k.startsWith(courseId+'-')) { newContent[k]=cmContent[k]; return; }
+        var idx = parseInt(k.split('-')[1]);
+        var newIdx = idx - selectedMods.filter(function(s){return s<idx;}).length;
+        newContent[courseId+'-'+newIdx] = cmContent[k];
+      });
+      cmContent = newContent;
+      if (cmState.selectedModule && selectedMods.indexOf(parseInt(cmState.selectedModule.split('-')[1]))>-1) cmState.selectedModule=null;
+      showToast(selectedMods.length+' module'+(selectedMods.length>1?'s':'')+' deleted from "'+courseTitle+'".');
     }
     saveCourseLocally();
-    showToast('"'+courseTitle+'" deleted.');
     renderCMSidebar();
     renderCMOverview();
+    var editorEl=document.getElementById('cm-editor-wrap');
+    if(editorEl&&!cmState.selectedModule) editorEl.innerHTML='<div style="padding:40px;text-align:center;color:var(--muted);">Select a module to edit.</div>';
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
 
 async function deleteModule(courseId, modIdx, moduleTitle) {
-  if (!confirm('Delete module "'+moduleTitle+'"?\n\nAll content, questions, video, audio and downloads for this module will be removed.\n\nThis cannot be undone.')) return;
+  if (!currentAdmin || currentAdmin.role !== 'master') {
+    showToast('Only the master admin can delete modules.','warn'); return;
+  }
+  // Check enrolled students
+  var enrolled = allEnrolments.filter(function(e){ return e.course_id === courseId; });
+  var warning = enrolled.length ? '\n\n⚠ '+enrolled.length+' student'+(enrolled.length>1?'s are':' is')+' enrolled in this course. Their progress records are not deleted.' : '';
+  if (!confirm('Delete module "'+moduleTitle+'"?'+warning+'\n\nThis cannot be undone.')) return;
   try {
     var key = courseId+'-'+modIdx;
     var row = cmContent[key];
-    // Delete from DB if it exists there
-    if (row && row.id) {
-      await sb('course_content','DELETE',null,'id=eq.'+row.id);
-    }
-    // Remove from local state
-    var c = cmCourses.find(function(x){ return x.id === courseId; });
-    if (c && c.modules) {
-      c.modules.splice(modIdx, 1);
-      // Re-key all subsequent modules
-      var newContent = {};
-      Object.keys(cmContent).forEach(function(k){
-        if (!k.startsWith(courseId+'-')) { newContent[k] = cmContent[k]; return; }
-        var idx = parseInt(k.split('-')[1]);
-        if (idx < modIdx) { newContent[k] = cmContent[k]; }
-        else if (idx > modIdx) { newContent[courseId+'-'+(idx-1)] = cmContent[k]; }
-        // idx === modIdx is deleted
-      });
-      cmContent = newContent;
-    }
-    if (cmState.selectedModule === key) {
-      cmState.selectedModule = null;
-    }
+    if (row && row.id) await sb('course_content','DELETE',null,'id=eq.'+row.id);
+    var c = cmCourses.find(function(x){ return x.id===courseId; });
+    if (c && c.modules) c.modules.splice(modIdx,1);
+    // Re-key subsequent modules
+    var newContent = {};
+    Object.keys(cmContent).forEach(function(k){
+      if (!k.startsWith(courseId+'-')) { newContent[k]=cmContent[k]; return; }
+      var idx=parseInt(k.split('-')[1]);
+      if (idx<modIdx) newContent[k]=cmContent[k];
+      else if (idx>modIdx) newContent[courseId+'-'+(idx-1)]=cmContent[k];
+    });
+    cmContent = newContent;
+    if (cmState.selectedModule===key) cmState.selectedModule=null;
     saveCourseLocally();
     showToast('"'+moduleTitle+'" deleted.');
-    renderCMSidebar();
-    renderCMOverview();
-    // Clear editor
-    var editorEl = document.getElementById('cm-editor-wrap');
-    if (editorEl) editorEl.innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);">Select a module to edit.</div>';
+    renderCMSidebar(); renderCMOverview();
+    var editorEl=document.getElementById('cm-editor-wrap');
+    if(editorEl&&!cmState.selectedModule) editorEl.innerHTML='<div style="padding:40px;text-align:center;color:var(--muted);">Select a module to edit.</div>';
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
 
