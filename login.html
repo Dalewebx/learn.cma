@@ -1891,12 +1891,13 @@ async function saveSecurityQuestion() {
     var res=await fetch(SUPA_URL+'/rest/v1/students?id=eq.'+currentStudent.id,{
       method:'PATCH',
       headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body:JSON.stringify({security_question:question,security_answer_hash:answerHash})
+      body:JSON.stringify({security_question:question,security_answer_hash:answerHash,security_answer_salt:answerSalt})
     });
     if(!res.ok)throw new Error(await res.text());
 
     currentStudent.security_question=question;
     currentStudent.security_answer_hash=answerHash;
+    currentStudent.security_answer_salt=answerSalt;
     document.getElementById('acct_secA').value='';
     okEl.style.display='block';
   } catch(e){errEl.textContent='Error: '+e.message;errEl.style.display='block';}
