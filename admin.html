@@ -2006,7 +2006,7 @@ function openStudentDetail(sid) {
   if (!s) return;
   goTab('student-detail');
 
-  var enrols = allEnrolments.filter(function(e){return e.student_id===sid;});
+  var enrols = allEnrolments.filter(function(e){return e.student_id===sid&&(isMaster()||e.course_id===lecturerCourseId());});
   var attempts = getStudentAttempts(sid);
   var app = allApplications.find(function(a){return a.email===s.email;})||{};
   var wn = s.whatsapp||s.phone||'';
