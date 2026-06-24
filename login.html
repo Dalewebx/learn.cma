@@ -1771,11 +1771,41 @@ async function saveAttempt(modIndex, score, total, passed) {
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  // Show/hide topbar based on screen
   var tb = document.getElementById('topbar');
   if (tb) tb.style.display = (id === 'screen-login') ? 'none' : 'flex';
   window.scrollTo(0,0);
 }
+
+// Handle browser back/forward button
+window.addEventListener('popstate', function(e) {
+  var state = e.state;
+  if (!state || !currentStudent) {
+    // No state or not logged in — go to login
+    showScreen('screen-login');
+    return;
+  }
+  switch(state.screen) {
+    case 'dash':
+      showScreen('screen-dash');
+      loadAnnouncements();
+      break;
+    case 'course':
+      showScreen('screen-course');
+      break;
+    case 'module':
+      if (state.mod !== undefined && MODULES[state.mod]) {
+        openMod(state.mod);
+      } else {
+        showScreen('screen-course');
+      }
+      break;
+    case 'account':
+      showAccountScreen();
+      break;
+    default:
+      showScreen('screen-dash');
+  }
+});
 function goDash() {
   history.pushState({screen:'dash'},'','/portal');
   showScreen('screen-dash');
@@ -1783,6 +1813,7 @@ function goDash() {
 }
 
 function showAccountScreen() {
+  history.pushState({screen:'account'},'','/portal/account');
   showScreen('screen-account');
   if (currentStudent) {
     document.getElementById('acctName').textContent = currentStudent.first_name + ' ' + currentStudent.last_name;
