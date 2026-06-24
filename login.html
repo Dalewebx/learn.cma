@@ -1951,7 +1951,7 @@ function renderCourse() {
   document.getElementById('modulesList').innerHTML = MODULES.map((m,i) => {
     var done = completedModules.includes(i);
     var pending = !done && pendingModules.includes(i);
-    var prevOk = i === 0 || completedModules.includes(i-1) || pendingModules.includes(i-1);
+    var prevOk = i === 0 || completedModules.includes(i-1);
     var locked = !prevOk;
     var cardClass = done ? ' mc-done-card' : pending ? ' mc-pending-card' : locked ? ' mc-locked' : ' mc-active';
     var numClass = done ? ' mc-done' : pending ? ' mc-pending-num' : '';
@@ -2659,9 +2659,31 @@ function clearRememberMe() {
   // Show biometric button if available
   showBiometricButton();
 
-  // Restore session if active — reload course + modules fresh from DB
+  // Restore session if active — always verify student status from DB first
   var session = loadSession();
-  if (session && session.student && session.student.status === 'active') {
+  if (session && session.student) {
+    try {
+      // Verify student is still active in DB — cannot trust cache alone
+      var verifyRes = await fetch(SUPA_URL + '/rest/v1/students?id=eq.' + session.student.id + '&select=id,status,first_name,last_name,email,programme,password_hash,salt,hash_version,security_question,security_answer_hash,security_answer_salt', {
+        headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+      });
+      var verifyData = await verifyRes.json();
+      if (!verifyData || !verifyData.length || verifyData[0].status !== 'active') {
+        // Student doesn't exist or is inactive — clear all local storage and show login
+        clearSession();
+        clearRememberMe();
+        try { localStorage.removeItem('cma_biometric'); } catch(e){}
+        showScreen('screen-login');
+        return;
+      }
+      // Merge fresh DB data into session
+      session.student = { ...session.student, ...verifyData[0] };
+    } catch(e) {
+      // Network error — fail safe: show login
+      clearSession();
+      showScreen('screen-login');
+      return;
+    }
     currentStudent = session.student;
     // Update last_login on session restore
     fetch(SUPA_URL+'/rest/v1/students?id=eq.'+session.student.id, {
@@ -2695,7 +2717,7 @@ function clearRememberMe() {
     showScreen('screen-dash');
     loadAnnouncements();
     return;
-  }
+  } // end verify if block
   showScreen('screen-login');
 })();
 
