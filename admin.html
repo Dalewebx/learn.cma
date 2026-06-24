@@ -1912,7 +1912,7 @@ async function renderStudents() {
   }
 
   container.innerHTML = list.map(function(s) {
-    var enrols = allEnrolments.filter(function(e){ return e.student_id===s.id; });
+    var enrols = allEnrolments.filter(function(e){ return e.student_id===s.id&&(isMaster()||e.course_id===lecturerCourseId()); });
     var examReady = enrols.some(function(e){ return ['complete','exam_scheduled','exam_passed'].includes(e.status); });
     var examPassed = enrols.some(function(e){ return e.status==='exam_passed'; });
     var risk = isAtRisk(s) && !examReady;
