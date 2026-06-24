@@ -381,6 +381,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px
     </div>
     <div class="actions">
       <button class="btn btn-secondary" onclick="goStep(3)">&#8592; Edit</button>
+      <div id="applySubmitErr" style="display:none;background:#FEE2E2;border:1px solid #FECACA;border-radius:10px;padding:12px 14px;font-size:13px;color:#DC2626;margin-bottom:12px;line-height:1.5;"></div>
       <button class="btn btn-primary" id="submitBtn" onclick="submitApplication()">Submit Application &#8594;</button>
     </div>
   </div>
@@ -650,6 +651,16 @@ function updateProgress(n) {
 // ── VALIDATION ──
 async function validateStep(n) {
   var ok = true;
+  function showFormErr(msg) {
+    var el = document.getElementById('applySubmitErr');
+    if (el) { el.innerHTML = msg; el.style.display = 'block'; el.scrollIntoView({behavior:'smooth',block:'center'}); }
+  }
+  function hideFormErr() {
+    var el = document.getElementById('applySubmitErr');
+    if (el) el.style.display = 'none';
+  }
+  window._isReapplication = false;
+
   function req(id, errId, msg) {
     var el = document.getElementById(id);
     var val = el ? el.value.trim() : '';
@@ -835,29 +846,40 @@ async function submitApplication() {
   var btn = document.getElementById('submitBtn');
   btn.disabled = true; btn.textContent = 'Checking...';
 
-  // Check for existing active student account with same email
+  // Check for existing accounts with same email
   try {
     var emailVal = v('email');
+    // Check active account
     var studentCheck = await fetch(SUPA_URL+'/rest/v1/students?email=eq.'+encodeURIComponent(emailVal)+'&status=eq.active&select=id',
       {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
     var existingStudent = await studentCheck.json();
     if (existingStudent && existingStudent.length) {
       btn.disabled = false; btn.textContent = 'Submit Application →';
-      alert('A student account already exists with this email address. If you are an existing student, please log in to your portal. If you want to add another programme, use the "Add a Programme" option from your dashboard.');
+      showFormErr('An active account already exists with this email. Please <a href="/portal" style="color:var(--navy);font-weight:700;">log in to your portal</a> instead. To add a new programme, use "Add a Programme" from your dashboard.');
       return;
     }
-    // Check for pending application
-    var appCheck = await fetch(SUPA_URL+'/rest/v1/applications?email=eq.'+encodeURIComponent(emailVal)+'&status=eq.pending&select=id,programme',
+    // Check pending application
+    var appCheck = await fetch(SUPA_URL+'/rest/v1/applications?email=eq.'+encodeURIComponent(emailVal)+'&status=eq.pending&select=id',
       {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
     var existingApp = await appCheck.json();
     if (existingApp && existingApp.length) {
       btn.disabled = false; btn.textContent = 'Submit Application →';
-      alert('An application with this email address is already pending review. Please wait to hear from the Academy before applying again.');
+      showFormErr('An application with this email is already pending review. Please wait to hear from the Academy via WhatsApp before applying again.');
       return;
     }
-  } catch(e){ /* proceed if check fails */ }
+    // Check if revoked account exists — flag as reapplication
+    var revokedCheck = await fetch(SUPA_URL+'/rest/v1/students?email=eq.'+encodeURIComponent(emailVal)+'&status=eq.inactive&select=id',
+      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    var revokedStudent = await revokedCheck.json();
+    if (revokedStudent && revokedStudent.length) {
+      window._isReapplication = true; // flag for submission
+    } else {
+      window._isReapplication = false;
+    }
+  } catch(e){ window._isReapplication = false; /* proceed if check fails */ }
 
   btn.textContent = 'Submitting...';
+  hideFormErr();
   try {
     var ref = 'CMA-' + Date.now().toString().slice(-6);
     var pwResult = await hashPassword(document.getElementById('password').value);
@@ -905,7 +927,7 @@ async function submitApplication() {
         salt: pwSalt,
         security_answer_salt: ansSalt,
         status: 'pending',
-        type: 'new'
+        type: window._isReapplication ? 'reapplication' : 'new'
       });
     }
 
@@ -914,30 +936,28 @@ async function submitApplication() {
     window.scrollTo({top:0,behavior:'smooth'});
     try { sessionStorage.removeItem('cma_apply_draft'); } catch(e){}
 
-    // Send one confirmation email listing all programmes
-    fetch('/api/application-received', {
+    // Send confirmation email to applicant
+    fetch('/api/notify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        to: email,
+        action: 'application_received',
+        email: email,
         firstName: firstName,
-        programme: progList.join(', '),
-        ref: ref,
-        testMode: IS_TEST_MODE
+        programme: progList.join(', ')
       })
     }).catch(function(e){ console.warn('Confirmation email failed:', e); });
 
-    // Notify admin once per programme
-    progList.forEach(function(prog, pi2) {
-      fetch('/api/notify-admin', {
+    // Notify admin
+    progList.forEach(function(prog) {
+      fetch('/api/notify', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
-          studentName: firstName+' '+lastName,
-          studentEmail: email,
-          programme: prog,
-          ref: ref + (progList.length > 1 ? '-'+(pi2+1) : ''),
-          type: 'new'
+          action: 'notify_admin',
+          applicantName: firstName+' '+lastName,
+          applicantEmail: email,
+          programme: prog
         })
       }).catch(function(){});
     });
