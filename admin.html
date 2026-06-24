@@ -1112,7 +1112,7 @@ async function doAdminLogin() {
       if (legacyHash === admin.password_hash) {
         adminPasswordMatch = true;
         // Migrate to PBKDF2 via serverless
-        var newSalt = generateSalt();
+        var newSalt = await generateSalt();
         var newHash = await hashPasswordPBKDF2(pass, newSalt);
         fetch('/api/admin', {method:'POST',headers:{'Content-Type':'application/json'},
           body:JSON.stringify({action:'update_password',id:admin.id,data:{password_hash:newHash,salt:newSalt,hash_version:'pbkdf2'}})
@@ -1817,7 +1817,7 @@ async function createStudentDirectly() {
   btn.disabled=true; btn.textContent='Creating...';
 
   try {
-    var salt = generateSalt();
+    var salt = await generateSalt();
     var passwordHash = await hashPasswordPBKDF2(password, salt);
 
     var res = await fetch('/api/students', {
@@ -4045,7 +4045,7 @@ async function createAdminAccount() {
 
   btn.disabled=true; btn.textContent='Creating...';
   try {
-    var aSalt = generateSalt();
+    var aSalt = await generateSalt();
     var hash = await hashPasswordPBKDF2(pass, aSalt);
     var res = await fetch('/api/admin', {method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'create', data:{
@@ -4070,7 +4070,7 @@ async function resetAdminPassword(id, name) {
   var newPass = prompt('Enter new password for '+name+':');
   if (!newPass||!newPass.trim()) return;
   try {
-    var rSalt = generateSalt();
+    var rSalt = await generateSalt();
     var hash = await hashPasswordPBKDF2(newPass.trim(), rSalt);
     var res = await fetch('/api/admin', {method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'reset_password', id, data:{password_hash:hash, salt:rSalt}})
