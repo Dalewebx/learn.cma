@@ -1569,7 +1569,26 @@ async function loadEnrolments() {
     });
   }
 
-  ALL_ENROLMENTS = enrolments;
+  // Deduplicate — if same course_id appears twice, keep the most advanced status
+  var STATUS_RANK = {'exam_passed':5,'exam_failed':4,'exam_scheduled':3,'complete':2,'active':1};
+  var seen = {};
+  var deduped = [];
+  enrolments.forEach(function(e) {
+    var key = e.course_id || e.programme;
+    if (!seen[key]) {
+      seen[key] = e; deduped.push(e);
+    } else {
+      // Keep whichever has the higher status rank
+      var existing = seen[key];
+      if ((STATUS_RANK[e.status]||0) > (STATUS_RANK[existing.status]||0)) {
+        var idx = deduped.indexOf(existing);
+        deduped[idx] = e;
+        seen[key] = e;
+      }
+    }
+  });
+
+  ALL_ENROLMENTS = deduped;
 }
 
 // ── PROGRESS ─────────────────────────────────────────────────────────────────
