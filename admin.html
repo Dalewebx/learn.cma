@@ -3731,6 +3731,9 @@ function updateGradingLive(id, mcqScore, mcqTotal, writtenTotal, mcqWeight, writ
 }
 
 function doGrade(btn) {
+  // Disable ALL grade buttons on this card immediately to prevent double-grading
+  var card = btn.closest('[id^="gq-"]');
+  if (card) card.querySelectorAll('button').forEach(function(b){ b.disabled=true; });
   var d = btn.dataset;
   gradeSubmission(d.id, d.result, parseInt(d.mcq)||0, parseInt(d.mcqt)||0, parseInt(d.wt)||0,
     d.email, d.phone, d.name, parseInt(d.mod)||0, d.sid, d.cid);
