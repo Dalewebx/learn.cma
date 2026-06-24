@@ -1315,7 +1315,23 @@ async function loadAllData() {
         });
       });
     }
-    allApplications=apps; allStudents=studs; allProgress=prog; allAttempts=atts; allEnrolments=enrols||[];
+    // Deduplicate enrolments — keep most advanced status per student+course
+    var STATUS_RANK = {'exam_passed':5,'exam_failed':4,'exam_scheduled':3,'complete':2,'active':1};
+    var enrolSeen = {};
+    var enrolDeduped = [];
+    (enrols||[]).forEach(function(e) {
+      var key = e.student_id + '_' + (e.course_id||e.programme);
+      if (!enrolSeen[key]) {
+        enrolSeen[key] = e; enrolDeduped.push(e);
+      } else {
+        var existing = enrolSeen[key];
+        if ((STATUS_RANK[e.status]||0) > (STATUS_RANK[existing.status]||0)) {
+          var idx = enrolDeduped.indexOf(existing);
+          enrolDeduped[idx] = e; enrolSeen[key] = e;
+        }
+      }
+    });
+    allApplications=apps; allStudents=studs; allProgress=prog; allAttempts=atts; allEnrolments=enrolDeduped;
     cohortSettings=coh[0]||{name:'Cohort 1',deadline:'2026-07-13',pass_mark:70};
     // Load course content and update dynamic module/course counts
     await loadCourseContent();
