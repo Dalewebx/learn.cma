@@ -70,6 +70,46 @@ module.exports = async function handler(req, res) {
           module_index: moduleIndex,
           completed_at: new Date().toISOString()
         }).catch(() => {});
+
+        // Check if ALL modules are now complete → mark course as complete
+        try {
+          // Count total published modules in this course
+          const allModules = await db('course_content?course_id=eq.' + courseId + '&published=eq.true&select=module_index', 'GET');
+          const totalModules = allModules ? allModules.length : 0;
+
+          if (totalModules > 0) {
+            // Count distinct completed modules for this student
+            const completedRows = await db('progress?student_id=eq.' + studentId + '&course_id=eq.' + courseId + '&select=module_index', 'GET');
+            const completedIndices = [...new Set((completedRows || []).map(r => r.module_index))];
+
+            if (completedIndices.length >= totalModules) {
+              // All modules done — update enrolment to complete
+              await db('enrolments?student_id=eq.' + studentId + '&course_id=eq.' + courseId, 'PATCH', {
+                status: 'complete'
+              });
+
+              // Send course-completed email
+              if (studentEmail && studentName) {
+                const courseInfo = allModules && allModules[0] ? allModules[0] : {};
+                await fetch(process.env.VERCEL_URL
+                  ? 'https://' + process.env.VERCEL_URL + '/api/course-completed'
+                  : 'http://localhost:3000/api/course-completed', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    to: studentEmail,
+                    firstName: studentName.split(' ')[0],
+                    course: courseId,
+                    modules: totalModules,
+                    date: new Date().toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'})
+                  })
+                }).catch(() => {});
+              }
+            }
+          }
+        } catch(courseErr) {
+          console.warn('Course completion check failed:', courseErr.message);
+        }
       }
 
       // Send grade notification email
