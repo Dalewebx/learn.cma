@@ -3816,7 +3816,34 @@ async function gradeSubmission(id, result, mcqScore, mcqTotal, writtenTotal, ema
       card.style.opacity = '0.4';
       card.style.pointerEvents = 'none';
     }
-    setTimeout(async function(){ await loadAllData(); renderGrading(); updateBadges(); }, 1500);
+    setTimeout(async function(){
+      await loadAllData();
+      renderGrading();
+      updateBadges();
+
+      // Check if this course is now complete for this student
+      if (result === 'pass') {
+        var courseObj = cmCourses.find(function(c){ return c.id===courseId; });
+        var totalMods = courseObj ? (courseObj.modules||[]).filter(function(m){ return m.published!==false; }).length : 0;
+        var studentProgress = allProgress.filter(function(p){ return p.student_id===studentId&&p.course_id===courseId; });
+        var uniqueDone = studentProgress.map(function(p){return p.module_index;}).filter(function(v,i,a){return a.indexOf(v)===i;});
+        if (totalMods > 0 && uniqueDone.length >= totalMods) {
+          // All modules complete — mark enrolment and send email
+          fetch('/api/grading', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({
+              action: 'mark_course_complete',
+              studentId: studentId,
+              courseId: courseId,
+              studentEmail: email,
+              studentName: name,
+              courseName: courseObj ? courseObj.title : '',
+              totalModules: totalMods
+            })
+          }).then(function(){ loadAllData(); updateBadges(); }).catch(function(){});
+        }
+      }
+    }, 1500);
   } catch(e) { showToast('Error grading: '+e.message,'err'); }
 }
 
