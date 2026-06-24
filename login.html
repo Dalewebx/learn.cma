@@ -403,9 +403,16 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
 <!-- DASHBOARD -->
 <div class="screen" id="screen-dash">
   <div class="dash-header">
-    <div class="dash-eyebrow">Student Dashboard</div>
-    <div class="dash-name" id="dashName">Welcome back</div>
-    <div class="dash-sub" id="dashSub">Your enrolled course is ready. Continue where you left off.</div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div>
+        <div class="dash-eyebrow">Student Dashboard</div>
+        <div class="dash-name" id="dashName">Welcome back</div>
+        <div class="dash-sub" id="dashSub">Your enrolled course is ready. Continue where you left off.</div>
+      </div>
+      <button onclick="showAccountScreen()" style="background:none;border:none;cursor:pointer;padding:6px;border-radius:50%;display:flex;align-items:center;justify-content:center;width:38px;height:38px;background:rgba(255,255,255,0.15);flex-shrink:0;margin-top:4px;" title="My Account">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </button>
+    </div>
   </div>
   <div class="dash-body">
     <div id="dashAnnouncements" style="display:none;margin-bottom:24px;"></div>
@@ -637,6 +644,74 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
       <button class="btn btn-primary" id="downloadCardBtn" onclick="downloadCompletionCard()" style="background:var(--gold);color:var(--navy);">⬇ Download Card (PNG)</button>
       <button class="btn btn-secondary" onclick="goDash()">← Back to Dashboard</button>
     </div>
+  </div>
+</div>
+
+<!-- MY ACCOUNT SCREEN -->
+<div class="screen" id="screen-account">
+  <div class="dash-header">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div class="dash-eyebrow">My Account</div>
+        <div class="dash-name" style="font-size:20px;" id="acctName">Account Settings</div>
+      </div>
+      <button onclick="goDash()" style="background:rgba(255,255,255,0.15);border:none;color:white;border-radius:9px;padding:8px 14px;font-size:13px;font-family:inherit;font-weight:600;cursor:pointer;">← Dashboard</button>
+    </div>
+  </div>
+  <div class="dash-body">
+
+    <!-- Profile info (read-only) -->
+    <div style="background:white;border-radius:14px;padding:18px 20px;margin-bottom:16px;border:1.5px solid var(--border);">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:12px;">Your Details</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div><div style="font-size:11px;color:var(--muted);">Full Name</div><div style="font-size:14px;font-weight:600;color:var(--text);" id="acctFullName">—</div></div>
+        <div><div style="font-size:11px;color:var(--muted);">Email</div><div style="font-size:14px;font-weight:600;color:var(--text);" id="acctEmail">—</div></div>
+      </div>
+    </div>
+
+    <!-- Change password -->
+    <div style="background:white;border-radius:14px;padding:18px 20px;margin-bottom:16px;border:1.5px solid var(--border);">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:14px;">Change Password</div>
+      <div class="form-group">
+        <label class="form-label">Current Password</label>
+        <input class="form-input" type="password" id="acct_currentPw" placeholder="Your current password"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">New Password</label>
+        <input class="form-input" type="password" id="acct_newPw" placeholder="At least 8 characters"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm New Password</label>
+        <input class="form-input" type="password" id="acct_confirmPw" placeholder="Repeat new password"/>
+      </div>
+      <div id="acct_pwErr" style="display:none;background:#FEF2F2;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--danger);margin-bottom:12px;"></div>
+      <div id="acct_pwOk" style="display:none;background:#F0FDF4;border-radius:8px;padding:10px 14px;font-size:13px;color:#16A34A;margin-bottom:12px;">✓ Password changed successfully.</div>
+      <button class="btn btn-primary" onclick="changePortalPassword()">Update Password</button>
+    </div>
+
+    <!-- Security question -->
+    <div style="background:white;border-radius:14px;padding:18px 20px;margin-bottom:16px;border:1.5px solid var(--border);">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;">Security Question</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Used to verify your identity when recovering your password.</div>
+      <div class="form-group">
+        <label class="form-label">Security Question</label>
+        <select class="form-input" id="acct_secQ">
+          <option value="What is the name of your first primary school?">What is the name of your first primary school?</option>
+          <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+          <option value="What was the name of your first pet?">What was the name of your first pet?</option>
+          <option value="What is the name of the street you grew up on?">What is the name of the street you grew up on?</option>
+          <option value="What was your childhood nickname?">What was your childhood nickname?</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Answer</label>
+        <input class="form-input" type="text" id="acct_secA" placeholder="Answer (case-insensitive)"/>
+      </div>
+      <div id="acct_secErr" style="display:none;background:#FEF2F2;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--danger);margin-bottom:12px;"></div>
+      <div id="acct_secOk" style="display:none;background:#F0FDF4;border-radius:8px;padding:10px 14px;font-size:13px;color:#16A34A;margin-bottom:12px;">✓ Security question saved.</div>
+      <button class="btn btn-primary" onclick="saveSecurityQuestion()">Save Security Question</button>
+    </div>
+
   </div>
 </div>
 
@@ -1684,6 +1759,97 @@ function goDash() {
   showScreen('screen-dash');
   loadAnnouncements();
 }
+
+function showAccountScreen() {
+  showScreen('screen-account');
+  if (currentStudent) {
+    document.getElementById('acctName').textContent = currentStudent.first_name + ' ' + currentStudent.last_name;
+    document.getElementById('acctFullName').textContent = currentStudent.first_name + ' ' + currentStudent.last_name;
+    document.getElementById('acctEmail').textContent = currentStudent.email;
+    if (currentStudent.security_question) {
+      var sel = document.getElementById('acct_secQ');
+      for (var i=0;i<sel.options.length;i++) {
+        if (sel.options[i].value===currentStudent.security_question){sel.selectedIndex=i;break;}
+      }
+    }
+  }
+  ['acct_currentPw','acct_newPw','acct_confirmPw','acct_secA'].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.value='';
+  });
+  ['acct_pwErr','acct_pwOk','acct_secErr','acct_secOk'].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.style.display='none';
+  });
+}
+
+async function changePortalPassword() {
+  var currentPw=(document.getElementById('acct_currentPw').value||'').trim();
+  var newPw=(document.getElementById('acct_newPw').value||'').trim();
+  var confirmPw=(document.getElementById('acct_confirmPw').value||'').trim();
+  var errEl=document.getElementById('acct_pwErr');
+  var okEl=document.getElementById('acct_pwOk');
+  errEl.style.display='none';okEl.style.display='none';
+
+  if(!currentPw||!newPw||!confirmPw){errEl.textContent='Please fill in all password fields.';errEl.style.display='block';return;}
+  if(newPw.length<8){errEl.textContent='New password must be at least 8 characters.';errEl.style.display='block';return;}
+  if(newPw!==confirmPw){errEl.textContent='New passwords do not match.';errEl.style.display='block';return;}
+
+  try {
+    // Verify current password
+    var currentOk=false;
+    if(currentStudent.hash_version==='pbkdf2'&&currentStudent.salt){
+      var checkHash=await hashPasswordPBKDF2(currentPw,currentStudent.salt);
+      currentOk=checkHash===currentStudent.password_hash;
+    } else {
+      var legHash=await hashPasswordLegacy(currentPw);
+      currentOk=legHash===currentStudent.password_hash;
+    }
+    if(!currentOk){errEl.textContent='Current password is incorrect.';errEl.style.display='block';return;}
+
+    var newSalt=generateSalt();
+    var newHash=await hashPasswordPBKDF2(newPw,newSalt);
+
+    var res=await fetch(SUPA_URL+'/rest/v1/students?id=eq.'+currentStudent.id,{
+      method:'PATCH',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({password_hash:newHash,salt:newSalt,hash_version:'pbkdf2'})
+    });
+    if(!res.ok)throw new Error(await res.text());
+
+    currentStudent.password_hash=newHash;currentStudent.salt=newSalt;currentStudent.hash_version='pbkdf2';
+    ['acct_currentPw','acct_newPw','acct_confirmPw'].forEach(function(id){document.getElementById(id).value='';});
+    okEl.style.display='block';
+  } catch(e){errEl.textContent='Error: '+e.message;errEl.style.display='block';}
+}
+
+async function saveSecurityQuestion() {
+  var question=document.getElementById('acct_secQ').value;
+  var answer=(document.getElementById('acct_secA').value||'').trim().toLowerCase();
+  var errEl=document.getElementById('acct_secErr');
+  var okEl=document.getElementById('acct_secOk');
+  errEl.style.display='none';okEl.style.display='none';
+
+  if(!answer){errEl.textContent='Please enter your answer.';errEl.style.display='block';return;}
+
+  try {
+    // Hash answer with its own unique salt
+    var answerSalt=generateSalt();
+    var answerHash=await hashPasswordPBKDF2(answer,answerSalt);
+
+    var res=await fetch(SUPA_URL+'/rest/v1/students?id=eq.'+currentStudent.id,{
+      method:'PATCH',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({security_question:question,security_answer_hash:answerHash})
+    });
+    if(!res.ok)throw new Error(await res.text());
+
+    currentStudent.security_question=question;
+    currentStudent.security_answer_hash=answerHash;
+    document.getElementById('acct_secA').value='';
+    okEl.style.display='block';
+  } catch(e){errEl.textContent='Error: '+e.message;errEl.style.display='block';}
+}
+
+
 
 async function loadAnnouncements() {
   try {
