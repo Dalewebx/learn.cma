@@ -854,7 +854,7 @@ var ALL_DB_COURSES = []; // populated on login — used for "other courses" pane
 // Single source of truth. Fetches ALL published courses from course_content,
 // populates ALL_DB_COURSES for the "other courses" panel,
 // and returns the course + modules matching the student's enrolled programme.
-async function loadCourseAndModulesFromDB(programmeStr) {
+async function loadCourseAndModulesFromDB(programmeStr, courseId) {
   var result = { course: null, modules: [] };
   try {
     // Fetch cohort pass mark first — used for all module assessments
@@ -873,7 +873,18 @@ async function loadCourseAndModulesFromDB(programmeStr) {
     );
     if (!res.ok) throw new Error('fetch failed');
     var rows = await res.json();
-    if (!rows.length) throw new Error('no published content');
+    if (!rows || !rows.length) {
+      // No published content yet — show content coming soon
+      result.course = {
+        id: 'pending',
+        title: (programmeStr || 'Your Programme'),
+        code: programmeStr || '',
+        moduleCount: 0,
+        duration: 'Content being prepared'
+      };
+      result.modules = [];
+      return result;
+    }
 
     var prog = (programmeStr || '').trim();
 
@@ -912,6 +923,10 @@ async function loadCourseAndModulesFromDB(programmeStr) {
           matchedGroup = courseMap[courseOrder[j]]; break;
         }
       }
+    }
+    // Direct courseId match — most reliable, use when name matching fails
+    if (!matchedGroup && courseId && courseId !== 'null' && courseMap[courseId]) {
+      matchedGroup = courseMap[courseId];
     }
     if (!matchedGroup) {
       // Last resort: if only one course in DB, just use it
@@ -1069,8 +1084,7 @@ function renderDashboard() {
 }
 
 async function switchCourse(courseId, programme) {
-  // Load the selected course
-  var dbResult = await loadCourseAndModulesFromDB(programme);
+  var dbResult = await loadCourseAndModulesFromDB(programme, courseId);
   CURRENT_COURSE = dbResult.course;
   MODULES = dbResult.modules;
   await loadProgress();
@@ -1568,7 +1582,7 @@ async function doLogin() {
     // 7. Set state — load course + modules, enrolments and progress IN PARALLEL
     currentStudent = student;
     var [dbResult] = await Promise.all([
-      loadCourseAndModulesFromDB(student.programme),
+      loadCourseAndModulesFromDB(student.programme, (ALL_ENROLMENTS[0] && ALL_ENROLMENTS[0].course_id) || null),
       loadEnrolments(),
       loadProgress()
     ]);
@@ -2073,7 +2087,10 @@ function toggleAudioStrip(ti) {
   });
 
   // Show loading state
-  if (playBtn) { playBtn.style.background = 'var(--gold)'; playBtn.innerHTML = '<div style="font-size:10px;color:var(--navy);font-weight:700;">...</div>'; }
+  if (playBtn) {
+    playBtn.style.background = 'var(--gold)';
+    playBtn.innerHTML = '<div style="width:12px;height:12px;border:2px solid var(--navy);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div>';
+  }
 
   loadYTApiIfNeeded(function() {
     if (window._audioPlayers[ti]) {
@@ -2150,8 +2167,12 @@ function openMod(i) {
   timerDone = false; scrollDone = false;
   if (timerInterval) clearInterval(timerInterval);
   var m = MODULES[i];
-  PASS_MARK = m.passMark || PASS_MARK; // cohort standard — set on load
+  PASS_MARK = m.passMark || PASS_MARK;
   MAX_ATTEMPTS = m.maxAttempts || 0;
+  // Pre-load YouTube IFrame API if this module has audio tracks
+  if (m.audioTracks && m.audioTracks.length) {
+    loadYTApiIfNeeded(function(){});
+  }
   // Count existing attempts for this module from DB
   currentAttemptCount = 0;
   if (MAX_ATTEMPTS > 0 && currentStudent) {
