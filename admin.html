@@ -2784,19 +2784,15 @@ function renderCMEditor(courseId, modIdx, key, row) {
     +'<div style="font-size:11px;color:var(--muted);margin-top:3px;">0 = unlimited</div></div>'
     +'</div></div>'
     +'<div id="cm_qList"></div>'
-    +'<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">'
-    +'<button class="btn btn-ghost btn-sm" onclick="addCMQuestion(\'mcq\')">+ MCQ</button>'
-    +'<button class="btn btn-ghost btn-sm" onclick="addCMQuestion(\'short\')">+ Short Answer</button>'
-    +'<button class="btn btn-ghost btn-sm" onclick="addCMQuestion(\'essay\')">+ Essay</button>'
-    +'</div>'
+    +'<div id="cm_addQBtns" style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;"></div>'
     +'<div style="font-size:11px;color:var(--muted);margin-top:8px;">MCQ = auto-graded. Short Answer and Essay go to the Grading Queue for manual review.</div>'
     +'<div id="cmSaveMsg" style="display:none;background:var(--ok-light);border:1px solid #86EFAC;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--ok);margin-top:12px;"></div></div>'
 
     // SECTION 5: Downloads
     +'<div class="me-section"><div class="me-section-title">📥 05 — Downloadable Files</div>'
     +'<div id="cm_dlList">'+renderCMDownloads(downloads)+'</div>'
-    +'<button class="btn btn-ghost btn-sm" style="margin-top:6px;" onclick="addCMDownload()">+ Add File</button>'
-    +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">PDF handouts, sheet music, or other downloadable resources.</div></div>'
+    +'<button class="btn btn-ghost btn-sm" style="margin-top:6px;" onclick="uploadCMFile()">+ Upload File</button>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">Upload PDFs, sheet music, documents. Files are stored in Supabase and linked automatically.</div></div>'
     +'</div>';
 
   renderCMQuestions();
@@ -2869,15 +2865,76 @@ function removeCMAudioTrack(i) {
 
 // ── DOWNLOADS ─────────────────────────────────────────────────────────────────
 function renderCMDownloads(dls) {
-  if (!dls||!dls.length) return '<div style="font-size:13px;color:var(--dim);padding:4px 0;">No downloadable files added.</div>';
+  if (!dls||!dls.length) return '<div style="font-size:13px;color:var(--dim);padding:4px 0;">No files added.</div>';
   return dls.map(function(d,i){
-    return '<div class="dl-row" id="dlr-'+i+'">'
-      +'<input class="form-input" id="dl_name_'+i+'" value="'+(d.name||'')+'" placeholder="File name" style="padding:8px 11px;font-size:12px;"/>'
-      +'<input class="form-input" id="dl_url_'+i+'" value="'+(d.url||'')+'" placeholder="File URL" style="padding:8px 11px;font-size:12px;"/>'
-      +'<select class="form-select" id="dl_type_'+i+'" style="padding:8px 10px;font-size:12px;"><option value="pdf"'+(d.type==='pdf'?' selected':'')+'>PDF</option><option value="music"'+(d.type==='music'?' selected':'')+'>Music</option><option value="doc"'+(d.type==='doc'?' selected':'')+'>Doc</option></select>'
-      +'<input class="form-input" id="dl_size_'+i+'" value="'+(d.size||'')+'" placeholder="2 MB" style="padding:8px 11px;font-size:12px;"/>'
-      +'<button class="btn btn-danger btn-xs" onclick="removeCMDownload('+i+')" style="padding:7px 9px;">✕</button></div>';
+    return '<div class="dl-row" id="dlr-'+i+'" style="align-items:center;gap:8px;padding:10px;background:var(--surface);border-radius:10px;margin-bottom:8px;display:flex;flex-wrap:wrap;">'
+      +'<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">'
+      +'<div style="font-size:20px;">'+(d.type==='music'?'🎼':d.type==='doc'?'📝':'📄')+'</div>'
+      +'<div style="flex:1;min-width:0;">'
+      +'<div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+d.name+'</div>'
+      +'<div style="font-size:11px;color:var(--muted);">'+(d.size||'')+'</div>'
+      +'</div></div>'
+      +'<select class="form-select" id="dl_type_'+i+'" style="padding:6px 8px;font-size:12px;width:auto;"><option value="pdf"'+(d.type==='pdf'?' selected':'')+'>PDF</option><option value="music"'+(d.type==='music'?' selected':'')+'>Music</option><option value="doc"'+(d.type==='doc'?' selected':'')+'>Doc</option></select>'
+      +'<button class="btn btn-danger btn-xs" onclick="removeCMDownload('+i+')" style="padding:6px 8px;">✕</button>'
+      +'<input type="hidden" id="dl_name_'+i+'" value="'+escQ(d.name||'')+'"/>'
+      +'<input type="hidden" id="dl_url_'+i+'" value="'+escQ(d.url||'')+'"/>'
+      +'<input type="hidden" id="dl_size_'+i+'" value="'+escQ(d.size||'')+'"/>'
+      +'</div>';
   }).join('');
+}
+
+async function uploadCMFile() {
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.pdf,.doc,.docx,.ppt,.pptx,.mp3,.wav,.jpg,.jpeg,.png,.zip';
+  input.style.display = 'none';
+  document.body.appendChild(input);
+
+  input.onchange = async function() {
+    var file = input.files[0];
+    input.remove();
+    if (!file) return;
+
+    var uploadBtn = document.querySelector('[onclick="uploadCMFile()"]');
+    if (uploadBtn) { uploadBtn.disabled=true; uploadBtn.textContent='Uploading...'; }
+
+    try {
+      // Upload to Supabase Storage bucket "course-files"
+      var fileName = Date.now() + '-' + file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+      var res = await fetch(SUPA_URL+'/storage/v1/object/course-files/'+fileName, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPA_KEY,
+          'Authorization': 'Bearer '+SUPA_KEY,
+          'Content-Type': file.type || 'application/octet-stream',
+          'x-upsert': 'true'
+        },
+        body: file
+      });
+
+      if (!res.ok) {
+        var err = await res.text();
+        throw new Error('Upload failed: ' + err);
+      }
+
+      var publicUrl = SUPA_URL+'/storage/v1/object/public/course-files/'+fileName;
+      var sizeMB = file.size > 1024*1024 ? (file.size/1024/1024).toFixed(1)+' MB' : (file.size/1024).toFixed(0)+' KB';
+      var ext = file.name.split('.').pop().toLowerCase();
+      var type = ['mp3','wav','ogg','m4a'].includes(ext) ? 'music' : ['doc','docx','ppt','pptx'].includes(ext) ? 'doc' : 'pdf';
+
+      var dls = collectDownloads();
+      dls.push({name:file.name, url:publicUrl, type:type, size:sizeMB});
+      var el = document.getElementById('cm_dlList');
+      if (el) el.innerHTML = renderCMDownloads(dls);
+      showToast('✓ '+file.name+' uploaded');
+    } catch(e) {
+      showToast('Upload failed: '+e.message+'. Make sure the "course-files" bucket exists in Supabase Storage.','err');
+    } finally {
+      if (uploadBtn) { uploadBtn.disabled=false; uploadBtn.textContent='+ Upload File'; }
+    }
+  };
+
+  input.click();
 }
 function collectDownloads() {
   var rows = document.querySelectorAll('[id^="dlr-"]');
@@ -2911,9 +2968,40 @@ var Q_TYPE_COLORS = {mcq:'var(--navy-light)',short:'var(--gold-light)',essay:'#F
 
 function renderCMQuestions() {
   var el = document.getElementById('cm_qList');
+  var btnEl = document.getElementById('cm_addQBtns');
   if (!el) return;
+  var asmType = cmState.assessmentType || 'mcq';
+
+  // Filter questions to only those valid for this assessment type
+  // MCQ only: show only mcq questions
+  // Written only: show only short/essay questions
+  // Mixed: show all
+  var visibleQs = cmState.questions.filter(function(q) {
+    var qt = q.type || 'mcq';
+    if (asmType === 'mcq') return qt === 'mcq';
+    if (asmType === 'written') return qt === 'short' || qt === 'essay';
+    return true; // mixed: all
+  });
+
+  // If questions don't match type (e.g. switched from MCQ to Written), clear and add a default
+  if (visibleQs.length === 0) {
+    cmState.questions = [];
+    if (asmType === 'mcq') cmState.questions.push({type:'mcq',q:'',opts:['','','',''],ans:0,marks:1});
+    else if (asmType === 'written') cmState.questions.push({type:'short',q:'',guide:'',marks:10});
+    else { cmState.questions.push({type:'mcq',q:'',opts:['','','',''],ans:0,marks:1}); cmState.questions.push({type:'short',q:'',guide:'',marks:10}); }
+  }
+
   el.innerHTML = cmState.questions.map(function(q,i){ return buildCMQBlock(q,i); }).join('');
   cmState.questions.forEach(function(q,i){ if(q.type==='mcq'||!q.type) highlightCMCorrect(i); });
+
+  // Show only relevant add buttons
+  if (btnEl) {
+    var btns = '';
+    if (asmType === 'mcq' || asmType === 'mixed') btns += '<button class="btn btn-ghost btn-sm" onclick="addCMQuestion(\'mcq\')">+ MCQ Question</button>';
+    if (asmType === 'written' || asmType === 'mixed') btns += '<button class="btn btn-ghost btn-sm" onclick="addCMQuestion(\'short\')">+ Short Answer</button>';
+    if (asmType === 'written' || asmType === 'mixed') btns += '<button class="btn btn-ghost btn-sm" onclick="addCMQuestion(\'essay\')">+ Essay</button>';
+    btnEl.innerHTML = btns;
+  }
 }
 
 function buildCMQBlock(q,i) {
@@ -3064,19 +3152,21 @@ async function saveCMModule(key) {
     c.modules[modIdx] = {title:m.title, questions:cmState.questions.length, published:cmState.published};
     saveCourseLocally();
     renderCMSidebar();
+    // Scroll editor to top so save message is visible
+    var editorWrap = document.getElementById('cm-editor-wrap');
+    if (editorWrap) editorWrap.scrollTop = 0;
     var msg = document.getElementById('cmSaveMsg');
     if (msg) {
-      msg.textContent = cmState.published ? '✓ Saved and published. Students can access this module now.' : '✓ Saved as draft. Toggle Published when ready.';
+      msg.textContent = cmState.published ? '✓ Saved and published — students can access this module now.' : '✓ Saved as draft — toggle Published when ready for students.';
       msg.style.display = 'block';
-      setTimeout(function(){msg.style.display='none';},4000);
     }
+    showToast(cmState.published ? '✓ Module saved and published' : '✓ Module saved as draft', 'ok');
   } catch(e) {
-    // Fallback: save to localStorage if Supabase table doesn't exist yet
     cmContent[key] = row;
     c.modules[modIdx] = {title:m.title, questions:cmState.questions.length, published:cmState.published};
     saveCourseLocally();
     renderCMSidebar();
-    showToast('Saved locally (DB table not yet created)','warn');
+    showToast('Error saving to DB: '+e.message,'err');
   }
 }
 
