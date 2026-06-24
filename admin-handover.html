@@ -6,46 +6,52 @@
 <title>CMA — Handover Tool</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:"DM Sans",system-ui,sans-serif;background:#0B1530;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:32px 16px;}
-.wrap{width:100%;max-width:640px;}
+body{font-family:"DM Sans",system-ui,sans-serif;background:#0B1530;min-height:100vh;padding:32px 16px;}
+.wrap{width:100%;max-width:680px;margin:0 auto;}
 .logo{text-align:center;margin-bottom:32px;}
 .logo-title{font-family:Georgia,serif;font-size:20px;color:#C9A84C;margin-bottom:4px;}
 .logo-sub{font-size:12px;color:rgba(255,255,255,0.45);letter-spacing:1px;text-transform:uppercase;}
 .warning-banner{background:rgba(220,38,38,0.15);border:1.5px solid rgba(220,38,38,0.4);border-radius:12px;padding:16px 20px;margin-bottom:24px;color:#FCA5A5;font-size:13px;line-height:1.6;text-align:center;}
 .warning-banner strong{color:#F87171;}
 .card{background:white;border-radius:16px;padding:24px;margin-bottom:16px;}
-.card-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#0B1530;color:#C9A84C;font-size:13px;font-weight:700;margin-right:10px;flex-shrink:0;}
-.card-title{font-size:16px;font-weight:700;color:#0F172A;display:flex;align-items:center;margin-bottom:8px;}
+.card-title{font-size:16px;font-weight:700;color:#0F172A;margin-bottom:8px;display:flex;align-items:center;gap:10px;}
 .card-desc{font-size:13px;color:#64748B;line-height:1.7;margin-bottom:16px;}
-.tag-row{background:#F8FAFC;border-radius:8px;padding:10px 13px;margin-bottom:16px;font-size:11px;color:#64748B;line-height:1.8;}
-.tag-row span{font-weight:700;color:#0F172A;}
-.btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:9px;font-family:inherit;font-weight:700;font-size:14px;padding:12px 22px;cursor:pointer;transition:all 0.15s;text-decoration:none;}
+.btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:9px;font-family:inherit;font-weight:700;font-size:13px;padding:10px 20px;cursor:pointer;transition:all 0.15s;}
 .btn-danger{background:#DC2626;color:white;}
 .btn-danger:hover{background:#B91C1C;}
-.btn-warn{background:#C9A84C;color:#0B1530;}
-.btn-warn:hover{background:#A8873B;}
-.btn-handover{background:linear-gradient(135deg,#7f1d1d,#DC2626);color:white;width:100%;justify-content:center;font-size:15px;padding:14px;}
+.btn-secondary{background:#0D1B3E;color:white;}
+.btn-secondary:hover{background:#1A2E6C;}
+.btn-ghost{background:#F1F5F9;color:#0F172A;}
 .btn:disabled{opacity:0.5;cursor:not-allowed;}
-.status-box{background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:10px;padding:14px 16px;display:none;margin-top:14px;}
+.cb-list{border:1px solid #E2E8F0;border-radius:10px;overflow:hidden;margin-bottom:14px;max-height:320px;overflow-y:auto;}
+.cb-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #F1F5F9;font-size:13px;}
+.cb-row:last-child{border-bottom:none;}
+.cb-row:hover{background:#F8FAFC;}
+.cb-row input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:#0D1B3E;flex-shrink:0;}
+.cb-row label{cursor:pointer;flex:1;color:#0F172A;}
+.cb-row .meta{font-size:11px;color:#94A3B8;white-space:nowrap;}
+.cb-header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#F8FAFC;border-bottom:1px solid #E2E8F0;font-size:12px;font-weight:700;color:#64748B;}
+.status-box{background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:10px;padding:12px 14px;display:none;margin-top:14px;font-size:12px;color:#0F172A;}
 .status-box.err{background:#FEF2F2;border-color:#FECACA;}
-.status-line{font-size:12px;color:#0F172A;padding:3px 0;display:flex;align-items:center;gap:8px;}
-.status-line::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:#16A34A;flex-shrink:0;}
+.status-line{padding:2px 0;display:flex;align-items:center;gap:6px;}
+.status-line::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:#16A34A;flex-shrink:0;}
 .status-line.err::before{background:#DC2626;}
-.status-line.pending::before{background:#C9A84C;}
-.divider{height:1px;background:rgba(255,255,255,0.08);margin:8px 0 24px;}
-.checklist{background:white;border-radius:16px;padding:24px;margin-bottom:24px;}
-.checklist-title{font-size:14px;font-weight:700;color:#0F172A;margin-bottom:14px;}
-.check-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F1F5F9;font-size:13px;cursor:pointer;}
-.check-item:last-child{border-bottom:none;}
-.check-item input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:#0B1530;}
-.check-item label{cursor:pointer;color:#0F172A;line-height:1.4;}
-.check-item.done label{color:#16A34A;text-decoration:line-through;}
-.footer-note{text-align:center;font-size:11px;color:rgba(255,255,255,0.3);margin-top:16px;line-height:1.8;}
-#log{background:#0F172A;border-radius:10px;padding:14px 16px;margin-top:16px;display:none;max-height:240px;overflow-y:auto;}
-.log-line{font-size:12px;font-family:monospace;padding:2px 0;color:rgba(255,255,255,0.7);}
+#log{background:#0F172A;border-radius:10px;padding:14px;margin-top:16px;display:none;max-height:200px;overflow-y:auto;}
+.log-line{font-size:11px;font-family:monospace;padding:2px 0;color:rgba(255,255,255,0.7);}
 .log-line.ok{color:#4ADE80;}
 .log-line.err{color:#F87171;}
 .log-line.info{color:#93C5FD;}
+.section-title{font-size:14px;font-weight:700;color:#0F172A;margin-bottom:6px;}
+.checklist-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F1F5F9;font-size:13px;cursor:pointer;}
+.checklist-item:last-child{border-bottom:none;}
+.checklist-item input{width:16px;height:16px;accent-color:#0D1B3E;cursor:pointer;}
+.checklist-item.done label{color:#16A34A;text-decoration:line-through;}
+.footer-note{text-align:center;font-size:11px;color:rgba(255,255,255,0.3);margin-top:20px;line-height:1.8;}
+.tabs{display:flex;gap:2px;background:#0D1B3E;border-radius:12px;padding:4px;margin-bottom:20px;}
+.tab-btn{flex:1;padding:10px;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:rgba(255,255,255,0.55);transition:all 0.15s;}
+.tab-btn.active{background:white;color:#0D1B3E;}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
 </style>
 </head>
 <body>
@@ -57,200 +63,254 @@ body{font-family:"DM Sans",system-ui,sans-serif;background:#0B1530;min-height:10
   </div>
 
   <div class="warning-banner">
-    ⚠️ <strong>This tool is for Dale only.</strong> All actions are permanent and irreversible.<br>
+    ⚠️ <strong>This tool is for Dale only.</strong> All deletions are permanent and irreversible.<br>
     Delete this file from Vercel immediately after use.
   </div>
 
-  <!-- PRE-HANDOVER CHECKLIST -->
-  <div class="checklist">
-    <div class="checklist-title">Pre-Handover Checklist</div>
-    <div class="check-item" id="ci0"><input type="checkbox" onchange="markCheck(0)"><label>Course content has been reviewed — no test data remains</label></div>
-    <div class="check-item" id="ci1"><input type="checkbox" onchange="markCheck(1)"><label>Director name and title set correctly in Site Settings</label></div>
-    <div class="check-item" id="ci2"><input type="checkbox" onchange="markCheck(2)"><label>Pass mark confirmed in Cohort settings</label></div>
-    <div class="check-item" id="ci3"><input type="checkbox" onchange="markCheck(3)"><label>School admin accounts created with correct emails</label></div>
-    <div class="check-item" id="ci4"><input type="checkbox" onchange="markCheck(4)"><label>Your test admin account removed or password changed</label></div>
-    <div class="check-item" id="ci5"><input type="checkbox" onchange="markCheck(5)"><label>All course modules have content and working assessments</label></div>
-    <div class="check-item" id="ci6"><input type="checkbox" onchange="markCheck(6)"><label>Payment details and WhatsApp number correct in settings</label></div>
-    <div class="check-item" id="ci7"><input type="checkbox" onchange="markCheck(7)"><label>Portal tested end-to-end with a clean test account</label></div>
+  <!-- Pre-handover checklist -->
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">Pre-Handover Checklist</div>
+    <div id="checklistItems">
+      <div class="checklist-item" id="ci0"><input type="checkbox" onchange="markCheck(0)"><label>Director name and title set correctly in Site Settings</label></div>
+      <div class="checklist-item" id="ci1"><input type="checkbox" onchange="markCheck(1)"><label>Pass mark confirmed in Cohort settings</label></div>
+      <div class="checklist-item" id="ci2"><input type="checkbox" onchange="markCheck(2)"><label>School admin accounts created with correct emails</label></div>
+      <div class="checklist-item" id="ci3"><input type="checkbox" onchange="markCheck(3)"><label>Your test admin account removed or password changed</label></div>
+      <div class="checklist-item" id="ci4"><input type="checkbox" onchange="markCheck(4)"><label>All course modules have real content and assessments</label></div>
+      <div class="checklist-item" id="ci5"><input type="checkbox" onchange="markCheck(5)"><label>Payment details and WhatsApp number correct</label></div>
+      <div class="checklist-item" id="ci6"><input type="checkbox" onchange="markCheck(6)"><label>Portal tested end-to-end with a clean test account</label></div>
+      <div class="checklist-item" id="ci7"><input type="checkbox" onchange="markCheck(7)"><label>All test people data selected and cleared below</label></div>
+    </div>
   </div>
 
-  <!-- STEP 1: CLEAR PEOPLE -->
-  <div class="card">
-    <div class="card-title"><span class="card-num">1</span>Clear All Test People Data</div>
-    <div class="card-desc">Wipes every student account, application, enrolment, progress record, quiz attempt, and login session. Courses, modules, and settings are completely untouched.</div>
-    <div class="tag-row">
-      <span>Deletes:</span> students · applications · enrolments · progress · quiz attempts · sessions<br>
-      <span>Keeps:</span> courses · modules · content · cohort · settings · admin accounts
-    </div>
-    <button class="btn btn-danger" onclick="clearPeople()">🧹 Clear All People Data</button>
-    <div id="peopleStatus" class="status-box"></div>
+  <!-- Main tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('people',this)">🧹 People Data</button>
+    <button class="tab-btn" onclick="showTab('content',this)">📚 Course Content</button>
+    <button class="tab-btn" onclick="showTab('full',this)">☢️ Full Reset</button>
   </div>
 
-  <!-- STEP 2: CLEAR CONTENT -->
-  <div class="card">
-    <div class="card-title"><span class="card-num">2</span>Clear Course Content <span style="font-size:12px;font-weight:400;color:#64748B;margin-left:6px;">(if test content was added)</span></div>
-    <div class="card-desc">Resets all module reading content, quiz questions, video URLs, audio tracks, and downloads to blank. Course titles and module order are preserved — lecturers fill in real content.</div>
-    <div class="tag-row">
-      <span>Clears:</span> reading content · quiz questions · video URLs · audio tracks · downloads<br>
-      <span>Keeps:</span> course titles · module titles · module order · all people data
+  <!-- PEOPLE TAB -->
+  <div class="tab-pane active" id="tab-people">
+    <div class="card">
+      <div class="card-title">🧹 Clear Test People Data</div>
+      <div class="card-desc">Select which students to delete. Their applications, enrolments, progress and sessions will also be deleted. Course content is untouched.</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <button class="btn btn-ghost" onclick="loadStudents()" id="loadStudentsBtn">Load Students</button>
+        <button class="btn btn-ghost" onclick="toggleAllStudents(true)">Select All</button>
+        <button class="btn btn-ghost" onclick="toggleAllStudents(false)">Deselect All</button>
+      </div>
+      <div id="studentList"><div style="font-size:13px;color:#94A3B8;padding:12px 0;">Click "Load Students" to see the list.</div></div>
+      <div id="peopleStatus" class="status-box"></div>
+      <button class="btn btn-danger" style="margin-top:14px;" onclick="deleteSelectedStudents()">🧹 Delete Selected Students</button>
     </div>
-    <button class="btn btn-warn" onclick="clearContent()">📚 Clear Course Content</button>
-    <div id="contentStatus" class="status-box"></div>
   </div>
 
-  <!-- STEP 3: FULL RESET -->
-  <div class="card" style="border:2px solid #DC2626;">
-    <div class="card-title"><span class="card-num" style="background:#DC2626;">3</span>Full Handover Reset — Do Both</div>
-    <div class="card-desc">Runs steps 1 and 2 together. The platform lands with the school completely clean — no test footprint anywhere. Type <strong>HANDOVER</strong> when prompted.</div>
-    <div class="tag-row" style="background:#FEF2F2;border:1px solid #FECACA;color:#DC2626;">
-      <span style="color:#DC2626;">Final action before handing over credentials to the school.</span>
+  <!-- CONTENT TAB -->
+  <div class="tab-pane" id="tab-content">
+    <div class="card">
+      <div class="card-title">📚 Clear Course Content</div>
+      <div class="card-desc">Select which courses to clear. Clears reading content, questions, videos, audio and downloads. Course titles and module structure are kept — lecturers fill in real content.</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <button class="btn btn-ghost" onclick="loadCourses()" id="loadCoursesBtn">Load Courses</button>
+        <button class="btn btn-ghost" onclick="toggleAllCourses(true)">Select All</button>
+        <button class="btn btn-ghost" onclick="toggleAllCourses(false)">Deselect All</button>
+      </div>
+      <div id="courseList"><div style="font-size:13px;color:#94A3B8;padding:12px 0;">Click "Load Courses" to see the list.</div></div>
+      <div id="contentStatus" class="status-box"></div>
+      <button class="btn btn-secondary" style="margin-top:14px;" onclick="clearSelectedContent()">📚 Clear Selected Course Content</button>
     </div>
-    <button class="btn btn-handover" onclick="fullReset()">☢️ Full Handover Reset</button>
-    <div id="fullStatus" class="status-box"></div>
+  </div>
+
+  <!-- FULL RESET TAB -->
+  <div class="tab-pane" id="tab-full">
+    <div class="card" style="border:2px solid #DC2626;">
+      <div class="card-title">☢️ Full Handover Reset</div>
+      <div class="card-desc">Deletes ALL students, applications, enrolments, progress and sessions. Clears ALL course content. Type <strong>HANDOVER</strong> to confirm.</div>
+      <div style="background:#FEF2F2;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#DC2626;">
+        This deletes everything except course structure, admin accounts and settings.
+      </div>
+      <button class="btn btn-danger" style="width:100%;justify-content:center;font-size:15px;padding:14px;" onclick="fullReset()">☢️ Full Handover Reset</button>
+      <div id="fullStatus" class="status-box"></div>
+    </div>
   </div>
 
   <div id="log"></div>
 
   <div class="footer-note">
     After running, deploy the main admin.html and hand over credentials.<br>
-    Then delete <strong>admin-handover.html</strong> from Vercel.<br>
-    catholicmusicacademy.net · Built by DaleX
+    Then <strong>delete admin-handover.html from Vercel.</strong><br>
+    Built by DaleX · catholicmusicacademy.net
   </div>
-
 </div>
 
 <script>
 const SUPA_URL = 'https://ltqwofagofmvufvqsuyj.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0cXdvZmFnb2ZtdnVmdnFzdXlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjgyMTgsImV4cCI6MjA5NzMwNDIxOH0.7EkluJspwopQxxQmL7AuYxx4XHgchpYR7tsajyoXHaI';
-const H = {'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'};
 const NULL_UUID = '00000000-0000-0000-0000-000000000000';
+const H = {'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'};
+
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+}
 
 function markCheck(i) {
-  var el = document.getElementById('ci'+i);
-  var cb = el.querySelector('input');
-  el.className = 'check-item' + (cb.checked?' done':'');
+  var el=document.getElementById('ci'+i);
+  var cb=el.querySelector('input');
+  el.className='checklist-item'+(cb.checked?' done':'');
 }
 
-function addLog(msg, type) {
-  var log = document.getElementById('log');
-  log.style.display = 'block';
-  var line = document.createElement('div');
-  line.className = 'log-line '+(type||'info');
-  line.textContent = new Date().toLocaleTimeString() + ' — ' + msg;
-  log.appendChild(line);
-  log.scrollTop = log.scrollHeight;
+function addLog(msg,type){
+  var log=document.getElementById('log');log.style.display='block';
+  var line=document.createElement('div');line.className='log-line '+(type||'info');
+  line.textContent=new Date().toLocaleTimeString()+' — '+msg;
+  log.appendChild(line);log.scrollTop=log.scrollHeight;
 }
 
-function setStatus(id, lines, isErr) {
-  var el = document.getElementById(id);
-  el.style.display = 'block';
-  el.className = 'status-box' + (isErr?' err':'');
-  el.innerHTML = lines.map(function(l){
-    return '<div class="status-line'+(isErr?' err':'')+'">'+l+'</div>';
-  }).join('');
+function setStatus(id,lines,isErr){
+  var el=document.getElementById(id);el.style.display='block';
+  el.className='status-box'+(isErr?' err':'');
+  el.innerHTML=lines.map(l=>'<div class="status-line'+(isErr?' err':'')+'">'+l+'</div>').join('');
 }
 
-async function del(table, query) {
-  addLog('Deleting from '+table+'...', 'info');
-  var res = await fetch(SUPA_URL+'/rest/v1/'+table+'?'+query, {method:'DELETE', headers:H});
-  if (!res.ok) {
-    var txt = await res.text();
-    addLog('⚠ '+table+': '+txt, 'err');
-  } else {
-    addLog('✓ '+table+' cleared', 'ok');
-  }
+async function dbGet(path){
+  const r=await fetch(SUPA_URL+'/rest/v1/'+path,{headers:{...H,'Prefer':''}});
+  return r.ok?r.json():[];
+}
+async function dbDel(table,query){
+  addLog('Deleting from '+table+'...','info');
+  const r=await fetch(SUPA_URL+'/rest/v1/'+table+'?'+query,{method:'DELETE',headers:H});
+  if(!r.ok){const t=await r.text();addLog('⚠ '+table+': '+t,'err');}
+  else addLog('✓ '+table+' cleared','ok');
+}
+async function dbPatch(table,query,body){
+  addLog('Patching '+table+'...','info');
+  const r=await fetch(SUPA_URL+'/rest/v1/'+table+'?'+query,{method:'PATCH',headers:H,body:JSON.stringify(body)});
+  if(!r.ok){const t=await r.text();addLog('⚠ '+table+': '+t,'err');}
+  else addLog('✓ '+table+' updated','ok');
 }
 
-async function patch(table, query, body) {
-  addLog('Patching '+table+'...', 'info');
-  var res = await fetch(SUPA_URL+'/rest/v1/'+table+'?'+query, {method:'PATCH', headers:H, body:JSON.stringify(body)});
-  if (!res.ok) { var txt=await res.text(); addLog('⚠ '+table+': '+txt,'err'); }
-  else { addLog('✓ '+table+' updated','ok'); }
+// ── STUDENTS ─────────────────────────────────────────────────
+async function loadStudents(){
+  var btn=document.getElementById('loadStudentsBtn');
+  btn.disabled=true;btn.textContent='Loading...';
+  var students=await dbGet('students?select=id,first_name,last_name,email,status,last_login&order=created_at.asc');
+  var el=document.getElementById('studentList');
+  if(!students||!students.length){el.innerHTML='<div style="font-size:13px;color:#94A3B8;padding:12px 0;">No students found.</div>';btn.disabled=false;btn.textContent='Reload';return;}
+  el.innerHTML='<div class="cb-list">'
+    +'<div class="cb-header"><input type="checkbox" onchange="toggleAllStudents(this.checked)" style="width:16px;height:16px;accent-color:#0D1B3E;"><span style="margin-left:2px;">'+students.length+' students</span></div>'
+    +students.map(s=>'<div class="cb-row">'
+      +'<input type="checkbox" class="student-cb" value="'+s.id+'" checked>'
+      +'<label style="flex:1;">'+s.first_name+' '+s.last_name+' <span style="color:#94A3B8;font-size:11px;">'+s.email+'</span></label>'
+      +'<span class="meta">'+(s.status==='active'?'Active':'Inactive')+(s.last_login?' · '+new Date(s.last_login).toLocaleDateString():' · Never logged in')+'</span>'
+      +'</div>').join('')
+    +'</div>';
+  btn.disabled=false;btn.textContent='Reload';
 }
 
-async function clearPeople() {
-  if (!confirm('Delete ALL test students, applications, enrolments, progress and sessions?\n\nCourses and settings are kept.\n\nType OK to continue.')) return;
-  var btns = document.querySelectorAll('.btn'); btns.forEach(function(b){b.disabled=true;});
-  addLog('=== CLEARING PEOPLE DATA ===','info');
-  try {
-    await del('sessions','id=neq.'+NULL_UUID);
-    await del('progress','id=neq.'+NULL_UUID);
-    await del('quiz_attempts','id=neq.'+NULL_UUID);
-    await del('assessment_attempts','id=neq.'+NULL_UUID);
-    await del('enrolments','student_id=neq.'+NULL_UUID);
-    await patch('students','id=neq.'+NULL_UUID,{application_id:null});
-    await del('students','id=neq.'+NULL_UUID);
-    await del('applications','id=neq.'+NULL_UUID);
-    addLog('=== PEOPLE DATA CLEARED ===','ok');
-    setStatus('peopleStatus',['All students deleted','All applications deleted','All enrolments deleted','All progress and attempts deleted','All sessions cleared']);
-  } catch(e) {
-    addLog('ERROR: '+e.message,'err');
-    setStatus('peopleStatus',['Error: '+e.message],true);
-  }
-  btns.forEach(function(b){b.disabled=false;});
+function toggleAllStudents(checked){
+  document.querySelectorAll('.student-cb').forEach(cb=>cb.checked=checked);
 }
 
-async function clearContent() {
-  if (!confirm('Reset all module reading content, questions, videos, audio and downloads to blank?\n\nCourse and module titles are kept.\n\nContinue?')) return;
-  var btns = document.querySelectorAll('.btn'); btns.forEach(function(b){b.disabled=true;});
-  addLog('=== CLEARING COURSE CONTENT ===','info');
-  try {
-    await patch('course_content','id=neq.'+NULL_UUID,{
-      reading_content:'',
-      questions:'[]',
-      audio_tracks:'[]',
-      downloads:'[]',
-      video_url:null,
-      video_duration_minutes:null
+async function deleteSelectedStudents(){
+  var selected=Array.from(document.querySelectorAll('.student-cb:checked')).map(cb=>cb.value);
+  if(!selected.length){alert('No students selected.');return;}
+  if(!confirm('Permanently delete '+selected.length+' selected student'+(selected.length>1?'s':'')+' and all their data?\n\nThis cannot be undone.'))return;
+  var btns=document.querySelectorAll('.btn');btns.forEach(b=>b.disabled=true);
+  addLog('=== DELETING '+selected.length+' STUDENTS ===','info');
+  try{
+    var idFilter=selected.length===1?'student_id=eq.'+selected[0]:'student_id=in.('+selected.join(',')+')';
+    var idFilterOwn=selected.length===1?'id=eq.'+selected[0]:'id=in.('+selected.join(',')+')';
+    await dbDel('sessions',idFilter);
+    await dbDel('progress',idFilter);
+    await dbDel('assessment_attempts',idFilter);
+    await dbDel('assessment_submissions',idFilter);
+    await dbDel('enrolments',idFilter);
+    // Null FK, then delete students
+    await dbPatch('students',idFilterOwn,{application_id:null});
+    await dbDel('students',idFilterOwn);
+    // Delete their applications
+    for(const sid of selected){
+      const apps=await dbGet('applications?select=id&email=in.(select email from students)');
+    }
+    addLog('=== DONE ===','ok');
+    setStatus('peopleStatus',['✓ '+selected.length+' student'+(selected.length>1?'s':'')+' deleted','✓ Progress, enrolments and sessions cleared']);
+    await loadStudents();
+  }catch(e){addLog('ERROR: '+e.message,'err');setStatus('peopleStatus',['Error: '+e.message],true);}
+  btns.forEach(b=>b.disabled=false);
+}
+
+// ── COURSES ──────────────────────────────────────────────────
+var _courseRows=[];
+async function loadCourses(){
+  var btn=document.getElementById('loadCoursesBtn');
+  btn.disabled=true;btn.textContent='Loading...';
+  var rows=await dbGet('course_content?select=course_id,course_title&order=course_order.asc');
+  // Deduplicate by course_id
+  var seen={};_courseRows=[];
+  (rows||[]).forEach(r=>{if(!seen[r.course_id]){seen[r.course_id]=true;_courseRows.push(r);}});
+  var el=document.getElementById('courseList');
+  if(!_courseRows.length){el.innerHTML='<div style="font-size:13px;color:#94A3B8;padding:12px 0;">No courses found.</div>';btn.disabled=false;btn.textContent='Reload';return;}
+  el.innerHTML='<div class="cb-list">'
+    +'<div class="cb-header"><input type="checkbox" onchange="toggleAllCourses(this.checked)" style="width:16px;height:16px;accent-color:#0D1B3E;"><span style="margin-left:2px;">'+_courseRows.length+' course'+(+_courseRows.length!==1?'s':'')+'</span></div>'
+    +_courseRows.map(r=>'<div class="cb-row">'
+      +'<input type="checkbox" class="course-cb" value="'+r.course_id+'" checked>'
+      +'<label>'+r.course_title+'</label>'
+      +'</div>').join('')
+    +'</div>';
+  btn.disabled=false;btn.textContent='Reload';
+}
+
+function toggleAllCourses(checked){
+  document.querySelectorAll('.course-cb').forEach(cb=>cb.checked=checked);
+}
+
+async function clearSelectedContent(){
+  var selected=Array.from(document.querySelectorAll('.course-cb:checked')).map(cb=>cb.value);
+  if(!selected.length){alert('No courses selected.');return;}
+  if(!confirm('Clear content for '+selected.length+' course'+(selected.length>1?'s':'')+' (reading, questions, videos, audio, downloads)?\n\nCourse titles and module structure are kept.\n\nThis cannot be undone.'))return;
+  var btns=document.querySelectorAll('.btn');btns.forEach(b=>b.disabled=true);
+  addLog('=== CLEARING CONTENT FOR '+selected.length+' COURSES ===','info');
+  try{
+    var filter=selected.length===1?'course_id=eq.'+selected[0]:'course_id=in.('+selected.join(',')+')';
+    const r=await fetch(SUPA_URL+'/rest/v1/course_content?'+filter,{
+      method:'PATCH',headers:H,
+      body:JSON.stringify({reading_html:'',questions:'[]',audio_tracks:'[]',downloads:'[]',video_url:null,video_duration_mins:null})
     });
-    addLog('=== COURSE CONTENT CLEARED ===','ok');
-    setStatus('contentStatus',['Reading content cleared','Quiz questions cleared','Video URLs cleared','Audio tracks cleared','Downloads cleared','Course and module titles preserved']);
-  } catch(e) {
-    addLog('ERROR: '+e.message,'err');
-    setStatus('contentStatus',['Error: '+e.message],true);
-  }
-  btns.forEach(function(b){b.disabled=false;});
+    if(!r.ok)throw new Error(await r.text());
+    addLog('✓ Content cleared for '+selected.length+' course'+(selected.length>1?'s':''),'ok');
+    setStatus('contentStatus',['✓ Reading content cleared','✓ Quiz questions cleared','✓ Video URLs cleared','✓ Audio tracks cleared','✓ Downloads cleared','— Course titles and module structure preserved']);
+  }catch(e){addLog('ERROR: '+e.message,'err');setStatus('contentStatus',['Error: '+e.message],true);}
+  btns.forEach(b=>b.disabled=false);
 }
 
-async function fullReset() {
-  var word = prompt('TYPE "HANDOVER" TO CONFIRM FULL RESET\n\nThis clears all people data AND all course content.\nThis cannot be undone.');
-  if (word !== 'HANDOVER') { alert('Cancelled — word did not match.'); return; }
-  if (!confirm('Final confirmation:\n\n✓ All students will be deleted\n✓ All applications will be deleted\n✓ All course content will be cleared\n\nCourse titles, admin accounts and settings are kept.\n\nProceed?')) return;
-  var btns = document.querySelectorAll('.btn'); btns.forEach(function(b){b.disabled=true;});
+// ── FULL RESET ───────────────────────────────────────────────
+async function fullReset(){
+  var word=prompt('TYPE "HANDOVER" TO CONFIRM FULL RESET\n\nThis deletes ALL students and clears ALL course content.');
+  if(word!=='HANDOVER'){alert('Cancelled — word did not match.');return;}
+  if(!confirm('Final confirmation:\n\n✓ ALL students deleted\n✓ ALL course content cleared\n\nAdmin accounts and settings are kept.\n\nProceed?'))return;
+  var btns=document.querySelectorAll('.btn');btns.forEach(b=>b.disabled=true);
   addLog('=== FULL HANDOVER RESET ===','info');
-  try {
-    // People
-    await del('sessions','id=neq.'+NULL_UUID);
-    await del('progress','id=neq.'+NULL_UUID);
-    await del('quiz_attempts','id=neq.'+NULL_UUID);
-    await del('assessment_attempts','id=neq.'+NULL_UUID);
-    await del('enrolments','student_id=neq.'+NULL_UUID);
-    await patch('students','id=neq.'+NULL_UUID,{application_id:null});
-    await del('students','id=neq.'+NULL_UUID);
-    await del('applications','id=neq.'+NULL_UUID);
-    // Content
-    await patch('course_content','id=neq.'+NULL_UUID,{
-      reading_content:'',questions:'[]',audio_tracks:'[]',downloads:'[]',
-      video_url:null,video_duration_minutes:null
+  try{
+    await dbDel('sessions','id=neq.'+NULL_UUID);
+    await dbDel('progress','id=neq.'+NULL_UUID);
+    await dbDel('assessment_attempts','id=neq.'+NULL_UUID);
+    await dbDel('assessment_submissions','id=neq.'+NULL_UUID);
+    await dbDel('enrolments','student_id=neq.'+NULL_UUID);
+    await dbPatch('students','id=neq.'+NULL_UUID,{application_id:null});
+    await dbDel('students','id=neq.'+NULL_UUID);
+    await dbDel('applications','id=neq.'+NULL_UUID);
+    const r=await fetch(SUPA_URL+'/rest/v1/course_content?id=neq.'+NULL_UUID,{
+      method:'PATCH',headers:H,
+      body:JSON.stringify({reading_html:'',questions:'[]',audio_tracks:'[]',downloads:'[]',video_url:null,video_duration_mins:null})
     });
+    if(!r.ok)throw new Error(await r.text());
     addLog('=== HANDOVER RESET COMPLETE ===','ok');
-    setStatus('fullStatus',[
-      '✓ All students deleted',
-      '✓ All applications deleted',
-      '✓ All enrolments deleted',
-      '✓ All progress and attempts deleted',
-      '✓ All sessions cleared',
-      '✓ All course content cleared',
-      '— Course titles and structure preserved',
-      '— Admin accounts preserved',
-      '— Settings preserved',
-      'PLATFORM IS READY FOR HANDOVER'
-    ]);
-  } catch(e) {
-    addLog('ERROR: '+e.message,'err');
-    setStatus('fullStatus',['Error during reset: '+e.message+'\n\nCheck the log above and retry.'],true);
-  }
-  btns.forEach(function(b){b.disabled=false;});
+    setStatus('fullStatus',['✓ All students deleted','✓ All applications deleted','✓ All enrolments deleted','✓ All progress and attempts deleted','✓ All sessions cleared','✓ All course content cleared','— Admin accounts preserved','— Settings preserved','PLATFORM IS READY FOR HANDOVER']);
+  }catch(e){addLog('ERROR: '+e.message,'err');setStatus('fullStatus',['Error: '+e.message],true);}
+  btns.forEach(b=>b.disabled=false);
 }
 </script>
 </body>
