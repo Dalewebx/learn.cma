@@ -183,6 +183,55 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
+    // ── MARK COURSE COMPLETE ─────────────────────────────────
+    if (action === 'mark_course_complete') {
+      const { studentId, courseId, studentEmail, studentName, courseName, totalModules } = req.body;
+      if (!studentId || !courseId) return res.status(400).json({ error: 'Student ID and course ID required' });
+
+      await db('enrolments?student_id=eq.' + studentId + '&course_id=eq.' + courseId, 'PATCH', {
+        status: 'complete'
+      });
+
+      // Send course completion email
+      if (studentEmail && studentName && RESEND_KEY) {
+        const firstName = studentName.split(' ')[0];
+        const mods = totalModules || '?';
+        const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"/></head>
+<body style="margin:0;padding:0;background:#F7F7F5;font-family:Arial,sans-serif;">
+<div style="max-width:560px;margin:32px auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+  <div style="background:linear-gradient(135deg,#0D1B3E,#1A2E6C);padding:40px 32px;text-align:center;">
+    <div style="font-size:48px;margin-bottom:12px;">🎓</div>
+    <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#C9A84C;margin-bottom:8px;">Catholic Music Academy</div>
+    <div style="font-size:26px;font-weight:700;color:white;line-height:1.2;">Congratulations, ${firstName}!</div>
+  </div>
+  <div style="background:linear-gradient(135deg,#C9A84C,#9A7A2E);padding:12px 32px;text-align:center;">
+    <div style="font-size:13px;font-weight:700;color:white;">You have completed all online modules</div>
+  </div>
+  <div style="padding:32px;">
+    <p style="font-size:15px;color:#0F172A;line-height:1.7;margin-bottom:20px;">Dear <strong>${firstName}</strong>, you have successfully completed all <strong>${mods} modules</strong> of <strong>${courseName||'your programme'}</strong>.</p>
+    <div style="background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:12px;padding:18px 22px;margin-bottom:24px;">
+      <div style="font-size:13px;font-weight:700;color:#16A34A;margin-bottom:6px;">What happens next</div>
+      <div style="font-size:13px;color:#0F172A;line-height:1.7;">Your completion has been recorded. The Academy will contact you to schedule your final in-person examination. Upon passing, you will receive your Certificate of Competence.</div>
+    </div>
+    <div style="text-align:center;margin:28px 0;"><a href="https://catholicmusicacademy.net/portal" style="display:inline-block;background:#C9A84C;color:#0D1B3E;text-decoration:none;padding:14px 36px;border-radius:10px;font-size:15px;font-weight:700;">Go to My Portal →</a></div>
+    <p style="font-size:14px;color:#0F172A;line-height:1.7;">Well done and God bless,<br><strong>Catholic Music Academy</strong></p>
+  </div>
+</div></body></html>`;
+        await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + RESEND_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            from: FROM, to: [studentEmail],
+            subject: '🎓 Congratulations ' + firstName + ' — All Modules Complete!',
+            html,
+            text: `Dear ${firstName}, congratulations! You have completed all modules of ${courseName||'your programme'}. The Academy will contact you to schedule your final examination. God bless, Catholic Music Academy.`
+          })
+        }).catch(() => {});
+      }
+
+      return res.status(200).json({ ok: true });
+    }
+
     // ── MARK EXAM PASSED ─────────────────────────────────────
     if (action === 'exam_passed') {
       const { studentId, courseId, studentEmail, studentName, courseName } = req.body;
