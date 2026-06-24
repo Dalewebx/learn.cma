@@ -148,7 +148,6 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
 .media-section-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
 .video-wrap{background:#000;border-radius:12px;overflow:hidden;position:relative;padding-top:42%;max-width:640px;}
 .video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;}
-@keyframes spin{to{transform:rotate(360deg);}}
 .video-placeholder{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--surface);border:1.5px dashed var(--border);border-radius:12px;color:var(--dim);gap:10px;font-size:13px;}
 .audio-player{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:16px 20px;}
 .audio-native{width:100%;height:36px;border-radius:6px;outline:none;margin-top:8px;}
@@ -913,7 +912,6 @@ async function loadCourseAndModulesFromDB(programmeStr) {
         }
       }
     }
-
     if (!matchedGroup) {
       // Last resort: if only one course in DB, just use it
       // (handles students approved before new apply.html was deployed)
@@ -1070,6 +1068,7 @@ function renderDashboard() {
 }
 
 async function switchCourse(courseId, programme) {
+  // Load the selected course
   var dbResult = await loadCourseAndModulesFromDB(programme);
   CURRENT_COURSE = dbResult.course;
   MODULES = dbResult.modules;
@@ -1477,7 +1476,7 @@ async function doLogin() {
   var pass    = passEl.value;
 
   if (!email || !pass) { showErr('Please enter your email and password.'); return; }
-  btn.disabled = true; btn.textContent = 'Checking account...';
+  btn.disabled = true; btn.textContent = 'Signing in...';
   document.getElementById('loginErr').style.display = 'none';
 
   try {
@@ -1493,8 +1492,6 @@ async function doLogin() {
       btn.disabled = false; btn.textContent = 'Sign in →'; return;
     }
     var student = results[0];
-
-    btn.textContent = 'Verifying...'; // shown during PBKDF2 computation
 
     // 2. Verify password
     var passwordOk = false;
@@ -1539,7 +1536,7 @@ async function doLogin() {
       btn.disabled = false; btn.textContent = 'Sign in →'; return;
     }
 
-    btn.textContent = 'Loading your courses...';
+    // 3. Check account status
     if (student.status !== 'active') {
       if (student.status === 'inactive') {
         showErr('Your account access has been suspended. Please contact the Academy or reapply at catholicmusicacademy.net/apply.');
@@ -1927,6 +1924,7 @@ async function loadAnnouncements() {
   } catch(e){}
 }
 async function goCourse() {
+  // Always re-fetch progress from DB so module states are current after refresh
   await loadProgress().catch(function(){});
   renderCourse();
   history.pushState({screen:'course'},'','/portal');
@@ -1968,33 +1966,11 @@ function renderCourse() {
       +'</div>'+(locked?'':'<div class="mc-arrow">›</div>')+'</div>';
   }).join('');
 
-  // Show appropriate banner based on enrolment status
-  var courseId = CURRENT_COURSE ? CURRENT_COURSE.id : null;
-  var enr = courseId ? ALL_ENROLMENTS.find(function(e){ return e.course_id===courseId || e.programme===CURRENT_COURSE.title; }) : null;
-  var enrStatus = enr ? enr.status : (allDone ? 'complete' : 'active');
+  // Show completion banner if all modules are done
+  var allDone = MODULES.length > 0 && MODULES.every(function(_,i){ return completedModules.includes(i); });
   var existingBanner = document.getElementById('courseCompleteBanner');
   if (existingBanner) existingBanner.remove();
-
-  if (enrStatus === 'exam_passed') {
-    var banner = document.createElement('div');
-    banner.id = 'courseCompleteBanner';
-    banner.style.cssText = 'background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:2px solid #16A34A;border-radius:14px;padding:24px;margin-bottom:20px;text-align:center;';
-    banner.innerHTML = '<div style="font-size:32px;margin-bottom:8px;">🏆</div>'
-      +'<div style="font-family:DM Serif Display,serif;font-size:20px;color:#14532D;margin-bottom:6px;">Examination Passed</div>'
-      +'<div style="font-size:13px;color:#16A34A;line-height:1.65;margin-bottom:16px;">Congratulations! You have passed your final examination.<br>Your certificate is ready to download.</div>'
-      +'<button class="btn btn-primary" onclick="downloadPortalCertificate(\''+courseId+'\',\''+(CURRENT_COURSE?CURRENT_COURSE.title:'')+'\')">🏆 Download Certificate</button>';
-    var modulesList = document.getElementById('modulesList');
-    if (modulesList) modulesList.before(banner);
-  } else if (enrStatus === 'exam_scheduled') {
-    var banner = document.createElement('div');
-    banner.id = 'courseCompleteBanner';
-    banner.style.cssText = 'background:linear-gradient(135deg,#EEF2FF,#E0E7FF);border:2px solid #6366F1;border-radius:14px;padding:24px;margin-bottom:20px;text-align:center;';
-    banner.innerHTML = '<div style="font-size:32px;margin-bottom:8px;">📅</div>'
-      +'<div style="font-family:DM Serif Display,serif;font-size:20px;color:#312E81;margin-bottom:6px;">Examination Scheduled</div>'
-      +'<div style="font-size:13px;color:#4338CA;line-height:1.65;">Your final examination has been scheduled.<br>Check your WhatsApp for venue and time details. Prepare well!</div>';
-    var modulesList = document.getElementById('modulesList');
-    if (modulesList) modulesList.before(banner);
-  } else if (allDone) {
+  if (allDone) {
     var banner = document.createElement('div');
     banner.id = 'courseCompleteBanner';
     banner.style.cssText = 'background:linear-gradient(135deg,#0D1B3E,#1A2E6C);border-radius:14px;padding:24px;margin-bottom:20px;text-align:center;color:white;';
@@ -2012,137 +1988,27 @@ function renderCourse() {
 function toYouTubeEmbed(url) {
   if (!url) return '';
   url = url.trim();
+  // Already an embed URL
   if (url.indexOf('youtube.com/embed/') !== -1) {
+    // Strip any extra params that cause issues and add rel=0
     var base = url.split('?')[0];
-    return base + '?rel=0&modestbranding=1&autoplay=1';
+    return base + '?rel=0&modestbranding=1';
   }
-  var videoId = toYouTubeId(url);
-  if (videoId) return 'https://www.youtube.com/embed/' + videoId + '?rel=0&modestbranding=1&autoplay=1';
+  var videoId = null;
+  // youtu.be/VIDEO_ID
+  var m = url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
+  if (m) videoId = m[1];
+  // youtube.com/watch?v=VIDEO_ID
+  if (!videoId) { m = url.match(/[?&]v=([A-Za-z0-9_-]{11})/); if (m) videoId = m[1]; }
+  // youtube.com/shorts/VIDEO_ID
+  if (!videoId) { m = url.match(/shorts\/([A-Za-z0-9_-]{11})/); if (m) videoId = m[1]; }
+  // youtube.com/v/VIDEO_ID
+  if (!videoId) { m = url.match(/youtube\.com\/v\/([A-Za-z0-9_-]{11})/); if (m) videoId = m[1]; }
+  // youtube.com/embed/VIDEO_ID (already caught above but just in case)
+  if (!videoId) { m = url.match(/embed\/([A-Za-z0-9_-]{11})/); if (m) videoId = m[1]; }
+  if (videoId) return 'https://www.youtube.com/embed/' + videoId + '?rel=0&modestbranding=1';
+  // Not a YouTube URL — return as-is (could be a direct video file)
   return url;
-}
-
-function toYouTubeId(url) {
-  if (!url) return null;
-  url = url.trim();
-  var m;
-  m = url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/); if (m) return m[1];
-  m = url.match(/[?&]v=([A-Za-z0-9_-]{11})/); if (m) return m[1];
-  m = url.match(/shorts\/([A-Za-z0-9_-]{11})/); if (m) return m[1];
-  m = url.match(/youtube\.com\/v\/([A-Za-z0-9_-]{11})/); if (m) return m[1];
-  m = url.match(/embed\/([A-Za-z0-9_-]{11})/); if (m) return m[1];
-  return null;
-}
-
-// ── AUDIO PLAYER (invisible YouTube IFrame API) ───────────────────────────────
-window._audioPlayers = {};
-window._audioTimers = {};
-
-function loadYTApiIfNeeded(cb) {
-  if (window.YT && window.YT.Player) { cb(); return; }
-  window.onYouTubeIframeAPIReady = cb;
-  if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
-    var s = document.createElement('script');
-    s.src = 'https://www.youtube.com/iframe_api';
-    document.head.appendChild(s);
-  }
-}
-
-function toggleAudioStrip(ti) {
-  var container = document.getElementById('ytaudio-'+ti);
-  var playBtn = document.getElementById('aplay-'+ti);
-  if (!container) return;
-  var ytId = container.dataset.ytid;
-
-  // If already playing this track — pause
-  if (window._audioPlayers[ti] && window._audioPlayers[ti].getPlayerState && window._audioPlayers[ti].getPlayerState() === 1) {
-    window._audioPlayers[ti].pauseVideo();
-    if (playBtn) playBtn.innerHTML = '<div style="width:0;height:0;border-style:solid;border-width:6px 0 6px 11px;border-color:transparent transparent transparent white;margin-left:2px;"></div>';
-    if (window._audioTimers[ti]) { clearInterval(window._audioTimers[ti]); delete window._audioTimers[ti]; }
-    return;
-  }
-
-  // Pause any other playing track
-  Object.keys(window._audioPlayers).forEach(function(key) {
-    if (key != ti && window._audioPlayers[key] && window._audioPlayers[key].pauseVideo) {
-      window._audioPlayers[key].pauseVideo();
-      var otherBtn = document.getElementById('aplay-'+key);
-      if (otherBtn) otherBtn.innerHTML = '<div style="width:0;height:0;border-style:solid;border-width:6px 0 6px 11px;border-color:transparent transparent transparent white;margin-left:2px;"></div>';
-      if (window._audioTimers[key]) { clearInterval(window._audioTimers[key]); delete window._audioTimers[key]; }
-    }
-  });
-
-  // Show loading state
-  if (playBtn) {
-    playBtn.style.background = 'var(--gold)';
-    playBtn.innerHTML = '<div style="width:12px;height:12px;border:2px solid var(--navy);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div>';
-  }
-
-  loadYTApiIfNeeded(function() {
-    if (window._audioPlayers[ti]) {
-      // Already created — just play
-      window._audioPlayers[ti].playVideo();
-    } else {
-      // Create invisible player
-      container.style.cssText = 'width:1px;height:1px;overflow:hidden;position:absolute;left:-9999px;';
-      container.innerHTML = '<div id="ytplayer-'+ti+'"></div>';
-      window._audioPlayers[ti] = new YT.Player('ytplayer-'+ti, {
-        height: '1', width: '1',
-        videoId: ytId,
-        playerVars: { autoplay: 1, controls: 0, disablekb: 1, rel: 0, modestbranding: 1 },
-        events: {
-          onReady: function(e) { e.target.playVideo(); },
-          onStateChange: function(e) {
-            if (e.data === YT.PlayerState.PLAYING) {
-              if (playBtn) { playBtn.style.background = 'var(--navy)'; playBtn.innerHTML = '<div style="width:10px;height:12px;display:flex;gap:3px;"><div style="width:3px;height:12px;background:white;border-radius:1px;"></div><div style="width:3px;height:12px;background:white;border-radius:1px;"></div></div>'; }
-              // Progress timer
-              window._audioTimers[ti] = setInterval(function() {
-                var p = window._audioPlayers[ti];
-                if (!p || !p.getCurrentTime) return;
-                try {
-                  var cur = p.getCurrentTime();
-                  var dur = p.getDuration();
-                  var pct = dur > 0 ? (cur/dur*100) : 0;
-                  var prog = document.getElementById('aprog-'+ti);
-                  var time = document.getElementById('atime-'+ti);
-                  if (prog) prog.style.width = pct + '%';
-                  if (time) {
-                    var m2 = Math.floor(cur/60), s2 = Math.floor(cur%60);
-                    time.textContent = m2+':'+(s2<10?'0':'')+s2;
-                  }
-                } catch(err){}
-              }, 500);
-            } else if (e.data === YT.PlayerState.ENDED) {
-              if (playBtn) { playBtn.style.background = 'var(--navy)'; playBtn.innerHTML = '<div style="width:0;height:0;border-style:solid;border-width:6px 0 6px 11px;border-color:transparent transparent transparent white;margin-left:2px;"></div>'; }
-              var prog = document.getElementById('aprog-'+ti);
-              if (prog) prog.style.width = '100%';
-              if (window._audioTimers[ti]) { clearInterval(window._audioTimers[ti]); delete window._audioTimers[ti]; }
-            } else if (e.data === YT.PlayerState.PAUSED) {
-              if (playBtn) { playBtn.style.background = 'var(--navy)'; playBtn.innerHTML = '<div style="width:0;height:0;border-style:solid;border-width:6px 0 6px 11px;border-color:transparent transparent transparent white;margin-left:2px;"></div>'; }
-            }
-          }
-        }
-      });
-    }
-  });
-}
-
-function renderVideoFacade(videoUrl, wrapEl) {
-  if (!videoUrl || !wrapEl) return;
-  var videoId = toYouTubeId(videoUrl);
-  if (!videoId) {
-    // Not YouTube — direct video file
-    wrapEl.innerHTML = '<video controls preload="none" style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:12px;background:#000;"><source src="'+videoUrl+'"/></video>';
-    return;
-  }
-  // Facade: show thumbnail + play button, load iframe only on click
-  var thumb = 'https://img.youtube.com/vi/'+videoId+'/hqdefault.jpg';
-  var embedUrl = 'https://www.youtube.com/embed/'+videoId+'?rel=0&modestbranding=1&autoplay=1';
-  wrapEl.innerHTML = '<div style="position:absolute;inset:0;cursor:pointer;border-radius:12px;overflow:hidden;" onclick="this.parentElement.innerHTML=\'<iframe src=\\\"'+embedUrl+'\\\" style=\\\"position:absolute;top:0;left:0;width:100%;height:100%;border:0;\\\" allow=\\\"accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture\\\" allowfullscreen></iframe>\'">'
-    +'<img src="'+thumb+'" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.background=\'#0D1B3E\';this.style.display=\'block\'"/>'
-    +'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.25);">'
-    +'<div style="width:68px;height:68px;background:rgba(255,0,0,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.5);transition:transform 0.15s;" onmouseover="this.style.transform=\'scale(1.1)\'" onmouseout="this.style.transform=\'scale(1)\'">'
-    +'<div style="width:0;height:0;border-style:solid;border-width:13px 0 13px 24px;border-color:transparent transparent transparent white;margin-left:5px;"></div>'
-    +'</div></div></div>';
 }
 
 // ── MODULE ────────────────────────────────────────────────────────────────────
@@ -2152,12 +2018,8 @@ function openMod(i) {
   timerDone = false; scrollDone = false;
   if (timerInterval) clearInterval(timerInterval);
   var m = MODULES[i];
-  PASS_MARK = m.passMark || PASS_MARK;
+  PASS_MARK = m.passMark || PASS_MARK; // cohort standard — set on load
   MAX_ATTEMPTS = m.maxAttempts || 0;
-  // Pre-load YouTube IFrame API if this module has audio tracks
-  if (m.audioTracks && m.audioTracks.length) {
-    loadYTApiIfNeeded(function(){});
-  }
   // Count existing attempts for this module from DB
   currentAttemptCount = 0;
   if (MAX_ATTEMPTS > 0 && currentStudent) {
@@ -2206,45 +2068,20 @@ function openMod(i) {
   var vw = document.getElementById('videoWrap');
   var vs = document.getElementById('videoSection');
   if (m.videoUrl) {
-    renderVideoFacade(m.videoUrl, vw);
+    var embedUrl = toYouTubeEmbed(m.videoUrl);
+    vw.innerHTML = '<iframe src="'+embedUrl+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="border:0;"></iframe>';
     if (vs) vs.style.display = 'block';
   } else {
     // No video — show placeholder, not black void
     vw.innerHTML = '';
     if (vs) vs.style.display = 'none';
   }
-  // audio — custom strips with invisible YouTube player
+  // audio — only show if tracks exist
   var ap = document.getElementById('audioPlayer');
   var as2 = document.getElementById('audioSection');
   if (m.audioTracks && m.audioTracks.length) {
-    ap.innerHTML = m.audioTracks.map(function(t, ti) {
-      var ytId = toYouTubeId(t.url);
-      if (!ytId) {
-        return '<div style="margin-bottom:8px;">'
-          +'<div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;">'+t.name+'</div>'
-          +'<audio controls preload="none" src="'+t.url+'" style="width:100%;height:36px;border-radius:6px;"></audio>'
-          +'</div>';
-      }
-      return '<div id="astrip-'+ti+'" style="display:flex;align-items:center;gap:12px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:8px;cursor:pointer;" onclick="toggleAudioStrip('+ti+')">'
-        +'<div id="aplay-'+ti+'" style="width:34px;height:34px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.2s;">'
-        +'<div style="width:0;height:0;border-style:solid;border-width:6px 0 6px 11px;border-color:transparent transparent transparent white;margin-left:2px;"></div>'
-        +'</div>'
-        +'<div style="flex:1;min-width:0;">'
-        +'<div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+t.name+'</div>'
-        +'<div style="margin-top:6px;height:3px;background:var(--border);border-radius:2px;overflow:hidden;">'
-        +'<div id="aprog-'+ti+'" style="height:100%;width:0%;background:var(--navy);border-radius:2px;transition:width 0.5s linear;"></div>'
-        +'</div>'
-        +'<div style="display:flex;justify-content:space-between;margin-top:3px;">'
-        +'<span id="atime-'+ti+'" style="font-size:10px;color:var(--muted);">0:00</span>'
-        +'<span style="font-size:10px;color:var(--muted);">'+(t.duration||'')+'</span>'
-        +'</div></div>'
-        +'</div>'
-        // Hidden YouTube iframe container
-        +'<div id="ytaudio-'+ti+'" data-ytid="'+ytId+'" style="display:none;width:1px;height:1px;overflow:hidden;position:absolute;"></div>';
-    }).join('');
+    ap.innerHTML = m.audioTracks.map(function(t){ return '<div style="margin-bottom:8px;font-size:13px;font-weight:600;color:var(--text);">🎵 '+t.name+'</div><audio class="audio-native" controls src="'+t.url+'"></audio>'; }).join('');
     as2.style.display = 'block';
-    // Init audio state tracker
-    window._audioPlayers = {};
   } else {
     as2.style.display = 'none';
   }
@@ -2551,34 +2388,16 @@ async function submitQuiz() {
       }
       resultEl.scrollIntoView({behavior:'smooth',block:'start'});
     } else {
-      // Mark correct and wrong answers visually
       mcqQs.forEach(function(q,qi){
         (q.opts||[]).forEach(function(_,oi){
           var el=document.getElementById('qo-'+qi+'-'+oi);
-          if(!el)return;
-          el.classList.add('disabled');
-          el.classList.remove('sel','correct','wrong');
-          if(oi===q.ans) el.classList.add('correct'); // always show correct
-          else if(oi===answers[qi]) el.classList.add('wrong'); // show what student picked
+          if(el){el.classList.add('disabled');el.classList.remove('sel','correct','wrong');}
         });
       });
-      // Build wrong answer breakdown
-      var wrongList = mcqQs.map(function(q,qi){
-        if(answers[qi]===q.ans) return '';
-        var picked = q.opts && q.opts[answers[qi]] ? q.opts[answers[qi]] : 'No answer';
-        var correct = q.opts && q.opts[q.ans] ? q.opts[q.ans] : '—';
-        return '<div style="padding:10px 12px;border-radius:8px;background:#FEF2F2;border:1px solid #FECACA;margin-bottom:8px;text-align:left;">'
-          +'<div style="font-size:12px;font-weight:700;color:#DC2626;margin-bottom:4px;">✗ Q'+(qi+1)+': '+escQ(q.q)+'</div>'
-          +'<div style="font-size:12px;color:#991B1B;">Your answer: '+escQ(picked)+'</div>'
-          +'<div style="font-size:12px;color:#16A34A;font-weight:600;">Correct: '+escQ(correct)+'</div>'
-          +'</div>';
-      }).filter(Boolean).join('');
-
       await saveAttempt(currentMod,mcqScore,mcqQs.length,false);
       resultEl.innerHTML='<div class="qr-score">'+mcqScore+'/'+mcqQs.length+'</div>'
         +'<div class="qr-label">Questions correct</div>'
-        +'<div class="qr-msg fail">Study the lesson carefully and try again.</div>'
-        +(wrongList ? '<div style="margin-top:14px;text-align:left;"><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;">Questions to review:</div>'+wrongList+'</div>' : '');
+        +'<div class="qr-msg fail">Study the lesson carefully and try again.</div>';
       resultEl.classList.add('show');
       var sb=document.getElementById('submitBtn');if(sb)sb.remove();
       document.getElementById('modActions').innerHTML='<button class="btn btn-secondary" onclick="retryModFull()">↑ Re-read lesson</button>';
@@ -3000,6 +2819,7 @@ function showBiometricButton() {
       var dbResult = await loadCourseAndModulesFromDB(student.programme);
       CURRENT_COURSE = dbResult.course; MODULES = dbResult.modules;
       await loadProgress().catch(function(){});
+      await loadEnrolments().catch(function(){});
       saveSession(student, CURRENT_COURSE, completedModules);
       document.getElementById('topbar').style.display = 'flex';
       document.getElementById('topbarName').textContent = student.first_name;
