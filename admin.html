@@ -1605,14 +1605,12 @@ async function clearApplicationBin() {
   if (!binItems.length) { showToast('No rejected applications to clear.','warn'); return; }
   if (!confirm('Permanently delete '+binItems.length+' rejected application'+(binItems.length>1?'s':'')+' from the bin?\n\nThis cannot be undone.')) return;
   try {
-    // First: null out application_id on any student records referencing these applications
-    // (foreign key constraint prevents deletion otherwise)
-    var binIds = binItems.map(function(a){ return a.id; });
-    for (var i=0; i<binIds.length; i++) {
-      await sb('students','PATCH',{application_id:null},'application_id=eq.'+binIds[i]).catch(function(){});
-    }
-    // Now safe to delete
-    await sb('applications','DELETE',null,'status=eq.rejected');
+    var res = await fetch('/api/applications', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({action:'clear_bin'})
+    });
+    var json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Clear failed');
     showToast('Bin cleared — '+binItems.length+' application'+(binItems.length>1?'s':'')+' deleted.');
     await loadAllData();
     renderApplications();
@@ -1623,104 +1621,22 @@ async function approveApp(id) {
   var a=window._appMap[id];
   if(!a||!confirm('Approve application for '+a.first_name+' '+a.last_name+'?')) return;
   try {
-    await sb('applications','PATCH',{status:'approved',reviewed_at:new Date().toISOString(),reviewed_by:currentAdmin},'id=eq.'+id);
-
-    var newStudent = null;
-
-    if (a.type === 'additional' && a.existing_student_id) {
-      // Additional course — just use existing student, add enrolment only
-      newStudent = {id: a.existing_student_id};
-      showToast('✓ Additional course approved for '+a.first_name);
-    } else {
-      // New or re-activating student — check by email
-      var existing = await sb('students','GET',null,'email=eq.'+encodeURIComponent(a.email)+'&select=id,status');
-      if (existing && existing.length > 0) {
-        var existingId = existing[0].id;
-        var wasRevoked = existing[0].status !== 'active';
-
-        // Determine hash version — if salt is missing from application (old apply.html bug),
-        // fall back to sha256 so login can still verify against the stored hash
-        var hasSalt = !!(a.salt);
-        var hashVersion = hasSalt ? 'pbkdf2' : 'sha256';
-
-        // Full reactivation — update ALL credential fields from new application
-        await sb('students','PATCH',{
-          status: 'active',
-          programme: a.programme,
-          password_hash: a.password_hash,
-          salt: a.salt || null,
-          hash_version: hashVersion,
-          security_question: a.security_question || null,
-          security_answer_hash: a.security_answer_hash || null,
-          phone: a.phone,
-          whatsapp: a.whatsapp || a.phone,
-          state: a.state,
-          last_login: null,
-          application_id: id
-        },'id=eq.'+existingId);
-
-        // Force last_login to NULL via direct fetch (ensures null is written, not ignored)
-        await fetch(SUPA_URL+'/rest/v1/students?id=eq.'+existingId, {
-          method:'PATCH',
-          headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-          body: JSON.stringify({last_login: null})
-        }).catch(function(){});
-
-        // If reactivating a revoked account, clear old progress and enrolments
-        if (wasRevoked) {
-          await sb('progress','DELETE',null,'student_id=eq.'+existingId).catch(function(){});
-          await sb('enrolments','DELETE',null,'student_id=eq.'+existingId).catch(function(){});
-          try { await sb('quiz_attempts','DELETE',null,'student_id=eq.'+existingId); } catch(e){}
-          showToast('✓ Account reactivated — old data cleared. Fresh start for '+a.first_name+'.');
-        } else {
-          showToast('✓ Updated existing account for '+a.first_name);
+    var matchedCourse = cmCourses.find(function(c){ return c.title === a.programme; });
+    var res = await fetch('/api/applications', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        action: 'approve',
+        applicationId: id,
+        adminId: currentAdmin ? currentAdmin.id : null,
+        application: {
+          ...a,
+          course_id: matchedCourse ? matchedCourse.id : null
         }
-        newStudent = {id: existingId};
-      } else {
-        // Brand new student
-        var hasSaltNew = !!(a.salt);
-        var created = await sb('students','POST',{
-          application_id: id,
-          first_name: a.first_name,
-          last_name: a.last_name,
-          email: a.email,
-          password_hash: a.password_hash,
-          salt: a.salt || null,
-          hash_version: hasSaltNew ? 'pbkdf2' : 'sha256',
-          phone: a.phone,
-          whatsapp: a.whatsapp || a.phone,
-          programme: a.programme,
-          state: a.state,
-          security_question: a.security_question || null,
-          security_answer_hash: a.security_answer_hash || null,
-          status: 'active'
-        });
-        newStudent = created && created[0] ? created[0] : {id: null};
-        showToast('✓ Approved: '+a.first_name+' — account created');
-      }
-    }
-
-    // Create fresh enrolment
-    if (newStudent && newStudent.id) {
-      var matchedCourse = cmCourses.find(function(c){ return c.title === a.programme; });
-      var courseId = matchedCourse ? matchedCourse.id : a.programme;
-      sb('enrolments','POST',{
-        student_id: newStudent.id,
-        course_id: courseId,
-        programme: a.programme,
-        status: 'active'
-      }).catch(function(e){ console.warn('Enrolment insert failed:', e); });
-    }
-
-    // Send approval email
-    if (a.email) {
-      var emailEndpoint = a.type === 'additional' ? '/api/course-added' : '/api/admission-approved';
-      var emailBody = a.type === 'additional'
-        ? {to:a.email, firstName:a.first_name, programme:a.programme, testMode:false}
-        : {to:a.email, firstName:a.first_name, programme:a.programme, ref:a.ref||('CMA-'+id.slice(-6).toUpperCase()), testMode:false};
-      fetch(emailEndpoint, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(emailBody)}).catch(function(){});
-    }
-
+      })
+    });
+    var json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Approval failed');
+    showToast('✓ Approved: '+a.first_name+(a.type==='additional'?' — course added':' — account created'));
     await loadAllData();
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
@@ -1773,45 +1689,29 @@ async function confirmReject(id) {
   var note = noteEl ? noteEl.value.trim() : '';
   var errEl = document.getElementById('rejectReasonErr');
 
-  if (!reason) {
-    if (errEl) errEl.style.display = 'block';
-    return;
-  }
+  if (!reason) { if (errEl) errEl.style.display = 'block'; return; }
 
   var finalReason = reason === 'other' ? (note || 'We were unable to process your application at this time.') : reason;
-  var finalNote = reason === 'other' ? '' : note;
 
   try {
     document.getElementById('rejectModal').remove();
-    // Run DB updates in parallel for speed
-    var patchApp = sb('applications','PATCH',{status:'rejected',reviewed_at:new Date().toISOString(),reviewed_by:currentAdmin},'id=eq.'+id);
-    var deactivateStudent = a.email
-      ? sb('students','GET',null,'email=eq.'+encodeURIComponent(a.email)+'&select=id').then(function(ex){
-          if (ex && ex.length > 0) return sb('students','PATCH',{status:'inactive'},'id=eq.'+ex[0].id);
-        })
-      : Promise.resolve();
-    await Promise.all([patchApp, deactivateStudent]);
-    // Send rejection email FIRST — before loadAllData so no delay
-    if (a.email) {
-      fetch('/api/admission-rejected', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({
-          to: a.email,
-          firstName: a.first_name,
-          programme: a.programme,
-          ref: a.ref || '',
-          reason: finalReason,
-          note: finalNote,
-          testMode: false
-        })
-      }).catch(function(e){ console.warn('Rejection email failed:',e); });
-    }
+    var res = await fetch('/api/applications', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        action: 'reject',
+        applicationId: id,
+        adminId: currentAdmin ? currentAdmin.id : null,
+        email: a.email,
+        firstName: a.first_name,
+        programme: a.programme,
+        reason: finalReason
+      })
+    });
+    var json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Rejection failed');
     showToast('Application rejected. Email sent to '+a.first_name+'.');
     await loadAllData();
-  } catch(e) {
-    showToast('Error: '+e.message, 'err');
-  }
+  } catch(e) { showToast('Error: '+e.message,'err'); }
 }
 
 async function viewReceipt(id) {
@@ -2174,21 +2074,19 @@ async function adminResetPassword(sid) {
   if (btn) { btn.disabled=true; btn.textContent='Setting...'; }
 
   try {
-    // Generate fresh PBKDF2 hash + salt
     var salt = Array.from(crypto.getRandomValues(new Uint8Array(16))).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
     var enc = new TextEncoder();
     var key = await crypto.subtle.importKey('raw', enc.encode(pw), 'PBKDF2', false, ['deriveBits']);
     var bits = await crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(salt),iterations:100000,hash:'SHA-256'}, key, 256);
     var hash = Array.from(new Uint8Array(bits)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
 
-    await fetch(SUPA_URL+'/rest/v1/students?id=eq.'+sid, {
-      method:'PATCH',
-      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body: JSON.stringify({password_hash:hash, salt:salt, hash_version:'pbkdf2', last_login:null})
+    var res = await fetch('/api/students', {method:'POST',headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({action:'reset_password', studentId:sid, data:{password_hash:hash, salt:salt}})
     });
+    if (!res.ok) throw new Error((await res.json()).error);
 
     pwEl.value = '';
-    showToast('Password reset successfully. Student can now log in with the new password.','ok');
+    showToast('Password reset successfully.','ok');
   } catch(e) {
     showToast('Error resetting password: '+e.message,'err');
   } finally {
@@ -2199,7 +2097,10 @@ async function adminResetPassword(sid) {
 async function revokeStudent(sid, name) {
   if (!confirm('Revoke access for '+name+'?\n\nThey will be unable to log in immediately. Their data is preserved.')) return;
   try {
-    await sb('students','PATCH',{status:'inactive'},'id=eq.'+sid);
+    var res = await fetch('/api/students', {method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'revoke', studentId:sid})
+    });
+    if (!res.ok) throw new Error((await res.json()).error);
     showToast(name+' access revoked.');
     await loadAllData();
     goTab('students');
@@ -3570,17 +3471,28 @@ function openWhatsApp(subId, phone, name, modIdx) {
 
 async function gradeSubmission(id, result, mcqScore, mcqTotal, writtenTotal, email, phone, name, modIdx, studentId, courseId) {
   // Collect written scores
-  var writtenScore = 0;
-  var wi = 0;
+  var writtenScore = 0, wi = 0;
   while (document.getElementById('wscore-'+id+'-'+wi)) {
     writtenScore += parseInt((document.getElementById('wscore-'+id+'-'+wi)||{}).value||0);
     wi++;
   }
-  var combinedScore, combinedTotal, weightedPct;
-  var isWeighted = mcqTotal > 0 && writtenTotal > 0;
+  var comment = (document.getElementById('gcomment-'+id)||{}).value||'';
 
+  // Comment required on fail
+  if (result === 'fail' && !comment.trim()) {
+    var commentEl = document.getElementById('gcomment-'+id);
+    if (commentEl) {
+      commentEl.style.borderColor = 'var(--danger)';
+      commentEl.focus();
+      commentEl.placeholder = '⚠ Comment required when failing a student';
+    }
+    showToast('Please add feedback before failing this assessment.','warn');
+    return;
+  }
+
+  var combinedScore, combinedTotal;
+  var isWeighted = mcqTotal > 0 && writtenTotal > 0;
   if (isWeighted) {
-    // Fetch weights from the submission record (stored when module was saved)
     var subRecord = null;
     try {
       var subRes = await sb('assessment_submissions','GET',null,'id=eq.'+id+'&select=mcq_weight,written_weight');
@@ -3590,82 +3502,42 @@ async function gradeSubmission(id, result, mcqScore, mcqTotal, writtenTotal, ema
     var wrtW = subRecord && subRecord.written_weight ? subRecord.written_weight : (100 - mcqW);
     var mcqPct = mcqTotal > 0 ? (mcqScore / mcqTotal * 100) : 0;
     var writtenPct = writtenTotal > 0 ? (writtenScore / writtenTotal * 100) : 0;
-    weightedPct = Math.round((mcqPct * mcqW / 100) + (writtenPct * wrtW / 100));
-    combinedScore = weightedPct; // store as weighted % for clarity
+    combinedScore = Math.round((mcqPct * mcqW / 100) + (writtenPct * wrtW / 100));
     combinedTotal = 100;
   } else {
     combinedScore = mcqScore + writtenScore;
     combinedTotal = mcqTotal + writtenTotal;
-    weightedPct = combinedTotal > 0 ? Math.round((combinedScore / combinedTotal) * 100) : 0;
   }
-  var comment = (document.getElementById('gcomment-'+id)||{}).value||'';
-  var emailSubj = (document.getElementById('gemail-subj-'+id)||{}).value||'Your Assessment Result';
-  var emailBody = (document.getElementById('gemail-body-'+id)||{}).value||'';
-
-  // Update email template with actual scores
-  var resultWord = result === 'pass' ? 'PASSED' : 'NOT YET PASSED';
-  emailBody = emailBody.replace('[PASS/FAIL]', resultWord)
-    .replace('[X]', combinedScore)
-    .replace('[Total]', combinedTotal)
-    .replace('[Comments]', comment || '');
 
   try {
-    // Update submission record
-    await sb('assessment_submissions','PATCH',{
-      status: result,
-      written_score: writtenScore,
-      combined_score: combinedScore,
-      combined_total: combinedTotal,
-      admin_comments: comment,
-      graded_at: new Date().toISOString(),
-      graded_by: currentAdmin || 'admin'
-    },'id=eq.'+id);
-
-    // If passed — save progress so module unlocks
-    if (result === 'pass') {
-      try {
-        var existing = await sb('progress','GET',null,'student_id=eq.'+studentId+'&course_id=eq.'+courseId+'&module_index=eq.'+modIdx+'&select=id');
-        if (!existing || !existing.length) {
-          await sb('progress','POST',{student_id:studentId,course_id:courseId,module_index:modIdx,completed_at:new Date().toISOString()});
-        }
-      } catch(pe){}
-    }
-
-    // Send email via Vercel function
-    if (email) {
-      try {
-        await fetch('/api/grade-notify', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({
-            to: email,
-            subject: emailSubj,
-            body: emailBody,
-            studentName: name,
-            result: result,
-            score: combinedScore,
-            total: combinedTotal,
-            moduleIndex: modIdx,
-            comments: comment,
-            testMode: false
-          })
-        });
-      } catch(emailErr){ console.warn('Email send failed:', emailErr); }
-    }
+    var res = await fetch('/api/grading', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        action: 'grade',
+        submissionId: id,
+        result,
+        combinedScore,
+        combinedTotal,
+        comment,
+        gradedBy: currentAdmin ? (currentAdmin.name || currentAdmin.email) : 'admin',
+        studentId,
+        courseId,
+        moduleIndex: modIdx,
+        studentEmail: email,
+        studentName: name
+      })
+    });
+    var json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Grading failed');
 
     showToast(name + ' marked as ' + result.toUpperCase() + '. ' + (result==='pass'?'Module unlocked.':''));
-    // Remove from queue UI
     var card = document.getElementById('gq-'+id);
     if (card) {
       card.style.opacity = '0.4';
       card.style.pointerEvents = 'none';
-      var badge = card.querySelector('.pill-warn');
-      if (badge) { badge.textContent = result==='pass'?'✓ Passed':'✗ Failed'; badge.className='pill '+(result==='pass'?'pill-ok':'pill-danger'); }
     }
     setTimeout(function(){ renderGrading(); }, 1500);
-  } catch(e) {
-    showToast('Error grading: '+e.message, 'err');
-  }
+  } catch(e) { showToast('Error grading: '+e.message,'err'); }
 }
 
 
@@ -4146,30 +4018,34 @@ async function scheduleExam(sid,cid,name,email,phone){
   var d=document.getElementById('examdate-'+sid+'-'+cid);
   if(!d||!d.value){showToast('Select an exam date first.','warn');return;}
   try{
-    await sb('enrolments','PATCH',{status:'exam_scheduled',exam_date:d.value},'student_id=eq.'+sid+'&course_id=eq.'+cid);
+    var res=await fetch('/api/grading',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'schedule_exam',studentId:sid,courseId:cid,examDate:d.value,
+        studentEmail:email,studentName:name})
+    });
+    if(!res.ok) throw new Error((await res.json()).error);
     var e=allEnrolments.find(function(en){return en.student_id===sid&&en.course_id===cid;});
     if(e){e.status='exam_scheduled';e.exam_date=d.value;}
-    showToast('Exam scheduled.');
-    fetch('/api/exam-scheduled',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({studentName:name,studentEmail:email,studentPhone:phone,examDate:fmtDate(d.value)})
-    }).catch(function(){});
+    showToast('Exam scheduled. Email sent to '+name+'.');
     renderExamReady();
   }catch(err){showToast('Error: '+err.message,'err');}
 }
+
 async function markExamResult(sid,cid,result){
   try{
-    var upd=result==='passed'?{status:'exam_passed',exam_passed_at:new Date().toISOString()}:{status:'exam_failed',exam_failed_at:new Date().toISOString()};
-    await sb('enrolments','PATCH',upd,'student_id=eq.'+sid+'&course_id=eq.'+cid);
-    var e=allEnrolments.find(function(en){return en.student_id===sid&&en.course_id===cid;});
-    if(e)Object.assign(e,upd);
     var s=allStudents.find(function(st){return st.id===sid;});
     var course=cmCourses.find(function(c){return c.id===cid;});
-    if(result==='passed'&&s){
-      var certNum='CMA/'+new Date().getFullYear()+'/'+String(Math.floor(Math.random()*9000)+1000);
-      fetch('/api/exam-passed',{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({studentName:s.first_name+' '+s.last_name,studentEmail:s.email,courseName:course?course.title:s.programme,passDate:fmtDate(new Date().toISOString()),certNum:certNum})
-      }).catch(function(){});
-    }
+    var action=result==='passed'?'exam_passed':'exam_failed';
+    var res=await fetch('/api/grading',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:action,studentId:sid,courseId:cid,
+        studentEmail:s?s.email:null,
+        studentName:s?(s.first_name+' '+s.last_name):null,
+        courseName:course?course.title:(s?s.programme:'')
+      })
+    });
+    if(!res.ok) throw new Error((await res.json()).error);
+    var upd=result==='passed'?{status:'exam_passed',exam_passed_at:new Date().toISOString()}:{status:'exam_failed',exam_failed_at:new Date().toISOString()};
+    var e=allEnrolments.find(function(en){return en.student_id===sid&&en.course_id===cid;});
+    if(e)Object.assign(e,upd);
     showToast(result==='passed'?'Marked Passed ✓ — Email sent':'Marked Failed');
     if(result==='passed')openCertificate(sid,cid);else renderExamReady();
   }catch(err){showToast('Error: '+err.message,'err');}
