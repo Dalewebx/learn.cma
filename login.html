@@ -1581,9 +1581,10 @@ async function doLogin() {
 
     // 7. Set state — load course + modules, enrolments and progress IN PARALLEL
     currentStudent = student;
+    await loadEnrolments();
+    var _cid0 = ALL_ENROLMENTS.length ? ALL_ENROLMENTS[0].course_id : null;
     var [dbResult] = await Promise.all([
-      loadCourseAndModulesFromDB(student.programme, (ALL_ENROLMENTS[0] && ALL_ENROLMENTS[0].course_id) || null),
-      loadEnrolments(),
+      loadCourseAndModulesFromDB(student.programme, _cid0),
       loadProgress()
     ]);
     CURRENT_COURSE = dbResult.course;
@@ -2821,9 +2822,10 @@ function clearRememberMe() {
             headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
             body: JSON.stringify({last_login: new Date().toISOString()})
           }).catch(function(){});
+          await loadEnrolments().catch(function(){});
+          var _cid1 = ALL_ENROLMENTS.length ? ALL_ENROLMENTS[0].course_id : null;
           var [dbResult2] = await Promise.all([
-            loadCourseAndModulesFromDB(student.programme),
-            loadEnrolments().catch(function(){}),
+            loadCourseAndModulesFromDB(student.programme, _cid1),
             loadProgress().catch(function(){})
           ]);
           var dbResult = dbResult2;CURRENT_COURSE = dbResult.course;
@@ -2888,7 +2890,9 @@ function clearRememberMe() {
       body: JSON.stringify({last_login: new Date().toISOString()})
     }).catch(function(){});
     // Always load primary programme first, then enrolments will show all courses
-    var dbResult = await loadCourseAndModulesFromDB(session.student.programme);
+    await loadEnrolments().catch(function(){});
+    var _cid3 = ALL_ENROLMENTS.length ? ALL_ENROLMENTS[0].course_id : null;
+    var dbResult = await loadCourseAndModulesFromDB(session.student.programme, _cid3);
     CURRENT_COURSE = dbResult.course;
     MODULES = dbResult.modules;
     completedModules = (session.completedModules || []).filter(function(v,i,a){ return a.indexOf(v)===i; });
@@ -3012,10 +3016,11 @@ function showBiometricButton() {
     if (rows && rows.length && rows[0].password_hash === result.passHash && rows[0].status === 'active') {
       var student = rows[0];
       currentStudent = student;
-      var dbResult = await loadCourseAndModulesFromDB(student.programme);
+      await loadEnrolments().catch(function(){});
+      var _cid2 = ALL_ENROLMENTS.length ? ALL_ENROLMENTS[0].course_id : null;
+      var dbResult = await loadCourseAndModulesFromDB(student.programme, _cid2);
       CURRENT_COURSE = dbResult.course; MODULES = dbResult.modules;
       await loadProgress().catch(function(){});
-      await loadEnrolments().catch(function(){});
       saveSession(student, CURRENT_COURSE, completedModules);
       document.getElementById('topbar').style.display = 'flex';
       document.getElementById('topbarName').textContent = student.first_name;
