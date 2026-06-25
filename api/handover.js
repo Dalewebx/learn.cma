@@ -1,9 +1,11 @@
 // api/handover.js
 // Bulk deletion for platform handover — uses service role key
 // Actions: delete_students (array of IDs), clear_content (array of course IDs), full_reset
+// Requires X-Handover-Secret header matching HANDOVER_SECRET env variable
 
 const SUPA_URL = process.env.SUPABASE_URL || 'https://ltqwofagofmvufvqsuyj.supabase.co';
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const HANDOVER_SECRET = process.env.HANDOVER_SECRET;
 
 async function db(path, method, body) {
   const opts = {
@@ -25,10 +27,18 @@ async function db(path, method, body) {
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Handover-Secret');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   if (!SERVICE_KEY) return res.status(500).json({ error: 'Service key not configured' });
+
+  // ── AUTHENTICATION ────────────────────────────────────────
+  if (HANDOVER_SECRET) {
+    const callerSecret = req.headers['x-handover-secret'] || (req.body && req.body.secret);
+    if (callerSecret !== HANDOVER_SECRET) {
+      return res.status(403).json({ error: 'Forbidden — invalid handover secret.' });
+    }
+  }
 
   const { action, studentIds, courseIds } = req.body || {};
 
