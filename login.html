@@ -1885,6 +1885,12 @@ async function changePortalPassword() {
     });
     if(!res.ok)throw new Error(await res.text());
 
+    // Revoke all other sessions so old Remember Me tokens on other devices stop working
+    fetch(SUPA_URL+'/rest/v1/sessions?student_id=eq.'+currentStudent.id, {
+      method:'DELETE',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+    }).catch(function(){});
+
     currentStudent.password_hash=newHash;currentStudent.salt=newSalt;currentStudent.hash_version='pbkdf2';
     ['acct_currentPw','acct_newPw','acct_confirmPw'].forEach(function(id){document.getElementById(id).value='';});
     okEl.style.display='block';
