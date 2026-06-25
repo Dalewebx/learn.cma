@@ -2730,13 +2730,22 @@ async function showComplete() {
   var alreadyComplete = enr && enr.status === 'complete';
 
   if (!alreadyComplete && currentStudent && CURRENT_COURSE) {
-    // Mark complete in DB
+    // Mark complete in DB — try course_id match first, fall back to programme name
     try {
-      await fetch(SUPA_URL+'/rest/v1/enrolments?student_id=eq.'+currentStudent.id+'&course_id=eq.'+CURRENT_COURSE.id, {
+      var patchRes = await fetch(SUPA_URL+'/rest/v1/enrolments?student_id=eq.'+currentStudent.id+'&course_id=eq.'+CURRENT_COURSE.id, {
         method:'PATCH',
-        headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-        body: JSON.stringify({status:'complete', completed_at: new Date().toISOString()})
+        headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=representation'},
+        body: JSON.stringify({status:'complete', completed_at: new Date().toISOString(), course_id: CURRENT_COURSE.id})
       });
+      var patchData = await patchRes.json();
+      // If no rows updated (course_id was null), try matching by programme name
+      if (!patchData || !patchData.length) {
+        await fetch(SUPA_URL+'/rest/v1/enrolments?student_id=eq.'+currentStudent.id+'&programme=eq.'+encodeURIComponent(CURRENT_COURSE.title)+'&course_id=is.null', {
+          method:'PATCH',
+          headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+          body: JSON.stringify({status:'complete', completed_at: new Date().toISOString(), course_id: CURRENT_COURSE.id})
+        });
+      }
     } catch(e){ console.warn('Could not mark enrolment complete', e); }
 
     // Update in-memory enrolment
