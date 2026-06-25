@@ -601,6 +601,7 @@ function restoreFormState() {
   } catch(e){}
 }
 var selectedProg = []; // now an array for multiple selection
+var loadedCourses = []; // global so course_id is available at submission time
 var selectedBg = 'No formal training — I sing but have not studied music formally';
 var selectedFile = null;
 var recoveryOpen = false;
@@ -752,6 +753,7 @@ async function loadCoursesForApply() {
       }
     });
     if (!courses.length) throw new Error('no courses');
+    loadedCourses = courses; // store globally for course_id lookup at submission
     // Don't pre-select any course — let student choose
     grid.innerHTML = courses.map(function(c) {
       var val = c.title;
@@ -912,6 +914,9 @@ async function submitApplication() {
     // Create one application row per selected programme
     for (var pi = 0; pi < progList.length; pi++) {
       var progRef = ref + (progList.length > 1 ? '-' + (pi+1) : '');
+      // Look up course_id from loaded courses
+      var matchedCourse = loadedCourses.find(function(c){ return c.title === progList[pi]; });
+      var progCourseId = matchedCourse ? matchedCourse.id : null;
       await sbPost('applications', {
         ref: progRef,
         first_name: firstName,
@@ -922,6 +927,7 @@ async function submitApplication() {
         security_question: v('securityQuestion'),
         security_answer_hash: ansHash,
         programme: progList[pi],
+        course_id: progCourseId,
         background: selectedBg,
         receipt_name: selectedFile ? selectedFile.name : null,
         receipt_path: receiptPath,
