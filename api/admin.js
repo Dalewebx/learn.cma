@@ -66,6 +66,16 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
+    if (action === 'update_profile') {
+      if (!id || !data) return res.status(400).json({ error: 'ID and data required' });
+      const patch = {};
+      if (data.name) patch.name = data.name;
+      if (data.email) patch.email = data.email.trim().toLowerCase();
+      if (Object.keys(patch).length === 0) return res.status(400).json({ error: 'No fields to update' });
+      await dbQuery('admins?id=eq.' + id, 'PATCH', patch);
+      return res.status(200).json({ ok: true });
+    }
+
     if (action === 'create') {
       if (!data) return res.status(400).json({ error: 'Data required' });
       const created = await dbQuery('admins', 'POST', data);
