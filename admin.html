@@ -1749,8 +1749,16 @@ async function viewReceipt(id) {
   try {
     var res=await fetch(SUPA_URL+'/storage/v1/object/sign/receipts/'+a.receipt_path,{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json'},body:JSON.stringify({expiresIn:3600})});
     var data=await res.json();
-    window.open(SUPA_URL+'/storage/v1'+data.signedURL,'_blank');
-  } catch(e) { showToast('Could not open receipt','err'); }
+    if (res.ok && data.signedURL) {
+      window.open(SUPA_URL+'/storage/v1'+data.signedURL,'_blank');
+    } else {
+      // Bucket may be public — fall back to direct public URL
+      window.open(SUPA_URL+'/storage/v1/object/public/receipts/'+a.receipt_path,'_blank');
+    }
+  } catch(e) {
+    // Network error — try public URL as last resort
+    window.open(SUPA_URL+'/storage/v1/object/public/receipts/'+a.receipt_path,'_blank');
+  }
 }
 
 // ── STUDENTS ─────────────────────────────────────────────────────────────────
@@ -4100,10 +4108,25 @@ async function saveAccountSettings() {
   }
 
   try {
-    var res2 = await fetch('/api/admin', {method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'update_password', id:currentAdmin.id, data:{password_hash:newHashVal, salt:newSaltVal, hash_version:'pbkdf2'}})
+    // Always update name and email via update_profile
+    var res1 = await fetch('/api/admin', {method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'update_profile', id:currentAdmin.id, data:{
+        name: updates.name,
+        email: updates.email
+      }})
     });
-    if (!res2.ok) throw new Error((await res2.json()).error || 'Update failed');
+    if (!res1.ok) throw new Error((await res1.json()).error || 'Profile update failed');
+    // Update password separately if changed
+    if (updates.password_hash) {
+      var res2 = await fetch('/api/admin', {method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({action:'update_password', id:currentAdmin.id, data:{
+          password_hash: updates.password_hash,
+          salt: updates.salt,
+          hash_version: 'pbkdf2'
+        }})
+      });
+      if (!res2.ok) throw new Error((await res2.json()).error || 'Password update failed');
+    }
     // Update local session
     currentAdmin.name = updates.name;
     currentAdmin.email = updates.email;
