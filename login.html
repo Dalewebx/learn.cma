@@ -2142,23 +2142,43 @@ function toggleAudioStrip(ti) {
   });
 }
 
+// Store pending video embeds by wrap element id
+var _videoEmbeds = {};
+var _videoWrapCount = 0;
+
+function playVideoFacade(wrapId) {
+  var wrap = document.getElementById(wrapId);
+  var embedUrl = _videoEmbeds[wrapId];
+  if (!wrap || !embedUrl) return;
+  wrap.innerHTML = '<iframe src="'+embedUrl+'" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>';
+}
+
 function renderVideoFacade(videoUrl, wrapEl) {
   if (!videoUrl || !wrapEl) return;
   var videoId = toYouTubeId(videoUrl);
   if (!videoId) {
-    // Not YouTube — direct video file
     wrapEl.innerHTML = '<video controls preload="none" style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:12px;background:#000;"><source src="'+videoUrl+'"/></video>';
     return;
   }
-  // Facade: show thumbnail + play button, load iframe only on click
+  // Assign a stable ID to the wrap element
+  if (!wrapEl.id) { wrapEl.id = 'vwrap-'+(++_videoWrapCount); }
+  var wrapId = wrapEl.id;
   var thumb = 'https://img.youtube.com/vi/'+videoId+'/hqdefault.jpg';
   var embedUrl = 'https://www.youtube.com/embed/'+videoId+'?rel=0&modestbranding=1&autoplay=1';
-  wrapEl.innerHTML = '<div style="position:absolute;inset:0;cursor:pointer;border-radius:12px;overflow:hidden;" onclick="this.parentElement.innerHTML=\'<iframe src=\\\"'+embedUrl+'\\\" style=\\\"position:absolute;top:0;left:0;width:100%;height:100%;border:0;\\\" allow=\\\"accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture\\\" allowfullscreen></iframe>\'">'
-    +'<img src="'+thumb+'" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.background=\'#0D1B3E\';this.style.display=\'block\'"/>'
+  _videoEmbeds[wrapId] = embedUrl;
+
+  wrapEl.innerHTML = '<div id="vfacade-'+wrapId+'" style="position:absolute;inset:0;cursor:pointer;border-radius:12px;overflow:hidden;">'
+    +'<img src="'+thumb+'" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.background=\'#0D1B3E\'"/>'
     +'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.25);">'
-    +'<div style="width:68px;height:68px;background:rgba(255,0,0,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.5);transition:transform 0.15s;" onmouseover="this.style.transform=\'scale(1.1)\'" onmouseout="this.style.transform=\'scale(1)\'">'
+    +'<div id="vplay-'+wrapId+'" style="width:68px;height:68px;background:rgba(255,0,0,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.5);">'
     +'<div style="width:0;height:0;border-style:solid;border-width:13px 0 13px 24px;border-color:transparent transparent transparent white;margin-left:5px;"></div>'
     +'</div></div></div>';
+
+  // Attach click handler via JS — avoids all inline quote escaping issues
+  var facade = document.getElementById('vfacade-'+wrapId);
+  if (facade) {
+    facade.addEventListener('click', function() { playVideoFacade(wrapId); });
+  }
 }
 
 // ── MODULE ────────────────────────────────────────────────────────────────────
@@ -2481,7 +2501,7 @@ async function submitQuiz() {
   submitted = true;
   currentAttemptCount++;
 
-  var mcqScore = mcqQs.filter(function(q,qi){ return answers[qi]===q.ans; }).length;
+  var mcqScore = mcqQs.filter(function(q,qi){ return parseInt(answers[qi])===parseInt(q.ans); }).length;
   var mcqTotal = mcqQs.reduce(function(s,q){ return s+(q.marks||1); },0);
   var writtenTotal = writtenQs.reduce(function(s,q){ return s+(q.marks||10); },0);
   var hasWritten = writtenQs.length > 0;
@@ -2535,7 +2555,7 @@ async function submitQuiz() {
       mcqQs.forEach(function(q,qi){
         (q.opts||[]).forEach(function(_,oi){
           var el=document.getElementById('qo-'+qi+'-'+oi);
-          if(el){el.classList.add('disabled');if(oi===q.ans)el.classList.add('correct');else el.classList.remove('sel');}
+          if(el){el.classList.add('disabled');if(oi===parseInt(q.ans))el.classList.add('correct');else el.classList.remove('sel');}
         });
       });
       resultEl.innerHTML='<div class="qr-score">'+mcqScore+'/'+mcqQs.length+'</div>'
@@ -2574,15 +2594,17 @@ async function submitQuiz() {
           if(!el)return;
           el.classList.add('disabled');
           el.classList.remove('sel','correct','wrong');
-          if(oi===q.ans) el.classList.add('correct'); // always show correct
-          else if(oi===answers[qi]) el.classList.add('wrong'); // show what student picked
+          var cAns=parseInt(q.ans);
+          if(oi===cAns) el.classList.add('correct'); // always show correct
+          else if(answers[qi]!==undefined && oi===parseInt(answers[qi])) el.classList.add('wrong'); // show what student picked
         });
       });
       // Build wrong answer breakdown
       var wrongList = mcqQs.map(function(q,qi){
-        if(answers[qi]===q.ans) return '';
-        var picked = q.opts && q.opts[answers[qi]] ? q.opts[answers[qi]] : 'No answer';
-        var correct = q.opts && q.opts[q.ans] ? q.opts[q.ans] : '—';
+        var cAns2=parseInt(q.ans);
+        if(answers[qi]===cAns2) return '';
+        var picked = q.opts && q.opts[answers[qi]] !== undefined ? q.opts[answers[qi]] : 'No answer';
+        var correct = q.opts && q.opts[cAns2] !== undefined ? q.opts[cAns2] : '—';
         return '<div style="padding:10px 12px;border-radius:8px;background:#FEF2F2;border:1px solid #FECACA;margin-bottom:8px;text-align:left;">'
           +'<div style="font-size:12px;font-weight:700;color:#DC2626;margin-bottom:4px;">✗ Q'+(qi+1)+': '+escQ(q.q)+'</div>'
           +'<div style="font-size:12px;color:#991B1B;">Your answer: '+escQ(picked)+'</div>'
