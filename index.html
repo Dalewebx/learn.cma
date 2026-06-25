@@ -119,7 +119,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);position:stick
 
 /* ── HERO ── */
 .hero{background:var(--navy);min-height:calc(100vh - 108px);min-height:calc(100svh - 108px);display:flex;align-items:center;position:relative;overflow:hidden;width:100%;max-width:100%;}
-.hero-parallax{position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=1600&q=80&auto=format&fit=crop');background-size:cover;background-position:center;background-attachment:fixed;opacity:0.18;z-index:0;}
+.hero-parallax{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg stroke='%23C9A84C' stroke-width='0.4' opacity='0.12'%3E%3Cpath d='M40 0v80M0 40h80M40 0L0 40M40 0L80 40M40 80L0 40M40 80L80 40'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");background-size:80px 80px;opacity:1;z-index:0;}
 .hero-noise{position:absolute;inset:0;opacity:0.018;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:140px;pointer-events:none;}
 .hero-glow{position:absolute;top:-20%;right:-10%;width:min(700px,90vw);height:min(700px,90vw);border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.06),transparent 65%);pointer-events:none;}
 .hero-glow2{position:absolute;bottom:-30%;left:-5%;width:min(500px,75vw);height:min(500px,75vw);border-radius:50%;background:radial-gradient(circle,rgba(26,46,108,0.6),transparent 65%);pointer-events:none;}
@@ -131,7 +131,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);position:stick
 .hero-tag{display:inline-flex;align-items:center;gap:7px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.28);border-radius:20px;padding:8px 18px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:24px;}
 .hero-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:blink 2s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
-.hero-title{font-family:"DM Serif Display",serif;font-size:clamp(36px,6vw,64px);color:white;line-height:1.0;margin-bottom:22px;letter-spacing:-0.5px;}
+.hero-title{font-family:"DM Serif Display",serif;font-size:clamp(44px,7vw,80px);color:white;line-height:0.95;margin-bottom:28px;letter-spacing:-1.5px;}
 .hero-title em{font-style:italic;color:var(--gold);}
 .hero-list{list-style:none;margin-bottom:36px;}
 .hero-list li{font-size:15px;color:rgba(255,255,255,0.65);padding:5px 0;display:flex;align-items:center;gap:9px;font-weight:300;}
@@ -168,13 +168,13 @@ nav{background:var(--white);border-bottom:1px solid var(--border);position:stick
 .mk-next-btn{background:var(--gold);color:var(--navy);border:none;border-radius:7px;padding:7px 13px;font-size:11px;font-weight:700;cursor:pointer;font-family:"DM Sans",sans-serif;}
 
 /* ── SHARED SECTION ── */
-.sec{padding:80px 24px;}
-@media(min-width:768px){.sec{padding:96px 40px;}}
+.sec{padding:96px 24px;}
+@media(min-width:768px){.sec{padding:120px 40px;}}
 .sec-inner{max-width:1160px;margin:0 auto;}
-.label{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.label::before{content:"";width:18px;height:2px;background:var(--gold-dark);}
-.sec-title{font-family:"DM Serif Display",serif;font-size:clamp(28px,4.5vw,44px);color:var(--navy);line-height:1.05;margin-bottom:14px;}
-.sec-sub{font-size:15px;color:var(--muted);line-height:1.75;font-weight:300;max-width:520px;}
+.label{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.label::before{content:"";width:24px;height:2px;background:var(--gold-dark);}
+.sec-title{font-family:"DM Serif Display",serif;font-size:clamp(32px,5vw,54px);color:var(--navy);line-height:0.98;margin-bottom:18px;letter-spacing:-0.5px;}
+.sec-sub{font-size:16px;color:var(--muted);line-height:1.8;font-weight:300;max-width:540px;}
 
 /* ── HOW IT WORKS ── */
 .how-sec{background:var(--white);}
@@ -202,11 +202,11 @@ nav{background:var(--white);border-bottom:1px solid var(--border);position:stick
 @media(min-width:600px){.why-grid{grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;}}
 .why-card{background:#0B1530;padding:32px 28px;display:flex;flex-direction:column;gap:0;transition:background 0.2s;}
 .why-card:hover{background:#0F2040;}
-@media(min-width:600px){.why-card{padding:36px 28px;}}
-.why-icon-wrap{width:44px;height:44px;border-radius:10px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);display:flex;align-items:center;justify-content:center;margin-bottom:20px;flex-shrink:0;}
+@media(min-width:600px){.why-card{padding:44px 36px;}}
+.why-icon-wrap{width:48px;height:48px;border-radius:12px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);display:flex;align-items:center;justify-content:center;margin-bottom:24px;flex-shrink:0;}
 .why-body{flex:1;}
-.why-title{font-family:"DM Serif Display",serif;font-size:19px;color:white;margin-bottom:10px;line-height:1.25;}
-.why-desc{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.75;}
+.why-title{font-family:"DM Serif Display",serif;font-size:22px;color:white;margin-bottom:12px;line-height:1.2;}
+.why-desc{font-size:14px;color:rgba(255,255,255,0.55);line-height:1.8;}
 /* Mobile: horizontal row layout — icon left, text right, all aligned */
 @media(max-width:599px){
   .why-grid{gap:0;border:none;background:transparent;margin-top:32px;}
@@ -291,10 +291,10 @@ nav{background:var(--white);border-bottom:1px solid var(--border);position:stick
 .pill{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.22);border-radius:20px;padding:5px 13px;font-size:11px;font-weight:600;color:var(--gold);}
 
 /* ── CTA ── */
-.cta-sec{background:var(--gold-light);border-top:1px solid #E8D48A;padding:80px 24px;text-align:center;}
-.cta-title{font-family:"DM Serif Display",serif;font-size:clamp(28px,5vw,48px);color:var(--navy);margin-bottom:14px;}
-.cta-sub{font-size:16px;color:var(--gold-dark);margin-bottom:36px;font-weight:300;}
-.cta-acts{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+.cta-sec{background:var(--gold);border-top:none;padding:100px 24px;text-align:left;}
+.cta-title{font-family:"DM Serif Display",serif;font-size:clamp(36px,6vw,64px);color:var(--navy);margin-bottom:16px;letter-spacing:-1px;line-height:1.0;}
+.cta-sub{font-size:18px;color:rgba(13,27,62,0.65);margin-bottom:40px;font-weight:300;max-width:480px;}
+.cta-acts{display:flex;gap:14px;justify-content:flex-start;flex-wrap:wrap;}
 
 /* ── LOGGED-IN HERO PROGRESS CARD ── */
 .hero-progress-card{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:16px 20px;margin-top:28px;display:none;}
@@ -554,41 +554,53 @@ footer{background:#0B1530;padding:48px 24px 32px;}
       </div>
     </div>
 
-    <!-- Right: Dashboard Mockup -->
-    <div class="mockup">
-      <div class="mk-topbar">
-        <div class="mk-dots">
-          <div class="mk-dot" style="background:#FF5F57;"></div>
-          <div class="mk-dot" style="background:#FEBC2E;"></div>
-          <div class="mk-dot" style="background:#28C840;"></div>
-        </div>
-        <div class="mk-title-bar" id="mkTitleBar">CMA Student Portal</div>
-      </div>
-      <div class="mk-body">
-        <div class="mk-course-label">Currently Enrolled</div>
-        <div class="mk-course-name" id="mkCourseName">Liturgical Music Foundations</div>
-        <div class="mk-prog-row">
-          <span class="mk-prog-label">Course Progress</span>
-          <span class="mk-prog-num" id="mkProgNum">78%</span>
-        </div>
-        <div class="mk-prog-bar"><div class="mk-prog-fill" id="mkProgFill" style="width:78%"></div></div>
-        <div class="mk-mod-label">Module Progress</div>
-        <div class="mk-mod-list" id="mkModList">
-          <div class="mk-mod-item done">Sacred Music History</div>
-          <div class="mk-mod-item done">Gregorian Chant Fundamentals</div>
-          <div class="mk-mod-item done">Choir Direction Basics</div>
-          <div class="mk-mod-item active">Liturgical Calendar and Music</div>
-          <div class="mk-mod-item lock">Sacred Polyphony</div>
-          <div class="mk-mod-item lock">Final Assessment</div>
-        </div>
-        <div class="mk-next">
-          <div>
-            <div class="mk-next-label">Up Next</div>
-            <div class="mk-next-name" id="mkNextName">Module 4 Quiz</div>
+    <!-- Right: Certificate Preview -->
+    <div style="position:relative;">
+      <div style="background:linear-gradient(135deg,#0F2040 0%,#0D1B3E 100%);border-radius:20px;padding:40px 36px;border:1px solid rgba(201,168,76,0.2);box-shadow:0 40px 100px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.04);">
+        <!-- Header -->
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid rgba(201,168,76,0.15);">
+          <div style="width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,0.1);border:1.5px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg viewBox="0 0 32 32" width="22" height="22"><path d="M7 4L25 4L25 22Q16 28 7 22Z" fill="none" stroke="#C9A84C" stroke-width="1.5"/><rect x="14.5" y="7" width="3" height="10" rx="1" fill="#C9A84C"/><rect x="9" y="11" width="14" height="2.5" rx="1" fill="#C9A84C"/></svg>
           </div>
-          <button class="mk-next-btn">Start &#8594;</button>
+          <div>
+            <div style="font-family:'DM Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(201,168,76,0.7);margin-bottom:3px;">Catholic Diocese of Warri</div>
+            <div style="font-family:'DM Serif Display',serif;font-size:15px;color:white;line-height:1.2;">Catholic Music Academy</div>
+          </div>
+        </div>
+        <!-- Currently Enrolled -->
+        <div style="font-family:'DM Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:6px;">Currently Enrolled</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:20px;color:white;margin-bottom:24px;line-height:1.2;" id="mkCourseName">Liturgical Music Foundations</div>
+        <!-- Progress -->
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+          <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,255,255,0.4);font-weight:600;">Course Progress</div>
+          <div style="font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:var(--gold);" id="mkProgNum">78%</div>
+        </div>
+        <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;margin-bottom:28px;">
+          <div style="height:100%;background:linear-gradient(90deg,var(--gold),#E8C96A);border-radius:2px;width:78%;transition:width 1s ease;" id="mkProgFill"></div>
+        </div>
+        <!-- Modules -->
+        <div style="font-family:'DM Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:12px;">Module Progress</div>
+        <div style="display:flex;flex-direction:column;gap:6px;" id="mkModList">
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(22,163,74,0.08);border-radius:8px;border:1px solid rgba(22,163,74,0.2);">
+            <span style="font-size:10px;color:#4ADE80;font-weight:700;">✓</span>
+            <span style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(255,255,255,0.6);">Sacred Music History</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(22,163,74,0.08);border-radius:8px;border:1px solid rgba(22,163,74,0.2);">
+            <span style="font-size:10px;color:#4ADE80;font-weight:700;">✓</span>
+            <span style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(255,255,255,0.6);">Gregorian Chant Fundamentals</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(201,168,76,0.08);border-radius:8px;border:1px solid rgba(201,168,76,0.25);">
+            <span style="font-size:9px;color:var(--gold);">▶</span>
+            <span style="font-family:'DM Sans',sans-serif;font-size:12px;color:white;font-weight:600;" id="mkNextName">Liturgical Calendar and Music</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;">
+            <span style="font-size:10px;opacity:0.3;">🔒</span>
+            <span style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(255,255,255,0.2);">Sacred Polyphony</span>
+          </div>
         </div>
       </div>
+      <!-- Floating badge -->
+      <div style="position:absolute;bottom:-16px;right:24px;background:var(--gold);color:var(--navy);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:800;padding:8px 16px;border-radius:100px;letter-spacing:0.3px;box-shadow:0 8px 24px rgba(201,168,76,0.4);">🎓 Nationally Certified</div>
     </div>
 
   </div>
@@ -813,12 +825,14 @@ footer{background:#0B1530;padding:48px 24px 32px;}
 
 <!-- ── SECTION 8: CTA ── -->
 <section class="cta-sec">
-  <div style="max-width:560px;margin:0 auto;">
-    <h2 class="cta-title" id="ctaTitle">Begin your music education journey</h2>
-    <p class="cta-sub" id="ctaSub">Applications are open. Catholic Diocese of Warri.</p>
-    <div class="cta-acts" id="ctaActs">
-      <a class="btn btn-navy" href="/apply" style="font-size:15px;padding:14px 32px;">Apply Now</a>
-      <a class="btn btn-gold-outline" href="/portal" style="font-size:14px;padding:13px 26px;">Already enrolled? Log In</a>
+  <div style="max-width:1160px;margin:0 auto;padding:0 24px;">
+    <div style="max-width:640px;">
+      <h2 class="cta-title" id="ctaTitle">Begin your<br>music education.</h2>
+      <p class="cta-sub" id="ctaSub">Applications are open. The Catholic Music Academy is ready to receive you.</p>
+      <div class="cta-acts" id="ctaActs">
+        <a class="btn btn-navy" href="/apply" style="font-size:15px;padding:16px 36px;">Apply Now →</a>
+        <a class="btn" href="/portal" style="font-size:14px;padding:15px 28px;background:rgba(13,27,62,0.08);color:var(--navy);border:2px solid rgba(13,27,62,0.25);border-radius:10px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;">Already enrolled? Sign In</a>
+      </div>
     </div>
   </div>
 </section>
