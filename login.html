@@ -409,7 +409,7 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
         <div class="login-err" id="loginErr"></div>
         <button class="btn btn-primary" id="loginBtn" style="width:100%;font-size:15px;padding:15px;" onclick="doLogin()">Sign in →</button>
         <div style="text-align:center;margin-top:18px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;">
-          <a href="forgot-password.html" style="font-size:12px;color:var(--muted);text-decoration:none;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--muted)'">Forgot password?</a>
+          <a href="/forgot-password" style="font-size:12px;color:var(--muted);text-decoration:none;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--muted)'">Forgot password?</a>
           <span style="font-size:12px;color:var(--dim);">·</span>
           <a href="/home" style="font-size:12px;color:var(--muted);text-decoration:none;" onmouseover="this.style.color='var(--navy)'" onmouseout="this.style.color='var(--muted)'">← Home</a>
         </div>
@@ -875,7 +875,7 @@ async function loadCourseAndModulesFromDB(programmeStr) {
     } catch(e){ /* use default */ }
 
     var res = await fetch(
-      SUPA_URL + '/rest/v1/course_content?order=course_order.asc,module_index.asc',
+      SUPA_URL + '/rest/v1/course_content?published=eq.true&order=course_order.asc,module_index.asc',
       { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY } }
     );
     if (!res.ok) throw new Error('fetch failed');
@@ -932,10 +932,8 @@ async function loadCourseAndModulesFromDB(programmeStr) {
       }
     }
 
-    // Only show published modules to students; use all rows to identify the course
-    var publishedRows = matchedGroup.rows.filter(function(r) { return r.published; });
-    // If admin hasn't published any yet, show all (better than blank — useful during setup)
-    var moduleRows = publishedRows.length ? publishedRows : matchedGroup.rows;
+    // DB query already filters published=eq.true, so all rows here are published
+    var moduleRows = matchedGroup.rows;
 
     result.course = {
       id: matchedGroup.id,
@@ -1041,21 +1039,31 @@ function renderDashboard() {
             : 'All modules complete · Awaiting final examination';
           var bgStyle = isPassed
             ? 'background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border-color:#16A34A;'
+            : isFailed
+            ? 'background:linear-gradient(135deg,#FFF5F5,#FEE2E2);border-color:#DC2626;'
             : 'background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border-color:#16A34A;';
+
+          var bandStyle = isPassed ? 'background:linear-gradient(90deg,#16A34A,#86EFAC);'
+            : isFailed ? 'background:linear-gradient(90deg,#DC2626,#FCA5A5);'
+            : 'background:linear-gradient(90deg,#16A34A,#86EFAC);';
+          var titleColor = isFailed ? 'color:#991B1B;' : 'color:#14532D;';
+          var subColor = isFailed ? 'color:#DC2626;' : 'color:#16A34A;';
+          var ctaBg = isFailed ? 'background:#FEE2E2;border-left-color:#DC2626;' : 'background:#BBF7D0;border-left-color:#16A34A;';
+          var ctaColor = isFailed ? 'color:#991B1B;' : 'color:#15803D;';
 
           var certBtn = isPassed
             ? '<button onclick="downloadPortalCertificate(\''+e.course_id+'\',\''+e.programme+'\')" style="margin-top:10px;display:inline-flex;align-items:center;gap:6px;background:#0D1B3E;color:white;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;">🏆 Download Certificate</button>'
             : '';
 
           return '<div class="course-card" style="'+bgStyle+'margin-bottom:12px;" data-cid="'+e.course_id+'" data-prog="'+e.programme.replace(/"/g,'&quot;')+'" onclick="switchCourse(this.dataset.cid,this.dataset.prog)">'
-            +'<div class="course-card-band" style="background:linear-gradient(90deg,#16A34A,#86EFAC);"></div>'
+            +'<div class="course-card-band" style="'+bandStyle+'"></div>'
             +'<div class="course-card-body">'
             +'<div class="course-status-pill" style="'+pillStyle+'">'+pillText+'</div>'
-            +'<div class="course-card-title" style="color:#14532D;">'+e.programme+'</div>'
-            +'<div style="font-size:12px;color:#16A34A;margin-top:4px;">'+subText+'</div>'
+            +'<div class="course-card-title" style="'+titleColor+'">'+e.programme+'</div>'
+            +'<div style="font-size:12px;'+subColor+'margin-top:4px;">'+subText+'</div>'
             +certBtn
             +'</div>'
-            +'<div class="course-card-cta" style="background:#BBF7D0;border-left-color:#16A34A;"><div class="course-card-cta-text" style="color:#15803D;">Review Course →</div></div>'
+            +'<div class="course-card-cta" style="'+ctaBg+'"><div class="course-card-cta-text" style="'+ctaColor+'">Review Course →</div></div>'
             +'</div>';
         }).join('');
       }
@@ -1278,27 +1286,25 @@ async function submitAddCourse() {
     document.getElementById('addCourseModal').remove();
 
     // Send emails — use captured values, not addCourseSelected (which may be null)
-    fetch('/api/application-received', {
+    fetch('/api/notify', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        to: currentStudent.email,
+        action: 'application_received',
+        email: currentStudent.email,
         firstName: currentStudent.first_name,
-        programme: selectedTitle,
-        ref: ref,
-        testMode: false
+        programme: selectedTitle
       })
     }).catch(function(e){ console.warn('Confirmation email failed:',e); });
 
-    fetch('/api/notify-admin', {
+    fetch('/api/notify', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        studentName: currentStudent.first_name+' '+currentStudent.last_name,
-        studentEmail: currentStudent.email,
-        programme: selectedTitle,
-        ref: ref,
-        type: 'additional'
+        action: 'notify_admin',
+        applicantName: currentStudent.first_name+' '+currentStudent.last_name,
+        applicantEmail: currentStudent.email,
+        programme: selectedTitle
       })
     }).catch(function(e){ console.warn('Admin notification failed:',e); });
 
@@ -2002,6 +2008,15 @@ function renderCourse() {
     banner.innerHTML = '<div style="font-size:32px;margin-bottom:8px;">📅</div>'
       +'<div style="font-family:DM Serif Display,serif;font-size:20px;color:#312E81;margin-bottom:6px;">Examination Scheduled</div>'
       +'<div style="font-size:13px;color:#4338CA;line-height:1.65;">Your final examination has been scheduled.<br>Check your WhatsApp for venue and time details. Prepare well!</div>';
+    var modulesList = document.getElementById('modulesList');
+    if (modulesList) modulesList.before(banner);
+  } else if (enrStatus === 'exam_failed') {
+    var banner = document.createElement('div');
+    banner.id = 'courseCompleteBanner';
+    banner.style.cssText = 'background:linear-gradient(135deg,#FFF5F5,#FEE2E2);border:2px solid #DC2626;border-radius:14px;padding:24px;margin-bottom:20px;text-align:center;';
+    banner.innerHTML = '<div style="font-size:32px;margin-bottom:8px;">✗</div>'
+      +'<div style="font-family:DM Serif Display,serif;font-size:20px;color:#991B1B;margin-bottom:6px;">Examination — Resit Required</div>'
+      +'<div style="font-size:13px;color:#DC2626;line-height:1.65;">You did not pass your final examination.<br>Please contact the Academy via WhatsApp to arrange your resit.</div>';
     var modulesList = document.getElementById('modulesList');
     if (modulesList) modulesList.before(banner);
   } else if (allDone) {
