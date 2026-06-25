@@ -174,6 +174,7 @@ module.exports = async function handler(req, res) {
             hash_version: a.salt ? 'pbkdf2' : (wasRevoked ? 'needs_reset' : 'sha256'),
             security_question: a.security_question || null,
             security_answer_hash: a.security_answer_hash || null,
+            security_answer_salt: a.security_answer_salt || null,
             phone: a.phone,
             whatsapp: a.whatsapp || a.phone,
             state: a.state,
@@ -202,6 +203,7 @@ module.exports = async function handler(req, res) {
             state: a.state,
             security_question: a.security_question || null,
             security_answer_hash: a.security_answer_hash || null,
+            security_answer_salt: a.security_answer_salt || null,
             status: 'active'
           });
           studentId = created && created[0] ? created[0].id : null;
