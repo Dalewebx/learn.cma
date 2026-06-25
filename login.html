@@ -1766,7 +1766,7 @@ async function saveAttempt(modIndex, score, total, passed) {
   try {
     await sbPost('assessment_attempts', {
       student_id: currentStudent.id,
-      course_id: CURRENT_COURSE ? CURRENT_COURSE.id : 1,
+      course_id: CURRENT_COURSE ? CURRENT_COURSE.id : null,
       module_index: modIndex,
       score: score,
       total: total,
@@ -1777,6 +1777,8 @@ async function saveAttempt(modIndex, score, total, passed) {
 }
 
 // ── NAVIGATION ───────────────────────────────────────────────────────────────
+function escQ(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
