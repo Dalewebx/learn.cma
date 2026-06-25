@@ -2911,6 +2911,7 @@ function toggleCMPublish() {
   cmState.published = !cmState.published;
   var sw = document.getElementById('cmPubSwitch');
   var lb = document.getElementById('cmPubLabel');
+  if (sw) sw.classList.toggle('on', cmState.published);
   if (lb) lb.textContent = cmState.published ? 'Published' : 'Draft';
 }
 
@@ -4759,5 +4760,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 </script>
+<div style="position:fixed;bottom:10px;right:14px;font-size:10px;color:rgba(255,255,255,0.15);z-index:10;pointer-events:none;">Built by <span style="color:rgba(201,168,76,0.3);font-weight:600;">DaleX</span></div>
 </body>
 </html>
