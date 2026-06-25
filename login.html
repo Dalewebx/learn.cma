@@ -226,6 +226,13 @@ body{background:var(--white);color:var(--text);font-family:DM Sans,sans-serif;mi
 @media(max-width:380px){.brand-sub{display:none;}.chip span{display:none;}.btn-logout{display:none;}}
 @media(min-width:601px){.brand-text-desktop{display:block!important;}}
 </style>
+<!-- Performance: establish connections early -->
+<link rel="preconnect" href="https://www.youtube.com">
+<link rel="preconnect" href="https://i.ytimg.com">
+<link rel="preconnect" href="https://www.youtube-nocookie.com">
+<link rel="dns-prefetch" href="https://ltqwofagofmvufvqsuyj.supabase.co">
+<!-- Preload YouTube IFrame API so audio plays on first tap with no delay -->
+<script src="https://www.youtube.com/iframe_api" async></script>
 </head>
 <body class="loading">
 
@@ -2040,7 +2047,13 @@ window._audioTimers = {};
 
 function loadYTApiIfNeeded(cb) {
   if (window.YT && window.YT.Player) { cb(); return; }
-  window.onYouTubeIframeAPIReady = cb;
+  // API already loading from head — just queue the callback
+  var prev = window.onYouTubeIframeAPIReady;
+  window.onYouTubeIframeAPIReady = function() {
+    if (prev) prev();
+    cb();
+  };
+  // Add script only if somehow not injected yet
   if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
     var s = document.createElement('script');
     s.src = 'https://www.youtube.com/iframe_api';
@@ -3186,6 +3199,12 @@ function generateCertificate() {
     +'<script>window.onload=function(){window.print();}<\/script>'
     +'</body></html>');
   win.document.close();
+}
+// ── SERVICE WORKER REGISTRATION ───────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/service-worker.js').catch(function(){});
+  });
 }
 
 </script>
