@@ -2455,7 +2455,7 @@ function renderCMOverview() {
     el.innerHTML = '<div class="cm-empty-state"><div style="font-size:40px;margin-bottom:12px;">📚</div><div style="font-family:\'DM Serif Display\',serif;font-size:22px;color:var(--text);margin-bottom:8px;">No Courses Yet</div><div style="font-size:13px;color:var(--muted);line-height:1.7;max-width:360px;margin:0 auto 20px;">Create your first course to get started. You can add modules, content, and assessments after.</div><button class="btn btn-primary" onclick="showAddCourseModal()">+ Create First Course</button></div>';
     return;
   }
-  var html = '<div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;"><span style="font-size:13px;color:var(--muted);">'+cmCourses.length+' course(s) — click to expand and manage modules</span><button class="btn btn-primary btn-sm" onclick="showAddCourseModal()">+ New Course</button></div>';
+  var html = '<div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;"><span style="font-size:13px;color:var(--muted);">'+cmCourses.length+' course(s) — click to expand and manage modules</span>'+(isMaster()?'<button class="btn btn-primary btn-sm" onclick="showAddCourseModal()">+ New Course</button>':'')+'</div>';
   html += cmCourses.map(function(c) {
     var mods = c.modules||[];
     var publishedMods = mods.filter(function(m){return m.published;}).length;
@@ -2496,18 +2496,23 @@ function toggleCBOverview(id) {
 function renderCMSidebar() {
   var el = document.getElementById('cm-sidebar-wrap');
   if (!el) return;
-  var html = '<div class="cm-sidebar"><div class="cm-sidebar-hdr">Curriculum <button class="btn btn-primary btn-xs" onclick="showAddCourseModal()">+</button></div>';
-  cmCourses.forEach(function(c) {
+  // Lecturers only see their assigned course
+  var visibleCMs = isMaster() ? cmCourses : cmCourses.filter(function(c){ return c.id === lecturerCourseId(); });
+  var html = '<div class="cm-sidebar"><div class="cm-sidebar-hdr">Curriculum'
+    +(isMaster() ? ' <button class="btn btn-primary btn-xs" onclick="showAddCourseModal()">+</button>' : '')
+    +'</div>';
+  visibleCMs.forEach(function(c) {
+    var isOwned = isMaster() || c.id === lecturerCourseId();
     var isOpen = cmState.selectedCourse === c.id;
     html += '<div class="cm-course-grp'+(isOpen?' open':'')+'" id="cmcg-'+c.id+'">'
       +'<div class="cm-course-label" onclick="toggleCMCourse(\''+c.id+'\')" style="position:relative;">'
       +'<div class="cm-course-dot" style="background:'+c.color+';"></div>'
       +'<span style="flex:1;font-size:12px;">'+c.title+'</span>'
       +'<span class="cm-course-chevron">▶</span>'
-      +'<span onclick="event.stopPropagation();deleteCourse(\''+c.id+'\',\''+c.title.replace(/'/g,"\\'")+'\')" '
+      +(isMaster() ? '<span onclick="event.stopPropagation();deleteCourse(\''+c.id+'\',\''+c.title.replace(/'/g,"\\'")+'\')" '
         +'title="Delete course" '
         +'style="margin-left:4px;color:var(--danger);font-size:13px;padding:2px 5px;border-radius:4px;cursor:pointer;opacity:0.6;" '
-        +'onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">✕</span>'
+        +'onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">✕</span>' : '')
       +'</div>'
       +(isOpen ? '<div class="cm-module-list">'
         +(c.modules||[]).map(function(m,i){
@@ -2517,13 +2522,13 @@ function renderCMSidebar() {
           return '<div class="cm-module-item'+(isActive?' active':'')+'" onclick="selectCMModule(\''+c.id+'\','+i+')" style="display:flex;align-items:center;gap:0;">'
             +'<div class="cm-module-dot" style="background:'+dot+';flex-shrink:0;"></div>'
             +'<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+(m.title.length>24?m.title.substring(0,22)+'…':m.title)+'</span>'
-            +'<span onclick="event.stopPropagation();deleteModule(\''+c.id+'\','+i+',\''+m.title.replace(/'/g,"\\'")+'\')" '
+            +(isOwned ? '<span onclick="event.stopPropagation();deleteModule(\''+c.id+'\','+i+',\''+m.title.replace(/'/g,"\\'")+'\')" '
               +'title="Delete module" '
               +'style="color:var(--danger);font-size:11px;padding:2px 4px;border-radius:3px;cursor:pointer;opacity:0.5;flex-shrink:0;" '
-              +'onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">✕</span>'
+              +'onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">✕</span>' : '')
             +'</div>';
         }).join('')
-        +'<div class="cm-add-mod"><button class="btn btn-ghost btn-xs" style="width:100%;font-size:11px;" onclick="addNewModule(\''+c.id+'\')">+ Module</button></div>'
+        +(isOwned ? '<div class="cm-add-mod"><button class="btn btn-ghost btn-xs" style="width:100%;font-size:11px;" onclick="addNewModule(\''+c.id+'\')">+ Module</button></div>' : '')
         +'</div>'
       : '')
       +'</div>';
