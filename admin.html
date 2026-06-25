@@ -2010,6 +2010,13 @@ function openStudentDetail(sid) {
   goTab('student-detail');
 
   var enrols = allEnrolments.filter(function(e){return e.student_id===sid&&(isMaster()||e.course_id===lecturerCourseId());});
+  // If lecturer and enrols empty (null course_id student), try matching by programme
+  if (!isMaster() && !enrols.length) {
+    var lecCourse = cmCourses.find(function(c){ return c.id === lecturerCourseId(); });
+    if (lecCourse) {
+      enrols = allEnrolments.filter(function(e){ return e.student_id===sid && e.programme===lecCourse.title; });
+    }
+  }
   var attempts = getStudentAttempts(sid);
   var app = allApplications.find(function(a){return a.email===s.email;})||{};
   var wn = s.whatsapp||s.phone||'';
@@ -2109,6 +2116,26 @@ function openStudentDetail(sid) {
   }
   coursesHtml += '</div>';
 
+  // ── MARK EXAM READY — shown prominently in Progress tab for all admins ──
+  var notYetPassed = enrols.some(function(e){ return !['exam_passed','exam_failed'].includes(e.status); });
+  // Also include enrolments with null course_id (apply-form students)
+  var allStudentEnrols = isMaster()
+    ? allEnrolments.filter(function(e){ return e.student_id===sid; })
+    : enrols;
+  var examReadyEnrols = allStudentEnrols.filter(function(e){ return !['exam_passed','exam_failed'].includes(e.status); });
+
+  if (examReadyEnrols.length) {
+    coursesHtml += '<div style="background:#EEF2FF;border:1.5px solid #6366F1;border-radius:12px;padding:16px;margin-top:12px;">'
+      +'<div style="font-size:13px;font-weight:700;color:#312E81;margin-bottom:4px;">📋 Manual Override</div>'
+      +'<div style="font-size:12px;color:#4338CA;margin-bottom:12px;line-height:1.6;">If this student has completed their learning but is not showing in Exam Ready (e.g. due to a system issue), use this button to manually mark them ready.</div>'
+      +examReadyEnrols.map(function(enr){
+        var cName = enr.programme || (cmCourses.find(function(c){return c.id===enr.course_id;})||{}).title || 'Course';
+        var cId = enr.course_id || 'null';
+        return '<button class="btn btn-primary btn-sm" style="margin-right:8px;margin-bottom:6px;" onclick="manualMarkComplete(\''+sid+'\',\''+cId+'\',\''+s.first_name+' '+s.last_name+'\')">✓ Mark Exam Ready: '+cName+'</button>';
+      }).join('')
+      +'</div>';
+  }
+
   // ── TIMELINE ──
   var tlEvents = [];
   if (app.submitted_at) tlEvents.push({time:app.submitted_at,color:'#0D1B3E',text:'Applied to Academy',sub:fmtDate(app.submitted_at)});
@@ -2156,6 +2183,19 @@ function openStudentDetail(sid) {
   var adminActionsHtml = '<div class="card" style="margin-bottom:14px;">'
     +'<div class="card-title" style="margin-bottom:12px;">Admin Actions</div>'
     +'<div style="display:grid;grid-template-columns:1fr;gap:12px;">'
+    // Mark Exam Ready — available to master and lecturer for their course
+    +(function(){
+      var activeEnrols = enrols.filter(function(e){ return e.status==='active'||e.status==='complete'; });
+      if (!activeEnrols.length || examPassed) return '';
+      return '<div style="background:#EEF2FF;border-radius:10px;padding:14px;">'
+        +'<div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px;">📋 Mark Exam Ready</div>'
+        +'<div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Manually mark this student as having completed all modules. They will appear in the Exam Ready tab so you can schedule their exam.</div>'
+        +activeEnrols.map(function(enr){
+          var cName = enr.programme || (cmCourses.find(function(c){return c.id===enr.course_id;})||{}).title || enr.course_id || 'Course';
+          return '<button class="btn btn-primary btn-sm" style="margin-bottom:6px;width:100%;" onclick="manualMarkComplete(\''+sid+'\',\''+enr.course_id+'\',\''+s.first_name+' '+s.last_name+'\')" >✓ Mark Exam Ready: '+cName+'</button>';
+        }).join('')
+        +'</div>';
+    })()
     // Password reset
     +'<div style="background:var(--surface);border-radius:10px;padding:14px;">'
     +'<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;">Reset Password</div>'
@@ -2177,9 +2217,10 @@ function openStudentDetail(sid) {
         +'</div>')
     +'</div></div>';
 
-  // ── TABS — hide nudge for passed students, hide admin tab for lecturers ──
+  // ── TABS — hide nudge for passed students ──
+  // Show Admin tab to master AND lecturer (lecturer needs Mark Exam Ready)
   var showNudge = wn && !examPassed;
-  var showAdminTab = isMaster();
+  var showAdminTab = true; // both roles can mark exam ready; password/revoke are inside and already guarded
   var adminTabIdx = showNudge ? 3 : 2;
   document.getElementById('studentDetailContent').innerHTML = hdr
     + '<div class="tabs" style="margin-bottom:16px;">'
@@ -2194,6 +2235,28 @@ function openStudentDetail(sid) {
     + (showAdminTab?'<div id="sd'+adminTabIdx+'" style="display:none;">'+adminActionsHtml+'</div>':'');
 }
 
+
+async function manualMarkComplete(studentId, courseId, studentName) {
+  if (!confirm('Mark '+studentName+' as Exam Ready?\n\nThis sets their enrolment to "complete" so you can schedule their exam.')) return;
+  try {
+    var isNull = !courseId || courseId === 'null';
+    // Patch by course_id if we have one
+    if (!isNull) {
+      await sb('enrolments','PATCH',{status:'complete',completed_at:new Date().toISOString()},
+        'student_id=eq.'+studentId+'&course_id=eq.'+courseId);
+    }
+    // Also patch null course_id rows (apply-form students) — sets course_id + status
+    await sb('enrolments','PATCH',{status:'complete',completed_at:new Date().toISOString(), course_id: isNull ? null : courseId},
+      'student_id=eq.'+studentId+'&course_id=is.null').catch(function(){});
+    showToast(studentName+' marked as Exam Ready. Check the Exam Ready tab.');
+    await loadAllData();
+    openStudentDetail(studentId);
+    renderExamReady();
+    updateBadges();
+  } catch(e) {
+    showToast('Error: '+e.message,'err');
+  }
+}
 
 function showStudentTab(el, idx) {
   document.querySelectorAll('#page-student-detail .tab').forEach(function(t){t.classList.remove('active');});
@@ -2428,35 +2491,24 @@ function saveCourseLocally() {
 }
 
 function renderCourses() {
-  // Filter cmCourses for lecturers
-  if (currentAdmin && currentAdmin.role === 'lecturer' && currentAdmin.assigned_course_id) {
-    var filtered = cmCourses.filter(function(c){ return c.id === currentAdmin.assigned_course_id; });
-    if (filtered.length) {
-      // Temporarily scope to assigned course only for rendering
-      var _all = cmCourses;
-      cmCourses = filtered;
-      renderCMSidebar();
-      if (!cmState.selectedModule) { renderCMOverview(); }
-      cmCourses = _all;
-      return;
-    }
-  }
   renderCMSidebar();
-  if (!cmState.selectedModule) {
-    // Show overview list of all courses
-    renderCMOverview();
-  }
+  if (!cmState.selectedModule) renderCMOverview();
+  // Hide New Course button for lecturers every time this tab renders
+  var newCourseBtn = document.querySelector('#page-courses .page-header button');
+  if (newCourseBtn) newCourseBtn.style.display = isMaster() ? '' : 'none';
 }
 
 function renderCMOverview() {
   var el = document.getElementById('cm-editor-wrap');
   if (!el) return;
-  if (!cmCourses.length) {
+  // Always filter by role — don't trust cmCourses global state
+  var courses = isMaster() ? cmCourses : cmCourses.filter(function(c){ return c.id === lecturerCourseId(); });
+  if (!courses.length) {
     el.innerHTML = '<div class="cm-empty-state"><div style="font-size:40px;margin-bottom:12px;">📚</div><div style="font-family:\'DM Serif Display\',serif;font-size:22px;color:var(--text);margin-bottom:8px;">No Courses Yet</div><div style="font-size:13px;color:var(--muted);line-height:1.7;max-width:360px;margin:0 auto 20px;">Create your first course to get started. You can add modules, content, and assessments after.</div><button class="btn btn-primary" onclick="showAddCourseModal()">+ Create First Course</button></div>';
     return;
   }
-  var html = '<div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;"><span style="font-size:13px;color:var(--muted);">'+cmCourses.length+' course(s) — click to expand and manage modules</span>'+(isMaster()?'<button class="btn btn-primary btn-sm" onclick="showAddCourseModal()">+ New Course</button>':'')+'</div>';
-  html += cmCourses.map(function(c) {
+  var html = '<div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;"><span style="font-size:13px;color:var(--muted);">'+courses.length+' course(s) — click to expand and manage modules</span>'+(isMaster()?'<button class="btn btn-primary btn-sm" onclick="showAddCourseModal()">+ New Course</button>':'')+'</div>';
+  html += courses.map(function(c) {
     var mods = c.modules||[];
     var publishedMods = mods.filter(function(m){return m.published;}).length;
     return '<div class="course-block" id="cbo-'+c.id+'">'
@@ -4586,6 +4638,10 @@ function applyRoleSidebar(role) {
   // Create Student button: master only
   var createBtn = document.querySelector('[onclick="showCreateStudentModal()"]');
   if (createBtn) createBtn.style.display = isMaster ? '' : 'none';
+
+  // Hide static New Course button for lecturers
+  var newCourseBtn = document.querySelector('#page-courses .page-header button');
+  if (newCourseBtn) newCourseBtn.style.display = isMaster ? '' : 'none';
 
   var rc = document.getElementById('navRoleChip');
   if (rc) rc.textContent = isMaster ? 'Master' : 'Lecturer';
