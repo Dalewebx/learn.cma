@@ -2116,23 +2116,50 @@ function openStudentDetail(sid) {
   }
   coursesHtml += '</div>';
 
-  // ── MARK EXAM READY — shown prominently in Progress tab for all admins ──
-  var notYetPassed = enrols.some(function(e){ return !['exam_passed','exam_failed'].includes(e.status); });
-  // Also include enrolments with null course_id (apply-form students)
+  // ── MARK EXAM READY — only per course where ALL modules are done ──
+  var examReadyButtons = '';
   var allStudentEnrols = isMaster()
     ? allEnrolments.filter(function(e){ return e.student_id===sid; })
     : enrols;
-  var examReadyEnrols = allStudentEnrols.filter(function(e){ return !['exam_passed','exam_failed'].includes(e.status); });
 
-  if (examReadyEnrols.length) {
-    coursesHtml += '<div style="background:#EEF2FF;border:1.5px solid #6366F1;border-radius:12px;padding:16px;margin-top:12px;">'
-      +'<div style="font-size:13px;font-weight:700;color:#312E81;margin-bottom:4px;">📋 Manual Override</div>'
-      +'<div style="font-size:12px;color:#4338CA;margin-bottom:12px;line-height:1.6;">If this student has completed their learning but is not showing in Exam Ready (e.g. due to a system issue), use this button to manually mark them ready.</div>'
-      +examReadyEnrols.map(function(enr){
-        var cName = enr.programme || (cmCourses.find(function(c){return c.id===enr.course_id;})||{}).title || 'Course';
-        var cId = enr.course_id || 'null';
-        return '<button class="btn btn-primary btn-sm" style="margin-right:8px;margin-bottom:6px;" onclick="manualMarkComplete(\''+sid+'\',\''+cId+'\',\''+s.first_name+' '+s.last_name+'\')">✓ Mark Exam Ready: '+cName+'</button>';
-      }).join('')
+  allStudentEnrols.forEach(function(enr) {
+    // Skip if already complete, scheduled or passed
+    if (['complete','exam_scheduled','exam_passed','exam_failed'].includes(enr.status)) return;
+
+    // Find the course
+    var course = cmCourses.find(function(c){ return c.id===enr.course_id; });
+    if (!course && enr.programme) {
+      course = cmCourses.find(function(c){ return c.title===enr.programme; });
+    }
+    if (!course) return;
+
+    // Count published modules in this course
+    var publishedMods = (course.modules||[]).filter(function(m){ return m.published !== false; });
+    var totalPub = publishedMods.length;
+    if (totalPub === 0) return; // no content yet
+
+    // Count student's completed modules for this course
+    var done = allProgress.filter(function(p){
+      return p.student_id === sid && (p.course_id === course.id || (!p.course_id && enr.programme === course.title));
+    });
+    var uniqueDone = done.map(function(p){return p.module_index;}).filter(function(v,i,a){return a.indexOf(v)===i;});
+
+    // Only show if ALL modules completed
+    if (uniqueDone.length < totalPub) return;
+
+    var cName = course.title;
+    var cId = enr.course_id || 'null';
+    examReadyButtons += '<button class="btn btn-primary btn-sm" '
+      +'style="margin-right:8px;margin-bottom:6px;" '
+      +'onclick="manualMarkComplete(\''+sid+'\',\''+cId+'\',\''+cName+'\',\''+s.first_name+' '+s.last_name+'\')" >'
+      +'✓ Mark Exam Ready — '+cName+'</button>';
+  });
+
+  if (examReadyButtons) {
+    coursesHtml += '<div id="examReadyOverride_'+sid+'" style="background:#EEF2FF;border:1.5px solid #6366F1;border-radius:12px;padding:16px;margin-top:12px;">'
+      +'<div style="font-size:13px;font-weight:700;color:#312E81;margin-bottom:4px;">📋 Mark Exam Ready</div>'
+      +'<div style="font-size:12px;color:#4338CA;margin-bottom:12px;line-height:1.6;">This student has completed all modules. Use this if they are not yet appearing in the Exam Ready tab.</div>'
+      +examReadyButtons
       +'</div>';
   }
 
@@ -2183,19 +2210,6 @@ function openStudentDetail(sid) {
   var adminActionsHtml = '<div class="card" style="margin-bottom:14px;">'
     +'<div class="card-title" style="margin-bottom:12px;">Admin Actions</div>'
     +'<div style="display:grid;grid-template-columns:1fr;gap:12px;">'
-    // Mark Exam Ready — available to master and lecturer for their course
-    +(function(){
-      var activeEnrols = enrols.filter(function(e){ return e.status==='active'||e.status==='complete'; });
-      if (!activeEnrols.length || examPassed) return '';
-      return '<div style="background:#EEF2FF;border-radius:10px;padding:14px;">'
-        +'<div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px;">📋 Mark Exam Ready</div>'
-        +'<div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Manually mark this student as having completed all modules. They will appear in the Exam Ready tab so you can schedule their exam.</div>'
-        +activeEnrols.map(function(enr){
-          var cName = enr.programme || (cmCourses.find(function(c){return c.id===enr.course_id;})||{}).title || enr.course_id || 'Course';
-          return '<button class="btn btn-primary btn-sm" style="margin-bottom:6px;width:100%;" onclick="manualMarkComplete(\''+sid+'\',\''+enr.course_id+'\',\''+s.first_name+' '+s.last_name+'\')" >✓ Mark Exam Ready: '+cName+'</button>';
-        }).join('')
-        +'</div>';
-    })()
     // Password reset
     +'<div style="background:var(--surface);border-radius:10px;padding:14px;">'
     +'<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;">Reset Password</div>'
@@ -2236,19 +2250,27 @@ function openStudentDetail(sid) {
 }
 
 
-async function manualMarkComplete(studentId, courseId, studentName) {
-  if (!confirm('Mark '+studentName+' as Exam Ready?\n\nThis sets their enrolment to "complete" so you can schedule their exam.')) return;
+async function manualMarkComplete(studentId, courseId, courseName, studentName) {
+  if (!confirm('Mark '+studentName+' as Exam Ready for '+courseName+'?\n\nThis sets their enrolment to "complete". Only use this if they have finished all modules.')) return;
   try {
-    var isNull = !courseId || courseId === 'null';
-    // Patch by course_id if we have one
-    if (!isNull) {
-      await sb('enrolments','PATCH',{status:'complete',completed_at:new Date().toISOString()},
-        'student_id=eq.'+studentId+'&course_id=eq.'+courseId);
-    }
-    // Also patch null course_id rows (apply-form students) — sets course_id + status
-    await sb('enrolments','PATCH',{status:'complete',completed_at:new Date().toISOString(), course_id: isNull ? null : courseId},
-      'student_id=eq.'+studentId+'&course_id=is.null').catch(function(){});
-    showToast(studentName+' marked as Exam Ready. Check the Exam Ready tab.');
+    var res = await fetch('/api/grading', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        action: 'mark_exam_ready',
+        studentId: studentId,
+        courseId: courseId !== 'null' ? courseId : null,
+        programme: courseName
+      })
+    });
+    var json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Failed');
+
+    // Hide the button card immediately — don't wait for reload
+    var overrideCard = document.getElementById('examReadyOverride_'+studentId);
+    if (overrideCard) overrideCard.remove();
+
+    showToast(studentName+' marked as Exam Ready for '+courseName+'. Check Exam Ready tab.');
     await loadAllData();
     openStudentDetail(studentId);
     renderExamReady();
