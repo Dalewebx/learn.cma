@@ -293,6 +293,8 @@ tr:hover td{background:var(--surface);cursor:pointer;}
 .admin-nav-avatar{width:30px;height:30px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--navy);cursor:pointer;flex-shrink:0;}
 .admin-nav-logout{background:none;border:1px solid rgba(255,255,255,0.2);border-radius:7px;color:rgba(255,255,255,0.65);font-size:11px;font-weight:600;padding:5px 10px;cursor:pointer;font-family:"DM Sans",sans-serif;transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
 .admin-nav-logout:hover{background:rgba(220,38,38,0.2);border-color:rgba(220,38,38,0.4);color:#FCA5A5;}
+.admin-nav-support{background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);border-radius:7px;color:#C9A84C;font-size:11px;font-weight:700;padding:5px 10px;cursor:pointer;font-family:"DM Sans",sans-serif;transition:all 0.15s;white-space:nowrap;flex-shrink:0;margin-right:6px;}
+.admin-nav-support:hover{background:rgba(201,168,76,0.28);border-color:#C9A84C;color:#E8C96A;}
 .admin-tabs{background:var(--white);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;position:sticky;top:52px;z-index:299;flex-shrink:0;}
 .admin-tabs::-webkit-scrollbar{display:none;}
 .admin-tab{display:flex;align-items:center;gap:5px;padding:0 16px;height:44px;font-size:12px;font-weight:600;color:var(--muted);border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;background:none;font-family:"DM Sans",sans-serif;transition:all 0.15s;flex-shrink:0;}
@@ -535,8 +537,43 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
   <span class="admin-nav-role" id="navRoleChip">Master</span>
   <div class="admin-nav-spacer"></div>
   <div class="admin-nav-avatar" id="navInitial" title="">D</div>
+  <button class="admin-nav-support" onclick="showSupportModal()">🛟 Support</button>
   <button class="admin-nav-logout" onclick="adminLogout()">Sign out</button>
 </nav>
+
+<!-- SUPPORT MODAL -->
+<div id="supportModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;display:none;align-items:center;justify-content:center;padding:24px;">
+  <div style="background:var(--white);border-radius:20px;padding:36px 32px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,0.3);position:relative;">
+    <button onclick="hideSupportModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;">✕</button>
+    <div style="font-size:32px;margin-bottom:12px;">🛟</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--navy);margin-bottom:6px;">Need Help?</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:24px;">This platform was designed and built by <strong style="color:var(--navy);">DaleX</strong> (Daniel Dale Igwebuike). Reach out directly for any technical issue, question, or change request.</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <a href="https://wa.me/2349056209920" target="_blank" style="display:flex;align-items:center;gap:14px;background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:12px;padding:14px 18px;text-decoration:none;transition:all 0.18s;">
+        <span style="font-size:22px;">💬</span>
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#16A34A;margin-bottom:2px;">WhatsApp (Fastest)</div>
+          <div style="font-size:14px;font-weight:600;color:var(--navy);">+234 905 620 9920</div>
+        </div>
+      </a>
+      <a href="mailto:dalewebxmarketing@gmail.com" style="display:flex;align-items:center;gap:14px;background:var(--navy-pale);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;text-decoration:none;transition:all 0.18s;">
+        <span style="font-size:22px;">✉️</span>
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;">Email</div>
+          <div style="font-size:14px;font-weight:600;color:var(--navy);">dalewebxmarketing@gmail.com</div>
+        </div>
+      </a>
+      <a href="https://dalewebx.vercel.app" target="_blank" style="display:flex;align-items:center;gap:14px;background:var(--gold-light);border:1.5px solid #E8D48A;border-radius:12px;padding:14px 18px;text-decoration:none;transition:all 0.18s;">
+        <span style="font-size:22px;">🌐</span>
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:2px;">Portfolio</div>
+          <div style="font-size:14px;font-weight:600;color:var(--navy);">dalewebx.vercel.app</div>
+        </div>
+      </a>
+    </div>
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:12px;color:var(--dim);">Built with care for the Catholic Diocese of Warri · DaleX © 2026</div>
+  </div>
+</div>
 
 <!-- TAB BAR -->
 <div class="admin-tabs" id="adminTabs" style="display:none;">
@@ -4717,6 +4754,20 @@ function applyRoleSidebar(role) {
 // ── ROLE HELPERS ─────────────────────────────────────────────
 function isMaster() { return !currentAdmin || currentAdmin.role === 'master'; }
 function lecturerCourseId() { return currentAdmin && currentAdmin.assigned_course_id; }
+
+function showSupportModal() {
+  var m = document.getElementById('supportModal');
+  if (m) { m.style.display = 'flex'; }
+}
+function hideSupportModal() {
+  var m = document.getElementById('supportModal');
+  if (m) { m.style.display = 'none'; }
+}
+// Close support modal on backdrop click
+document.addEventListener('click', function(e) {
+  var m = document.getElementById('supportModal');
+  if (m && e.target === m) hideSupportModal();
+});
 
 // Returns students visible to current admin
 function visibleStudents() {
