@@ -232,6 +232,33 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
+    // ── MARK EXAM READY (manual admin override) ──────────────────
+    if (action === 'mark_exam_ready') {
+      const { studentId, courseId, programme } = req.body;
+      if (!studentId) return res.status(400).json({ error: 'Student ID required' });
+
+      // Patch enrolment — try course_id match first, then null course_id by programme
+      let updated = false;
+      if (courseId && courseId !== 'null') {
+        const r = await db('enrolments?student_id=eq.' + studentId + '&course_id=eq.' + courseId, 'PATCH', {
+          status: 'complete',
+          completed_at: new Date().toISOString()
+        });
+        if (r && r.length) updated = true;
+      }
+      // Also fix any null course_id rows for this programme
+      if (programme) {
+        await db('enrolments?student_id=eq.' + studentId + '&course_id=is.null&programme=eq.' + encodeURIComponent(programme), 'PATCH', {
+          status: 'complete',
+          completed_at: new Date().toISOString(),
+          course_id: courseId && courseId !== 'null' ? courseId : undefined
+        }).catch(() => {});
+        updated = true;
+      }
+      if (!updated) return res.status(404).json({ error: 'No enrolment found to update' });
+      return res.status(200).json({ ok: true });
+    }
+
     // ── MARK EXAM PASSED ─────────────────────────────────────
     if (action === 'exam_passed') {
       const { studentId, courseId, studentEmail, studentName, courseName } = req.body;
