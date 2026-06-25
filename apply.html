@@ -408,19 +408,28 @@ var selectedCourseForPayment = '';
     var raw = localStorage.getItem('cma_session');
     if (!raw) return;
     var s = JSON.parse(raw);
-    if (!s||!s.student||s.student.status!=='active') return;
-    if (Date.now()-s.savedAt > 30*24*60*60*1000) return;
-    // Show a message instead of the form
-    document.addEventListener('DOMContentLoaded', function(){
-      var wrap = document.querySelector('.apply-wrap');
-      if (wrap) wrap.innerHTML = '<div style="text-align:center;padding:64px 24px;">'
-        +'<div style="font-size:48px;margin-bottom:16px;">&#127891;</div>'
-        +'<div style="font-family:DM Serif Display,serif;font-size:28px;color:var(--navy);margin-bottom:10px;">You are already enrolled</div>'
-        +'<div style="font-size:14px;color:var(--muted);line-height:1.7;max-width:380px;margin:0 auto 28px;">Welcome back, '+(s.student.first_name||'Student')+'. You already have an active student account at the Catholic Music Academy.</div>'
-        +'<a href="/portal" class="btn btn-primary" style="display:inline-flex;font-size:15px;padding:14px 28px;">Go to My Portal &rarr;</a>'
-        +'<div style="margin-top:16px;"><a href="/home" style="font-size:13px;color:var(--muted);text-decoration:none;">&#8592; Back to Home</a></div>'
-        +'</div>';
-    });
+    if (!s||!s.student||!s.student.id) return;
+    if (Date.now()-s.savedAt > 30*24*60*60*1000) { localStorage.removeItem('cma_session'); return; }
+    // Verify student is still active in DB — don't trust stale cache alone
+    var SUPA_URL_EARLY = 'https://ltqwofagofmvufvqsuyj.supabase.co';
+    var SUPA_KEY_EARLY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0cXdvZmFnb2ZtdnVmdnFzdXlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MjgyMTgsImV4cCI6MjA5NzMwNDIxOH0.7EkluJspwopQxxQmL7AuYxx4XHgchpYR7tsajyoXHaI';
+    fetch(SUPA_URL_EARLY+'/rest/v1/students?id=eq.'+s.student.id+'&status=eq.active&select=id,first_name',
+      {headers:{'apikey':SUPA_KEY_EARLY,'Authorization':'Bearer '+SUPA_KEY_EARLY}})
+    .then(function(r){return r.json();})
+    .then(function(rows){
+      if (!rows||!rows.length) { localStorage.removeItem('cma_session'); return; }
+      // Confirmed active — show enrolled message
+      document.addEventListener('DOMContentLoaded', function(){
+        var wrap = document.querySelector('.apply-wrap');
+        if (wrap) wrap.innerHTML = '<div style="text-align:center;padding:64px 24px;">'
+          +'<div style="font-size:48px;margin-bottom:16px;">&#127891;</div>'
+          +'<div style="font-family:DM Serif Display,serif;font-size:28px;color:var(--navy);margin-bottom:10px;">You are already enrolled</div>'
+          +'<div style="font-size:14px;color:var(--muted);line-height:1.7;max-width:380px;margin:0 auto 28px;">Welcome back, '+(rows[0].first_name||'Student')+'. You already have an active student account at the Catholic Music Academy.</div>'
+          +'<a href="/portal" class="btn btn-primary" style="display:inline-flex;font-size:15px;padding:14px 28px;">Go to My Portal &rarr;</a>'
+          +'<div style="margin-top:16px;"><a href="/home" style="font-size:13px;color:var(--muted);text-decoration:none;">&#8592; Back to Home</a></div>'
+          +'</div>';
+      });
+    }).catch(function(){}); // network error — silently allow form to load
   } catch(e){}
 })();
 const SUPA_URL = 'https://ltqwofagofmvufvqsuyj.supabase.co';
@@ -557,7 +566,7 @@ function saveFormState() {
       email: v('email')||'',
       phone: v('phone')||'',
       state: v('state')||'',
-      background: (document.getElementById('f-background')||{}).value||'',
+      background: selectedBg || '',
       programme: Array.isArray(selectedProg) ? selectedProg.join('||') : (selectedProg||'')
     };
     sessionStorage.setItem('cma_apply_draft',JSON.stringify(state));
@@ -582,6 +591,15 @@ function restoreFormState() {
         if(progs.indexOf(p.dataset.prog) !== -1) p.classList.add('selected');
       });
       updatePaymentBox();
+    }
+    // Restore background selection
+    if (state.background) {
+      document.querySelectorAll('.bg-opt').forEach(function(el) {
+        var text = el.querySelector('.bg-text');
+        if (text && text.textContent.trim() === state.background.trim()) {
+          selectBg(el, state.background);
+        }
+      });
     }
     // Restore to correct step — load courses first if needed
     if (state.step > 1) {
