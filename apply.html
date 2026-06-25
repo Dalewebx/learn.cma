@@ -38,6 +38,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px
 .step-circle{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--muted);flex-shrink:0;transition:all 0.2s;}
 .step-circle.active{border-color:var(--navy);background:var(--navy);color:white;}
 .step-circle.done{border-color:var(--ok);background:var(--ok);color:white;}
+.step-circle.pending{border-color:var(--border);background:var(--white);color:var(--dim);}
 .step-name{font-size:10px;font-weight:600;color:var(--dim);white-space:nowrap;}
 .step-name.active{color:var(--navy);}
 .step-name.done{color:var(--ok);}
@@ -570,12 +571,10 @@ function restoreFormState() {
     var state = JSON.parse(raw);
     if (!state) return;
     var setVal = function(id,val){ var el=document.getElementById(id); if(el&&val) el.value=val; };
-    setVal('f-firstName', state.firstName);
-    setVal('f-lastName', state.lastName);
-    setVal('f-email', state.email);
-    setVal('f-phone', state.phone);
-    setVal('f-state', state.state);
-    setVal('f-background', state.background);
+    setVal('firstName', state.firstName);
+    setVal('lastName', state.lastName);
+    setVal('email', state.email);
+    setVal('phone', state.phone);
     if (state.programme) {
       var progs = state.programme.split('||').filter(Boolean);
       selectedProg = progs;
