@@ -149,6 +149,10 @@ const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 const NULL_UUID = '00000000-0000-0000-0000-000000000000';
 const H = {'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'};
 
+// Require handover secret on load
+window.HANDOVER_SECRET = prompt('Enter Handover Secret to access this page:') || '';
+if (!window.HANDOVER_SECRET) { document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;font-size:16px;color:#DC2626;">Access denied. Reload to try again.</div>'; throw new Error('No secret provided'); }
+
 function showTab(name, btn) {
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -221,7 +225,7 @@ async function deleteSelectedStudents(){
   var btns=document.querySelectorAll('.btn');btns.forEach(b=>b.disabled=true);
   addLog('=== DELETING '+selected.length+' STUDENTS ===','info');
   try{
-    const r=await fetch('/api/handover',{method:'POST',headers:{'Content-Type':'application/json'},
+    const r=await fetch('/api/handover',{method:'POST',headers:{'Content-Type':'application/json','X-Handover-Secret':window.HANDOVER_SECRET||''},
       body:JSON.stringify({action:'delete_students',studentIds:selected})});
     const d=await r.json();
     if(!r.ok)throw new Error(d.error||'Delete failed');
@@ -264,7 +268,7 @@ async function clearSelectedContent(){
   var btns=document.querySelectorAll('.btn');btns.forEach(b=>b.disabled=true);
   addLog('=== CLEARING CONTENT FOR '+selected.length+' COURSES ===','info');
   try{
-    const r=await fetch('/api/handover',{method:'POST',headers:{'Content-Type':'application/json'},
+    const r=await fetch('/api/handover',{method:'POST',headers:{'Content-Type':'application/json','X-Handover-Secret':window.HANDOVER_SECRET||''},
       body:JSON.stringify({action:'clear_content',courseIds:selected})});
     const d=await r.json();
     if(!r.ok)throw new Error(d.error||'Clear failed');
@@ -282,7 +286,7 @@ async function fullReset(){
   var btns=document.querySelectorAll('.btn');btns.forEach(b=>b.disabled=true);
   addLog('=== FULL HANDOVER RESET ===','info');
   try{
-    const r=await fetch('/api/handover',{method:'POST',headers:{'Content-Type':'application/json'},
+    const r=await fetch('/api/handover',{method:'POST',headers:{'Content-Type':'application/json','X-Handover-Secret':window.HANDOVER_SECRET||''},
       body:JSON.stringify({action:'full_reset'})});
     const d=await r.json();
     if(!r.ok)throw new Error(d.error||'Reset failed');
