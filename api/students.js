@@ -39,6 +39,8 @@ module.exports = async function handler(req, res) {
     if (action === 'revoke') {
       if (!studentId) return res.status(400).json({ error: 'Student ID required' });
       await db('students?id=eq.' + studentId, 'PATCH', { status: 'inactive' });
+      // Kill all active sessions so the student can't continue on any device
+      await db('sessions?student_id=eq.' + studentId, 'DELETE');
       return res.status(200).json({ ok: true });
     }
 
