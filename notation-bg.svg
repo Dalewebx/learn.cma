@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+  <rect width="1440" height="900" fill="none"/>
+  <!-- Treble clefs -->
+  <text x="80" y="180" font-family="Georgia,serif" font-size="120" fill="#C9A84C" opacity="0.09" transform="rotate(-8 80 180)">𝄞</text>
+  <text x="420" y="680" font-family="Georgia,serif" font-size="90" fill="#C9A84C" opacity="0.07" transform="rotate(6 420 680)">𝄞</text>
+  <text x="860" y="140" font-family="Georgia,serif" font-size="100" fill="#C9A84C" opacity="0.08" transform="rotate(-5 860 140)">𝄞</text>
+  <text x="1240" y="520" font-family="Georgia,serif" font-size="110" fill="#C9A84C" opacity="0.07" transform="rotate(7 1240 520)">𝄞</text>
+  <text x="1360" y="820" font-family="Georgia,serif" font-size="80" fill="#C9A84C" opacity="0.06" transform="rotate(-4 1360 820)">𝄞</text>
+  <text x="260" y="380" font-family="Georgia,serif" font-size="70" fill="#C9A84C" opacity="0.06" transform="rotate(5 260 380)">𝄞</text>
+
+  <!-- Bass clefs -->
+  <text x="640" y="420" font-family="Georgia,serif" font-size="100" fill="#C9A84C" opacity="0.07" transform="rotate(-6 640 420)">𝄢</text>
+  <text x="1100" y="240" font-family="Georgia,serif" font-size="80" fill="#C9A84C" opacity="0.06" transform="rotate(4 1100 240)">𝄢</text>
+  <text x="160" y="760" font-family="Georgia,serif" font-size="90" fill="#C9A84C" opacity="0.06" transform="rotate(-3 160 760)">𝄢</text>
+  <text x="1300" y="120" font-family="Georgia,serif" font-size="70" fill="#C9A84C" opacity="0.05" transform="rotate(8 1300 120)">𝄢</text>
+
+  <!-- Quarter notes -->
+  <text x="340" y="120" font-family="Georgia,serif" font-size="72" fill="#C9A84C" opacity="0.08" transform="rotate(-10 340 120)">♩</text>
+  <text x="560" y="760" font-family="Georgia,serif" font-size="60" fill="#C9A84C" opacity="0.07" transform="rotate(8 560 760)">♩</text>
+  <text x="980" y="620" font-family="Georgia,serif" font-size="80" fill="#C9A84C" opacity="0.08" transform="rotate(-6 980 620)">♩</text>
+  <text x="1180" y="820" font-family="Georgia,serif" font-size="56" fill="#C9A84C" opacity="0.06" transform="rotate(5 1180 820)">♩</text>
+  <text x="720" y="280" font-family="Georgia,serif" font-size="64" fill="#C9A84C" opacity="0.07" transform="rotate(-4 720 280)">♩</text>
+  <text x="40" y="440" font-family="Georgia,serif" font-size="52" fill="#C9A84C" opacity="0.06" transform="rotate(7 40 440)">♩</text>
+
+  <!-- Eighth notes -->
+  <text x="200" y="260" font-family="Georgia,serif" font-size="68" fill="#C9A84C" opacity="0.08" transform="rotate(9 200 260)">♪</text>
+  <text x="760" y="860" font-family="Georgia,serif" font-size="56" fill="#C9A84C" opacity="0.07" transform="rotate(-7 760 860)">♪</text>
+  <text x="1060" y="380" font-family="Georgia,serif" font-size="72" fill="#C9A84C" opacity="0.07" transform="rotate(5 1060 380)">♪</text>
+  <text x="480" y="520" font-family="Georgia,serif" font-size="52" fill="#C9A84C" opacity="0.06" transform="rotate(-8 480 520)">♪</text>
+  <text x="1380" y="380" font-family="Georgia,serif" font-size="64" fill="#C9A84C" opacity="0.06" transform="rotate(6 1380 380)">♪</text>
+  <text x="900" y="800" font-family="Georgia,serif" font-size="48" fill="#C9A84C" opacity="0.05" transform="rotate(-5 900 800)">♪</text>
+
+  <!-- Beamed eighth notes -->
+  <text x="120" y="580" font-family="Georgia,serif" font-size="80" fill="#C9A84C" opacity="0.08" transform="rotate(-7 120 580)">♫</text>
+  <text x="700" y="160" font-family="Georgia,serif" font-size="64" fill="#C9A84C" opacity="0.07" transform="rotate(6 700 160)">♫</text>
+  <text x="1160" y="680" font-family="Georgia,serif" font-size="72" fill="#C9A84C" opacity="0.07" transform="rotate(-4 1160 680)">♫</text>
+  <text x="380" y="840" font-family="Georgia,serif" font-size="56" fill="#C9A84C" opacity="0.06" transform="rotate(9 380 840)">♫</text>
+  <text x="1040" y="60" font-family="Georgia,serif" font-size="68" fill="#C9A84C" opacity="0.06" transform="rotate(-6 1040 60)">♫</text>
+
+  <!-- Double beamed notes -->
+  <text x="820" y="480" font-family="Georgia,serif" font-size="76" fill="#C9A84C" opacity="0.07" transform="rotate(7 820 480)">♬</text>
+  <text x="280" y="640" font-family="Georgia,serif" font-size="60" fill="#C9A84C" opacity="0.06" transform="rotate(-9 280 640)">♬</text>
+  <text x="1320" y="280" font-family="Georgia,serif" font-size="64" fill="#C9A84C" opacity="0.06" transform="rotate(5 1320 280)">♬</text>
+  <text x="600" y="60" font-family="Georgia,serif" font-size="52" fill="#C9A84C" opacity="0.05" transform="rotate(-6 600 60)">♬</text>
+  <text x="1420" y="640" font-family="Georgia,serif" font-size="56" fill="#C9A84C" opacity="0.05" transform="rotate(8 1420 640)">♬</text>
+
+  <!-- Staff lines — subtle, spanning full width at different heights -->
+  <g opacity="0.04" stroke="#C9A84C" stroke-width="1.5">
+    <line x1="0" y1="320" x2="520" y2="320"/>
+    <line x1="0" y1="332" x2="520" y2="332"/>
+    <line x1="0" y1="344" x2="520" y2="344"/>
+    <line x1="0" y1="356" x2="520" y2="356"/>
+    <line x1="0" y1="368" x2="520" y2="368"/>
+  </g>
+  <g opacity="0.04" stroke="#C9A84C" stroke-width="1.5">
+    <line x1="700" y1="560" x2="1440" y2="560"/>
+    <line x1="700" y1="572" x2="1440" y2="572"/>
+    <line x1="700" y1="584" x2="1440" y2="584"/>
+    <line x1="700" y1="596" x2="1440" y2="596"/>
+    <line x1="700" y1="608" x2="1440" y2="608"/>
+  </g>
+  <g opacity="0.03" stroke="#C9A84C" stroke-width="1.5">
+    <line x1="200" y1="720" x2="900" y2="720"/>
+    <line x1="200" y1="732" x2="900" y2="732"/>
+    <line x1="200" y1="744" x2="900" y2="744"/>
+    <line x1="200" y1="756" x2="900" y2="756"/>
+    <line x1="200" y1="768" x2="900" y2="768"/>
+  </g>
+  <g opacity="0.03" stroke="#C9A84C" stroke-width="1.5">
+    <line x1="900" y1="100" x2="1440" y2="100"/>
+    <line x1="900" y1="112" x2="1440" y2="112"/>
+    <line x1="900" y1="124" x2="1440" y2="124"/>
+    <line x1="900" y1="136" x2="1440" y2="136"/>
+    <line x1="900" y1="148" x2="1440" y2="148"/>
+  </g>
+</svg>
