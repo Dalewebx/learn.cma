@@ -3325,7 +3325,7 @@ function createCMCourse() {
   var title = (document.getElementById('ncTitle')||{}).value||'';
   var color = (document.getElementById('ncColor')||{}).value||'#0D1B3E';
   if (!title.trim()) {showToast('Course title required','warn');return;}
-  var id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r=Math.random()*16|0; return (c==='x'?r:(r&0x3|0x8)).toString(16); });
+  var id = 'c'+(Date.now());
   var newCourse = {id:id, title:(code?code+': ':'')+title, color:color, order:cmCourses.length, modules:[]};
   cmCourses.push(newCourse);
   saveCourseLocally();
