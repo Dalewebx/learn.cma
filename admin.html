@@ -1417,12 +1417,28 @@ function renderDashboard() {
     return true;
   }).length;
   var examReady = myEnrolments.filter(function(e){return e.status==='complete';}).length;
+
+  // Also count students who completed all modules but status not yet updated
+  var moduleCompleteNotFlagged = myStudents.filter(function(s) {
+    var enrols = myEnrolments.filter(function(e){ return e.student_id === s.id && !['complete','exam_scheduled','exam_passed','exam_failed'].includes(e.status); });
+    if (!enrols.length) return false;
+    return enrols.some(function(enr) {
+      var course = cmCourses.find(function(c){ return c.id === enr.course_id || c.title === enr.programme; });
+      if (!course) return false;
+      var publishedMods = (course.modules||[]).filter(function(m){ return m.published !== false; });
+      if (!publishedMods.length) return false;
+      var done = (allProgress||[]).filter(function(p){ return p.student_id === s.id && (p.course_id === course.id || (!p.course_id && enr.programme === course.title)); });
+      var uniqueDone = done.map(function(p){return p.module_index;}).filter(function(v,i,a){return a.indexOf(v)===i;});
+      return uniqueDone.length >= publishedMods.length;
+    });
+  });
+  var totalExamReady = examReady + moduleCompleteNotFlagged.length;
   var atRisk = myStudents.filter(isAtRisk).length;
   var dashStats = document.getElementById('dashStats');
   if (dashStats) dashStats.innerHTML =
     (isMaster() ? statCard(pending, 'Pending Applications', 'warn-card') : '') +
     statCard(gradingQ, 'Grading Queue', gradingQ>0?'warn-card':'') +
-    statCard(examReady, 'Exam Ready', 'ok-card') +
+    statCard(totalExamReady, 'Exam Ready', 'ok-card') +
     statCard(atRisk, 'At Risk', atRisk>0?'danger-card':'');
 
   // ── ACTION LIST ──
@@ -1437,10 +1453,10 @@ function renderDashboard() {
     text: gradingQ + ' written assessment' + (gradingQ>1?'s':'')+' waiting to be graded',
     cta:'Grade', action:"goTab('grading')"
   });
-  if (examReady > 0) actions.push({
+  if (totalExamReady > 0) actions.push({
     icon:'🎓', color:'#16A34A', bg:'#DCFCE7',
-    text: examReady + ' student' + (examReady>1?'s':'')+' completed all modules — schedule their exam',
-    cta:'Schedule', action:"goTab('examready')"
+    text: totalExamReady + ' student' + (totalExamReady>1?'s':'')+' completed all modules — schedule their exam',
+    cta:'Schedule', action:"goTab('students')"
   });
   var riskStudents = myStudents.filter(isAtRisk);
   riskStudents.slice(0,2).forEach(function(s){
@@ -1516,6 +1532,28 @@ function renderDashboard() {
     }).join('');
   }
   mainHtml += '</div>';
+
+  // ── EXAM READY STUDENTS LIST ──────────────────────────────────────────────
+  if (moduleCompleteNotFlagged.length > 0) {
+    mainHtml += '<div class="card" style="border:1.5px solid #6366F1;background:#EEF2FF;">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">'
+      +'<div class="card-title" style="margin-bottom:0;color:#312E81;">🎓 Students Ready for Examination</div>'
+      +'<span style="font-size:12px;font-weight:700;color:#6366F1;">'+moduleCompleteNotFlagged.length+' student'+(moduleCompleteNotFlagged.length>1?'s':'')+' awaiting action</span>'
+      +'</div>'
+      +'<div style="font-size:12px;color:#4338CA;margin-bottom:12px;">These students have completed all modules. Open their profile and click <strong>Mark Exam Ready</strong>.</div>'
+      + moduleCompleteNotFlagged.map(function(s) {
+          var enr = myEnrolments.find(function(e){ return e.student_id === s.id; });
+          return '<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:white;border-radius:8px;margin-bottom:6px;border:1px solid #C7D2FE;">'
+            +'<div style="width:32px;height:32px;border-radius:50%;background:#6366F1;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0;">'+(s.first_name||'?').charAt(0).toUpperCase()+'</div>'
+            +'<div style="flex:1;">'
+            +'<div style="font-size:13px;font-weight:700;color:#1E1B4B;">'+s.first_name+' '+s.last_name+'</div>'
+            +'<div style="font-size:11px;color:#6366F1;">'+(enr?enr.programme||'—':'—')+'</div>'
+            +'</div>'
+            +'<button class="btn btn-sm" style="background:#6366F1;color:white;flex-shrink:0;" onclick="openStudentDetail(\''+s.id+'\')">Open Profile →</button>'
+            +'</div>';
+        }).join('')
+      +'</div>';
+  }
 
   // Two column: progress + activity
   mainHtml += '<div style="display:grid;grid-template-columns:1fr;gap:16px;">';
