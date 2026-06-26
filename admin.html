@@ -778,7 +778,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
       </div>
       <div class="form-group" style="margin-bottom:0;">
         <label class="form-label">WhatsApp Number</label>
-        <input class="form-input" id="ss_contact_whatsapp" placeholder="+2347019711157"/>
+        <input class="form-input" id="ss_contact_whatsapp" placeholder="+2349056209920"/>
       </div>
       <div class="form-group" style="margin-bottom:0;">
         <label class="form-label">Location</label>
@@ -4455,8 +4455,30 @@ function showAdminShell(admin) {
 (function(){
   var sess = loadAdminSession();
   if (sess && sess.user && sess.user.id) {
-    currentAdmin = sess.user;
-    showAdminShell(currentAdmin);
+    // Verify the admin still exists and is active in DB before trusting cache
+    fetch('/api/admin', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({action: 'login', email: sess.user.email})
+    }).then(function(r){ return r.json(); }).then(function(json) {
+      if (!json || !json.admin || json.admin.id !== sess.user.id) {
+        // Admin no longer exists or email changed — force re-login
+        clearAdminSession();
+        try { localStorage.removeItem('cma_admin_remember'); } catch(e){}
+        window.location.reload();
+        return;
+      }
+      // Merge fresh DB record (role, assigned_course_id may have changed)
+      currentAdmin = Object.assign({}, sess.user, json.admin);
+      saveAdminSession(currentAdmin, sess.remember);
+      showAdminShell(currentAdmin);
+      loadAllData();
+    }).catch(function() {
+      // Network error — allow cached session to proceed (fail open)
+      currentAdmin = sess.user;
+      showAdminShell(currentAdmin);
+      loadAllData();
+    });
     try {
       var rememberedEmail = localStorage.getItem('cma_admin_remember');
       if (rememberedEmail) {
@@ -4466,7 +4488,6 @@ function showAdminShell(admin) {
         if (remCb) remCb.checked = true;
       }
     } catch(e){}
-    loadAllData();
     return;
   }
   try {
