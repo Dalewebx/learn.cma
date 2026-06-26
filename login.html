@@ -2576,13 +2576,19 @@ async function submitQuiz() {
       mcqQs.forEach(function(q,qi){
         (q.opts||[]).forEach(function(_,oi){
           var el=document.getElementById('qo-'+qi+'-'+oi);
-          if(el){el.classList.add('disabled');if(oi===parseInt(q.ans))el.classList.add('correct');else el.classList.remove('sel');}
+          if(el){
+            el.classList.add('disabled');
+            el.classList.remove('sel','correct','wrong');
+            if(oi===parseInt(q.ans)) el.classList.add('correct');
+            else if(answers[qi]!==undefined && oi===parseInt(answers[qi])) el.classList.add('wrong');
+          }
         });
       });
       resultEl.innerHTML='<div class="qr-score">'+mcqScore+'/'+mcqQs.length+'</div>'
         +'<div class="qr-label">Questions correct</div>'
         +'<div class="qr-msg pass">✓ Excellent. This module is now complete.</div>';
       resultEl.classList.add('show');
+      var q0 = document.getElementById('quizCard'); if(q0) q0.scrollIntoView({behavior:'smooth',block:'start'});
       if(!completedModules.includes(currentMod)){
         completedModules.push(currentMod);
         await saveProgress(currentMod);
@@ -2641,7 +2647,7 @@ async function submitQuiz() {
       resultEl.classList.add('show');
       var sb=document.getElementById('submitBtn');if(sb)sb.remove();
       document.getElementById('modActions').innerHTML='<button class="btn btn-secondary" onclick="retryModFull()">↑ Re-read lesson</button>';
-      resultEl.scrollIntoView({behavior:'smooth',block:'start'});
+      var q0f = document.getElementById('quizCard'); if(q0f) q0f.scrollIntoView({behavior:'smooth',block:'start'});
     }
   }
 }
