@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<head>  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
   <link rel="apple-touch-icon" href="/favicon.svg"/>
   <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
@@ -119,7 +118,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);position:stick
 
 /* ── HERO ── */
 .hero{background:var(--navy);min-height:calc(100vh - 108px);min-height:calc(100svh - 108px);display:flex;align-items:center;position:relative;overflow:hidden;width:100%;max-width:100%;}
-.hero-parallax{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg stroke='%23C9A84C' stroke-width='0.4' opacity='0.12'%3E%3Cpath d='M40 0v80M0 40h80M40 0L0 40M40 0L80 40M40 80L0 40M40 80L80 40'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");background-size:80px 80px;opacity:1;z-index:0;}
+.hero-parallax{display:none;}
 .hero-noise{position:absolute;inset:0;opacity:0.018;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:140px;pointer-events:none;}
 .hero-glow{position:absolute;top:-20%;right:-10%;width:min(700px,90vw);height:min(700px,90vw);border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.06),transparent 65%);pointer-events:none;}
 .hero-glow2{position:absolute;bottom:-30%;left:-5%;width:min(500px,75vw);height:min(500px,75vw);border-radius:50%;background:radial-gradient(circle,rgba(26,46,108,0.6),transparent 65%);pointer-events:none;}
@@ -560,53 +559,40 @@ footer{background:#0B1530;padding:48px 24px 32px;}
       </div>
     </div>
 
-    <!-- Right: Certificate Preview -->
-    <div style="position:relative;">
-      <div style="background:linear-gradient(135deg,#0F2040 0%,#0D1B3E 100%);border-radius:20px;padding:40px 36px;border:1px solid rgba(201,168,76,0.2);box-shadow:0 40px 100px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.04);">
-        <!-- Header -->
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid rgba(201,168,76,0.15);">
-          <div style="width:44px;height:44px;border-radius:50%;background:rgba(201,168,76,0.1);border:1.5px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg viewBox="0 0 32 32" width="22" height="22"><path d="M7 4L25 4L25 22Q16 28 7 22Z" fill="none" stroke="#C9A84C" stroke-width="1.5"/><rect x="14.5" y="7" width="3" height="10" rx="1" fill="#C9A84C"/><rect x="9" y="11" width="14" height="2.5" rx="1" fill="#C9A84C"/></svg>
-          </div>
+    <!-- Right: Dashboard Mockup -->
+    <div class="mockup">
+      <div class="mk-topbar">
+        <div class="mk-dots">
+          <div class="mk-dot" style="background:#FF5F57;"></div>
+          <div class="mk-dot" style="background:#FEBC2E;"></div>
+          <div class="mk-dot" style="background:#28C840;"></div>
+        </div>
+        <div class="mk-title-bar" id="mkTitleBar">CMA Student Portal</div>
+      </div>
+      <div class="mk-body">
+        <div class="mk-course-label">Currently Enrolled</div>
+        <div class="mk-course-name" id="mkCourseName">Liturgical Music Foundations</div>
+        <div class="mk-prog-row">
+          <span class="mk-prog-label">Course Progress</span>
+          <span class="mk-prog-num" id="mkProgNum">78%</span>
+        </div>
+        <div class="mk-prog-bar"><div class="mk-prog-fill" id="mkProgFill" style="width:78%"></div></div>
+        <div class="mk-mod-label">Module Progress</div>
+        <div class="mk-mod-list" id="mkModList">
+          <div class="mk-mod-item done">Sacred Music History</div>
+          <div class="mk-mod-item done">Gregorian Chant Fundamentals</div>
+          <div class="mk-mod-item active" id="mkNextName">Liturgical Calendar and Music</div>
+          <div class="mk-mod-item lock">Sacred Polyphony</div>
+          <div class="mk-mod-item lock">Final Assessment</div>
+        </div>
+        <div class="mk-next">
           <div>
-            <div style="font-family:'DM Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(201,168,76,0.7);margin-bottom:3px;">Catholic Diocese of Warri</div>
-            <div style="font-family:'DM Serif Display',serif;font-size:15px;color:white;line-height:1.2;">Catholic Music Academy</div>
+            <div class="mk-next-label">Up Next</div>
+            <div class="mk-next-name">Module 3 — Liturgical Calendar</div>
           </div>
-        </div>
-        <!-- Currently Enrolled -->
-        <div style="font-family:'DM Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:6px;">Currently Enrolled</div>
-        <div style="font-family:'DM Serif Display',serif;font-size:20px;color:white;margin-bottom:24px;line-height:1.2;" id="mkCourseName">Liturgical Music Foundations</div>
-        <!-- Progress -->
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-          <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,255,255,0.4);font-weight:600;">Course Progress</div>
-          <div style="font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:var(--gold);" id="mkProgNum">78%</div>
-        </div>
-        <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;margin-bottom:28px;">
-          <div style="height:100%;background:linear-gradient(90deg,var(--gold),#E8C96A);border-radius:2px;width:78%;transition:width 1s ease;" id="mkProgFill"></div>
-        </div>
-        <!-- Modules -->
-        <div style="font-family:'DM Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:12px;">Module Progress</div>
-        <div style="display:flex;flex-direction:column;gap:6px;" id="mkModList">
-          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(22,163,74,0.08);border-radius:8px;border:1px solid rgba(22,163,74,0.2);">
-            <span style="font-size:10px;color:#4ADE80;font-weight:700;">✓</span>
-            <span style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(255,255,255,0.6);">Sacred Music History</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(22,163,74,0.08);border-radius:8px;border:1px solid rgba(22,163,74,0.2);">
-            <span style="font-size:10px;color:#4ADE80;font-weight:700;">✓</span>
-            <span style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(255,255,255,0.6);">Gregorian Chant Fundamentals</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(201,168,76,0.08);border-radius:8px;border:1px solid rgba(201,168,76,0.25);">
-            <span style="font-size:9px;color:var(--gold);">▶</span>
-            <span style="font-family:'DM Sans',sans-serif;font-size:12px;color:white;font-weight:600;" id="mkNextName">Liturgical Calendar and Music</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;">
-            <span style="font-size:10px;opacity:0.3;">🔒</span>
-            <span style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(255,255,255,0.2);">Sacred Polyphony</span>
-          </div>
+          <button class="mk-next-btn">Start &#8594;</button>
         </div>
       </div>
-      <!-- Floating badge -->
-      <div style="position:absolute;bottom:-16px;right:24px;background:var(--gold);color:var(--navy);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:800;padding:8px 16px;border-radius:100px;letter-spacing:0.3px;box-shadow:0 8px 24px rgba(201,168,76,0.4);">🎓 Nationally Certified</div>
     </div>
 
   </div>
