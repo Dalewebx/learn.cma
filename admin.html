@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBEMUIzRSIvPgogIDxyZWN0IHg9IjUiIHk9IjUiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iMTgiIHk9IjUiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjUiIHk9IjE4IiB3aWR0aD0iOSIgaGVpZ2h0PSI5IiByeD0iMiIgZmlsbD0id2hpdGUiLz4KICA8cmVjdCB4PSIxOCIgeT0iMTgiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSIjQzlBODRDIi8+Cjwvc3ZnPg=="/>
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBEMUIzRSIvPgogIDxyZWN0IHg9IjUiIHk9IjUiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iMTgiIHk9IjUiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjUiIHk9IjE4IiB3aWR0aD0iOSIgaGVpZ2h0PSI5IiByeD0iMiIgZmlsbD0id2hpdGUiLz4KICA8cmVjdCB4PSIxOCIgeT0iMTgiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSIjQzlBODRDIi8+Cjwvc3ZnPg=="/>
-<title>Catholic Music Academy — Admin</title>
+<title>Catholic Music Academy  Admin</title>
 
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet"/>
 <style>
@@ -231,7 +231,7 @@ tr:hover td{background:var(--surface);cursor:pointer;}
 .test-mode-banner.on{display:block;}
 .test-mode-bar{background:#FEF2F2;border:2px solid #DC2626;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;}
 .test-mode-pill{background:#DC2626;color:white;font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:20px;flex-shrink:0;}
-/* ── NEW TOP NAV & TABS ── */
+/*  NEW TOP NAV & TABS  */
 /* Override old sidebar layout */
 :root{--sidebar:0px !important;}
 #adminShell{flex-direction:column !important;width:100% !important;max-width:100% !important;}
@@ -245,7 +245,7 @@ tr:hover td{background:var(--surface);cursor:pointer;}
 @media(min-width:600px){.main{padding:24px 24px !important;}}
 @media(min-width:900px){.main{padding:28px 32px !important;}}
 
-/* ── MOBILE RESPONSIVE ── */
+/*  MOBILE RESPONSIVE  */
 /* Course builder: stack on mobile */
 .cm-layout{display:grid;grid-template-columns:1fr !important;gap:14px;}
 @media(min-width:700px){.cm-layout{grid-template-columns:240px 1fr !important;}}
@@ -281,7 +281,7 @@ tr:hover td{background:var(--surface);cursor:pointer;}
 /* Student detail header */
 .student-header{padding:16px 18px;}
 
-/* Nav: hide logo name on very small screens — already handled */
+/* Nav: hide logo name on very small screens  already handled */
 
 .admin-nav{background:var(--navy);height:52px;display:flex;align-items:center;padding:0 16px;gap:10px;position:sticky;top:0;z-index:300;flex-shrink:0;}
 .admin-nav-logo{display:flex;align-items:center;gap:8px;flex-shrink:0;}
@@ -401,12 +401,12 @@ tr:hover td{background:var(--surface);cursor:pointer;}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9998;display:flex;align-items:center;justify-content:center;padding:24px;}
 .modal-box{background:var(--white);border-radius:16px;padding:30px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
 
-/* ── Stat grid controlled breakpoints ── */
+/*  Stat grid controlled breakpoints  */
 .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px;}
 @media(min-width:600px){.stat-grid{grid-template-columns:repeat(3,1fr);}}
 @media(min-width:900px){.stat-grid{grid-template-columns:repeat(5,1fr);}}
 
-/* ── Mobile sidebar hamburger ── */
+/*  Mobile sidebar hamburger  */
 .mob-menu-btn{display:none;align-items:center;justify-content:center;width:36px;height:36px;background:var(--white);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;color:var(--muted);font-size:18px;flex-shrink:0;position:fixed;top:12px;left:12px;z-index:500;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
 .mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:99;backdrop-filter:blur(2px);}
 .mob-overlay.show{display:block;}
@@ -423,8 +423,85 @@ tr:hover td{background:var(--surface);cursor:pointer;}
   #page-dashboard > div[style*="grid-template-columns:1fr 1fr"]{display:grid!important;grid-template-columns:1fr!important;}
 }
 
-/* ── Grading score inputs ── */
+/*  Grading score inputs  */
 input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gold-light)!important;font-weight:700!important;color:var(--navy)!important;}
+
+/*  MOBILE VIEWPORT GUARDRAILS 
+   These final overrides prevent iPhone/Safari page zoom caused by accidental
+   horizontal overflow while leaving desktop layouts intact. */
+html,body{width:100%;max-width:100%;overflow-x:hidden;}
+body{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+img,svg,video,iframe,canvas{max-width:100%;height:auto;}
+input,select,textarea,button{max-width:100%;}
+.admin-nav,.admin-tabs,.main,.admin-page,.card,.app-card,.student-header,.me-card,.course-block,.exam-card,.modal-box,.table-wrap{max-width:100%;min-width:0;}
+.page-title,.page-sub,.card-title,.app-name,.app-email,.app-meta-item .val,.student-detail-name,.student-detail-meta,.cb-title,.cb-mod-name,.cm-course-label,.cm-module-item,.exam-card,.ann-item,td,th{overflow-wrap:anywhere;word-break:normal;}
+.table-wrap{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;}
+.table-wrap table{min-width:640px;}
+.modal-overlay{overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.modal-box{max-height:calc(100dvh - 32px);overflow-y:auto;}
+
+@media(max-width:800px){
+  .admin-nav{padding:0 10px;gap:7px;overflow:hidden;}
+  .admin-nav-logo{min-width:0;}
+  .admin-nav-logo-name{display:none!important;}
+  .admin-nav-role{font-size:9px;padding:2px 6px;}
+  .admin-nav-support,.admin-nav-logout{padding:5px 7px;font-size:10px;}
+  .admin-tabs{max-width:100vw;overflow-x:auto;}
+  .admin-tab{height:42px;padding:0 12px;font-size:11px;}
+  .main{padding:16px 12px 28px!important;overflow-x:hidden;}
+  .page-header{align-items:stretch!important;width:100%;}
+  .page-header>*,.page-header .btn{max-width:100%;}
+  .page-title{font-size:24px;line-height:1.15;}
+  .page-sub{line-height:1.55;}
+  .card{padding:16px;}
+  .stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px;}
+  .stat-card{padding:14px 12px;}
+  .stat-val{font-size:28px;}
+  .tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{white-space:nowrap;padding:9px 14px;}
+  .search-bar,#examReadyFilters{display:flex!important;flex-direction:column!important;align-items:stretch!important;width:100%;}
+  .search-bar>*,#examReadyFilters>*{width:100%!important;max-width:100%!important;}
+  #page-students .page-header>div:last-child{width:100%;}
+  #page-students .page-header .btn{width:100%;}
+  #studentCourseFilter,#studentStatusFilter,.search-input{width:100%!important;min-width:0!important;}
+  .form-row,.ss-grid,.health-grid,.cohort-stats{grid-template-columns:1fr!important;}
+  .app-meta{grid-template-columns:1fr!important;}
+  .app-actions{align-items:stretch;}
+  .app-actions .btn{flex:1 1 130px;min-height:40px;white-space:normal;}
+  .app-time{margin-left:0;width:100%;}
+  .student-header{display:block;padding:18px;}
+  .student-avatar-lg{margin-bottom:12px;}
+  .student-stat{margin-top:10px;}
+  .cm-layout{grid-template-columns:1fr!important;}
+  .cm-sidebar,.cm-editor,.me-card{width:100%;max-width:100%;}
+  .me-card-hdr{align-items:stretch;}
+  .me-card-hdr .btn,.pub-toggle{width:100%;justify-content:center;}
+  .audio-row,.dl-row,.q-opts-grid{grid-template-columns:1fr!important;}
+  .q-correct-row>*{width:100%;}
+  .exam-card-hdr,.exam-card-body{align-items:stretch;}
+  .exam-card-body .btn,.exam-card-body input[type="date"]{width:100%!important;}
+  .modal-overlay{align-items:flex-start!important;justify-content:center!important;padding:12px!important;}
+  .modal-box,.modal-overlay>div{width:calc(100vw - 24px)!important;max-width:calc(100vw - 24px)!important;max-height:calc(100dvh - 24px)!important;overflow-y:auto!important;padding:20px!important;}
+  #supportModal>div{width:calc(100vw - 24px)!important;max-width:calc(100vw - 24px)!important;max-height:calc(100dvh - 24px)!important;overflow-y:auto!important;padding:28px 20px!important;}
+  #certCardWrap{max-width:100%!important;overflow-x:auto;}
+  .ann-item{display:block;}
+  .ann-del{margin-top:8px;}
+  .build-credit{display:none!important;}
+}
+
+@media(max-width:430px){
+  .login-wrap{padding:18px;}
+  .login-box{padding:28px 20px;border-radius:16px;}
+  .main{padding-left:10px!important;padding-right:10px!important;}
+  .btn{min-height:40px;white-space:normal;text-align:center;}
+  .btn-sm,.btn-xs{min-height:36px;}
+  .stat-grid{grid-template-columns:1fr 1fr!important;}
+  .stat-card{min-width:0;}
+  .cohort-card{padding:18px;}
+  .course-block-hdr,.cb-mod-row{align-items:flex-start;}
+  .cb-mod-meta{display:none;}
+}
 </style>
 </head>
 <body>
@@ -462,7 +539,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
   </g>
 
   <!-- Treble clef -->
-  <text x="36" y="52" font-family="Georgia,serif" font-size="22" fill="#1A2E6C" opacity="0.8">𝄞</text>
+  <text x="36" y="52" font-family="Georgia,serif" font-size="22" fill="#1A2E6C" opacity="0.8"></text>
 
   <!-- Central figure: stylised Saint Cecilia (simplified woman with robe) -->
   <!-- Head -->
@@ -492,8 +569,8 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
   <text x="60" y="85" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" font-style="italic" fill="#C9A84C" letter-spacing="0.5">Excellence In Sacred Arts</text>
 
   <!-- Gold star decorations on banner sides -->
-  <text x="18" y="85" font-size="7" fill="#C9A84C">✦</text>
-  <text x="96" y="85" font-size="7" fill="#C9A84C">✦</text>
+  <text x="18" y="85" font-size="7" fill="#C9A84C"></text>
+  <text x="96" y="85" font-size="7" fill="#C9A84C"></text>
 </svg></div>
     <div><div class="login-box-name">Catholic Music Academy</div><div class="login-box-sub">Admin Portal</div></div>
   </div>
@@ -504,20 +581,20 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
   <label class="f-label">Password</label>
   <div style="position:relative;margin-bottom:14px;">
     <input class="f-input" id="adminPass" type="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doAdminLogin()" style="margin-bottom:0;padding-right:46px;"/>
-    <button type="button" onclick="toggleAdminPass()" id="adminPassToggle" style="position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:15px;padding:4px;">👁</button>
+    <button type="button" onclick="toggleAdminPass()" id="adminPassToggle" style="position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:15px;padding:4px;"></button>
   </div>
   <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
     <input type="checkbox" id="adminRemember" style="width:16px;height:16px;accent-color:var(--navy);cursor:pointer;"/>
     <label for="adminRemember" style="font-size:12px;color:var(--muted);cursor:pointer;user-select:none;">Remember me for 30 days</label>
   </div>
   <div class="f-err" id="adminErr"></div>
-  <button class="btn btn-primary" id="adminLoginBtn" style="width:100%;padding:13px;font-size:15px;" onclick="doAdminLogin()">Sign in to Admin →</button>
+  <button class="btn btn-primary" id="adminLoginBtn" style="width:100%;padding:13px;font-size:15px;" onclick="doAdminLogin()">Sign in to Admin </button>
 </div>
 </div>
 </div>
 
 <!-- ADMIN SHELL -->
-<button class="mob-menu-btn" id="mobMenuBtn" onclick="toggleMobMenu()" aria-label="Open menu">☰</button>
+<button class="mob-menu-btn" id="mobMenuBtn" onclick="toggleMobMenu()" aria-label="Open menu"></button>
 <div class="mob-overlay" id="mobOverlay" onclick="closeMobMenu()"></div>
 <div id="adminShell" style="display:none;">
 <div class="admin-layout">
@@ -537,54 +614,55 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
   <span class="admin-nav-role" id="navRoleChip">Master</span>
   <div class="admin-nav-spacer"></div>
   <div class="admin-nav-avatar" id="navInitial" title="">D</div>
-  <button class="admin-nav-support" onclick="showSupportModal()">🛟 Support</button>
+  <button class="admin-nav-support" onclick="showSupportModal()"> Support</button>
   <button class="admin-nav-logout" onclick="adminLogout()">Sign out</button>
 </nav>
 
 <!-- SUPPORT MODAL -->
 <div id="supportModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;display:none;align-items:center;justify-content:center;padding:24px;">
   <div style="background:var(--white);border-radius:20px;padding:36px 32px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,0.3);position:relative;">
-    <button onclick="hideSupportModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;">✕</button>
-    <div style="font-size:32px;margin-bottom:12px;">🛟</div>
+    <button onclick="hideSupportModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;"></button>
+    <div style="font-size:32px;margin-bottom:12px;"></div>
     <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--navy);margin-bottom:6px;">Need Help?</div>
-    <div style="font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:24px;">This platform was designed and built by <strong style="color:var(--navy);">DaleX</strong> (Daniel Dale Igwebuike). Reach out directly for any technical issue, question, or change request.</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:24px;">For technical support, platform questions, or change requests, contact the DaleX support desk through any of the channels below.</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <a href="https://wa.me/2349056209920" target="_blank" style="display:flex;align-items:center;gap:14px;background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:12px;padding:14px 18px;text-decoration:none;transition:all 0.18s;">
-        <span style="font-size:22px;">💬</span>
+        <span style="font-size:22px;"></span>
         <div>
           <div style="font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#16A34A;margin-bottom:2px;">WhatsApp (Fastest)</div>
           <div style="font-size:14px;font-weight:600;color:var(--navy);">+234 905 620 9920</div>
         </div>
       </a>
       <a href="mailto:dalewebxmarketing@gmail.com" style="display:flex;align-items:center;gap:14px;background:var(--navy-pale);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;text-decoration:none;transition:all 0.18s;">
-        <span style="font-size:22px;">✉️</span>
+        <span style="font-size:22px;"></span>
         <div>
           <div style="font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;">Email</div>
           <div style="font-size:14px;font-weight:600;color:var(--navy);">dalewebxmarketing@gmail.com</div>
         </div>
       </a>
       <a href="https://dalewebx.vercel.app" target="_blank" style="display:flex;align-items:center;gap:14px;background:var(--gold-light);border:1.5px solid #E8D48A;border-radius:12px;padding:14px 18px;text-decoration:none;transition:all 0.18s;">
-        <span style="font-size:22px;">🌐</span>
+        <span style="font-size:22px;"></span>
         <div>
           <div style="font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:2px;">Portfolio</div>
           <div style="font-size:14px;font-weight:600;color:var(--navy);">dalewebx.vercel.app</div>
         </div>
       </a>
     </div>
-    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:12px;color:var(--dim);">Built with care for the Catholic Diocese of Warri · DaleX © 2026</div>
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:12px;color:var(--dim);">Catholic Music Academy technical support  DaleX  2026</div>
   </div>
 </div>
 
 <!-- TAB BAR -->
 <div class="admin-tabs" id="adminTabs" style="display:none;">
-  <button class="admin-tab active" id="tab-dashboard" onclick="goTab('dashboard')">📊 Dashboard</button>
-  <button class="admin-tab" id="tab-students" onclick="goTab('students')">👥 Students</button>
-  <button class="admin-tab" id="tab-examready" onclick="goTab('examready')" style="display:none;">🎓 Exam Ready <span class="admin-tab-badge gold" id="examReadyBadge"></span></button>
-  <button class="admin-tab" id="tab-applications" onclick="goTab('applications')" style="display:none;">📋 Applications <span class="admin-tab-badge" id="appsBadge"></span></button>
-  <button class="admin-tab" id="tab-grading" onclick="goTab('grading')">✏️ Grading</button>
-  <button class="admin-tab" id="tab-statistics" onclick="goTab('statistics')">📈 Statistics</button>
-  <button class="admin-tab" id="tab-courses" onclick="goTab('courses')">📚 Courses</button>
-  <button class="admin-tab" id="tab-settings" onclick="goTab('settings')" style="display:none;">⚙️ Settings</button></div>
+  <button class="admin-tab active" id="tab-dashboard" onclick="goTab('dashboard')">Dashboard</button>
+  <button class="admin-tab" id="tab-students" onclick="goTab('students')">Students</button>
+  <button class="admin-tab" id="tab-examready" onclick="goTab('examready')" style="display:none;">Exam Ready <span class="admin-tab-badge gold" id="examReadyBadge"></span></button>
+  <button class="admin-tab" id="tab-applications" onclick="goTab('applications')" style="display:none;">Applications <span class="admin-tab-badge" id="appsBadge"></span></button>
+  <button class="admin-tab" id="tab-grading" onclick="goTab('grading')">Grading</button>
+  <button class="admin-tab" id="tab-announcements" onclick="goTab('announcements')">Announcements</button>
+  <button class="admin-tab" id="tab-statistics" onclick="goTab('statistics')">Statistics</button>
+  <button class="admin-tab" id="tab-courses" onclick="goTab('courses')">Courses</button>
+  <button class="admin-tab" id="tab-settings" onclick="goTab('settings')" style="display:none;">Settings</button></div>
 
 <!-- MAIN -->
 <div class="main" id="adminMain" style="display:none;">
@@ -593,7 +671,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 <div class="admin-page active" id="page-dashboard">
   <div class="page-header">
     <div><div class="page-title">Dashboard</div><div class="page-sub" id="dashSub">Loading...</div></div>
-    <button class="btn btn-ghost btn-sm" onclick="loadAllData();showToast('Refreshed')">↻ Refresh</button>
+    <button class="btn btn-ghost btn-sm" onclick="loadAllData();showToast('Refreshed')"> Refresh</button>
   </div>
   <div class="stat-grid" id="dashStats"></div>
   <div id="dashGridTop"></div>
@@ -604,7 +682,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 <div class="admin-page" id="page-applications">
   <div class="page-header">
     <div><div class="page-title">Applications</div><div class="page-sub">Review and approve student applications.</div></div>
-    <button class="btn btn-ghost btn-sm" id="clearBinBtn" style="color:var(--danger);border-color:var(--danger);display:none;" onclick="clearApplicationBin()">🗑 Clear Bin</button>
+    <button class="btn btn-ghost btn-sm" id="clearBinBtn" style="color:var(--danger);border-color:var(--danger);display:none;" onclick="clearApplicationBin()"> Clear Bin</button>
   </div>
   <div class="tabs">
     <div class="tab active" onclick="setAppTab('pending',this)">Pending <span id="pendingCount"></span></div>
@@ -625,7 +703,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
     <div id="cm-sidebar-wrap"></div>
     <div id="cm-editor-wrap">
       <div class="cm-empty-state">
-        <div style="font-size:40px;margin-bottom:12px;">📚</div>
+        <div style="font-size:40px;margin-bottom:12px;"></div>
         <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:8px;">Content Manager</div>
         <div style="font-size:13px;color:var(--muted);line-height:1.7;max-width:360px;margin:0 auto 20px;">Select a course and module from the left panel to edit content and manage assessments.</div>
         <button class="btn btn-primary" onclick="showAddCourseModal()">+ Create First Course</button>
@@ -645,15 +723,15 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
   <div class="page-header">
     <div><div class="page-title">Students</div><div class="page-sub" id="studentsSub">Loading...</div></div>
     <div style="display:flex;gap:8px;">
-      <button class="btn btn-primary btn-sm" onclick="showCreateStudentModal()">➕ Create Student</button>
-      <button class="btn btn-ghost btn-sm" onclick="exportStudentsCsv()">↓ Export CSV</button>
+      <button class="btn btn-primary btn-sm" onclick="showCreateStudentModal()"> Create Student</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportStudentsCsv()"> Export CSV</button>
     </div>
   </div>
   <!-- Search + filters -->
   <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
     <div style="flex:1;min-width:180px;position:relative;">
-      <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:14px;">🔍</span>
-      <input class="search-input" id="studentSearch" style="padding-left:34px;" placeholder="Search name or email…" oninput="renderStudents()"/>
+      <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:14px;"></span>
+      <input class="search-input" id="studentSearch" style="padding-left:34px;" placeholder="Search name or email" oninput="renderStudents()"/>
     </div>
     <select class="form-input" id="studentCourseFilter" style="width:auto;padding:9px 12px;margin:0;" onchange="renderStudents()">
       <option value="">All programmes</option>
@@ -673,7 +751,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 <!-- STUDENT DETAIL -->
 <div class="admin-page" id="page-student-detail">
   <div style="margin-bottom:16px;">
-    <button class="btn btn-ghost btn-sm" onclick="goTab('students')">← All Students</button>
+    <button class="btn btn-ghost btn-sm" onclick="goTab('students')"> All Students</button>
   </div>
   <div id="studentDetailContent"></div>
 </div>
@@ -701,7 +779,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
     <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="annTitle" placeholder="Announcement title"/></div>
     <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" id="annText" placeholder="Message..."></textarea></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-      <select class="form-select" id="annType" style="width:auto;padding:8px 12px;"><option value="info">ℹ️ Info</option><option value="warn">⚠️ Warning</option><option value="ok">✅ Good news</option></select>
+      <select class="form-select" id="annType" style="width:auto;padding:8px 12px;"><option value="info"> Info</option><option value="warn"> Warning</option><option value="ok"> Good news</option></select>
       <select class="form-select" id="annTarget" style="width:auto;padding:8px 12px;"><option value="all">All Students</option></select>
       <button class="btn btn-primary" onclick="postAnnouncement()">Post</button>
     </div>
@@ -722,7 +800,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 <div class="admin-page" id="page-courseprogress">
   <div class="page-header">
     <div><div class="page-title">Course Progress</div><div class="page-sub">View all enrolled students and their module completion for each course.</div></div>
-    <button class="btn btn-ghost" onclick="renderCourseProgress()">↻ Refresh</button>
+    <button class="btn btn-ghost" onclick="renderCourseProgress()"> Refresh</button>
   </div>
   <div id="courseProgressContent"><div style="text-align:center;padding:40px;color:var(--muted);">Loading...</div></div>
 </div>
@@ -749,10 +827,10 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
     <div><div class="page-title">Site Settings</div><div class="page-sub">Platform-wide settings. Changes take effect immediately.</div></div>
   </div>
 
-  <!-- DIRECTOR DETAILS — critical for certificates and emails -->
+  <!-- DIRECTOR DETAILS  critical for certificates and emails -->
   <div class="card" style="margin-bottom:16px;">
-    <div class="card-title" style="margin-bottom:4px;">✍️ Director Details</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Used automatically in completion cards, emails, and certificates. Update when the Director changes — no code needed.</div>
+    <div class="card-title" style="margin-bottom:4px;"> Director Details</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Used automatically in completion cards, emails, and certificates. Update when the Director changes  no code needed.</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="ss-grid">
       <div class="form-group" style="margin-bottom:0;">
         <label class="form-label">Director Full Name</label>
@@ -767,9 +845,9 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
     <button class="btn btn-primary" style="margin-top:14px;" onclick="saveSiteSettings('director')">Save Director Details</button>
   </div>
 
-  <!-- CONTACT INFO — shown on homepage and used in footer -->
+  <!-- CONTACT INFO  shown on homepage and used in footer -->
   <div class="card" style="margin-bottom:16px;">
-    <div class="card-title" style="margin-bottom:4px;">📞 Contact Information</div>
+    <div class="card-title" style="margin-bottom:4px;"> Contact Information</div>
     <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Shown in the homepage footer and navigation contact dropdown.</div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;" class="ss-grid">
       <div class="form-group" style="margin-bottom:0;">
@@ -789,16 +867,16 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
     <button class="btn btn-primary" style="margin-top:14px;" onclick="saveSiteSettings('contact')">Save Contact Info</button>
   </div>
 
-  <!-- HOMEPAGE DISPLAY — developer/master only, collapsible -->
+  <!-- HOMEPAGE DISPLAY  developer/master only, collapsible -->
   <details style="margin-top:4px;">
-    <summary style="font-size:12px;color:var(--muted);cursor:pointer;padding:10px 0;font-weight:600;">▸ Homepage Display Settings (advanced)</summary>
+    <summary style="font-size:12px;color:var(--muted);cursor:pointer;padding:10px 0;font-weight:600;"> Homepage Display Settings (advanced)</summary>
     <div style="margin-top:12px;">
       <div class="alert alert-info" style="margin-bottom:16px;font-size:12px;">These control the demo screenshots shown on the public homepage. The school typically only sets these once during setup.</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;" class="ss-grid">
 
         <!-- HERO MOCKUP -->
         <div class="card">
-          <div class="form-section-title" style="margin-bottom:12px;">🏠 Hero Card — Student Portal Preview</div>
+          <div class="form-section-title" style="margin-bottom:12px;"> Hero Card  Student Portal Preview</div>
           <div class="form-group">
             <label class="form-label">Course Name</label>
             <input class="form-input" id="ss_h_course" placeholder="e.g. Liturgical Music Foundations"/>
@@ -819,7 +897,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 
         <!-- PORTAL MOCKUP -->
         <div class="card">
-          <div class="form-section-title" style="margin-bottom:12px;">💻 Portal Card — Inside the Portal Preview</div>
+          <div class="form-section-title" style="margin-bottom:12px;"> Portal Card  Inside the Portal Preview</div>
           <div class="form-group">
             <label class="form-label">URL shown in browser bar</label>
             <input class="form-input" id="ss_p_url" placeholder="catholicmusicacademy.net"/>
@@ -917,43 +995,43 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 <!-- DEV TOOLS -->
 <div class="admin-page" id="page-devtools">
   <div class="page-header"><div><div class="page-title">Dev Tools</div><div class="page-sub">Handover preparation and data management. Master admin only.</div></div></div>
-  <div class="alert alert-warn" style="margin-bottom:20px;">⚠️ These actions are <strong>irreversible</strong>. Use only when preparing to hand over the platform.</div>
+  <div class="alert alert-warn" style="margin-bottom:20px;"> These actions are <strong>irreversible</strong>. Use only when preparing to hand over the platform.</div>
 
   <!-- Level 1: People data -->
   <div class="card" style="margin-bottom:14px;border-top:3px solid var(--danger);">
-    <div class="card-title" style="margin-bottom:6px;">🧹 Clear All Test People Data</div>
+    <div class="card-title" style="margin-bottom:6px;"> Clear All Test People Data</div>
     <p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.7;">Wipes every student account, application, progress record, quiz attempt, enrolment, and login session. <strong>Courses, modules, and settings are untouched.</strong> Everyone who tested simply reapplies when the school opens.</p>
     <div style="background:var(--surface);border-radius:10px;padding:10px 13px;margin-bottom:14px;font-size:12px;color:var(--muted);">
-      Deletes: <strong>students · applications · enrolments · progress · quiz attempts · sessions</strong><br>
-      Keeps: <strong>courses · modules · content · cohort · settings · admin accounts</strong>
+      Deletes: <strong>students  applications  enrolments  progress  quiz attempts  sessions</strong><br>
+      Keeps: <strong>courses  modules  content  cohort  settings  admin accounts</strong>
     </div>
-    <button class="btn btn-danger" onclick="clearPeopleData()">🧹 Clear All People Data</button>
+    <button class="btn btn-danger" onclick="clearPeopleData()"> Clear All People Data</button>
   </div>
 
   <!-- Level 2: Course content -->
   <div class="card" style="margin-bottom:14px;border-top:3px solid var(--warn);">
-    <div class="card-title" style="margin-bottom:6px;">📚 Clear Course Content Only</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.7;">Wipes all module reading content, quiz questions, video URLs, audio tracks, and downloads. <strong>Course titles and module structure are preserved</strong> — lecturers just fill in real content.</p>
+    <div class="card-title" style="margin-bottom:6px;"> Clear Course Content Only</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.7;">Wipes all module reading content, quiz questions, video URLs, audio tracks, and downloads. <strong>Course titles and module structure are preserved</strong>  lecturers just fill in real content.</p>
     <div style="background:var(--surface);border-radius:10px;padding:10px 13px;margin-bottom:14px;font-size:12px;color:var(--muted);">
-      Clears: <strong>reading content · quiz questions · video URLs · audio tracks · downloads</strong><br>
-      Keeps: <strong>course titles · module titles · module order · all people data</strong>
+      Clears: <strong>reading content  quiz questions  video URLs  audio tracks  downloads</strong><br>
+      Keeps: <strong>course titles  module titles  module order  all people data</strong>
     </div>
-    <button class="btn btn-amber" onclick="clearCourseContent()">📚 Clear Course Content</button>
+    <button class="btn btn-amber" onclick="clearCourseContent()"> Clear Course Content</button>
   </div>
 
   <!-- Full handover -->
   <div class="card" style="margin-bottom:14px;border-top:3px solid #7f1d1d;">
-    <div class="card-title" style="margin-bottom:6px;">☢️ Full Handover Reset</div>
+    <div class="card-title" style="margin-bottom:6px;"> Full Handover Reset</div>
     <p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.7;">Clears all people data AND all course content in one shot. Platform is handed over with structure intact but completely empty. Type <strong>HANDOVER</strong> to confirm.</p>
     <div style="background:#FEF2F2;border-radius:10px;padding:10px 13px;margin-bottom:14px;font-size:12px;color:var(--danger);">
       Deletes: <strong>everything except course structure, admin accounts, and settings</strong>
     </div>
-    <button class="btn btn-danger" style="background:#7f1d1d;" onclick="fullHandoverReset()">☢️ Full Handover Reset</button>
+    <button class="btn btn-danger" style="background:#7f1d1d;" onclick="fullHandoverReset()"> Full Handover Reset</button>
   </div>
 
   <!-- Individual operations -->
   <details style="margin-top:4px;">
-    <summary style="font-size:12px;color:var(--muted);cursor:pointer;padding:8px 0;">▸ Individual operations</summary>
+    <summary style="font-size:12px;color:var(--muted);cursor:pointer;padding:8px 0;"> Individual operations</summary>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
       <div class="card" style="padding:14px 16px;"><div style="font-size:13px;font-weight:600;margin-bottom:8px;">Applications only</div><button class="btn btn-danger btn-sm" onclick="clearApplications()">Clear</button></div>
       <div class="card" style="padding:14px 16px;"><div style="font-size:13px;font-weight:600;margin-bottom:8px;">Students only</div><button class="btn btn-danger btn-sm" onclick="clearStudents()">Clear</button></div>
@@ -966,7 +1044,7 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 <div class="admin-page" id="page-statistics">
   <div class="page-header">
     <div><div class="page-title">Statistics</div><div class="page-sub">Programme performance, enrolment history, and completion records.</div></div>
-    <button class="btn btn-ghost" onclick="renderStatistics()">↻ Refresh</button>
+    <button class="btn btn-ghost" onclick="renderStatistics()"> Refresh</button>
   </div>
   <div id="statisticsContent"><div style="text-align:center;padding:40px;color:var(--muted);">Loading...</div></div>
 </div>
@@ -978,13 +1056,13 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
       <div class="page-title">Exam Ready</div>
       <div class="page-sub">Students awaiting scheduling, results, or resit. Certified students shown separately below.</div>
     </div>
-    <button class="btn btn-ghost btn-sm" onclick="renderExamReady()">↻ Refresh</button>
+    <button class="btn btn-ghost btn-sm" onclick="renderExamReady()"> Refresh</button>
   </div>
 
   <!-- Action KPIs -->
   <div class="stat-grid" id="examReadyStats" style="margin-bottom:20px;"></div>
 
-  <!-- Filter pills — action states only, not passed -->
+  <!-- Filter pills  action states only, not passed -->
   <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;" id="examReadyFilters">
     <button class="tab active" onclick="setExamFilter('all',this)">All Pending</button>
     <button class="tab" onclick="setExamFilter('unscheduled',this)">Unscheduled</button>
@@ -995,11 +1073,11 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
   <!-- Active exam cards -->
   <div id="examReadyList"><div style="text-align:center;padding:40px;color:var(--muted);">Loading...</div></div>
 
-  <!-- Certified archive — visually separated -->
+  <!-- Certified archive  visually separated -->
   <div id="certifiedSection" style="display:none;margin-top:36px;">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
       <div style="flex:1;height:1px;background:var(--border);"></div>
-      <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ok);white-space:nowrap;">🎓 Certified Students</div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ok);white-space:nowrap;"> Certified Students</div>
       <div style="flex:1;height:1px;background:var(--border);"></div>
     </div>
     <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">These students have passed their final examination. This is a read-only record.</div>
@@ -1010,8 +1088,8 @@ input[id^="wscore-"]{border:2px solid var(--gold)!important;background:var(--gol
 <!-- CERTIFICATE -->
 <div class="admin-page" id="page-certificate">
   <div class="page-header">
-    <div><button class="btn btn-ghost" onclick="goTab('examready')">← Exam Ready</button></div>
-    <button class="btn btn-ghost" id="certDownloadAdminBtn" onclick="downloadCertificate()">↓ Download PNG</button>
+    <div><button class="btn btn-ghost" onclick="goTab('examready')">Exam Ready</button></div>
+    <button class="btn btn-ghost" id="certDownloadAdminBtn" onclick="downloadCertificate()"> Download PNG</button>
   </div>
   <div id="certCardWrap" style="max-width:680px;margin:0 auto;"></div>
 </div>
@@ -1027,7 +1105,7 @@ var MODULE_COUNT = 3; // updated dynamically from DB after loadCourseContent
 var MODULE_NAMES = ['Module 1','Module 2','Module 3']; // updated dynamically
 var COURSE_NAMES = []; // updated dynamically
 
-// ── SUPABASE ────────────────────────────────────────────────────────────────
+//  SUPABASE 
 async function sb(table, method='GET', body=null, query='') {
   var url = SUPA_URL+'/rest/v1/'+table+(query?'?'+query:'');
   var opts = {method, headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':method==='POST'?'return=representation':''}};
@@ -1038,7 +1116,7 @@ async function sb(table, method='GET', body=null, query='') {
   return text ? JSON.parse(text) : [];
 }
 
-// ── STATE ────────────────────────────────────────────────────────────────────
+//  STATE 
 var currentAdmin = null;
 var currentPage = 'dashboard';
 var appTabFilter = 'pending';
@@ -1049,16 +1127,16 @@ var allProgress = [];
 var allAttempts = [];
 var cohortSettings = {};
 
-// ── HELPERS ──────────────────────────────────────────────────────────────────
+//  HELPERS 
 function fmtDateTime(s) {
-  if (!s) return '—';
+  if (!s) return '';
   var d = new Date(s);
   var h = d.getHours(), m = d.getMinutes();
   var ampm = h>=12?'pm':'am'; h = h%12||12;
   return (h+':'+(m<10?'0':'')+m+ampm+' '+d.getDate()+'/'+(d.getMonth()+1)+'/'+String(d.getFullYear()).slice(2));
 }
 function fmtDate(s) {
-  if (!s) return '—';
+  if (!s) return '';
   var d = new Date(s);
   return d.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]+' '+d.getFullYear();
 }
@@ -1077,7 +1155,7 @@ function getStudentProgress(sid, courseId) {
     if (courseId) return p.course_id === courseId;
     return true;
   }).map(function(p){ return p.module_index; });
-  // Deduplicate — each module counts once regardless of how many progress rows exist
+  // Deduplicate  each module counts once regardless of how many progress rows exist
   return indices.filter(function(v, i, a){ return a.indexOf(v) === i; });
 }
 function getStudentAttempts(sid) { return allAttempts.filter(a=>a.student_id===sid); }
@@ -1096,7 +1174,7 @@ function statCard(val,label,cls) {
   return '<div class="stat-card '+cls+'"><div class="stat-val">'+val+'</div><div class="stat-label">'+label+'</div></div>';
 }
 
-// ── SESSION ──────────────────────────────────────────────────────────────────
+//  SESSION 
 function saveAdminSession(admin, remember) { try{localStorage.setItem('cma_admin_session',JSON.stringify({user:admin,at:Date.now(),remember:!!remember}));}catch(e){} }
 function clearAdminSession() { try{localStorage.removeItem('cma_admin_session');}catch(e){} }
 function loadAdminSession() {
@@ -1110,12 +1188,12 @@ function loadAdminSession() {
   }catch(e){return null;}
 }
 
-// ── AUTH ─────────────────────────────────────────────────────────────────────
+//  AUTH 
 function toggleAdminPass() {
   var el = document.getElementById('adminPass');
   var btn = document.getElementById('adminPassToggle');
   el.type = el.type === 'password' ? 'text' : 'password';
-  btn.textContent = el.type === 'password' ? '👁' : '🙈';
+  btn.textContent = el.type === 'password' ? '' : '';
 }
 
 async function doAdminLogin() {
@@ -1178,12 +1256,12 @@ async function doAdminLogin() {
   } catch(e) {
     err.textContent = e.message || 'Login failed.';
     err.style.display='block';
-    if (btn) { btn.disabled=false; btn.textContent='Sign In →'; }
+    if (btn) { btn.disabled=false; btn.textContent='Sign In '; }
   }
 }
 
 
-// ── CRYPTO UTILITIES ─────────────────────────────────────────────────────────
+//  CRYPTO UTILITIES 
 async function generateSalt() {
   var arr = new Uint8Array(16);
   crypto.getRandomValues(arr);
@@ -1213,7 +1291,7 @@ function generateSessionToken() {
   crypto.getRandomValues(arr);
   return Array.from(arr).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
 }
-// ─────────────────────────────────────────────────────────────────────────────
+// 
 
 async function hashAdminPass(pass, salt) {
   if (salt) return hashPasswordPBKDF2(pass, salt);
@@ -1253,7 +1331,7 @@ function adminLogout() {
   document.getElementById('adminErr').style.display='none';
 }
 
-// ── NAVIGATION ───────────────────────────────────────────────────────────────
+//  NAVIGATION 
 var _settingsPages = ['cohort','sitesettings','adminaccounts','accountsettings','paymentsettings'];
 
 function injectSettingsSubNav(activeId) {
@@ -1328,7 +1406,7 @@ function goPage(id) { goTab(id); }
 
 
 
-// ── DATA LOAD ────────────────────────────────────────────────────────────────
+//  DATA LOAD 
 async function loadAllData() {
   try {
     // Build filters based on role
@@ -1348,7 +1426,7 @@ async function loadAllData() {
       sb('enrolments','GET',null,'select=student_id,course_id,status,enrolled_at,completed_at,exam_date,exam_passed_at,exam_failed_at,programme').catch(()=>[]),
       sb('assessment_submissions','GET',null,'status=eq.pending&select=id,course_id'+courseFilter).catch(()=>[])
     ]);
-    // Deduplicate enrolments — keep most advanced status per student+course
+    // Deduplicate enrolments  keep most advanced status per student+course
     var STATUS_RANK = {'exam_passed':5,'exam_failed':4,'exam_scheduled':3,'complete':2,'active':1};
     var enrolSeen = {};
     var enrolDeduped = [];
@@ -1399,18 +1477,18 @@ function renderCurrentPage() {
   else if(r[currentPage]) r[currentPage]();
 }
 
-// ── DASHBOARD ────────────────────────────────────────────────────────────────
+//  DASHBOARD 
 function renderDashboard() {
   var du = daysUntil(cohortSettings.deadline||'2099-01-01');
   var dashSubEl = document.getElementById('dashSub');
-  if (dashSubEl) dashSubEl.textContent = (cohortSettings.name||'Cohort 1') + ' · Deadline: ' + fmtDate(cohortSettings.deadline) + (du>0?' ('+du+' days)':' (Deadline passed)');
+  if (dashSubEl) dashSubEl.textContent = (cohortSettings.name||'Cohort 1') + '  Deadline: ' + fmtDate(cohortSettings.deadline) + (du>0?' ('+du+' days)':' (Deadline passed)');
 
   // Use role-filtered data
   var myStudents = visibleStudents();
   var myEnrolments = visibleEnrolments();
   var myApplications = visibleApplications();
 
-  // ── KPI CARDS ──
+  //  KPI CARDS 
   var pending = isMaster() ? myApplications.filter(function(a){return a.status==='pending';}).length : 0;
   var gradingQ = (window.allPendingSubmissions||[]).filter(function(s){
     if (!isMaster() && s.course_id !== lecturerCourseId()) return false;
@@ -1434,45 +1512,59 @@ function renderDashboard() {
   });
   var totalExamReady = examReady + moduleCompleteNotFlagged.length;
   var atRisk = myStudents.filter(isAtRisk).length;
+  var neverLoggedIn = myStudents.filter(function(s){ return s.status === 'active' && !s.last_login; }).length;
+  var resitNeeded = myEnrolments.filter(function(e){ return e.status === 'exam_failed'; }).length;
   var dashStats = document.getElementById('dashStats');
   if (dashStats) dashStats.innerHTML =
-    (isMaster() ? statCard(pending, 'Pending Applications', 'warn-card') : '') +
-    statCard(gradingQ, 'Grading Queue', gradingQ>0?'warn-card':'') +
-    statCard(totalExamReady, 'Exam Ready', 'ok-card') +
+    (isMaster() ? statCard(pending, 'Apps / Receipts', 'warn-card') : '') +
+    statCard(gradingQ, 'Awaiting Grading', gradingQ>0?'warn-card':'') +
+    statCard(totalExamReady, 'Exam Scheduling', 'ok-card') +
+    statCard(resitNeeded, 'Resit Follow-up', resitNeeded>0?'danger-card':'') +
+    statCard(neverLoggedIn, 'Not Logged In', neverLoggedIn>0?'warn-card':'') +
     statCard(atRisk, 'At Risk', atRisk>0?'danger-card':'');
 
-  // ── ACTION LIST ──
+  //  ACTION LIST 
   var actions = [];
   if (isMaster() && pending > 0) actions.push({
-    icon:'📋', color:'#C9A84C', bg:'#FBF3DF',
-    text: pending + ' application' + (pending>1?'s':'')+' awaiting your review',
+    icon:'', color:'#C9A84C', bg:'#FBF3DF',
+    text: pending + ' application' + (pending>1?'s':'')+' and payment receipt' + (pending>1?'s':'')+' awaiting review',
     cta:'Review', action:"goTab('applications')"
   });
   if (gradingQ > 0) actions.push({
-    icon:'✏️', color:'#0D1B3E', bg:'#EEF2FF',
-    text: gradingQ + ' written assessment' + (gradingQ>1?'s':'')+' waiting to be graded',
+    icon:'', color:'#0D1B3E', bg:'#EEF2FF',
+    text: gradingQ + ' written assessment' + (gradingQ>1?'s':'')+' awaiting instructor grading',
     cta:'Grade', action:"goTab('grading')"
   });
   if (totalExamReady > 0) actions.push({
-    icon:'🎓', color:'#16A34A', bg:'#DCFCE7',
-    text: totalExamReady + ' student' + (totalExamReady>1?'s':'')+' completed all modules — schedule their exam',
-    cta:'Schedule', action:"goTab('students')"
+    icon:'', color:'#16A34A', bg:'#DCFCE7',
+    text: totalExamReady + ' student' + (totalExamReady>1?'s':'')+' completed all modules  schedule their final exam',
+    cta:'Exam Ready', action:"goTab('examready')"
+  });
+  if (resitNeeded > 0) actions.push({
+    icon:'', color:'#DC2626', bg:'#FEE2E2',
+    text: resitNeeded + ' student' + (resitNeeded>1?'s':'')+' need resit follow-up after a failed exam',
+    cta:'Follow Up', action:"setExamFilter('failed');goTab('examready')"
+  });
+  if (neverLoggedIn > 0) actions.push({
+    icon:'', color:'#9A7A2E', bg:'#FBF3DF',
+    text: neverLoggedIn + ' approved student' + (neverLoggedIn>1?'s have':' has')+' not logged in yet',
+    cta:'View Students', action:"goTab('students')"
   });
   var riskStudents = myStudents.filter(isAtRisk);
   riskStudents.slice(0,2).forEach(function(s){
     actions.push({
-      icon:'⚠️', color:'#DC2626', bg:'#FEE2E2',
-      text: s.first_name+' '+s.last_name+' — '+lastSeenText(s.last_login),
+      icon:'', color:'#DC2626', bg:'#FEE2E2',
+      text: s.first_name+' '+s.last_name+'  '+lastSeenText(s.last_login),
       cta:'Nudge', action:"openStudentDetail('"+s.id+"')"
     });
   });
   if (riskStudents.length > 2) actions.push({
-    icon:'⚠️', color:'#DC2626', bg:'#FEE2E2',
+    icon:'', color:'#DC2626', bg:'#FEE2E2',
     text: (riskStudents.length-2)+' more student'+(riskStudents.length-2>1?'s':'')+' at risk',
     cta:'View All', action:"goTab('students')"
   });
 
-  // ── COURSE PROGRESS — only show lecturer's course for lecturers ──
+  //  COURSE PROGRESS  only show lecturer's course for lecturers 
   var visibleCourses = isMaster() ? cmCourses : cmCourses.filter(function(c){ return c.id === lecturerCourseId(); });
   var courseProgressHtml = visibleCourses.map(function(course){
     var enrolled = myEnrolments.filter(function(e){return e.course_id===course.id;}).length;
@@ -1487,7 +1579,7 @@ function renderDashboard() {
       +'</div>';
   }).join('') || '<div style="font-size:13px;color:var(--muted);text-align:center;padding:20px;">No courses yet.</div>';
 
-  // ── RECENT ACTIVITY ──
+  //  RECENT ACTIVITY 
   var acts = [];
   allStudents.filter(function(s){return s.last_login;}).forEach(function(s){
     acts.push({time:s.last_login, html:'<strong>'+s.first_name+' '+s.last_name+'</strong> logged in'});
@@ -1495,7 +1587,7 @@ function renderDashboard() {
   allAttempts.slice(0,20).forEach(function(a){
     var s=allStudents.find(function(st){return st.id===a.student_id;});
     if(!s)return;
-    acts.push({time:a.attempted_at, html:'<strong>'+s.first_name+' '+s.last_name+'</strong> — Module '+(a.module_index+1)+' '+(a.passed?'<span style="color:var(--ok);">passed</span>':'<span style="color:var(--danger);">failed</span>')});
+    acts.push({time:a.attempted_at, html:'<strong>'+s.first_name+' '+s.last_name+'</strong>  Module '+(a.module_index+1)+' '+(a.passed?'<span style="color:var(--ok);">passed</span>':'<span style="color:var(--danger);">failed</span>')});
   });
   acts.sort(function(a,b){return new Date(b.time)-new Date(a.time);});
   var activityHtml = acts.length ? acts.slice(0,8).map(function(a){
@@ -1505,7 +1597,7 @@ function renderDashboard() {
       +'<div style="font-size:11px;color:var(--muted);margin-top:2px;">'+fmtDateTime(a.time)+'</div></div></div>';
   }).join('') : '<div style="font-size:13px;color:var(--muted);text-align:center;padding:20px;">No activity yet.</div>';
 
-  // ── RENDER ──
+  //  RENDER 
   var dashTop = document.getElementById('dashGridTop');
   if (dashTop) dashTop.innerHTML = '';
   var dashBot = document.getElementById('dashGridBottom');
@@ -1518,26 +1610,26 @@ function renderDashboard() {
   mainHtml += '<div class="card">'
     +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">'
     +'<div class="card-title" style="margin-bottom:0;">Action Required</div>'
-    +(actions.length===0?'<span class="pill pill-ok">All clear ✓</span>':'<span style="font-size:12px;font-weight:700;color:var(--danger);">'+actions.length+' item'+(actions.length>1?'s':'')+'</span>')
+    +(actions.length===0?'<span class="pill pill-ok">All clear </span>':'<span style="font-size:12px;font-weight:700;color:var(--danger);">'+actions.length+' item'+(actions.length>1?'s':'')+'</span>')
     +'</div>';
   if (actions.length === 0) {
-    mainHtml += '<div style="text-align:center;padding:24px 0;"><div style="font-size:32px;margin-bottom:8px;">✅</div><div style="font-size:14px;color:var(--muted);">Nothing urgent right now. You\'re all caught up.</div></div>';
+    mainHtml += '<div style="text-align:center;padding:24px 0;"><div style="font-size:32px;margin-bottom:8px;"></div><div style="font-size:14px;color:var(--muted);">Nothing urgent right now. You\'re all caught up.</div></div>';
   } else {
     mainHtml += actions.map(function(a){
       return '<div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;background:'+a.bg+';margin-bottom:8px;">'
         +'<div style="font-size:20px;flex-shrink:0;">'+a.icon+'</div>'
         +'<div style="flex:1;font-size:13px;color:var(--text);line-height:1.5;">'+a.text+'</div>'
-        +'<button class="btn btn-primary btn-sm" style="flex-shrink:0;" onclick="'+a.action+'">'+a.cta+' →</button>'
+        +'<button class="btn btn-primary btn-sm" style="flex-shrink:0;" onclick="'+a.action+'">'+a.cta+' </button>'
         +'</div>';
     }).join('');
   }
   mainHtml += '</div>';
 
-  // ── EXAM READY STUDENTS LIST ──────────────────────────────────────────────
+  //  EXAM READY STUDENTS LIST 
   if (moduleCompleteNotFlagged.length > 0) {
     mainHtml += '<div class="card" style="border:1.5px solid #6366F1;background:#EEF2FF;">'
       +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">'
-      +'<div class="card-title" style="margin-bottom:0;color:#312E81;">🎓 Students Ready for Examination</div>'
+      +'<div class="card-title" style="margin-bottom:0;color:#312E81;"> Students Ready for Examination</div>'
       +'<span style="font-size:12px;font-weight:700;color:#6366F1;">'+moduleCompleteNotFlagged.length+' student'+(moduleCompleteNotFlagged.length>1?'s':'')+' awaiting action</span>'
       +'</div>'
       +'<div style="font-size:12px;color:#4338CA;margin-bottom:12px;">These students have completed all modules. Open their profile and click <strong>Mark Exam Ready</strong>.</div>'
@@ -1547,9 +1639,9 @@ function renderDashboard() {
             +'<div style="width:32px;height:32px;border-radius:50%;background:#6366F1;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0;">'+(s.first_name||'?').charAt(0).toUpperCase()+'</div>'
             +'<div style="flex:1;">'
             +'<div style="font-size:13px;font-weight:700;color:#1E1B4B;">'+s.first_name+' '+s.last_name+'</div>'
-            +'<div style="font-size:11px;color:#6366F1;">'+(enr?enr.programme||'—':'—')+'</div>'
+            +'<div style="font-size:11px;color:#6366F1;">'+(enr?enr.programme||'':'')+'</div>'
             +'</div>'
-            +'<button class="btn btn-sm" style="background:#6366F1;color:white;flex-shrink:0;" onclick="openStudentDetail(\''+s.id+'\')">Open Profile →</button>'
+            +'<button class="btn btn-sm" style="background:#6366F1;color:white;flex-shrink:0;" onclick="openStudentDetail(\''+s.id+'\')">Open Profile </button>'
             +'</div>';
         }).join('')
       +'</div>';
@@ -1567,7 +1659,7 @@ function renderDashboard() {
 
 
 
-// ── STATISTICS ────────────────────────────────────────────────────────────────
+//  STATISTICS 
 function renderStatistics() {
   var el = document.getElementById('statisticsContent');
   if (!el) return;
@@ -1637,7 +1729,7 @@ function renderStatistics() {
   el.innerHTML = html;
 }
 
-// ── APPLICATIONS ─────────────────────────────────────────────────────────────
+//  APPLICATIONS 
 window._appMap={};
 var _appTabFilter='pending';
 function setAppTab(f,el){
@@ -1658,14 +1750,14 @@ function renderApplications() {
   if(!list.length){document.getElementById('appList').innerHTML='<div class="alert alert-info">No '+_appTabFilter+' applications.</div>';return;}
   document.getElementById('appList').innerHTML=list.map(a=>{
     var wn=a.whatsapp||a.phone;
-    var acceptMsg='Dear '+a.first_name+', your application to the Catholic Music Academy has been approved! 🎉\n\nLog in at: catholicmusicacademy.net/portal\n\nUse your registered email and the password you set during application.\n\nWelcome to the Academy!';
+    var acceptMsg='Dear '+a.first_name+', your application to the Catholic Music Academy has been approved! \n\nLog in at: catholicmusicacademy.net/portal\n\nUse your registered email and the password you set during application.\n\nWelcome to the Academy!';
         window._appMap[a.id] = a;
     var aid = a.id;
     var acts='';
-    if(a.status==='pending') { acts='<button class="btn btn-ok" onclick="approveApp(this.dataset.id)" data-id="'+aid+'">✓ Approve</button> <button class="btn btn-danger" onclick="rejectApp(this.dataset.id)" data-id="'+aid+'">✕ Reject</button>'; }
+    if(a.status==='pending') { acts='<button class="btn btn-ok" onclick="approveApp(this.dataset.id)" data-id="'+aid+'"> Approve</button> <button class="btn btn-danger" onclick="rejectApp(this.dataset.id)" data-id="'+aid+'"> Reject</button>'; }
     else if(a.status==='approved') { acts='<button class="btn btn-danger" onclick="rejectApp(this.dataset.id)" data-id="'+aid+'">Revoke</button>'; }
-    else { acts='<button class="btn btn-ok" onclick="approveApp(this.dataset.id)" data-id="'+aid+'">Re-approve</button> <button class="btn btn-ghost btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="deleteOneApplication(\''+aid+'\',\''+a.first_name+' '+a.last_name+'\')">🗑 Delete</button>'; }
-    if(wn) acts+=' <a class="btn btn-wa" href="'+waLink(wn,acceptMsg)+'" target="_blank">💬 WhatsApp</a>';
+    else { acts='<button class="btn btn-ok" onclick="approveApp(this.dataset.id)" data-id="'+aid+'">Re-approve</button> <button class="btn btn-ghost btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="deleteOneApplication(\''+aid+'\',\''+a.first_name+' '+a.last_name+'\')"> Delete</button>'; }
+    if(wn) acts+=' <a class="btn btn-wa" href="'+waLink(wn,acceptMsg)+'" target="_blank"> WhatsApp</a>';
     return '<div class="app-card '+a.status+'">'
       +'<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">'
       +'<div><div class="app-name">'+a.first_name+' '+a.last_name+'</div><div class="app-email">'+a.email+'</div></div>'
@@ -1673,18 +1765,18 @@ function renderApplications() {
       +(a.type==='additional'
         ?'<span class="pill pill-blue" style="font-size:11px;">+ Additional Course</span>'
         :a.type==='reapplication'
-        ?'<span class="pill" style="background:#FEF3C7;color:#92400E;font-size:11px;">↩ Reapplication</span>'
+        ?'<span class="pill" style="background:#FEF3C7;color:#92400E;font-size:11px;"> Reapplication</span>'
         :'<span class="pill" style="background:var(--navy-light);color:var(--navy);font-size:11px;">New Student</span>')
       +'<span class="pill '+(a.status==='pending'?'pill-warn':a.status==='approved'?'pill-ok':'pill-danger')+'">'+a.status+'</span>'
       +'</div></div>'
       +'<div class="app-meta">'
-      +'<div class="app-meta-item"><div class="lbl">Programme</div><div class="val">'+(a.programme||'—')+'</div></div>'
-      +'<div class="app-meta-item"><div class="lbl">Country</div><div class="val">'+(a.country||'—')+'</div></div>'
-      +'<div class="app-meta-item"><div class="lbl">State</div><div class="val">'+(a.state||'—')+'</div></div>'
-      +'<div class="app-meta-item"><div class="lbl">Phone</div><div class="val">'+(a.phone||'—')+'</div></div>'
-      +'<div class="app-meta-item"><div class="lbl">WhatsApp</div><div class="val">'+(a.whatsapp||a.phone||'—')+'</div></div>'
-      +'<div class="app-meta-item"><div class="lbl">Background</div><div class="val">'+(a.background||'—')+'</div></div>'
-      +'<div class="app-meta-item"><div class="lbl">Receipt</div><div class="val">'+(a.receipt_path?'<button class="btn btn-ghost" style="padding:4px 10px;font-size:11px;" onclick="viewReceipt(this.dataset.id)" data-id="'+aid+'">📎 View</button>':a.receipt_name?'📎 '+a.receipt_name:'Not uploaded')+'</div></div>'
+      +'<div class="app-meta-item"><div class="lbl">Programme</div><div class="val">'+(a.programme||'')+'</div></div>'
+      +'<div class="app-meta-item"><div class="lbl">Country</div><div class="val">'+(a.country||'')+'</div></div>'
+      +'<div class="app-meta-item"><div class="lbl">State</div><div class="val">'+(a.state||'')+'</div></div>'
+      +'<div class="app-meta-item"><div class="lbl">Phone</div><div class="val">'+(a.phone||'')+'</div></div>'
+      +'<div class="app-meta-item"><div class="lbl">WhatsApp</div><div class="val">'+(a.whatsapp||a.phone||'')+'</div></div>'
+      +'<div class="app-meta-item"><div class="lbl">Background</div><div class="val">'+(a.background||'')+'</div></div>'
+      +'<div class="app-meta-item"><div class="lbl">Receipt</div><div class="val">'+(a.receipt_path?'<button class="btn btn-ghost" style="padding:4px 10px;font-size:11px;" onclick="viewReceipt(this.dataset.id)" data-id="'+aid+'"> View</button>':a.receipt_name?' '+a.receipt_name:'Not uploaded')+'</div></div>'
       +'<div class="app-meta-item"><div class="lbl">Applied</div><div class="val">'+fmtDateTime(a.submitted_at)+'</div></div>'
       +(a.reviewed_at?'<div class="app-meta-item"><div class="lbl">Reviewed</div><div class="val">'+fmtDateTime(a.reviewed_at)+'</div></div>':'')
       +'</div>'
@@ -1715,7 +1807,7 @@ async function clearApplicationBin() {
     });
     var json = await res.json();
     if (!res.ok) throw new Error(json.error || 'Clear failed');
-    showToast('Bin cleared — '+binItems.length+' application'+(binItems.length>1?'s':'')+' deleted.');
+    showToast('Bin cleared  '+binItems.length+' application'+(binItems.length>1?'s':'')+' deleted.');
     await loadAllData();
     renderApplications();
   } catch(e) { showToast('Error: '+e.message,'err'); }
@@ -1740,7 +1832,7 @@ async function approveApp(id) {
     });
     var json = await res.json();
     if (!res.ok) throw new Error(json.error || 'Approval failed');
-    showToast('✓ Approved: '+a.first_name+(a.type==='additional'?' — course added':' — account created'));
+    showToast(' Approved: '+a.first_name+(a.type==='additional'?'  course added':'  account created'));
     await loadAllData();
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
@@ -1757,12 +1849,12 @@ async function rejectApp(id) {
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;';
   modal.innerHTML = '<div style="background:white;border-radius:16px;padding:28px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,0.2);">'
     +'<div style="font-family:DM Serif Display,serif;font-size:20px;color:var(--navy);margin-bottom:4px;">Reject Application</div>'
-    +'<div style="font-size:13px;color:var(--muted);margin-bottom:20px;">'+a.first_name+' '+a.last_name+' · '+a.programme+'</div>'
+    +'<div style="font-size:13px;color:var(--muted);margin-bottom:20px;">'+a.first_name+' '+a.last_name+'  '+a.programme+'</div>'
     +'<div class="form-group">'
     +'<label class="form-label">Reason for rejection <span style="color:var(--danger);">*</span></label>'
     +'<select class="form-select" id="rejectReason">'
     +'<option value="">Select a reason...</option>'
-    +'<option value="Payment not confirmed — your receipt could not be verified. Please reapply with a clear receipt.">Payment not confirmed</option>'
+    +'<option value="Payment not confirmed  your receipt could not be verified. Please reapply with a clear receipt.">Payment not confirmed</option>'
     +'<option value="The cohort is currently full. We invite you to apply for the next intake.">Cohort is full</option>'
     +'<option value="Your application was incomplete. Please reapply with all required information.">Incomplete application</option>'
     +'<option value="We were unable to verify the information provided in your application.">Information could not be verified</option>'
@@ -1827,16 +1919,16 @@ async function viewReceipt(id) {
     if (res.ok && data.signedURL) {
       window.open(SUPA_URL+'/storage/v1'+data.signedURL,'_blank');
     } else {
-      // Bucket may be public — fall back to direct public URL
+      // Bucket may be public  fall back to direct public URL
       window.open(SUPA_URL+'/storage/v1/object/public/receipts/'+a.receipt_path,'_blank');
     }
   } catch(e) {
-    // Network error — try public URL as last resort
+    // Network error  try public URL as last resort
     window.open(SUPA_URL+'/storage/v1/object/public/receipts/'+a.receipt_path,'_blank');
   }
 }
 
-// ── STUDENTS ─────────────────────────────────────────────────────────────────
+//  STUDENTS 
 function showCreateStudentModal() {
   var existing = document.getElementById('createStudentModal');
   if (existing) existing.remove();
@@ -1941,7 +2033,7 @@ async function createStudentDirectly() {
     if (!res.ok) throw new Error(json.error || 'Could not create account');
 
     document.getElementById('createStudentModal').remove();
-    showToast('✓ Account created for '+firstName+' '+lastName+'. Share the temp password with them — they set their own via My Account.');
+    showToast(' Account created for '+firstName+' '+lastName+'. Share the temp password with them  they set their own via My Account.');
     await loadAllData();
     renderStudents();
   } catch(e) {
@@ -1959,11 +2051,11 @@ async function renderStudents() {
   var courseFilter = ((document.getElementById('studentCourseFilter')||{}).value)||'';
   var statusFilter = ((document.getElementById('studentStatusFilter')||{}).value)||'';
 
-  // Populate course filter — lecturers only see their course, hide the dropdown entirely
+  // Populate course filter  lecturers only see their course, hide the dropdown entirely
   var cf = document.getElementById('studentCourseFilter');
   if (cf) {
     if (!isMaster()) {
-      // Hide course filter for lecturers — they only have one course
+      // Hide course filter for lecturers  they only have one course
       cf.closest('div') && (cf.closest('div').style.display = 'none');
       cf.style.display = 'none';
     } else if (cf.options.length <= 1) {
@@ -1987,7 +2079,7 @@ async function renderStudents() {
   });
 
   var sub = document.getElementById('studentsSub');
-  if (sub) sub.textContent = list.length+' student'+(list.length!==1?'s':'')+(q||courseFilter||statusFilter?' — filtered':'');
+  if (sub) sub.textContent = list.length+' student'+(list.length!==1?'s':'')+(q||courseFilter||statusFilter?'  filtered':'');
 
   var container = document.getElementById('studentsTable');
   if (!container) return;
@@ -2007,7 +2099,7 @@ async function renderStudents() {
 
     // Status pill
     var statusPill = examPassed
-      ? '<span class="pill pill-ok">🎓 Passed</span>'
+      ? '<span class="pill pill-ok"> Passed</span>'
       : examReady
       ? '<span class="pill" style="background:#DCFCE7;color:#15803D;">Exam Ready</span>'
       : risk
@@ -2021,7 +2113,7 @@ async function renderStudents() {
     if (enrols.length) {
       coursesBars = enrols.map(function(enr){
         var course = cmCourses.find(function(c){ return c.id===enr.course_id; });
-        var title = course ? course.title : (s.programme||'—');
+        var title = course ? course.title : (s.programme||'');
         // Shorten title
         var shortTitle = title.split(':')[0] || title;
         var modCount = course ? (course.modules||[]).filter(function(m){return m.published!==false;}).length : MODULE_COUNT;
@@ -2058,7 +2150,7 @@ async function renderStudents() {
       +statusPill
       +'<div style="font-size:10px;color:var(--muted);margin-top:4px;">'+lastSeen+'</div>'
       +'</div>'
-      +'<div style="color:var(--dim);font-size:14px;flex-shrink:0;">›</div>'
+      +'<div style="color:var(--dim);font-size:14px;flex-shrink:0;"></div>'
       +'</div>';
   }).join('');
 
@@ -2078,7 +2170,7 @@ function exportStudentsCsv() {
     var status=er?'Exam Ready':isAtRisk(s)?'At Risk':cp===0?'Not Started':'In Progress';
     var da=daysAgo(s.last_login);
     var lastSeen=lastSeenText(s.last_login);
-    rows.push([s.first_name+' '+s.last_name,s.email,s.programme||'—',lastSeen,status]);
+    rows.push([s.first_name+' '+s.last_name,s.email,s.programme||'',lastSeen,status]);
   });
   var csv=rows.map(function(r){return r.map(function(c){return '"'+(c||'').replace(/"/g,'""')+'"';}).join(',');}).join('\n');
   var blob=new Blob([csv],{type:'text/csv'});var url=URL.createObjectURL(blob);
@@ -2108,9 +2200,9 @@ function openStudentDetail(sid) {
   var examPassed = enrols.some(function(e){return e.status==='exam_passed';});
   var examReady = enrols.some(function(e){return ['complete','exam_scheduled','exam_passed'].includes(e.status);});
 
-  // ── HEADER ──
+  //  HEADER 
   var statusBadge = examPassed
-    ? '<span class="pill pill-ok">🎓 Exam Passed</span>'
+    ? '<span class="pill pill-ok"> Exam Passed</span>'
     : examReady ? '<span class="pill" style="background:#DCFCE7;color:#15803D;">Exam Ready</span>'
     : isAtRisk(s) ? '<span class="pill pill-danger">At Risk</span>'
     : '<span class="pill pill-blue">In Progress</span>';
@@ -2120,17 +2212,17 @@ function openStudentDetail(sid) {
     +'<div style="width:52px;height:52px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--navy);flex-shrink:0;">'+s.first_name.charAt(0)+(s.last_name||'').charAt(0)+'</div>'
     +'<div style="flex:1;min-width:0;">'
     +'<div style="font-size:18px;font-weight:700;margin-bottom:3px;">'+s.first_name+' '+s.last_name+'</div>'
-    +'<div style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:8px;">'+s.email+(s.phone?' · '+s.phone:'')+'</div>'
+    +'<div style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:8px;">'+s.email+(s.phone?'  '+s.phone:'')+'</div>'
     +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">'+statusBadge
     +'<span style="font-size:11px;color:rgba(255,255,255,0.55);">Last seen: '+lastSeen+'</span>'
     +'<span style="font-size:11px;color:rgba(255,255,255,0.55);">Joined: '+fmtDate(s.created_at)+'</span>'
     +'</div></div>'
     +'<div style="display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;">'
-    +(wn?'<a class="btn btn-gold btn-sm" href="'+waLink(wn,'Hello '+s.first_name+', this is the Catholic Music Academy.')+'" target="_blank">💬 WhatsApp</a>':'')
-    +'<a class="btn btn-ghost btn-sm" style="border-color:rgba(255,255,255,0.3);color:white;" href="mailto:'+s.email+'">✉ Email</a>'
+    +(wn?'<a class="btn btn-gold btn-sm" href="'+waLink(wn,'Hello '+s.first_name+', this is the Catholic Music Academy.')+'" target="_blank"> WhatsApp</a>':'')
+    +'<a class="btn btn-ghost btn-sm" style="border-color:rgba(255,255,255,0.3);color:white;" href="mailto:'+s.email+'"> Email</a>'
     +'</div></div></div>';
 
-  // ── PER-COURSE PROGRESS ──
+  //  PER-COURSE PROGRESS 
   var coursesHtml = '<div class="card" style="margin-bottom:14px;">'
     +'<div class="card-title" style="margin-bottom:14px;">Course Progress</div>';
   if (!enrols.length) {
@@ -2138,7 +2230,7 @@ function openStudentDetail(sid) {
   } else {
     enrols.forEach(function(enr){
       var course = cmCourses.find(function(c){return c.id===enr.course_id;});
-      var title = course ? course.title : (s.programme||'—');
+      var title = course ? course.title : (s.programme||'');
       var modules = course ? (course.modules||[]).filter(function(m){return m.published!==false;}) : [];
       var modCount = modules.length || MODULE_COUNT;
       var courseProgress = allProgress.filter(function(p){return p.student_id===sid&&p.course_id===enr.course_id;})
@@ -2150,7 +2242,7 @@ function openStudentDetail(sid) {
       var enrBadge = {
         'complete':'<span class="pill" style="background:#DCFCE7;color:#15803D;font-size:10px;">Modules Done</span>',
         'exam_scheduled':'<span class="pill pill-blue" style="font-size:10px;">Exam Scheduled</span>',
-        'exam_passed':'<span class="pill pill-ok" style="font-size:10px;">🎓 Passed</span>',
+        'exam_passed':'<span class="pill pill-ok" style="font-size:10px;"> Passed</span>',
         'exam_failed':'<span class="pill pill-danger" style="font-size:10px;">Exam Failed</span>',
         'active':'<span class="pill pill-blue" style="font-size:10px;">Active</span>'
       }[enr.status]||'<span class="pill pill-muted" style="font-size:10px;">'+enr.status+'</span>';
@@ -2167,15 +2259,15 @@ function openStudentDetail(sid) {
         var totalQ = modAtts.length ? (modAtts[0].total||0) : null;
 
         moduleRows += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--surface);">'
-          +'<div style="width:24px;height:24px;border-radius:6px;background:'+(modDone?'var(--ok)':'var(--border)')+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0;">'+(modDone?'✓':(mi+1))+'</div>'
+          +'<div style="width:24px;height:24px;border-radius:6px;background:'+(modDone?'var(--ok)':'var(--border)')+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0;">'+(modDone?'':(mi+1))+'</div>'
           +'<div style="flex:1;min-width:0;">'
           +'<div style="font-size:12px;font-weight:600;color:var(--text);">'+modName+'</div>'
           +(modAtts.length>0
             ? '<div style="font-size:10px;color:var(--muted);">'
-              +modAtts.length+' attempt'+(modAtts.length>1?'s':'')+' · '
+              +modAtts.length+' attempt'+(modAtts.length>1?'s':'')+'  '
               +(passes>0?'<span style="color:var(--ok);">'+passes+' passed</span>':'')
               +(fails>0?'<span style="color:var(--danger);margin-left:4px;">'+fails+' failed</span>':'')
-              +(bestScore!==null?' · Best: '+bestScore+(totalQ?'/'+totalQ:''):'')
+              +(bestScore!==null?'  Best: '+bestScore+(totalQ?'/'+totalQ:''):'')
               +'</div>'
             : '<div style="font-size:10px;color:var(--dim);">Not yet attempted</div>')
           +'</div>'
@@ -2199,7 +2291,7 @@ function openStudentDetail(sid) {
   }
   coursesHtml += '</div>';
 
-  // ── MARK EXAM READY — only per course where ALL modules are done ──
+  //  MARK EXAM READY  only per course where ALL modules are done 
   var examReadyButtons = '';
   var allStudentEnrols = isMaster()
     ? allEnrolments.filter(function(e){ return e.student_id===sid; })
@@ -2235,32 +2327,32 @@ function openStudentDetail(sid) {
     examReadyButtons += '<button class="btn btn-primary btn-sm" '
       +'style="margin-right:8px;margin-bottom:6px;" '
       +'onclick="manualMarkComplete(\''+sid+'\',\''+cId+'\',\''+cName+'\',\''+s.first_name+' '+s.last_name+'\')" >'
-      +'✓ Mark Exam Ready — '+cName+'</button>';
+      +' Mark Exam Ready  '+cName+'</button>';
   });
 
   if (examReadyButtons) {
     coursesHtml += '<div id="examReadyOverride_'+sid+'" style="background:#EEF2FF;border:1.5px solid #6366F1;border-radius:12px;padding:16px;margin-top:12px;">'
-      +'<div style="font-size:13px;font-weight:700;color:#312E81;margin-bottom:4px;">📋 Mark Exam Ready</div>'
+      +'<div style="font-size:13px;font-weight:700;color:#312E81;margin-bottom:4px;"> Mark Exam Ready</div>'
       +'<div style="font-size:12px;color:#4338CA;margin-bottom:12px;line-height:1.6;">This student has completed all modules. Use this if they are not yet appearing in the Exam Ready tab.</div>'
       +examReadyButtons
       +'</div>';
   }
 
-  // ── TIMELINE ──
+  //  TIMELINE 
   var tlEvents = [];
   if (app.submitted_at) tlEvents.push({time:app.submitted_at,color:'#0D1B3E',text:'Applied to Academy',sub:fmtDate(app.submitted_at)});
   if (app.reviewed_at) tlEvents.push({time:app.reviewed_at,color:app.status==='approved'?'#16A34A':'#DC2626',text:app.status==='approved'?'Application approved':'Application rejected',sub:fmtDate(app.reviewed_at)});
   attempts.forEach(function(a){
     tlEvents.push({time:a.attempted_at,color:a.passed?'#16A34A':'#DC2626',
-      text:(a.passed?'✓ Passed':'✗ Failed')+' Module '+(a.module_index+1),
-      sub:(a.score||0)+'/'+(a.total||0)+' correct · '+fmtDate(a.attempted_at)});
+      text:(a.passed?' Passed':' Failed')+' Module '+(a.module_index+1),
+      sub:(a.score||0)+'/'+(a.total||0)+' correct  '+fmtDate(a.attempted_at)});
   });
   allProgress.filter(function(p){return p.student_id===sid;}).forEach(function(p){
     var mn = MODULE_NAMES[p.module_index]||('Module '+(p.module_index+1));
     tlEvents.push({time:p.completed_at||'',color:'#C9A84C',text:'Completed: '+mn,sub:fmtDate(p.completed_at)});
   });
   enrols.forEach(function(e){
-    if(e.exam_passed_at) tlEvents.push({time:e.exam_passed_at,color:'#16A34A',text:'🎓 Exam Passed',sub:fmtDate(e.exam_passed_at)});
+    if(e.exam_passed_at) tlEvents.push({time:e.exam_passed_at,color:'#16A34A',text:' Exam Passed',sub:fmtDate(e.exam_passed_at)});
     if(e.exam_failed_at) tlEvents.push({time:e.exam_failed_at,color:'#DC2626',text:'Exam Failed',sub:fmtDate(e.exam_failed_at)});
     if(e.exam_date&&e.status==='exam_scheduled') tlEvents.push({time:e.exam_date,color:'#0D1B3E',text:'Exam Scheduled',sub:'Scheduled for '+fmtDate(e.exam_date)});
   });
@@ -2279,17 +2371,17 @@ function openStudentDetail(sid) {
     }).join('') : '<div style="font-size:13px;color:var(--muted);padding:16px 0;">No activity yet.</div>')
     +'</div></div>';
 
-  // ── NUDGE SECTION ──
+  //  NUDGE SECTION 
   var nudgeHtml = '';
   if (wn) {
     nudgeHtml = '<div class="card" style="margin-bottom:14px;">'
       +'<div class="card-title" style="margin-bottom:12px;">Send Nudge</div>'
       +'<textarea id="nudgeMsg_'+sid+'" class="form-input" rows="3" style="resize:vertical;margin-bottom:10px;">Hello '+s.first_name+', this is the Catholic Music Academy. Please log in and continue your studies. God bless.</textarea>'
-      +'<a class="btn btn-primary btn-sm" href="'+waLink(wn, 'Hello '+s.first_name+', this is the Catholic Music Academy. Please log in and continue your studies. God bless.')+'" target="_blank">💬 Send via WhatsApp</a>'
+      +'<a class="btn btn-primary btn-sm" href="'+waLink(wn, 'Hello '+s.first_name+', this is the Catholic Music Academy. Please log in and continue your studies. God bless.')+'" target="_blank"> Send via WhatsApp</a>'
       +'</div>';
   }
 
-  // ── ADMIN ACTIONS ──
+  //  ADMIN ACTIONS 
   var adminActionsHtml = '<div class="card" style="margin-bottom:14px;">'
     +'<div class="card-title" style="margin-bottom:12px;">Admin Actions</div>'
     +'<div style="display:grid;grid-template-columns:1fr;gap:12px;">'
@@ -2314,7 +2406,7 @@ function openStudentDetail(sid) {
         +'</div>')
     +'</div></div>';
 
-  // ── TABS — hide nudge for passed students ──
+  //  TABS  hide nudge for passed students 
   // Show Admin tab to master AND lecturer (lecturer needs Mark Exam Ready)
   var showNudge = wn && !examPassed;
   var showAdminTab = true; // both roles can mark exam ready; password/revoke are inside and already guarded
@@ -2349,7 +2441,7 @@ async function manualMarkComplete(studentId, courseId, courseName, studentName) 
     var json = await res.json();
     if (!res.ok) throw new Error(json.error || 'Failed');
 
-    // Hide the button card immediately — don't wait for reload
+    // Hide the button card immediately  don't wait for reload
     var overrideCard = document.getElementById('examReadyOverride_'+studentId);
     if (overrideCard) overrideCard.remove();
 
@@ -2442,7 +2534,7 @@ function renderProgress() {
       return '<td>'+badge+'</td>';
     }).join('');
     var rowStyle=struggling?' style="background:var(--danger-light);"':'';
-    return '<tr class="tr-clickable"'+rowStyle+' onclick="openStudentDetail(\''+s.id+'\')"><td><strong>'+s.first_name+' '+s.last_name+'</strong>'+(struggling?' <span class="pill pill-danger">⚠</span>':'')+'<br><span style="font-size:11px;color:var(--muted);">'+s.email+'</span></td>'+cells+'<td>'+(comp.length>=MODULE_COUNT?'<span class="pill pill-ok">Complete</span>':'<span class="pill pill-dim">In progress</span>')+'</td><td style="font-size:12px;color:var(--muted);">'+fmtDateTime(s.last_login)+'</td></tr>';
+    return '<tr class="tr-clickable"'+rowStyle+' onclick="openStudentDetail(\''+s.id+'\')"><td><strong>'+s.first_name+' '+s.last_name+'</strong>'+(struggling?' <span class="pill pill-danger"></span>':'')+'<br><span style="font-size:11px;color:var(--muted);">'+s.email+'</span></td>'+cells+'<td>'+(comp.length>=MODULE_COUNT?'<span class="pill pill-ok">Complete</span>':'<span class="pill pill-dim">In progress</span>')+'</td><td style="font-size:12px;color:var(--muted);">'+fmtDateTime(s.last_login)+'</td></tr>';
   });
   document.getElementById('progressTable').innerHTML=rows.join('');
 }
@@ -2483,9 +2575,9 @@ function renderAnalytics() {
     // Avg attempts per student
     var studentCounts = {};
     modAtts.forEach(function(a){ studentCounts[a.student_id] = (studentCounts[a.student_id]||0)+1; });
-    var avgAttempts = Object.keys(studentCounts).length ? (Object.values(studentCounts).reduce(function(s,v){return s+v;},0)/Object.keys(studentCounts).length).toFixed(1) : '—';
+    var avgAttempts = Object.keys(studentCounts).length ? (Object.values(studentCounts).reduce(function(s,v){return s+v;},0)/Object.keys(studentCounts).length).toFixed(1) : '';
 
-    // Question-level: need to check answers stored — if not available show note
+    // Question-level: need to check answers stored  if not available show note
     var name = modTitles[idx] || ('Module '+(parseInt(idx)+1));
     return '<div class="analytics-module">'
       +'<div class="analytics-module-title">'+name+'</div>'
@@ -2502,18 +2594,18 @@ function renderAnalytics() {
       +'<span class="pill pill-ok">'+passes+' passes</span>'
       +'<span class="pill pill-danger">'+fails+' fails</span>'
       +'<span class="pill pill-dim">'+Object.keys(studentCounts).length+' students</span>'
-      +(fails>passes?'<span class="pill pill-warn">⚠ High failure — review content</span>':'')
+      +(fails>passes?'<span class="pill pill-warn"> High failure  review content</span>':'')
       +'</div></div>';
   }).join('');
   document.getElementById('analyticsContent').innerHTML = html;
 }
 
-// ── AT RISK ───────────────────────────────────────────────────────────────────
+//  AT RISK 
 function renderAtrisk() {
   var at=allStudents.filter(isAtRisk);
   var du=daysUntil(cohortSettings.deadline||'2099-01-01');
-  if(!at.length){document.getElementById('atriskList').innerHTML='<div class="alert alert-ok">✅ No students at risk.</div>';return;}
-  document.getElementById('atriskList').innerHTML='<div class="alert alert-warn">⚠️ '+at.length+' student(s) need attention. Deadline: '+fmtDate(cohortSettings.deadline)+' ('+du+' days).</div>'
+  if(!at.length){document.getElementById('atriskList').innerHTML='<div class="alert alert-ok"> No students at risk.</div>';return;}
+  document.getElementById('atriskList').innerHTML='<div class="alert alert-warn"> '+at.length+' student(s) need attention. Deadline: '+fmtDate(cohortSettings.deadline)+' ('+du+' days).</div>'
     +at.map(s=>{
       var comp=getStudentProgress(s.id).length;
       var pct=Math.min(100, Math.round((comp/MODULE_COUNT)*100));
@@ -2526,17 +2618,17 @@ function renderAtrisk() {
       var nudge='Hi '+s.first_name+', this is the Catholic Music Academy! You have '+(MODULE_COUNT-comp)+' module(s) left. Deadline: '+fmtDate(cohortSettings.deadline)+'. Log in: catholicmusicacademy.net/portal';
       return '<div class="risk-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:8px;">'
         +'<div><div style="font-size:15px;font-weight:700;">'+s.first_name+' '+s.last_name+'</div><div style="font-size:12px;color:var(--muted);">'+s.email+'</div></div>'
-        +'<span class="pill pill-danger">⚠ At Risk</span></div>'
-        +'<div style="font-size:12px;color:var(--muted);margin-bottom:8px;">'+reasons.join(' · ')+'</div>'
+        +'<span class="pill pill-danger"> At Risk</span></div>'
+        +'<div style="font-size:12px;color:var(--muted);margin-bottom:8px;">'+reasons.join('  ')+'</div>'
         +'<div class="prog-bg" style="margin-bottom:10px;"><div class="prog-fill danger" style="width:'+pct+'%'+(pct===0?';background:var(--border)':'')+'"></div></div>'
         +'<div style="display:flex;gap:8px;flex-wrap:wrap;">'
-        +(wn?'<a class="btn btn-wa" href="'+waLink(wn,nudge)+'" target="_blank">💬 WhatsApp Nudge</a>':'')
+        +(wn?'<a class="btn btn-wa" href="'+waLink(wn,nudge)+'" target="_blank"> WhatsApp Nudge</a>':'')
         +'<button class="btn btn-ghost" onclick="openStudentDetail(\''+s.id+'\')">View Profile</button>'
         +'</div></div>';
     }).join('');
 }
 
-// ── COURSES & MODULES (Dynamic) ───────────────────────────────────────────────
+//  COURSES & MODULES (Dynamic) 
 // All course/module/content data lives in Supabase table: course_content
 // Schema: { id, course_id, course_title, course_color, course_order, module_index,
 //           module_title, module_topic, video_url, audio_tracks(json), downloads(json),
@@ -2544,7 +2636,7 @@ function renderAtrisk() {
 // We load all rows once and work from memory.
 
 var cmCourses = [];   // [{id, title, color, order, modules:[{title,questions,published}]}]
-var cmContent = {};   // key: "courseId-modIdx" → full row object
+var cmContent = {};   // key: "courseId-modIdx"  full row object
 var cmState = {
   selectedCourse: null,
   selectedModule: null,
@@ -2606,31 +2698,31 @@ function renderCourses() {
 function renderCMOverview() {
   var el = document.getElementById('cm-editor-wrap');
   if (!el) return;
-  // Always filter by role — don't trust cmCourses global state
+  // Always filter by role  don't trust cmCourses global state
   var courses = isMaster() ? cmCourses : cmCourses.filter(function(c){ return c.id === lecturerCourseId(); });
   if (!courses.length) {
-    el.innerHTML = '<div class="cm-empty-state"><div style="font-size:40px;margin-bottom:12px;">📚</div><div style="font-family:\'DM Serif Display\',serif;font-size:22px;color:var(--text);margin-bottom:8px;">No Courses Yet</div><div style="font-size:13px;color:var(--muted);line-height:1.7;max-width:360px;margin:0 auto 20px;">Create your first course to get started. You can add modules, content, and assessments after.</div><button class="btn btn-primary" onclick="showAddCourseModal()">+ Create First Course</button></div>';
+    el.innerHTML = '<div class="cm-empty-state"><div style="font-size:40px;margin-bottom:12px;"></div><div style="font-family:\'DM Serif Display\',serif;font-size:22px;color:var(--text);margin-bottom:8px;">No Courses Yet</div><div style="font-size:13px;color:var(--muted);line-height:1.7;max-width:360px;margin:0 auto 20px;">Create your first course to get started. You can add modules, content, and assessments after.</div><button class="btn btn-primary" onclick="showAddCourseModal()">+ Create First Course</button></div>';
     return;
   }
-  var html = '<div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;"><span style="font-size:13px;color:var(--muted);">'+courses.length+' course(s) — click to expand and manage modules</span>'+(isMaster()?'<button class="btn btn-primary btn-sm" onclick="showAddCourseModal()">+ New Course</button>':'')+'</div>';
+  var html = '<div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;"><span style="font-size:13px;color:var(--muted);">'+courses.length+' course(s)  click to expand and manage modules</span>'+(isMaster()?'<button class="btn btn-primary btn-sm" onclick="showAddCourseModal()">+ New Course</button>':'')+'</div>';
   html += courses.map(function(c) {
     var mods = c.modules||[];
     var publishedMods = mods.filter(function(m){return m.published;}).length;
     return '<div class="course-block" id="cbo-'+c.id+'">'
       +'<div class="course-block-hdr" onclick="toggleCBOverview(\''+c.id+'\')">'
-      +'<span class="cb-chevron">▶</span>'
+      +'<span class="cb-chevron"></span>'
       +'<div class="cb-dot" style="background:'+c.color+';"></div>'
       +'<div class="cb-title">'+c.title+'</div>'
       +'<div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="pill pill-blue">'+mods.length+' module(s)</span><span class="pill pill-ok">'+publishedMods+' live</span></div>'
-      +'<button class="btn btn-ghost btn-xs" style="margin-left:8px;" onclick="event.stopPropagation();renameCourse(\''+c.id+'\')">✏</button>'
+      +'<button class="btn btn-ghost btn-xs" style="margin-left:8px;" onclick="event.stopPropagation();renameCourse(\''+c.id+'\')"></button>'
       +'</div>'
       +'<div class="course-block-body" id="cbb-'+c.id+'">'
       +(mods.length ? mods.map(function(m,i){
         return '<div class="cb-mod-row">'
           +'<div class="cb-mod-num">'+(i+1)+'</div>'
           +'<div style="flex:1;"><div class="cb-mod-name">'+m.title+'</div>'
-          +'<div class="cb-mod-meta">'+m.questions+' question(s) · '+(m.published?'<span style="color:var(--ok);">Published</span>':'<span style="color:var(--dim);">Draft</span>')+'</div></div>'
-          +'<button class="btn btn-ghost btn-xs" onclick="selectCMModule(\''+c.id+'\','+i+')">Edit →</button>'
+          +'<div class="cb-mod-meta">'+m.questions+' question(s)  '+(m.published?'<span style="color:var(--ok);">Published</span>':'<span style="color:var(--dim);">Draft</span>')+'</div></div>'
+          +'<button class="btn btn-ghost btn-xs" onclick="selectCMModule(\''+c.id+'\','+i+')">Edit </button>'
           +'</div>';
       }).join('') : '<div style="font-size:13px;color:var(--dim);padding:8px 0;">No modules yet.</div>')
       +'<div style="margin-top:10px;display:flex;gap:8px;">'
@@ -2665,11 +2757,11 @@ function renderCMSidebar() {
       +'<div class="cm-course-label" onclick="toggleCMCourse(\''+c.id+'\')" style="position:relative;">'
       +'<div class="cm-course-dot" style="background:'+c.color+';"></div>'
       +'<span style="flex:1;font-size:12px;">'+c.title+'</span>'
-      +'<span class="cm-course-chevron">▶</span>'
+      +'<span class="cm-course-chevron"></span>'
       +(isMaster() ? '<span onclick="event.stopPropagation();deleteCourse(\''+c.id+'\',\''+c.title.replace(/'/g,"\\'")+'\')" '
         +'title="Delete course" '
         +'style="margin-left:4px;color:var(--danger);font-size:13px;padding:2px 5px;border-radius:4px;cursor:pointer;opacity:0.6;" '
-        +'onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">✕</span>' : '')
+        +'onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6"></span>' : '')
       +'</div>'
       +(isOpen ? '<div class="cm-module-list">'
         +(c.modules||[]).map(function(m,i){
@@ -2678,11 +2770,11 @@ function renderCMSidebar() {
           var isActive = cmState.selectedModule === key;
           return '<div class="cm-module-item'+(isActive?' active':'')+'" onclick="selectCMModule(\''+c.id+'\','+i+')" style="display:flex;align-items:center;gap:0;">'
             +'<div class="cm-module-dot" style="background:'+dot+';flex-shrink:0;"></div>'
-            +'<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+(m.title.length>24?m.title.substring(0,22)+'…':m.title)+'</span>'
+            +'<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+(m.title.length>24?m.title.substring(0,22)+'':m.title)+'</span>'
             +(isOwned ? '<span onclick="event.stopPropagation();deleteModule(\''+c.id+'\','+i+',\''+m.title.replace(/'/g,"\\'")+'\')" '
               +'title="Delete module" '
               +'style="color:var(--danger);font-size:11px;padding:2px 4px;border-radius:3px;cursor:pointer;opacity:0.5;flex-shrink:0;" '
-              +'onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">✕</span>' : '')
+              +'onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5"></span>' : '')
             +'</div>';
         }).join('')
         +(isOwned ? '<div class="cm-add-mod"><button class="btn btn-ghost btn-xs" style="width:100%;font-size:11px;" onclick="addNewModule(\''+c.id+'\')">+ Module</button></div>' : '')
@@ -2720,11 +2812,11 @@ async function deleteCourse(courseId, courseTitle) {
     // Enrolled students warning
     +(enrolledStudents.length
       ?'<div style="background:#FEF2F2;border:1.5px solid #FECACA;border-radius:10px;padding:12px 14px;margin-bottom:16px;">'
-        +'<div style="font-size:12px;font-weight:700;color:var(--danger);margin-bottom:6px;">⚠ '+enrolledStudents.length+' student'+(enrolledStudents.length>1?'s are':' is')+' enrolled</div>'
+        +'<div style="font-size:12px;font-weight:700;color:var(--danger);margin-bottom:6px;"> '+enrolledStudents.length+' student'+(enrolledStudents.length>1?'s are':' is')+' enrolled</div>'
         +'<div style="font-size:12px;color:#0F172A;line-height:1.7;">'+enrolledStudents.join(', ')+'</div>'
-        +'<div style="font-size:11px;color:var(--muted);margin-top:6px;">Their progress and enrolment records are NOT deleted — only the course content.</div>'
+        +'<div style="font-size:11px;color:var(--muted);margin-top:6px;">Their progress and enrolment records are NOT deleted  only the course content.</div>'
         +'</div>'
-      :'<div style="background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#16A34A;">✓ No students are currently enrolled in this course.</div>')
+      :'<div style="background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#16A34A;"> No students are currently enrolled in this course.</div>')
 
     // Module checklist
     +(modules.length
@@ -2741,7 +2833,7 @@ async function deleteCourse(courseId, courseTitle) {
             +'</div>';
         }).join('')
         +'</div>'
-      :'<div style="font-size:13px;color:var(--muted);margin-bottom:16px;">No modules found — deleting the course record only.</div>')
+      :'<div style="font-size:13px;color:var(--muted);margin-bottom:16px;">No modules found  deleting the course record only.</div>')
 
     +'<div style="display:flex;gap:8px;">'
     +'<button class="btn btn-danger" style="flex:2;" onclick="confirmDeleteCourse(\''+courseId+'\',\''+courseTitle.replace(/'/g,"\\'")+'\')">Delete Selected</button>'
@@ -2808,7 +2900,7 @@ async function deleteModule(courseId, modIdx, moduleTitle) {
   }
   // Check enrolled students
   var enrolled = allEnrolments.filter(function(e){ return e.course_id === courseId; });
-  var warning = enrolled.length ? '\n\n⚠ '+enrolled.length+' student'+(enrolled.length>1?'s are':' is')+' enrolled in this course. Their progress records are not deleted.' : '';
+  var warning = enrolled.length ? '\n\n '+enrolled.length+' student'+(enrolled.length>1?'s are':' is')+' enrolled in this course. Their progress records are not deleted.' : '';
   if (!confirm('Delete module "'+moduleTitle+'"?'+warning+'\n\nThis cannot be undone.')) return;
   try {
     var key = courseId+'-'+modIdx;
@@ -2873,45 +2965,45 @@ function renderCMEditor(courseId, modIdx, key, row) {
     +'<div style="font-family:\'DM Serif Display\',serif;font-size:18px;color:var(--text);">Module '+(modIdx+1)+': '+m.title+'</div></div>'
     +'<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">'
     +'<div class="pub-toggle"><div class="pub-switch'+(cmState.published?' on':'')+'" id="cmPubSwitch" onclick="toggleCMPublish()"><div class="pub-switch-dot"></div></div><span style="font-size:12px;color:var(--muted);" id="cmPubLabel">'+(cmState.published?'Published':'Draft')+'</span></div>'
-    +'<button class="btn btn-ghost btn-sm" onclick="renameCMModule(\''+courseId+'\','+modIdx+')">✏ Rename</button>'
+    +'<button class="btn btn-ghost btn-sm" onclick="renameCMModule(\''+courseId+'\','+modIdx+')"> Rename</button>'
     +'<button class="btn btn-primary btn-sm" onclick="saveCMModule(\''+key+'\')">Save Module</button>'
     +'</div></div>'
 
     // SECTION 1: Video
-    +'<div class="me-section"><div class="me-section-title">🎬 01 — Video Lesson</div>'
+    +'<div class="me-section"><div class="me-section-title"> 01  Video Lesson</div>'
     +'<div class="form-group"><label class="form-label">YouTube Embed URL</label>'
     +'<input class="form-input" id="cm_video" value="'+(row.video_url||'')+'" placeholder="https://www.youtube.com/embed/VIDEO_ID"/>'
-    +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">YouTube → Share → Embed → copy the src URL only</div></div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">YouTube  Share  Embed  copy the src URL only</div></div>'
     +'<div class="form-group"><label class="form-label">Video Duration (minutes)</label>'
     +'<input class="form-input" id="cm_videoDuration" type="number" min="0" step="0.5" value="'+(row.video_duration_mins||'')+'" placeholder="e.g. 12" style="max-width:140px;"/>'
     +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">Added to the student reading timer. Leave blank if no video.</div></div></div>'
 
     // SECTION 2: Audio Tracks
-    +'<div class="me-section"><div class="me-section-title">🎵 02 — Audio Tracks</div>'
+    +'<div class="me-section"><div class="me-section-title"> 02  Audio Tracks</div>'
     +'<div id="cm_audioList">'+renderCMAudioTracks(audioTracks)+'</div>'
     +'<div style="display:flex;gap:8px;margin-top:6px;">'
     +'<button class="btn btn-ghost btn-sm" onclick="addCMAudioTrack()">+ Add Track</button>'
     +'</div>'
-    +'<div style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.6;">Use YouTube URLs — upload audio as an unlisted YouTube video (static image + audio). Students see a play strip, not a video player.</div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.6;">Use YouTube URLs  upload audio as an unlisted YouTube video (static image + audio). Students see a play strip, not a video player.</div>'
     +'</div>'
 
     // SECTION 3: Reading Content
-    +'<div class="me-section"><div class="me-section-title">📖 03 — Reading Content</div>'
+    +'<div class="me-section"><div class="me-section-title"> 03  Reading Content</div>'
     +'<div class="rte-toolbar">'
     +'<button class="rte-btn" onclick="rteExec(\'formatBlock\',\'H2\')">H2</button>'
-    +'<button class="rte-btn" onclick="rteExec(\'formatBlock\',\'P\')">¶</button>'
+    +'<button class="rte-btn" onclick="rteExec(\'formatBlock\',\'P\')"></button>'
     +'<div class="rte-sep"></div>'
     +'<button class="rte-btn" onclick="rteExec(\'bold\')"><strong>B</strong></button>'
     +'<button class="rte-btn" onclick="rteExec(\'italic\')"><em>I</em></button>'
-    +'<button class="rte-btn" onclick="rteExec(\'insertUnorderedList\')">• List</button>'
+    +'<button class="rte-btn" onclick="rteExec(\'insertUnorderedList\')"> List</button>'
     +'<div class="rte-sep"></div>'
-    +'<button class="rte-btn" onclick="rteExec(\'removeFormat\')">✕ Clear</button>'
+    +'<button class="rte-btn" onclick="rteExec(\'removeFormat\')"> Clear</button>'
     +'</div>'
     +'<div class="rte-area" id="cm_rte" contenteditable="true">'+(content||'<p>Start typing module reading content here...</p>')+'</div>'
     +'<div style="font-size:11px;color:var(--muted);margin-top:6px;">Use H2 for section headings. Students read exactly what you type here.</div></div>'
 
     // SECTION 4: Assessment
-    +'<div class="me-section"><div class="me-section-title">📝 04 — Assessment</div>'
+    +'<div class="me-section"><div class="me-section-title"> 04  Assessment</div>'
     +'<div style="background:var(--surface);border-radius:10px;padding:14px;margin-bottom:14px;">'
     +'<div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Assessment Type</div>'
     +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">'
@@ -2924,7 +3016,7 @@ function renderCMEditor(courseId, modIdx, key, row) {
       }).join('');
     })()
     +'</div>'
-    // Section weights — only for mixed type
+    // Section weights  only for mixed type
     +'<div id="cm_weightsPanel" style="display:'+(((row.assessment_type||'mcq')==='mixed')?'block':'none')+';background:var(--navy-pale);border-radius:10px;padding:14px;margin-bottom:14px;">'
     +'<div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Section Weighting</div>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px;">'
@@ -2940,7 +3032,7 @@ function renderCMEditor(courseId, modIdx, key, row) {
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'
     +'<div class="form-group" style="margin-bottom:0;"><label class="form-label">Pass Mark</label>'
     +'<div style="background:var(--navy-pale);border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:15px;font-weight:700;color:var(--navy);">'+(cohortSettings&&cohortSettings.pass_mark?cohortSettings.pass_mark:70)+'%</div>'
-    +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">Platform standard — change in <a href="#" onclick="goTab(\'cohort\')" style="color:var(--navy);">Settings → Cohort</a></div></div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">Platform standard  change in <a href="#" onclick="goTab(\'cohort\')" style="color:var(--navy);">Settings  Cohort</a></div></div>'
     +'<div class="form-group" style="margin-bottom:0;"><label class="form-label">Max Attempts</label>'
     +'<input class="form-input" id="cm_maxAttempts" type="number" min="0" value="'+(row.max_attempts||0)+'" style="padding:8px 11px;"/>'
     +'<div style="font-size:11px;color:var(--muted);margin-top:3px;">0 = unlimited</div></div>'
@@ -2951,7 +3043,7 @@ function renderCMEditor(courseId, modIdx, key, row) {
     +'<div id="cmSaveMsg" style="display:none;background:var(--ok-light);border:1px solid #86EFAC;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--ok);margin-top:12px;"></div></div>'
 
     // SECTION 5: Downloads
-    +'<div class="me-section"><div class="me-section-title">📥 05 — Downloadable Files</div>'
+    +'<div class="me-section"><div class="me-section-title"> 05  Downloadable Files</div>'
     +'<div id="cm_dlList">'+renderCMDownloads(downloads)+'</div>'
     +'<button class="btn btn-ghost btn-sm" style="margin-top:6px;" onclick="uploadCMFile()">+ Upload File</button>'
     +'<div style="font-size:11px;color:var(--muted);margin-top:4px;">Upload PDFs, sheet music, documents. Files are stored in Supabase and linked automatically.</div></div>'
@@ -2990,7 +3082,7 @@ function toggleCMPublish() {
   if (lb) lb.textContent = cmState.published ? 'Published' : 'Draft';
 }
 
-// ── AUDIO TRACKS ─────────────────────────────────────────────────────────────
+//  AUDIO TRACKS 
 function renderCMAudioTracks(tracks) {
   if (!tracks||!tracks.length) return '<div style="font-size:13px;color:var(--dim);padding:4px 0;">No audio tracks added.</div>';
   return tracks.map(function(t,i){
@@ -2998,7 +3090,7 @@ function renderCMAudioTracks(tracks) {
       +'<input class="form-input" id="at_name_'+i+'" value="'+(t.name||'')+'" placeholder="Track name" style="padding:8px 11px;font-size:12px;"/>'
       +'<input class="form-input" id="at_url_'+i+'" value="'+(t.url||'')+'" placeholder="Audio URL (mp3, ogg...)" style="padding:8px 11px;font-size:12px;"/>'
       +'<input class="form-input" id="at_dur_'+i+'" value="'+(t.duration||'')+'" placeholder="3:24" style="padding:8px 11px;font-size:12px;"/>'
-      +'<button class="btn btn-danger btn-xs" onclick="removeCMAudioTrack('+i+')" style="padding:7px 9px;">✕</button></div>';
+      +'<button class="btn btn-danger btn-xs" onclick="removeCMAudioTrack('+i+')" style="padding:7px 9px;"></button></div>';
   }).join('');
 }
 function collectAudioTracks() {
@@ -3026,19 +3118,19 @@ function removeCMAudioTrack(i) {
   if (el) el.innerHTML = renderCMAudioTracks(tracks);
 }
 
-// ── DOWNLOADS ─────────────────────────────────────────────────────────────────
+//  DOWNLOADS 
 function renderCMDownloads(dls) {
   if (!dls||!dls.length) return '<div style="font-size:13px;color:var(--dim);padding:4px 0;">No files added.</div>';
   return dls.map(function(d,i){
     return '<div class="dl-row" id="dlr-'+i+'" style="align-items:center;gap:8px;padding:10px;background:var(--surface);border-radius:10px;margin-bottom:8px;display:flex;flex-wrap:wrap;">'
       +'<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">'
-      +'<div style="font-size:20px;">'+(d.type==='music'?'🎼':d.type==='doc'?'📝':'📄')+'</div>'
+      +'<div style="font-size:20px;">'+(d.type==='music'?'':d.type==='doc'?'':'')+'</div>'
       +'<div style="flex:1;min-width:0;">'
       +'<div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+d.name+'</div>'
       +'<div style="font-size:11px;color:var(--muted);">'+(d.size||'')+'</div>'
       +'</div></div>'
       +'<select class="form-select" id="dl_type_'+i+'" style="padding:6px 8px;font-size:12px;width:auto;"><option value="pdf"'+(d.type==='pdf'?' selected':'')+'>PDF</option><option value="music"'+(d.type==='music'?' selected':'')+'>Music</option><option value="doc"'+(d.type==='doc'?' selected':'')+'>Doc</option></select>'
-      +'<button class="btn btn-danger btn-xs" onclick="removeCMDownload('+i+')" style="padding:6px 8px;">✕</button>'
+      +'<button class="btn btn-danger btn-xs" onclick="removeCMDownload('+i+')" style="padding:6px 8px;"></button>'
       +'<input type="hidden" id="dl_name_'+i+'" value="'+escQ(d.name||'')+'"/>'
       +'<input type="hidden" id="dl_url_'+i+'" value="'+escQ(d.url||'')+'"/>'
       +'<input type="hidden" id="dl_size_'+i+'" value="'+escQ(d.size||'')+'"/>'
@@ -3089,7 +3181,7 @@ async function uploadCMFile() {
       dls.push({name:file.name, url:publicUrl, type:type, size:sizeMB});
       var el = document.getElementById('cm_dlList');
       if (el) el.innerHTML = renderCMDownloads(dls);
-      showToast('✓ '+file.name+' uploaded');
+      showToast(' '+file.name+' uploaded');
     } catch(e) {
       showToast('Upload failed: '+e.message+'. Make sure the "course-files" bucket exists in Supabase Storage.','err');
     } finally {
@@ -3124,7 +3216,7 @@ function removeCMDownload(i) {
   if (el) el.innerHTML = renderCMDownloads(dls);
 }
 
-// ── QUESTION BUILDER ──────────────────────────────────────────────────────────
+//  QUESTION BUILDER 
 var LETTERS = ['A','B','C','D'];
 var Q_TYPE_LABELS = {mcq:'MCQ',short:'Short Answer',essay:'Essay'};
 var Q_TYPE_COLORS = {mcq:'var(--navy-light)',short:'var(--gold-light)',essay:'#F0FDF4'};
@@ -3243,7 +3335,7 @@ function removeCMQuestion(i){
   renderCMQuestions();
 }
 
-// ── SAVE MODULE ───────────────────────────────────────────────────────────────
+//  SAVE MODULE 
 async function saveCMModule(key) {
   var parts = key.split('-');
   var courseId = parts[0];
@@ -3320,10 +3412,10 @@ async function saveCMModule(key) {
     if (editorWrap) editorWrap.scrollTop = 0;
     var msg = document.getElementById('cmSaveMsg');
     if (msg) {
-      msg.textContent = cmState.published ? '✓ Saved and published — students can access this module now.' : '✓ Saved as draft — toggle Published when ready for students.';
+      msg.textContent = cmState.published ? ' Saved and published  students can access this module now.' : ' Saved as draft  toggle Published when ready for students.';
       msg.style.display = 'block';
     }
-    showToast(cmState.published ? '✓ Module saved and published' : '✓ Module saved as draft', 'ok');
+    showToast(cmState.published ? ' Module saved and published' : ' Module saved as draft', 'ok');
   } catch(e) {
     cmContent[key] = row;
     c.modules[modIdx] = {title:m.title, questions:cmState.questions.length, published:cmState.published};
@@ -3333,7 +3425,7 @@ async function saveCMModule(key) {
   }
 }
 
-// ── ADD COURSE MODAL ──────────────────────────────────────────────────────────
+//  ADD COURSE MODAL 
 function showAddCourseModal() {
   var existing = document.getElementById('cmCourseModal');
   if (existing) existing.remove();
@@ -3376,7 +3468,7 @@ function createCMCourse() {
   showToast('Course created. Add modules from the sidebar.');
 }
 
-// ── ADD MODULE ────────────────────────────────────────────────────────────────
+//  ADD MODULE 
 function addNewModule(courseId) {
   var name = prompt('Module title:');
   if (!name||!name.trim()) return;
@@ -3431,7 +3523,7 @@ async function renameCourse(courseId) {
   }
 }
 
-// ── COHORT ────────────────────────────────────────────────────────────────────
+//  COHORT 
 function renderCohort() {
   var du=daysUntil(cohortSettings.deadline||'2099-01-01');
   document.getElementById('cohortView').innerHTML=
@@ -3458,7 +3550,7 @@ async function saveCohort() {
   }catch(e){showToast('Error: '+e.message,'err');}
 }
 
-// ── ANNOUNCEMENTS ─────────────────────────────────────────────────────────────
+//  ANNOUNCEMENTS 
 async function renderAnnouncements() {
   // Rebuild annTarget options from live courses
   var sel = document.getElementById('annTarget');
@@ -3473,11 +3565,11 @@ async function renderAnnouncements() {
       return;
     }
     var html = anns.map(function(a) {
-      var del_btn = '<button class="ann-del" onclick="deleteAnn(\''+a.id+'\')">🗑</button>';
+      var del_btn = '<button class="ann-del" onclick="deleteAnn(\''+a.id+'\')"></button>';
       return '<div class="ann-item"><div style="flex:1;">'
         +'<div style="font-size:14px;font-weight:600;margin-bottom:3px;">'+a.title+'</div>'
         +'<div style="font-size:13px;color:var(--muted);">'+a.body+'</div>'
-        +'<div style="font-size:11px;color:var(--dim);margin-top:5px;">'+fmtDateTime(a.created_at)+' · '+((!a.target||a.target==='all')?'All students':a.target)+'</div>'
+        +'<div style="font-size:11px;color:var(--dim);margin-top:5px;">'+fmtDateTime(a.created_at)+'  '+((!a.target||a.target==='all')?'All students':a.target)+'</div>'
         +'</div>'+del_btn+'</div>';
     }).join('');
     document.getElementById('annList').innerHTML=html;
@@ -3501,8 +3593,8 @@ async function deleteAnn(id) {
   try{await sb('announcements','DELETE',null,'id=eq.'+id);renderAnnouncements();}catch(e){showToast('Error','err');}
 }
 
-// ── DEV TOOLS ─────────────────────────────────────────────────────────────────
-// ── DEV TOOLS WIPE FUNCTIONS ─────────────────────────────────────────────────
+//  DEV TOOLS 
+//  DEV TOOLS WIPE FUNCTIONS 
 var NULL_UUID = '00000000-0000-0000-0000-000000000000';
 
 async function clearPeopleData() {
@@ -3511,7 +3603,7 @@ async function clearPeopleData() {
   if (c !== 'CLEAR') { showToast('Cancelled.','warn'); return; }
   try {
     showToast('Clearing people data...');
-    // Order matters — FK constraints
+    // Order matters  FK constraints
     await sb('sessions','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
     await sb('progress','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
     await sb('quiz_attempts','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
@@ -3524,7 +3616,7 @@ async function clearPeopleData() {
     }).catch(function(){});
     await sb('students','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
     await sb('applications','DELETE',null,'id=neq.'+NULL_UUID).catch(function(){});
-    showToast('✓ All people data cleared. Platform is clean for handover.','ok');
+    showToast(' All people data cleared. Platform is clean for handover.','ok');
     await loadAllData();
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
@@ -3546,7 +3638,7 @@ async function clearCourseContent() {
         video_duration_minutes: null
       })
     });
-    showToast('✓ Course content cleared. Titles and structure preserved.','ok');
+    showToast(' Course content cleared. Titles and structure preserved.','ok');
     await loadAllData();
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
@@ -3575,7 +3667,7 @@ async function fullHandoverReset() {
       headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
       body: JSON.stringify({reading_content:'',questions:'[]',audio_tracks:'[]',downloads:'[]',video_url:null,video_duration_minutes:null})
     }).catch(function(){});
-    showToast('✓ Full handover reset complete. Platform is ready for the school.','ok');
+    showToast(' Full handover reset complete. Platform is ready for the school.','ok');
     await loadAllData();
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
@@ -3625,7 +3717,7 @@ async function clearEverything(){ fullHandoverReset(); }
 
 
 
-// ── SITE SETTINGS ──────────────────────────────────────────────────────────────
+//  SITE SETTINGS 
 var SS_CACHE = {}; // key -> value, loaded once
 
 var SS_HERO_MODULE_DEFAULTS = [
@@ -3771,7 +3863,7 @@ async function saveSiteSettings(panel) {
 
 
 
-// ── COURSE PROGRESS ───────────────────────────────────────────────────────────
+//  COURSE PROGRESS 
 async function renderCourseProgress() {
   var el = document.getElementById('courseProgressContent');
   if (!el) return;
@@ -3858,7 +3950,7 @@ async function renderCourseProgress() {
             +'<td style="padding:12px;font-size:12px;color:var(--muted);">'+lastLogin+'</td>'
             +'<td style="padding:12px;">'
             +(isComplete
-              ? '<span class="pill pill-ok" style="font-size:11px;">✓ Complete</span>'
+              ? '<span class="pill pill-ok" style="font-size:11px;"> Complete</span>'
               : pct > 0
                 ? '<span class="pill" style="font-size:11px;background:var(--navy-light);color:var(--navy);">In Progress</span>'
                 : '<span class="pill pill-dim" style="font-size:11px;">Not Started</span>')
@@ -3873,7 +3965,7 @@ async function renderCourseProgress() {
   }
 }
 
-// ── GRADING QUEUE ────────────────────────────────────────────────────────────
+//  GRADING QUEUE 
 async function renderGrading() {
   var el = document.getElementById('gradingList');
   if (!el) return;
@@ -3887,7 +3979,7 @@ async function renderGrading() {
     var rows = await sb('assessment_submissions','GET',null,gradingQuery);
     // Update badge
     var badge = document.getElementById('navGrading');
-    if (badge && rows.length) badge.innerHTML = '📋 Grading Queue <span class="badge badge-danger">'+rows.length+'</span>';
+    if (badge && rows.length) badge.innerHTML = ' Grading Queue <span class="badge badge-danger">'+rows.length+'</span>';
 
     if (!rows.length) {
       el.innerHTML = '<div class="alert alert-info">No pending assessments to grade. All caught up.</div>';
@@ -3907,8 +3999,8 @@ async function renderGrading() {
         +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;">'
         +'<div>'
         +'<div style="font-family:DM Serif Display,serif;font-size:18px;color:var(--navy);margin-bottom:2px;">'+studentName+'</div>'
-        +'<div style="font-size:12px;color:var(--muted);">'+studentEmail+' · Submitted '+fmtDateTime(r.submitted_at)+'</div>'
-        +'<div style="font-size:12px;color:var(--muted);">Module '+(r.module_index+1)+' · Course: '+(r.course_id||'—')+'</div>'
+        +'<div style="font-size:12px;color:var(--muted);">'+studentEmail+'  Submitted '+fmtDateTime(r.submitted_at)+'</div>'
+        +'<div style="font-size:12px;color:var(--muted);">Module '+(r.module_index+1)+'  Course: '+(r.course_id||'')+'</div>'
         +'</div>'
         +'<span class="pill pill-warn">Pending Review</span>'
         +'</div>'
@@ -3916,12 +4008,12 @@ async function renderGrading() {
         // MCQ Result
         +(r.mcq_total > 0 ? '<div style="background:var(--navy-pale);border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:14px;">'
         +'<div style="font-size:22px;font-family:DM Serif Display,serif;color:var(--navy);">'+r.mcq_score+'/'+r.mcq_total+'</div>'
-        +'<div><div style="font-size:12px;font-weight:700;color:var(--navy);">Section A — MCQ</div>'
+        +'<div><div style="font-size:12px;font-weight:700;color:var(--navy);">Section A  MCQ</div>'
         +'<div style="font-size:11px;color:var(--muted);">Auto-graded</div></div></div>' : '')
 
         // Written responses
         +(written.length ? '<div style="margin-bottom:14px;">'
-        +'<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Section B — Written Responses</div>'
+        +'<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Section B  Written Responses</div>'
         +written.map(function(w,wi) {
           return '<div style="border:1.5px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;">'
             +'<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px;">Q'+(wi+1)+': '+escQ(w.question)+'</div>'
@@ -3942,22 +4034,22 @@ async function renderGrading() {
         +'<div><div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">MCQ</div>'
         +'<div style="font-size:20px;font-weight:700;color:var(--navy);">'+(r.mcq_score||0)+' / '+(r.mcq_total||0)+'</div></div>'
         +'<div><div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">Written</div>'
-        +'<div style="font-size:20px;font-weight:700;color:var(--navy);" id="wtotal-'+r.id+'">— / '+totalWrittenMarks+'</div></div>'
+        +'<div style="font-size:20px;font-weight:700;color:var(--navy);" id="wtotal-'+r.id+'"> / '+totalWrittenMarks+'</div></div>'
         +'<div><div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;">Result</div>'
-        +'<div style="font-size:16px;font-weight:700;" id="wresult-'+r.id+'">—</div></div>'
+        +'<div style="font-size:16px;font-weight:700;" id="wresult-'+r.id+'"></div></div>'
         +'</div>'
         +'<label class="form-label">Feedback to student <span style="font-weight:400;color:var(--muted);">(required if failing)</span></label>'
         +'<textarea class="form-textarea" id="gcomment-'+r.id+'" placeholder="e.g. Good understanding of Gregorian Chant. Expand on the modal system in future." style="min-height:80px;"></textarea>'
         +'</div>'
 
-        // Single submit button — system decides pass/fail
+        // Single submit button  system decides pass/fail
         +'<div id="gbtn-'+r.id+'">'
         +'<div id="glive-'+r.id+'" style="margin:10px 0 14px;padding:10px 14px;border-radius:8px;background:var(--surface);font-size:13px;color:var(--muted);">'+
-          (written.length ? 'Enter written scores above — result calculated automatically.' : 'Click Submit Grade to record the MCQ result.')
+          (written.length ? 'Enter written scores above  result calculated automatically.' : 'Click Submit Grade to record the MCQ result.')
         +'</div>'
         +'<div style="display:flex;gap:10px;flex-wrap:wrap;">'
         +'<button class="btn btn-primary" onclick="doGrade(this);" data-id="'+r.id+'" data-result="auto" data-mcq="'+r.mcq_score+'" data-mcqt="'+r.mcq_total+'" data-wt="'+totalWrittenMarks+'" data-email="'+studentEmail+'" data-phone="'+studentPhone+'" data-name="'+studentName+'" data-mod="'+r.module_index+'" data-sid="'+r.student_id+'" data-cid="'+r.course_id+'">Submit Grade</button>'
-        +(studentPhone?'<button class="btn btn-wa" style="font-size:13px;" onclick="doWhatsApp(this);" data-id="'+r.id+'" data-phone="'+studentPhone+'" data-name="'+studentName+'" data-mod="'+r.module_index+'">💬 WhatsApp</button>':'')
+        +(studentPhone?'<button class="btn btn-wa" style="font-size:13px;" onclick="doWhatsApp(this);" data-id="'+r.id+'" data-phone="'+studentPhone+'" data-name="'+studentName+'" data-mod="'+r.module_index+'"> WhatsApp</button>':'')
         +'</div></div>'
         +'</div>';
     }).join('');
@@ -3977,7 +4069,7 @@ function updateGradingLive(id, mcqScore, mcqTotal, writtenTotal, mcqWeight, writ
   var summaryEl = document.getElementById('glive-'+id);
   var passMark = cohortSettings && cohortSettings.pass_mark ? cohortSettings.pass_mark : 70;
 
-  // Weighted scoring — only when both sections exist AND weights are defined
+  // Weighted scoring  only when both sections exist AND weights are defined
   var isWeighted = mcqTotal > 0 && writtenTotal > 0 && mcqWeight > 0 && writtenWeight > 0;
   var pct, displayText;
 
@@ -3985,7 +4077,7 @@ function updateGradingLive(id, mcqScore, mcqTotal, writtenTotal, mcqWeight, writ
     var mcqPct = mcqTotal > 0 ? (mcqScore / mcqTotal * 100) : 0;
     var writtenPct = writtenTotal > 0 ? (writtenScore / writtenTotal * 100) : 0;
     pct = Math.round((mcqPct * mcqWeight / 100) + (writtenPct * writtenWeight / 100));
-    displayText = 'MCQ: '+Math.round(mcqPct)+'% × '+mcqWeight+'% + Written: '+Math.round(writtenPct)+'% × '+writtenWeight+'% = '+pct+'% weighted';
+    displayText = 'MCQ: '+Math.round(mcqPct)+'%  '+mcqWeight+'% + Written: '+Math.round(writtenPct)+'%  '+writtenWeight+'% = '+pct+'% weighted';
   } else {
     // Fallback: raw marks combined
     var combined = mcqScore + writtenScore;
@@ -3996,7 +4088,7 @@ function updateGradingLive(id, mcqScore, mcqTotal, writtenTotal, mcqWeight, writ
 
   var isPassing = pct >= passMark;
   if (summaryEl) {
-    summaryEl.innerHTML = displayText + ' — <strong style="color:'+(isPassing?'var(--ok)':'var(--danger)')+';">'+(isPassing?'✓ PASS':'✗ FAIL')+'</strong>';
+    summaryEl.innerHTML = displayText + '  <strong style="color:'+(isPassing?'var(--ok)':'var(--danger)')+';">'+(isPassing?' PASS':' FAIL')+'</strong>';
     summaryEl.style.color = 'var(--text)';
     summaryEl.style.fontWeight = '600';
     summaryEl.style.background = isPassing ? 'var(--ok-light)' : '#FEF2F2';
@@ -4007,7 +4099,7 @@ function updateGradingLive(id, mcqScore, mcqTotal, writtenTotal, mcqWeight, writ
   // Update the result column in the score grid
   var resultEl = document.getElementById('wresult-'+id);
   if (resultEl) {
-    resultEl.textContent = isPassing ? '✓ PASS' : '✗ FAIL';
+    resultEl.textContent = isPassing ? ' PASS' : ' FAIL';
     resultEl.style.color = isPassing ? 'var(--ok)' : 'var(--danger)';
   }
   // Update written score display
@@ -4077,12 +4169,12 @@ async function gradeSubmission(id, resultArg, mcqScore, mcqTotal, writtenTotal, 
     if (commentEl) {
       commentEl.style.borderColor = 'var(--danger)';
       commentEl.focus();
-      commentEl.placeholder = '⚠ Feedback required when the student fails';
+      commentEl.placeholder = ' Feedback required when the student fails';
     }
     // Re-enable buttons
     var card = document.getElementById('gq-'+id);
     if (card) card.querySelectorAll('button').forEach(function(b){ b.disabled=false; });
-    showToast('Please add feedback — student scored '+Math.round(passPct)+'% (below '+passMark+'% pass mark).','warn');
+    showToast('Please add feedback  student scored '+Math.round(passPct)+'% (below '+passMark+'% pass mark).','warn');
     return;
   }
 
@@ -4125,7 +4217,7 @@ async function gradeSubmission(id, resultArg, mcqScore, mcqTotal, writtenTotal, 
         var studentProgress = allProgress.filter(function(p){ return p.student_id===studentId&&p.course_id===courseId; });
         var uniqueDone = studentProgress.map(function(p){return p.module_index;}).filter(function(v,i,a){return a.indexOf(v)===i;});
         if (totalMods > 0 && uniqueDone.length >= totalMods) {
-          // All modules complete — mark enrolment and send email
+          // All modules complete  mark enrolment and send email
           fetch('/api/grading', {
             method:'POST', headers:{'Content-Type':'application/json'},
             body: JSON.stringify({
@@ -4146,7 +4238,7 @@ async function gradeSubmission(id, resultArg, mcqScore, mcqTotal, writtenTotal, 
 
 
 
-// ── ACCOUNT SETTINGS ─────────────────────────────────────────────────────────
+//  ACCOUNT SETTINGS 
 async function renderAccountSettings() {
   if (!currentAdmin) return;
   var nameEl = document.getElementById('as_name');
@@ -4222,7 +4314,7 @@ async function saveAccountSettings() {
   }
 }
 
-// ── PAYMENT SETTINGS ──────────────────────────────────────────────────────────
+//  PAYMENT SETTINGS 
 async function renderPaymentSettings() {
   try {
     var rows = await sb('site_settings','GET',null,'key=in.(payment_bank,payment_acc_name,payment_acc_num,course_amount)&select=key,value');
@@ -4271,7 +4363,7 @@ async function savePaymentSettings() {
   }
 }
 
-// ── ADMIN ACCOUNTS ────────────────────────────────────────────────────────────
+//  ADMIN ACCOUNTS 
 async function renderAdminAccounts() {
   var el = document.getElementById('adminAccountsList');
   if (!el) return;
@@ -4404,7 +4496,7 @@ async function deleteAdminAccount(id, name) {
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
 
-// ── STUDENT FEEDBACK ─────────────────────────────────────────────────────────
+//  STUDENT FEEDBACK 
 async function renderFeedback() {
   var el = document.getElementById('feedbackList');
   if (!el) return;
@@ -4429,12 +4521,12 @@ async function renderFeedback() {
       return '<div class="card" style="margin-bottom:10px;opacity:'+(r.resolved?0.6:1)+';">'
         +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">'
         +'<div><div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;">'+name+'</div>'
-        +'<div style="font-size:11px;color:var(--muted);">'+fmtDateTime(r.submitted_at)+' · Module '+(r.module_index!==null&&r.module_index!==undefined?r.module_index+1:'—')+'</div></div>'
+        +'<div style="font-size:11px;color:var(--muted);">'+fmtDateTime(r.submitted_at)+'  Module '+(r.module_index!==null&&r.module_index!==undefined?r.module_index+1:'')+'</div></div>'
         +'<div>'+pill+resolved+'</div></div>'
         +'<div style="font-size:14px;color:var(--text);margin-top:10px;line-height:1.6;padding:12px;background:var(--surface);border-radius:8px;">'+r.message+'</div>'
         +'<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">'
-        +(wn?'<a class="btn btn-wa" href="'+waLink(wn,'Re your CMA feedback: '+r.message)+'" target="_blank" style="font-size:12px;padding:6px 12px;">💬 Reply via WhatsApp</a>':'')
-        +(!r.resolved?'<button class="btn btn-ghost" style="font-size:12px;padding:6px 12px;" onclick="markFeedbackRead(\''+r.id+'\')">✓ Mark Resolved</button>':'')
+        +(wn?'<a class="btn btn-wa" href="'+waLink(wn,'Re your CMA feedback: '+r.message)+'" target="_blank" style="font-size:12px;padding:6px 12px;"> Reply via WhatsApp</a>':'')
+        +(!r.resolved?'<button class="btn btn-ghost" style="font-size:12px;padding:6px 12px;" onclick="markFeedbackRead(\''+r.id+'\')"> Mark Resolved</button>':'')
         +'</div></div>';
     }).join('');
   } catch(e) {
@@ -4447,7 +4539,7 @@ async function markFeedbackRead(id) {
 }
 
 
-// ── Mobile sidebar ────────────────────────────────────────────
+//  Mobile sidebar 
 function toggleMobMenu() {
   var sb = document.querySelector('.sidebar');
   var ov = document.getElementById('mobOverlay');
@@ -4465,7 +4557,7 @@ function closeMobMenu() {
 document.addEventListener('click', function(e) {
   if (window.innerWidth <= 800 && e.target.closest && e.target.closest('.nav-item')) { closeMobMenu(); }
 });
-// ── TOAST ─────────────────────────────────────────────────────────────────────
+//  TOAST 
 function showToast(msg,type='ok'){
   var t=document.createElement('div');
   var bg=type==='err'?'#DC2626':type==='warn'?'#C9A84C':'#16A34A';
@@ -4474,7 +4566,7 @@ function showToast(msg,type='ok'){
   setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity 0.3s';setTimeout(()=>t.remove(),300);},3000);
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────────────
+//  INIT 
 function showAdminShell(admin) {
   var ni=document.getElementById('navInitial');
   if(ni){ni.textContent=(admin.name||'A').charAt(0).toUpperCase();ni.title=admin.name||'Admin';}
@@ -4500,7 +4592,7 @@ function showAdminShell(admin) {
       body: JSON.stringify({action: 'login', email: sess.user.email})
     }).then(function(r){ return r.json(); }).then(function(json) {
       if (!json || !json.admin || json.admin.id !== sess.user.id) {
-        // Admin no longer exists or email changed — force re-login
+        // Admin no longer exists or email changed  force re-login
         clearAdminSession();
         try { localStorage.removeItem('cma_admin_remember'); } catch(e){}
         window.location.reload();
@@ -4512,7 +4604,7 @@ function showAdminShell(admin) {
       showAdminShell(currentAdmin);
       loadAllData();
     }).catch(function() {
-      // Network error — allow cached session to proceed (fail open)
+      // Network error  allow cached session to proceed (fail open)
       currentAdmin = sess.user;
       showAdminShell(currentAdmin);
       loadAllData();
@@ -4541,12 +4633,18 @@ function showAdminShell(admin) {
   if(adminUserEl) adminUserEl.focus();
 })();
 
-// ── EXAM READY ────────────────────────────────────────────────────────────────
+//  EXAM READY 
 var _examFilter='all';
 function setExamFilter(f,el){
   _examFilter=f;
   document.querySelectorAll('#examReadyFilters .tab').forEach(function(t){t.classList.remove('active');});
   if(el)el.classList.add('active');
+  else {
+    var labels = {all:'All Pending',unscheduled:'Unscheduled',scheduled:'Scheduled',failed:'Resit Required'};
+    document.querySelectorAll('#examReadyFilters .tab').forEach(function(t){
+      if ((t.textContent||'').trim() === labels[f]) t.classList.add('active');
+    });
+  }
   renderExamReady();
 }
 
@@ -4631,22 +4729,22 @@ async function renderExamReady(){
       var course=cmCourses.find(function(c){return c.id===enr.course_id;});
       var cName=course?course.title:(enr.programme||s.programme||'N/A');
       var init=s.first_name.charAt(0)+(s.last_name||'').charAt(0);
-      var pd=enr.exam_passed_at?fmtDate(enr.exam_passed_at):'—';
+      var pd=enr.exam_passed_at?fmtDate(enr.exam_passed_at):'';
       var da=enr.exam_passed_at?Math.floor((Date.now()-new Date(enr.exam_passed_at))/(86400000)):null;
-      var timeAgo=da===0?'Today':da===1?'Yesterday':da!==null?(da+' days ago'):'—';
+      var timeAgo=da===0?'Today':da===1?'Yesterday':da!==null?(da+' days ago'):'';
       return '<div style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:1px solid #BBF7D0;border-radius:12px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">'
         +'<div style="width:38px;height:38px;border-radius:50%;background:#16A34A;color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">'+init+'</div>'
         +'<div style="flex:1;min-width:0;">'
         +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'
         +'<div style="font-size:13px;font-weight:600;color:#14532D;">'+s.first_name+' '+s.last_name+'</div>'
-        +'<span style="font-size:10px;background:#16A34A;color:white;padding:2px 8px;border-radius:20px;font-weight:700;">🎓 Certified</span>'
+        +'<span style="font-size:10px;background:#16A34A;color:white;padding:2px 8px;border-radius:20px;font-weight:700;"> Certified</span>'
         +'</div>'
         +'<div style="font-size:11px;color:#16A34A;margin-top:3px;">'+cName+'</div>'
-        +'<div style="font-size:11px;color:var(--muted);margin-top:1px;">Passed '+pd+' · '+timeAgo+'</div>'
+        +'<div style="font-size:11px;color:var(--muted);margin-top:1px;">Passed '+pd+'  '+timeAgo+'</div>'
         +'</div>'
         +'<div style="display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;">'
         +(s.phone||s.whatsapp?'<a class="btn btn-ghost btn-sm" href="'+waLink(s.phone||s.whatsapp,'Hello '+s.first_name+', congratulations on passing your examination at the Catholic Music Academy!')+'" target="_blank">WhatsApp</a>':'')
-        +'<button class="btn btn-sm" style="background:#0D1B3E;color:white;" onclick="openCertificate(\''+enr.student_id+'\',\''+enr.course_id+'\')" >🏆 Certificate</button>'
+        +'<button class="btn btn-sm" style="background:#0D1B3E;color:white;" onclick="openCertificate(\''+enr.student_id+'\',\''+enr.course_id+'\')" > Certificate</button>'
         +'</div>'
         +'</div>';
     }).join('');
@@ -4687,7 +4785,7 @@ async function markExamResult(sid,cid,result){
     var upd=result==='passed'?{status:'exam_passed',exam_passed_at:new Date().toISOString()}:{status:'exam_failed',exam_failed_at:new Date().toISOString()};
     var e=allEnrolments.find(function(en){return en.student_id===sid&&en.course_id===cid;});
     if(e)Object.assign(e,upd);
-    showToast(result==='passed'?'Marked Passed ✓ — Email sent':'Marked Failed');
+    showToast(result==='passed'?'Marked Passed   Email sent':'Marked Failed');
     if(result==='passed')openCertificate(sid,cid);else renderExamReady();
   }catch(err){showToast('Error: '+err.message,'err');}
 }
@@ -4698,7 +4796,7 @@ async function rescheduleExam(sid,cid){
   showToast('Reset for rescheduling.');renderExamReady();
 }
 
-// ── CERTIFICATE ───────────────────────────────────────────────────────────────
+//  CERTIFICATE 
 var _certData=null;
 async function openCertificate(sid,cid){
   goTab('certificate');
@@ -4760,10 +4858,10 @@ async function downloadCertificate(){
     a.download='CMA_Certificate_'+_certData.studentName.replace(/\s+/g,'_')+'_'+_certData.certNum.replace(/\//g,'-')+'.png';
     a.href=canvas.toDataURL('image/png');a.click();
   }catch(e){showToast('Download failed.','err');}
-  finally{if(btn){btn.disabled=false;btn.textContent='↓ Download PNG';}}
+  finally{if(btn){btn.disabled=false;btn.textContent=' Download PNG';}}
 }
 
-// ── ROLE TABS (override old sidebar fn) ──────────────────────────────────────
+//  ROLE TABS (override old sidebar fn) 
 function applyRoleSidebar(role) {
   var isMaster = role === 'master';
 
@@ -4789,7 +4887,7 @@ function applyRoleSidebar(role) {
   if (rc) rc.textContent = isMaster ? 'Master' : 'Lecturer';
 }
 
-// ── ROLE HELPERS ─────────────────────────────────────────────
+//  ROLE HELPERS 
 function isMaster() { return !currentAdmin || currentAdmin.role === 'master'; }
 function lecturerCourseId() { return currentAdmin && currentAdmin.assigned_course_id; }
 
@@ -4841,7 +4939,7 @@ function visibleSubmissions() {
   return (allAttempts || []).filter(function(s){ return s.course_id === cid; });
 }
 
-// ── LOGIN SUCCESS (override old fn reference) ─────────────────────────────────
+//  LOGIN SUCCESS (override old fn reference) 
 var _origDoAdminLogin = null;
 document.addEventListener('DOMContentLoaded', function() {
   // Patch login success to use showAdminShell
@@ -4849,6 +4947,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 </script>
-<div style="position:fixed;bottom:10px;right:14px;font-size:10px;color:rgba(255,255,255,0.15);z-index:10;pointer-events:none;">Built by <span style="color:rgba(201,168,76,0.3);font-weight:600;">DaleX</span></div>
+<div class="build-credit" style="position:fixed;bottom:10px;right:14px;font-size:10px;color:rgba(255,255,255,0.15);z-index:10;pointer-events:none;">Built by <span style="color:rgba(201,168,76,0.3);font-weight:600;">DaleX</span></div>
 </body>
 </html>
