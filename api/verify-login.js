@@ -1,16 +1,20 @@
-const CryptoJS = require('crypto-js');
+const crypto = require('crypto');
 
 function hashPBKDF2(password, salt) {
-  const hash = CryptoJS.PBKDF2(password, salt, {
-    keySize: 256 / 32,
-    iterations: 100000,
-    hasher: CryptoJS.algo.SHA256,
-  });
-  return hash.toString(CryptoJS.enc.Hex);
+  return crypto.pbkdf2Sync(
+    password,
+    Buffer.from(salt, 'hex'),
+    100000,
+    32,
+    'sha256'
+  ).toString('hex');
 }
 
 function hashLegacy(password) {
-  return CryptoJS.SHA256(password + 'cma_salt_2026').toString(CryptoJS.enc.Hex);
+  return crypto
+    .createHash('sha256')
+    .update(password + 'cma_salt_2026')
+    .digest('hex');
 }
 
 module.exports = async function handler(req, res) {
@@ -28,7 +32,6 @@ module.exports = async function handler(req, res) {
   const SUPA_KEY = process.env.SUPABASE_SERVICE_KEY;
 
   try {
-    // Fetch student by email
     const response = await fetch(
       `${SUPA_URL}/rest/v1/students?email=eq.${encodeURIComponent(email.toLowerCase().trim())}&select=id,email,first_name,last_name,status,programme,cohort,avatar_url,password_hash,salt,hash_version,needs_reset&limit=1`,
       {
@@ -46,9 +49,8 @@ module.exports = async function handler(req, res) {
 
     const student = data[0];
 
-    // Status check
     if (student.status === 'pending') {
-      return res.status(403).json({ error: 'Your application is still under review. You will be notified by email once approved.' });
+      return res.status(403).json({ error: 'Your application is still under review.' });
     }
     if (student.status === 'rejected') {
       return res.status(403).json({ error: 'Your application was not approved. Please contact the Academy.' });
@@ -57,32 +59,26 @@ module.exports = async function handler(req, res) {
       return res.status(403).json({ error: 'Your account has been suspended. Please contact the Academy.' });
     }
 
-    // Verify password
     let passwordOk = false;
     if (student.hash_version === 'pbkdf2' && student.salt) {
       const hash = hashPBKDF2(password, student.salt);
       passwordOk = hash === student.password_hash;
     } else {
-      // Legacy SHA-256
       const hash = hashLegacy(password);
       passwordOk = hash === student.password_hash;
 
-      // Migrate to PBKDF2 if correct
       if (passwordOk) {
-        const newSalt = CryptoJS.lib.WordArray.random(16).toString(CryptoJS.enc.Hex);
+        const newSalt = crypto.randomBytes(16).toString('hex');
         const newHash = hashPBKDF2(password, newSalt);
-        await fetch(
-          `${SUPA_URL}/rest/v1/students?id=eq.${student.id}`,
-          {
-            method: 'PATCH',
-            headers: {
-              apikey: SUPA_KEY,
-              Authorization: `Bearer ${SUPA_KEY}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ password_hash: newHash, salt: newSalt, hash_version: 'pbkdf2' }),
-          }
-        );
+        await fetch(`${SUPA_URL}/rest/v1/students?id=eq.${student.id}`, {
+          method: 'PATCH',
+          headers: {
+            apikey: SUPA_KEY,
+            Authorization: `Bearer ${SUPA_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ password_hash: newHash, salt: newSalt, hash_version: 'pbkdf2' }),
+        });
       }
     }
 
@@ -90,21 +86,16 @@ module.exports = async function handler(req, res) {
       return res.status(401).json({ error: 'Incorrect password. Please try again.' });
     }
 
-    // Update last_login
-    await fetch(
-      `${SUPA_URL}/rest/v1/students?id=eq.${student.id}`,
-      {
-        method: 'PATCH',
-        headers: {
-          apikey: SUPA_KEY,
-          Authorization: `Bearer ${SUPA_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ last_login: new Date().toISOString() }),
-      }
-    );
+    await fetch(`${SUPA_URL}/rest/v1/students?id=eq.${student.id}`, {
+      method: 'PATCH',
+      headers: {
+        apikey: SUPA_KEY,
+        Authorization: `Bearer ${SUPA_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ last_login: new Date().toISOString() }),
+    });
 
-    // Return safe student object (no password fields)
     return res.status(200).json({
       success: true,
       student: {
