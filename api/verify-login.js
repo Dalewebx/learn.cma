@@ -38,7 +38,7 @@ module.exports = async function handler(req, res) {
 
   try {
     const response = await fetch(
-      `${SUPA_URL}/rest/v1/students?email=eq.${encodeURIComponent(email.toLowerCase().trim())}&select=id,email,first_name,last_name,status,programme,cohort,avatar_url,password_hash,salt,hash_version,needs_reset&limit=1`,
+      `${SUPA_URL}/rest/v1/students?email=eq.${encodeURIComponent(email.toLowerCase().trim())}&select=id,email,first_name,last_name,status,programme,cohort,avatar_url,password_hash,salt,hash_version&limit=1`,
       {
         headers: {
           apikey: SUPA_KEY,
@@ -71,6 +71,16 @@ module.exports = async function handler(req, res) {
     }
     if (student.status === 'suspended') {
       return res.status(403).json({ error: 'Your account has been suspended. Please contact the Academy.' });
+    }
+
+    // Site logic parity: there is no dedicated needs_reset column — the
+    // site overloads hash_version = 'needs_reset' to mark accounts left in
+    // a broken PBKDF2-without-salt state that require a one-time reset.
+    if (student.hash_version === 'needs_reset') {
+      return res.status(403).json({
+        error: 'Password reset required. Your account was set up before a system upgrade and needs a one-time password reset. Please use Forgot Password.',
+        needs_reset: true,
+      });
     }
 
     let passwordOk = false;
@@ -121,7 +131,6 @@ module.exports = async function handler(req, res) {
         programme: student.programme,
         cohort: student.cohort,
         avatar_url: student.avatar_url,
-        needs_reset: student.needs_reset,
       },
     });
 
