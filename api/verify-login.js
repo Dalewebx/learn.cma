@@ -1,9 +1,15 @@
 const crypto = require('crypto');
 
+// IMPORTANT: the salt is used as literal UTF-8 text, matching the site's own
+// Web Crypto convention (enc.encode(salt) in login.html / forgot-password.html)
+// and the app's CryptoJS.PBKDF2(password, saltString, ...) convention — NOT
+// hex-decoded. The salt just happens to look like a hex string because it's
+// generated as random bytes formatted to hex, but every existing hash in the
+// database was created treating that hex string as plain text.
 function hashPBKDF2(password, salt) {
   return crypto.pbkdf2Sync(
     password,
-    Buffer.from(salt, 'hex'),
+    Buffer.from(salt, 'utf8'),
     100000,
     32,
     'sha256'
