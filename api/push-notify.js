@@ -1,6 +1,22 @@
 // api/push-notify.js
 // Sends push notifications to students via Expo Push API
-// Also writes to announcements table so bell shows them in-app
+// Also writes to student_notifications table (personal, per-student — NOT the
+// admin announcements table) so the bell shows a record even if the push
+// itself is missed or the app was closed.
+//
+// REQUIRED SUPABASE TABLE (create once, if it doesn't already exist):
+//
+//   create table student_notifications (
+//     id uuid primary key default gen_random_uuid(),
+//     student_id uuid not null references students(id) on delete cascade,
+//     title text not null,
+//     body text,
+//     type text default 'info',            -- info | warn | ok
+//     data jsonb,
+//     read boolean default false,
+//     created_at timestamptz default now()
+//   );
+//   create index student_notifications_student_id_idx on student_notifications(student_id);
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -25,58 +41,67 @@ module.exports = async function handler(req, res) {
         { headers: { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}` } }
       );
       const rows = await r.json();
-      if (!rows || rows.length === 0) {
-        return res.status(200).json({ ok: true, skipped: 'no token found' });
+      if (rows && rows.length > 0) {
+        pushToken = rows[0].token;
       }
-      pushToken = rows[0].token;
     }
 
-    // Send push via Expo Push API
-    const pushRes = await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Accept-Encoding': 'gzip, deflate',
-      },
-      body: JSON.stringify({
-        to: pushToken,
-        title,
-        body,
-        data: data ?? {},
-        sound: 'default',
-        priority: 'high',
-      }),
-    });
+    // Send push via Expo Push API (only if we have a token — a student
+    // without a registered device can still get an in-app notification below)
+    let pushResult = null;
+    if (pushToken) {
+      const pushRes = await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate',
+        },
+        body: JSON.stringify({
+          to: pushToken,
+          title,
+          body,
+          data: data ?? {},
+          sound: 'default',
+          priority: 'high',
+        }),
+      });
+      pushResult = await pushRes.json();
+      console.log('Expo push result:', JSON.stringify(pushResult));
+    }
 
-    const pushResult = await pushRes.json();
-    console.log('Expo push result:', JSON.stringify(pushResult));
-
-    // Also write to announcements table so it appears in bell
     // Determine type based on title content
-    let annType = 'info';
+    let notifType = 'info';
     if (title && (title.toLowerCase().includes('fail') || title.toLowerCase().includes('reject') || title.toLowerCase().includes('resit'))) {
-      annType = 'warn';
+      notifType = 'warn';
     } else if (title && (title.toLowerCase().includes('pass') || title.toLowerCase().includes('approv') || title.toLowerCase().includes('complet'))) {
-      annType = 'ok';
+      notifType = 'ok';
     }
 
-    await fetch(`${SUPA_URL}/rest/v1/announcements`, {
-      method: 'POST',
-      headers: {
-        apikey: SUPA_KEY,
-        Authorization: `Bearer ${SUPA_KEY}`,
-        'Content-Type': 'application/json',
-        Prefer: 'return=minimal',
-      },
-      body: JSON.stringify({
-        title,
-        body,
-        type: annType,
-        target: studentId ?? 'all',
-        created_by: 'system',
-      }),
-    });
+    // Write to student_notifications — personal, NEVER the announcements table.
+    // Announcements are admin-only broadcast content.
+    if (studentId) {
+      const insertRes = await fetch(`${SUPA_URL}/rest/v1/student_notifications`, {
+        method: 'POST',
+        headers: {
+          apikey: SUPA_KEY,
+          Authorization: `Bearer ${SUPA_KEY}`,
+          'Content-Type': 'application/json',
+          Prefer: 'return=minimal',
+        },
+        body: JSON.stringify({
+          student_id: studentId,
+          title,
+          body,
+          type: notifType,
+          data: data ?? {},
+        }),
+      });
+      if (!insertRes.ok) {
+        const errText = await insertRes.text();
+        console.error('student_notifications insert failed:', errText);
+      }
+    }
 
     return res.status(200).json({ ok: true, push: pushResult });
 
