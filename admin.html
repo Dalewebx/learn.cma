@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBEMUIzRSIvPgogIDxyZWN0IHg9IjUiIHk9IjUiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iMTgiIHk9IjUiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjUiIHk9IjE4IiB3aWR0aD0iOSIgaGVpZ2h0PSI5IiByeD0iMiIgZmlsbD0id2hpdGUiLz4KICA8cmVjdCB4PSIxOCIgeT0iMTgiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSIjQzlBODRDIi8+Cjwvc3ZnPg=="/>
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzBEMUIzRSIvPgogIDxyZWN0IHg9IjUiIHk9IjUiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSIjQzlBODRDIi8+CiAgPHJlY3QgeD0iMTgiIHk9IjUiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSJ3aGl0ZSIvPgogIDxyZWN0IHg9IjUiIHk9IjE4IiB3aWR0aD0iOSIgaGVpZ2h0PSI5IiByeD0iMiIgZmlsbD0id2hpdGUiLz4KICA8cmVjdCB4PSIxOCIgeT0iMTgiIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHJ4PSIyIiBmaWxsPSIjQzlBODRDIi8+Cjwvc3ZnPg=="/>
 <title>Catholic Music Academy  Admin</title>
@@ -433,6 +433,7 @@ html,body{width:100%;max-width:100%;overflow-x:hidden;}
 body{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
 img,svg,video,iframe,canvas{max-width:100%;height:auto;}
 input,select,textarea,button{max-width:100%;}
+input,select,textarea{font-size:16px !important;}
 .admin-nav,.admin-tabs,.main,.admin-page,.card,.app-card,.student-header,.me-card,.course-block,.exam-card,.modal-box,.table-wrap{max-width:100%;min-width:0;}
 .page-title,.page-sub,.card-title,.app-name,.app-email,.app-meta-item .val,.student-detail-name,.student-detail-meta,.cb-title,.cb-mod-name,.cm-course-label,.cm-module-item,.exam-card,.ann-item,td,th{overflow-wrap:anywhere;word-break:normal;}
 .table-wrap{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;}
@@ -1833,6 +1834,20 @@ async function approveApp(id) {
     var json = await res.json();
     if (!res.ok) throw new Error(json.error || 'Approval failed');
     showToast(' Approved: '+a.first_name+(a.type==='additional'?'  course added':'  account created'));
+    // Push notification to student
+    if (a.existing_student_id || a.type === 'additional') {
+      fetch('/api/push-notify', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          studentId: a.existing_student_id || null,
+          title: a.type === 'additional' ? 'Enrolment Approved ✓' : 'Application Approved ✓',
+          body: a.type === 'additional'
+            ? 'Your request to enrol in ' + a.programme + ' has been approved. Check your courses.'
+            : 'Congratulations! Your application has been approved. Log in to start learning.',
+          data: { screen: a.type === 'additional' ? 'Courses' : 'Dashboard' }
+        })
+      }).catch(function(){});
+    }
     await loadAllData();
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
@@ -1906,6 +1921,18 @@ async function confirmReject(id) {
     var json = await res.json();
     if (!res.ok) throw new Error(json.error || 'Rejection failed');
     showToast('Application rejected. Email sent to '+a.first_name+'.');
+    // Push notification to student
+    if (a.existing_student_id) {
+      fetch('/api/push-notify', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          studentId: a.existing_student_id,
+          title: 'Update on Your Request',
+          body: 'There is an update on your ' + (a.type === 'additional' ? 'enrolment request' : 'application') + ' for ' + a.programme + '. Please check your email.',
+          data: { screen: 'Dashboard' }
+        })
+      }).catch(function(){});
+    }
     await loadAllData();
   } catch(e) { showToast('Error: '+e.message,'err'); }
 }
@@ -4200,6 +4227,17 @@ async function gradeSubmission(id, resultArg, mcqScore, mcqTotal, writtenTotal, 
     if (!res.ok) throw new Error(json.error || 'Grading failed');
 
     showToast(name + ' marked as ' + result.toUpperCase() + '. ' + (result==='pass'?'Module unlocked.':''));
+    fetch('/api/push-notify', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        studentId: studentId,
+        title: result === 'pass' ? 'Assessment Passed ✓' : 'Assessment Graded',
+        body: result === 'pass'
+          ? 'You passed your written assessment. Your next module is now unlocked!'
+          : 'Your written assessment has been graded. Check your results and instructor feedback.',
+        data: { screen: 'ModuleList', params: { courseId: courseId } }
+      })
+    }).catch(function(){});
     var card = document.getElementById('gq-'+id);
     if (card) {
       card.style.opacity = '0.4';
@@ -4765,6 +4803,15 @@ async function scheduleExam(sid,cid,name,email,phone){
     var e=allEnrolments.find(function(en){return en.student_id===sid&&en.course_id===cid;});
     if(e){e.status='exam_scheduled';e.exam_date=d.value;}
     showToast('Exam scheduled. Email sent to '+name+'.');
+    fetch('/api/push-notify', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        studentId: sid,
+        title: 'Examination Scheduled 📅',
+        body: 'Your final examination has been scheduled. Check the Calendar tab in your app for details.',
+        data: { screen: 'Calendar' }
+      })
+    }).catch(function(){});
     renderExamReady();
   }catch(err){showToast('Error: '+err.message,'err');}
 }
@@ -4786,6 +4833,18 @@ async function markExamResult(sid,cid,result){
     var e=allEnrolments.find(function(en){return en.student_id===sid&&en.course_id===cid;});
     if(e)Object.assign(e,upd);
     showToast(result==='passed'?'Marked Passed   Email sent':'Marked Failed');
+    fetch('/api/push-notify', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        studentId: sid,
+        title: result === 'passed' ? 'Examination Passed! 🏆' : 'Examination Results Available',
+        body: result === 'passed'
+          ? 'Congratulations! You have passed your final examination. Your certificate is ready.'
+          : 'Your examination results are available. Please contact the Academy for next steps.',
+        data: { screen: result === 'passed' ? 'CourseComplete' : 'Dashboard',
+                params: result === 'passed' ? { courseId: cid } : {} }
+      })
+    }).catch(function(){});
     if(result==='passed')openCertificate(sid,cid);else renderExamReady();
   }catch(err){showToast('Error: '+err.message,'err');}
 }
