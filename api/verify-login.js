@@ -31,6 +31,11 @@ module.exports = async function handler(req, res) {
   const SUPA_URL = process.env.SUPABASE_URL;
   const SUPA_KEY = process.env.SUPABASE_SERVICE_KEY;
 
+  if (!SUPA_URL || !SUPA_KEY) {
+    console.error('verify-login misconfigured: missing SUPABASE_URL or SUPABASE_SERVICE_KEY env var');
+    return res.status(500).json({ error: 'Server misconfigured. Please contact the Academy.' });
+  }
+
   try {
     const response = await fetch(
       `${SUPA_URL}/rest/v1/students?email=eq.${encodeURIComponent(email.toLowerCase().trim())}&select=id,email,first_name,last_name,status,programme,cohort,avatar_url,password_hash,salt,hash_version,needs_reset&limit=1`,
@@ -43,7 +48,16 @@ module.exports = async function handler(req, res) {
     );
 
     const data = await response.json();
-    if (!data || data.length === 0) {
+
+    // Supabase/PostgREST returns an array of rows on success. On auth or
+    // query errors it returns an object like { message, hint, code } instead
+    // — catch that explicitly rather than letting data[0] crash below.
+    if (!response.ok || !Array.isArray(data)) {
+      console.error('verify-login: unexpected Supabase response', response.status, JSON.stringify(data));
+      return res.status(500).json({ error: 'Server error. Please try again.' });
+    }
+
+    if (data.length === 0) {
       return res.status(401).json({ error: 'No account found with that email address.' });
     }
 
